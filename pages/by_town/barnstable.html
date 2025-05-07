@@ -156,6 +156,7 @@ map.on('load', function() {
         // toggle the limwa visibility to the same as the floodplain visibility
         map.setLayoutProperty('LiMWA', 'visibility', newVisibility);
         map.setLayoutProperty('floodplain-line', 'visibility', newVisibility);
+        map.setLayoutProperty('floodplain-labels', 'visibility', newVisibility);
       }
       if (clickedLayer === 'DEP wetland') {
         map.setLayoutProperty('DEP wetland line', newVisibility);
