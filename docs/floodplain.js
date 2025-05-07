@@ -20,6 +20,26 @@ map.on('load', function () {
 		}
 	});
 
+  const floodBtn = document.getElementById('floodplain-btn');
+  if (floodBtn) {
+    floodBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      const current = map.getLayoutProperty('floodplain', 'visibility');
+      const newVis = current === 'visible' ? 'none' : 'visible';
+
+      map.setLayoutProperty('floodplain', newVis);
+      if (map.getLayer('floodplain-line')) {
+        map.setLayoutProperty('floodplain-line', newVis);
+      }
+      if (map.getLayer('LiMWA')) {
+        map.setLayoutProperty('LiMWA', newVis);
+      }
+
+	  this.classList.toggle('active', newVis === 'visible');
+	});
+  }
+
 	map.addSource('floodplain', {
 		type: 'vector',
 		url: 'mapbox://ese-toh.a7lml4y4'
@@ -47,9 +67,7 @@ map.on('load', function () {
 				'VE', '#eb3a34',
 				'AO', '#F7FE20',
 				'X', '#2578F9',
-				'A', '#2e4bf0',
-				/* fallback */ '#ffffff'
-
+				'A', '#2e4bf0'
 			]
 		}
 	});
