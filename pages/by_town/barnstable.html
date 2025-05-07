@@ -160,18 +160,6 @@ map.on('load', function() {
       // Always update button visual state based on new visibility
       this.className = newVisibility === 'visible' ? 'active' : '';
 
-      var satelliteVisibility = map.getLayoutProperty('satellite', 'visibility');
-      map.moveLayer('satellite', 'floodplain');
-      map.moveLayer('parcels', 'satellite');
-      
-      // Toggle the visibility of LiMWA based on floodplain status
-      var floodplainVisibility = map.getLayoutProperty('floodplain', 'visibility');
-      if (floodplainVisibility === 'visible') {
-        map.setLayoutProperty('LiMWA', 'visibility', 'visible');
-      } else {
-        map.setLayoutProperty('LiMWA', 'visibility', 'none');
-      }
-
       var wetlandVisibility = map.getLayoutProperty('DEP wetland', 'visibility');
       if (wetlandVisibility === 'visible') {
         map.setLayoutProperty('DEP wetland line', 'visibility', 'visible');
@@ -195,6 +183,13 @@ map.on('load', function() {
       mapboxgl: mapboxgl
     })
   );
+
+  // Ensure LiMWA and floodplain-line are always on top
+  map.on('idle', function () {
+    if (map.getLayer('LiMWA')) map.moveLayer('LiMWA');
+    if (map.getLayer('floodplain-line')) map.moveLayer('floodplain-line', 'LiMWA');
+  });
+
 });
 </script>
 </body>
