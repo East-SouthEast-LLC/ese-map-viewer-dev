@@ -150,8 +150,12 @@ map.on('load', function() {
 
       // Handle related layers
       if (clickedLayer === 'floodplain') {
-        map.setLayoutProperty('floodplain-line', newVisibility);
-        map.setLayoutProperty('LiMWA', newVisibility);
+        console.log("Floodplain clicked");
+        console.log("Floodplain visibility:", newVisibility);
+
+        // toggle the limwa visibility to the same as the floodplain visibility
+        map.setLayoutProperty('LiMWA', 'visibility', newVisibility);
+        map.setLayoutProperty('floodplain-line', 'visibility', newVisibility);
       }
       if (clickedLayer === 'DEP wetland') {
         map.setLayoutProperty('DEP wetland line', newVisibility);

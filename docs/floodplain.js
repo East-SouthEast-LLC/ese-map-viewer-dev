@@ -62,8 +62,9 @@ map.on('load', function () {
 		'source-layer': '25001c-2014-c2ck89',
 		'layout': { 'visibility': 'none' },
 		'paint': {
-			'line-color': '#1460F3',
-			'line-width': 1
+			'line-width': 0.5, 
+        	'line-color': '#000000', 
+        	'line-opacity': 0.5 
 		}
 	});
 	console.log("Floodplain line layer added");
