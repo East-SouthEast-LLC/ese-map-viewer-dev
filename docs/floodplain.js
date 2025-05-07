@@ -25,25 +25,6 @@ map.on('load', function () {
 		}
 	});
 
-  if (floodBtn) {
-    floodBtn.addEventListener('click', function (e) {
-      e.preventDefault();
-
-      const current = map.getLayoutProperty('floodplain', 'visibility');
-      const newVis = current === 'visible' ? 'none' : 'visible';
-
-      map.setLayoutProperty('floodplain', newVis);
-      if (map.getLayer('floodplain-line')) {
-        map.setLayoutProperty('floodplain-line', newVis);
-      }
-      if (map.getLayer('LiMWA')) {
-        map.setLayoutProperty('LiMWA', newVis);
-      }
-
-	  this.classList.toggle('active', newVis === 'visible');
-	});
-  }
-
 	map.addSource('floodplain', {
 		type: 'vector',
 		url: 'mapbox://ese-toh.a7lml4y4'
@@ -112,4 +93,23 @@ map.on('load', function () {
 	});
 
 	console.log("Floodplain event handlers attached");
+
+	if (floodBtn) {
+		floodBtn.addEventListener('click', function (e) {
+			e.preventDefault();
+
+			const current = map.getLayoutProperty('floodplain', 'visibility');
+			const newVis = current === 'visible' ? 'none' : 'visible';
+
+			map.setLayoutProperty('floodplain', newVis);
+			if (map.getLayer('floodplain-line')) {
+				map.setLayoutProperty('floodplain-line', newVis);
+			}
+			if (map.getLayer('LiMWA')) {
+				map.setLayoutProperty('LiMWA', newVis);
+			}
+
+			this.classList.toggle('active', newVis === 'visible');
+		});
+	}
 });
