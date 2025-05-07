@@ -26,7 +26,7 @@ map.on('load', function () {
     'id': 'floodplain-line',
     'type': 'line',
     'source': 'floodplain',
-    'source-layer': 'floodplain-6h4jbn',
+    'source-layer': '25001c-2014-c2ck89',
     'layout': { 'visibility': 'none' },
     'paint': {
       'line-color': '#1460F3',
