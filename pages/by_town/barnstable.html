@@ -183,13 +183,6 @@ map.on('load', function() {
       mapboxgl: mapboxgl
     })
   );
-
-  // Ensure LiMWA and floodplain-line are always on top
-  map.on('idle', function () {
-    if (map.getLayer('LiMWA')) map.moveLayer('LiMWA');
-    if (map.getLayer('floodplain-line')) map.moveLayer('floodplain-line', 'LiMWA');
-  });
-
 });
 </script>
 </body>
