@@ -135,6 +135,11 @@ link.onclick = function(e) {
 var clickedLayer = this.textContent;
 e.preventDefault();
 e.stopPropagation();
+
+if (!map.getLayer(clickedLayer)) {
+  console.warn("Layer not found:", clickedLayer);
+  return;
+}
 var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
 
 // handle floodplain layer visibility separately
