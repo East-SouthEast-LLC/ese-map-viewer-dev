@@ -1,11 +1,11 @@
 console.log("floodplain.js loaded");
 
 map.on('load', function () {
-  console.log("Map is ready — adding floodplain source/layers");
+  console.log("Map loaded — adding floodplain source and layers");
 
   map.addSource('floodplain', {
-    type: 'vector',
-    url: 'mapbox://ese-toh.d2xro55p'
+	type: 'vector',
+	url: 'mapbox://ese-toh.a7lml4y4'
   });
   console.log("Floodplain source added");
 
@@ -13,10 +13,8 @@ map.on('load', function () {
     'id': 'floodplain',
     'type': 'fill',
     'source': 'floodplain',
-    'source-layer': 'floodplain-6h4jbn',
-    'layout': {
-      'visibility': 'none'
-    },
+	'source-layer': '25001c-2014-c2ck89',
+    'layout': { 'visibility': 'none' },
     'paint': {
       'fill-color': '#1460F3',
       'fill-opacity': 0.25
@@ -29,9 +27,7 @@ map.on('load', function () {
     'type': 'line',
     'source': 'floodplain',
     'source-layer': 'floodplain-6h4jbn',
-    'layout': {
-      'visibility': 'none'
-    },
+    'layout': { 'visibility': 'none' },
     'paint': {
       'line-color': '#1460F3',
       'line-width': 1
@@ -40,7 +36,7 @@ map.on('load', function () {
   console.log("Floodplain line layer added");
 
   map.on('click', 'floodplain', function (e) {
-    console.log("Floodplain clicked", e.features[0].properties);
+    console.log("Floodplain clicked:", e.features[0].properties);
     new mapboxgl.Popup()
       .setLngLat(e.lngLat)
       .setHTML(
@@ -51,7 +47,6 @@ map.on('load', function () {
       )
       .addTo(map);
   });
-  console.log("Floodplain click handler attached");
 
   map.on('mouseenter', 'floodplain', function () {
     map.getCanvas().style.cursor = 'pointer';
@@ -59,5 +54,6 @@ map.on('load', function () {
   map.on('mouseleave', 'floodplain', function () {
     map.getCanvas().style.cursor = '';
   });
-  console.log("Floodplain hover handlers attached");
+
+  console.log("Floodplain event handlers attached");
 });

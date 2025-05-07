@@ -137,14 +137,22 @@ var clickedLayer = this.textContent;
 e.preventDefault();
 e.stopPropagation();
 var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-// toggle layer visibility by changing the layout object's visibility property
+
+// handle floodplain layer visibility separately
 if (visibility === 'visible') {
-map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-this.className = '';
+  map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+  if (clickedLayer === 'floodplain') {
+    map.setLayoutProperty('floodplain-line', 'none');
+  }
+  this.className = '';
 } else {
-this.className = 'active';
-map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+  this.className = 'active';
+  map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+  if (clickedLayer === 'floodplain') {
+    map.setLayoutProperty('floodplain-line', 'visible');
+  }
 }
+
 
 var satelliteVisibility = map.getLayoutProperty('satellite', 'visibility');
 map.moveLayer ('satellite','floodplain');
