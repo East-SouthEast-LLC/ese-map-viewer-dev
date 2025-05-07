@@ -151,10 +151,6 @@ map.on('load', function() {
           map.setLayoutProperty('floodplain-line', 'visible');
         }
       }
-
-      var satelliteVisibility = map.getLayoutProperty('satellite', 'visibility');
-      map.moveLayer('satellite', 'floodplain');
-      map.moveLayer('parcels', 'satellite');
       
       // Toggle the visibility of LiMWA based on floodplain status
       var floodplainVisibility = map.getLayoutProperty('floodplain', 'visibility');
