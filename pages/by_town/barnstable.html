@@ -190,5 +190,20 @@ mapboxgl: mapboxgl
 );
 </script>
 
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const floodplainBtn = document.getElementById("floodplain-button");
+  if (floodplainBtn) {
+    floodplainBtn.addEventListener("click", function () {
+      const current = map.getLayoutProperty('floodplain', 'visibility');
+      const newVis = current === 'visible' ? 'none' : 'visible';
+      map.setLayoutProperty('floodplain', newVis);
+      map.setLayoutProperty('floodplain-line', newVis);
+      this.classList.toggle('active', newVis === 'visible');
+    });
+  }
+});
+</script>
 </body>
 </html>
