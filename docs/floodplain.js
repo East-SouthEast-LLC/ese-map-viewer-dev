@@ -2,6 +2,11 @@ console.log("floodplain.js loaded");
 
 map.on('load', function () {
 	console.log("Map loaded — adding floodplain source and layers");
+	const floodBtn = document.createElement('a');
+	floodBtn.href = '#';
+	floodBtn.id = 'floodplain-btn';
+	floodBtn.textContent = 'floodplain';
+	document.getElementById('menu').appendChild(floodBtn);
 
 	// LiMWA Source + Layer
 	map.addSource('LiMWA', {
@@ -20,7 +25,6 @@ map.on('load', function () {
 		}
 	});
 
-  const floodBtn = document.getElementById('floodplain-btn');
   if (floodBtn) {
     floodBtn.addEventListener('click', function (e) {
       e.preventDefault();
