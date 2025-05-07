@@ -48,6 +48,8 @@ map.on('load', function () {
 				'AO', '#F7FE20',
 				'X', '#2578F9',
 				'A', '#2e4bf0',
+				/* fallback */ '#ffffff'
+
 			]
 		}
 	});
