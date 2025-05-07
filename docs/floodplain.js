@@ -88,5 +88,9 @@ map.on('load', function () {
 		map.getCanvas().style.cursor = '';
 	});
 
+	// Move the LiMWA layer to the top of the floodplain layers
+	map.moveLayer('LiMWA');
+	map.moveLayer('floodplain-line', 'LiMWA');
+
 	console.log("Floodplain event handlers attached");
 });
