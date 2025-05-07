@@ -141,22 +141,24 @@ map.on('load', function() {
         console.warn("Layer not found:", clickedLayer);
         return;
       }
-      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
 
-      // handle floodplain layer visibility separately
-      if (visibility === 'visible') {
-        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-        if (clickedLayer === 'floodplain') {
-          map.setLayoutProperty('floodplain-line', 'none');
-        }
-        this.className = '';
-      } else {
-        this.className = 'active';
-        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-        if (clickedLayer === 'floodplain') {
-          map.setLayoutProperty('floodplain-line', 'visible');
-        }
+      const isVisible = map.getLayoutProperty(clickedLayer, 'visibility') === 'visible';
+      const newVisibility = isVisible ? 'none' : 'visible';
+
+      // Toggle main layer
+      map.setLayoutProperty(clickedLayer, 'visibility', newVisibility);
+
+      // Handle related layers
+      if (clickedLayer === 'floodplain') {
+        map.setLayoutProperty('floodplain-line', newVisibility);
+        map.setLayoutProperty('LiMWA', newVisibility);
       }
+      if (clickedLayer === 'DEP wetland') {
+        map.setLayoutProperty('DEP wetland line', newVisibility);
+      }
+
+      // Always update button visual state based on new visibility
+      this.className = newVisibility === 'visible' ? 'active' : '';
 
       var satelliteVisibility = map.getLayoutProperty('satellite', 'visibility');
       map.moveLayer('satellite', 'floodplain');
