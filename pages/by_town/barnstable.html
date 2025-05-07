@@ -124,6 +124,8 @@ map.on('load', function() {
     link.textContent = id;
 
     link.onclick = function(e) {
+      if (this.textContent === 'floodplain-btn') return;
+
       var clickedLayer = this.textContent;
       e.preventDefault();
       e.stopPropagation();
