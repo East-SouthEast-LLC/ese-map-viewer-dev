@@ -1,194 +1,191 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8" />
-<title>Show and hide layers</title>
-<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-<script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
-<link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet" />
+  <meta charset="utf-8" />
+  <title>Show and hide layers</title>
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet" />
 
-<style>
-	body { margin: 0; padding: 0; }
-	#map { position: relative; margin-top: -590px; border:none; top: 0; left 0; height: 80vh; width: 95vw; }
-	#geocoder { position: relative; top: -50; left: 0; width: 80px;}
-	#ScaleControl { position: relative; top: 0; left: 0; width: 80px;}
-</style>
+  <style>
+    body { margin: 0; padding: 0; }
+    #map { position: relative; margin-top: -590px; border: none; top: 0; left: 0; height: 80vh; width: 95vw; }
+    #geocoder { position: relative; top: -50; left: 0; width: 80px; }
+    #ScaleControl { position: relative; top: 0; left: 0; width: 80px; }
+  </style>
+
+  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css" type="text/css" />
+  <!-- Promise polyfill script required to use Mapbox GL Geocoder in IE 11 -->
+  <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+  
+  <style>
+    #menu {
+      background: #fff;
+      position: relative;
+      z-index: 1;
+      top: 0px;
+      left: 0px;
+      border-radius: 3px;
+      width: 144px;
+      border: 1px solid rgba(0, 0, 0, 0.4);
+      font-family: 'Open Sans', sans-serif;
+    }
+    #menu a {
+      font-size: 13px;
+      color: #404040;
+      display: block;
+      margin: 0;
+      padding: 0;
+      padding: 1px;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+      text-align: center;
+    }
+    #menu a:last-child {
+      border: none;
+    }
+    #menu a:hover {
+      background-color: #f8f8f8;
+      color: #404040;
+    }
+    #menu a.active {
+      background-color: #3887be;
+      color: #ffffff;
+    }
+    #menu a.active:hover {
+      background: #3074a4;
+    }
+  </style>
 </head>
 <body>
+  <nav id="menu"></nav>
+  <div id="map"></div>
+  <div id="geocoder"></div>
 
-<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
-<link
-rel="stylesheet"
-href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css"
-type="text/css"
-/>
-<!-- Promise polyfill script required to use Mapbox GL Geocoder in IE 11 -->
-<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
-<style>
-#menu {
-background: #fff;
-position: relative;
-z-index: 1;
-top: 0px;
-left: 0px;
-border-radius: 3px;
-width: 144px;
-border: 1px solid rgba(0, 0, 0, 0.4);
-font-family: 'Open Sans', sans-serif;
-}
-#menu a {
-font-size: 13px;
-color: #404040;
-display: block;
-margin: 0;
-padding: 0;
-padding: 1px;
-text-decoration: none;
-border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-text-align: center;
-}
-#menu a:last-child {
-border: none;
-}
-#menu a:hover {
-background-color: #f8f8f8;
-color: #404040;
-}
-#menu a.active {
-background-color: #3887be;
-color: #ffffff;
-}
-#menu a.active:hover {
-background: #3074a4;
-}
-</style>
-<nav id="menu"></nav>
-<div id="map"></div>
-<div id="geocoder"></div>
-
-
-
-<script>
-	mapboxgl.accessToken = 'pk.eyJ1IjoiZXNlLXRvaCIsImEiOiJja2Vhb24xNTEwMDgxMzFrYjVlaTVjOXkxIn0.IsPo5lOndNUc3lDLuBa1ZA';
-var map = new mapboxgl.Map({
-container: 'map',
-style: 'mapbox://styles/ese-toh/ckh2ss32s06i119paer9mt67h',
-center: [-70.36, 41.660],
-zoom: 12
-});
-map.on('load', function() {
-// add source and layer for raster
-map.addSource('satellite', {
-type: 'raster',
-url: 'mapbox://mapbox.satellite'
-});
-map.addLayer({
-'id': 'satellite',
-'type': 'raster',
-'source': 'satellite',
-'layout': {
-// make layer visible by default
-'visibility': 'none'
-},
-'source-layer': 'satellite'
-});
-});
-
-</script>
-<script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/acec.js?v=2"></script>
-<script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/agis.js?v=2"></script>
-<script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/conservancydistricts.js?v=2"></script>
-<script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/conservation.js?v=2"></script>
-<script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/contours.js?v=2"></script>
-<script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/depwetland.js?v=2"></script>
-<script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/depwetlandline.js?v=2"></script>
-<script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/estimatedhabitat.js?v=2"></script>
-<script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/floodplain.js?v=2"></script>
-<script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/historic.js?v=2"></script>
-<script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/intersection.js?v=2"></script>
-<script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/parcel-highlight.js?v=2"></script>
-<script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/parcels.js?v=2"></script>
-<script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/priorityhabitat.js?v=2"></script>
-<script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/sewer.js?v=2"></script>
-<script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/soils.js?v=2"></script>
-<script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/stories.js?v=2"></script>
-<script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/towns.js?v=2"></script>
-<script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/vernalpools.js?v=2"></script>
-<script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/zoneii.js?v=2"></script>
-<script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/zoning.js?v=2"></script>
-<script>
-
-map.on('load', function() {
-  // enumerate ids of the layers
-  var toggleableLayerIds = ['satellite','parcels','parcel highlight','contours','agis','historic','floodplain','acec','DEP wetland','priority habitat','estimated habitat','vernal pools','zone II','soils','conservancy districts','zoning','conservation','sewer','stories','intersection','towns'];
-
-  // set up the corresponding toggle button for each layer
-  for (var i = 0; i < toggleableLayerIds.length; i++) {
-    var id = toggleableLayerIds[i];
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZXNlLXRvaCIsImEiOiJja2Vhb24xNTEwMDgxMzFrYjVlaTVjOXkxIn0.IsPo5lOndNUc3lDLuBa1ZA';
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/ese-toh/ckh2ss32s06i119paer9mt67h',
+      center: [-70.36, 41.660],
+      zoom: 12
+    });
     
-    var link = document.createElement('a');
-    link.href = '#';
-    link.className = '';
-    link.textContent = id;
+    map.on('load', function() {
+      // add source and layer for raster
+      map.addSource('satellite', {
+        type: 'raster',
+        url: 'mapbox://mapbox.satellite'
+      });
+      
+      map.addLayer({
+        'id': 'satellite',
+        'type': 'raster',
+        'source': 'satellite',
+        'layout': {
+          // make layer visible by default
+          'visibility': 'none'
+        },
+        'source-layer': 'satellite'
+      });
+    });
+  </script>
+  
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/acec.js?v=2"></script>
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/agis.js?v=2"></script>
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/conservancydistricts.js?v=2"></script>
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/conservation.js?v=2"></script>
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/contours.js?v=2"></script>
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/depwetland.js?v=2"></script>
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/depwetlandline.js?v=2"></script>
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/estimatedhabitat.js?v=2"></script>
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/floodplain.js?v=2"></script>
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/historic.js?v=2"></script>
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/intersection.js?v=2"></script>
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/parcel-highlight.js?v=2"></script>
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/parcels.js?v=2"></script>
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/priorityhabitat.js?v=2"></script>
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/sewer.js?v=2"></script>
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/soils.js?v=2"></script>
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/stories.js?v=2"></script>
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/towns.js?v=2"></script>
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/vernalpools.js?v=2"></script>
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/zoneii.js?v=2"></script>
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/zoning.js?v=2"></script>
+  
+  <script>
+    map.on('load', function() {
+      // enumerate ids of the layers
+      var toggleableLayerIds = ['satellite', 'parcels', 'parcel highlight', 'contours', 'agis', 'historic', 'floodplain', 'acec', 'DEP wetland', 'priority habitat', 'estimated habitat', 'vernal pools', 'zone II', 'soils', 'conservancy districts', 'zoning', 'conservation', 'sewer', 'stories', 'intersection', 'towns'];
 
-    link.onclick = function(e) {
-      var clickedLayer = this.textContent;
-      e.preventDefault();
-      e.stopPropagation();
+      // set up the corresponding toggle button for each layer
+      for (var i = 0; i < toggleableLayerIds.length; i++) {
+        var id = toggleableLayerIds[i];
+        
+        var link = document.createElement('a');
+        link.href = '#';
+        link.className = '';
+        link.textContent = id;
 
-      if (!map.getLayer(clickedLayer)) {
-        console.warn("Layer not found:", clickedLayer);
-        return;
+        link.onclick = function(e) {
+          var clickedLayer = this.textContent;
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (!map.getLayer(clickedLayer)) {
+            console.warn("Layer not found:", clickedLayer);
+            return;
+          }
+
+          const isVisible = map.getLayoutProperty(clickedLayer, 'visibility') === 'visible';
+          const newVisibility = isVisible ? 'none' : 'visible';
+
+          // Toggle main layer
+          map.setLayoutProperty(clickedLayer, 'visibility', newVisibility);
+
+          // Handle related layers
+          if (clickedLayer === 'floodplain') {
+            console.log("Floodplain clicked");
+            console.log("Floodplain visibility:", newVisibility);
+
+            // toggle the limwa visibility to the same as the floodplain visibility
+            map.setLayoutProperty('LiMWA', 'visibility', newVisibility);
+            map.setLayoutProperty('floodplain-line', 'visibility', newVisibility);
+            map.setLayoutProperty('floodplain-labels', 'visibility', newVisibility);
+          }
+          if (clickedLayer === 'DEP wetland') {
+            map.setLayoutProperty('DEP wetland line', newVisibility);
+          }
+
+          // Always update button visual state based on new visibility
+          this.className = newVisibility === 'visible' ? 'active' : '';
+
+          var wetlandVisibility = map.getLayoutProperty('DEP wetland', 'visibility');
+          if (wetlandVisibility === 'visible') {
+            map.setLayoutProperty('DEP wetland line', 'visibility', 'visible');
+          } else {
+            map.setLayoutProperty('DEP wetland line', 'visibility', 'none');
+          }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
       }
 
-      const isVisible = map.getLayoutProperty(clickedLayer, 'visibility') === 'visible';
-      const newVisibility = isVisible ? 'none' : 'visible';
+      map.addControl(new mapboxgl.ScaleControl({
+        maxWidth: 200,
+        unit: 'imperial'
+      }), 'bottom-right');
 
-      // Toggle main layer
-      map.setLayoutProperty(clickedLayer, 'visibility', newVisibility);
-
-      // Handle related layers
-      if (clickedLayer === 'floodplain') {
-        console.log("Floodplain clicked");
-        console.log("Floodplain visibility:", newVisibility);
-
-        // toggle the limwa visibility to the same as the floodplain visibility
-        map.setLayoutProperty('LiMWA', 'visibility', newVisibility);
-        map.setLayoutProperty('floodplain-line', 'visibility', newVisibility);
-        map.setLayoutProperty('floodplain-labels', 'visibility', newVisibility);
-      }
-      if (clickedLayer === 'DEP wetland') {
-        map.setLayoutProperty('DEP wetland line', newVisibility);
-      }
-
-      // Always update button visual state based on new visibility
-      this.className = newVisibility === 'visible' ? 'active' : '';
-
-      var wetlandVisibility = map.getLayoutProperty('DEP wetland', 'visibility');
-      if (wetlandVisibility === 'visible') {
-        map.setLayoutProperty('DEP wetland line', 'visibility', 'visible');
-      } else {
-        map.setLayoutProperty('DEP wetland line', 'visibility', 'none');
-      }
-    };
-
-    var layers = document.getElementById('menu');
-    layers.appendChild(link);
-  }
-
-  map.addControl(new mapboxgl.ScaleControl({
-    maxWidth: 200,
-    unit: 'imperial'
-  }), 'bottom-right');
-
-  map.addControl(
-    new MapboxGeocoder({
-      accessToken: mapboxgl.accessToken,
-      mapboxgl: mapboxgl
-    })
-  );
-});
-</script>
+      map.addControl(
+        new MapboxGeocoder({
+          accessToken: mapboxgl.accessToken,
+          mapboxgl: mapboxgl
+        })
+      );
+    });
+  </script>
 </body>
 </html>

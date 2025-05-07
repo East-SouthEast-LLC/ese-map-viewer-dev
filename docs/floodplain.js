@@ -8,6 +8,7 @@ map.on('load', function () {
 		type: 'vector',
 		url: 'mapbox://ese-toh.7h5nwda9'
 	});
+	
 	map.addLayer({
 		'id': 'LiMWA',
 		'type': 'line',
@@ -49,7 +50,6 @@ map.on('load', function () {
 				'X', '#2578F9',
 				'A', '#2e4bf0',
 				/* fallback */ '#ff0000'
-
 			]
 		}
 	});
@@ -63,8 +63,8 @@ map.on('load', function () {
 		'layout': { 'visibility': 'none' },
 		'paint': {
 			'line-width': 0.5, 
-        	'line-color': '#000000', 
-        	'line-opacity': 0.5 
+			'line-color': '#000000', 
+			'line-opacity': 0.5 
 		}
 	});
 	console.log("Floodplain line layer added");
@@ -134,6 +134,7 @@ map.on('load', function () {
 	map.on('mouseenter', 'floodplain', function () {
 		map.getCanvas().style.cursor = 'pointer';
 	});
+	
 	map.on('mouseleave', 'floodplain', function () {
 		map.getCanvas().style.cursor = '';
 	});
