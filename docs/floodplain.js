@@ -2,11 +2,6 @@ console.log("floodplain.js loaded");
 
 map.on('load', function () {
 	console.log("Map loaded — adding floodplain source and layers");
-	const floodBtn = document.createElement('a');
-	floodBtn.href = '#';
-	floodBtn.id = 'floodplain-btn';
-	floodBtn.textContent = 'floodplain';
-	document.getElementById('menu').appendChild(floodBtn);
 
 	// LiMWA Source + Layer
 	map.addSource('LiMWA', {
@@ -54,6 +49,7 @@ map.on('load', function () {
 				'X', '#2578F9',
 				'A', '#2e4bf0',
 				/* fallback */ '#ffffff'
+
 			]
 		}
 	});
@@ -93,23 +89,4 @@ map.on('load', function () {
 	});
 
 	console.log("Floodplain event handlers attached");
-
-	if (floodBtn) {
-		floodBtn.addEventListener('click', function (e) {
-			e.preventDefault();
-
-			const current = map.getLayoutProperty('floodplain', 'visibility');
-			const newVis = current === 'visible' ? 'none' : 'visible';
-
-			map.setLayoutProperty('floodplain', newVis);
-			if (map.getLayer('floodplain-line')) {
-				map.setLayoutProperty('floodplain-line', newVis);
-			}
-			if (map.getLayer('LiMWA')) {
-				map.setLayoutProperty('LiMWA', newVis);
-			}
-
-			this.classList.toggle('active', newVis === 'visible');
-		});
-	}
 });

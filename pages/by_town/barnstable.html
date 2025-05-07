@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-
 <html>
 <head>
-<meta charset="utf-8"/>
+<meta charset="utf-8" />
 <title>Show and hide layers</title>
-<meta content="initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport"/>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
 <script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
-<link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet"/>
+<link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet" />
+
 <style>
 	body { margin: 0; padding: 0; }
 	#map { position: relative; margin-top: -590px; border:none; top: 0; left 0; height: 80vh; width: 95vw; }
@@ -15,8 +15,13 @@
 </style>
 </head>
 <body>
+
 <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
-<link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css" rel="stylesheet" type="text/css"/>
+<link
+rel="stylesheet"
+href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css"
+type="text/css"
+/>
 <!-- Promise polyfill script required to use Mapbox GL Geocoder in IE 11 -->
 <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
@@ -61,6 +66,9 @@ background: #3074a4;
 <nav id="menu"></nav>
 <div id="map"></div>
 <div id="geocoder"></div>
+
+
+
 <script>
 	mapboxgl.accessToken = 'pk.eyJ1IjoiZXNlLXRvaCIsImEiOiJja2Vhb24xNTEwMDgxMzFrYjVlaTVjOXkxIn0.IsPo5lOndNUc3lDLuBa1ZA';
 var map = new mapboxgl.Map({
@@ -110,73 +118,90 @@ map.addLayer({
 <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/zoneii.js?v=2"></script>
 <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/zoning.js?v=2"></script>
 <script>
-map.on('load', function() {
-  // enumerate ids of the layers
-  var toggleableLayerIds = ['satellite','parcels','parcel highlight','contours','agis','historic','acec','DEP wetland','priority habitat','estimated habitat','vernal pools','zone II','soils','conservancy districts','zoning','conservation','sewer','stories','intersection','towns'];
 
-  // set up the corresponding toggle button for each layer
-  for (var i = 0; i < toggleableLayerIds.length; i++) {
-    var id = toggleableLayerIds[i];
-    
-    var link = document.createElement('a');
-    link.href = '#';
-    link.className = '';
-    link.textContent = id;
+// enumerate ids of the layers
+var toggleableLayerIds = ['satellite','parcels','parcel highlight','contours','agis','historic','floodplain','acec','DEP wetland','priority habitat','estimated habitat','vernal pools','zone II','soils','conservancy districts','zoning','conservation','sewer','stories','intersection','towns'];
 
-    link.onclick = function(e) {
-      if (this.textContent === 'floodplain-btn') return;
+// set up the corresponding toggle button for each layer
+for (var i = 0; i < toggleableLayerIds.length; i++) {
+var id = toggleableLayerIds[i];
+ 
+var link = document.createElement('a');
+link.href = '#';
+link.className = '';
+link.textContent = id;
 
-      var clickedLayer = this.textContent;
-      e.preventDefault();
-      e.stopPropagation();
-      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+link.onclick = function(e) {
+var clickedLayer = this.textContent;
+e.preventDefault();
+e.stopPropagation();
+var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
 
-      // handle floodplain layer visibility separately
-      if (visibility === 'visible') {
-        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-        if (clickedLayer === 'floodplain') {
-          map.setLayoutProperty('floodplain-line', 'none');
-        }
-        this.className = '';
-      } else {
-        this.className = 'active';
-        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-        if (clickedLayer === 'floodplain') {
-          map.setLayoutProperty('floodplain-line', 'visible');
-        }
-      }
-      
-      // Toggle the visibility of LiMWA based on floodplain status
-      var floodplainVisibility = map.getLayoutProperty('floodplain', 'visibility');
-      if (floodplainVisibility === 'visible') {
-        map.setLayoutProperty('LiMWA', 'visibility', 'visible');
-      } else {
-        map.setLayoutProperty('LiMWA', 'visibility', 'none');
-      }
-
-      var wetlandVisibility = map.getLayoutProperty('DEP wetland', 'visibility');
-      if (wetlandVisibility === 'visible') {
-        map.setLayoutProperty('DEP wetland line', 'visibility', 'visible');
-      } else {
-        map.setLayoutProperty('DEP wetland line', 'visibility', 'none');
-      }
-    };
-
-    var layers = document.getElementById('menu');
-    layers.appendChild(link);
+// handle floodplain layer visibility separately
+if (visibility === 'visible') {
+  map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+  if (clickedLayer === 'floodplain') {
+    map.setLayoutProperty('floodplain-line', 'none');
   }
+  this.className = '';
+} else {
+  this.className = 'active';
+  map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+  if (clickedLayer === 'floodplain') {
+    map.setLayoutProperty('floodplain-line', 'visible');
+  }
+}
 
-  map.addControl(new mapboxgl.ScaleControl({
-    maxWidth: 200,
-    unit: 'imperial'
-  }), 'bottom-right');
 
-  map.addControl(
-    new MapboxGeocoder({
-      accessToken: mapboxgl.accessToken,
-      mapboxgl: mapboxgl
-    })
-  );
+var satelliteVisibility = map.getLayoutProperty('satellite', 'visibility');
+map.moveLayer ('satellite','floodplain');
+map.moveLayer ('parcels', 'satellite');
+ // Toggle the visibility of LiMWA based on floodplain status
+    var floodplainVisibility = map.getLayoutProperty('floodplain', 'visibility');
+    if (floodplainVisibility === 'visible') {
+      map.setLayoutProperty('LiMWA', 'visibility', 'visible');
+    } else {
+      map.setLayoutProperty('LiMWA', 'visibility', 'none');
+    }
+	var wetlandVisibility = map.getLayoutProperty('DEP wetland', 'visibility');
+    if (wetlandVisibility === 'visible') {
+      map.setLayoutProperty('DEP wetland line', 'visibility', 'visible');
+    } else {
+      map.setLayoutProperty('DEP wetland line', 'visibility', 'none');
+    }
+
+
+};
+var layers = document.getElementById('menu');
+layers.appendChild(link);
+}
+map.addControl(new mapboxgl.ScaleControl({
+	maxWidth: 200,
+	unit: 'imperial'
+}), 'bottom-right'
+);
+map.addControl(
+new MapboxGeocoder({
+accessToken: mapboxgl.accessToken,
+
+mapboxgl: mapboxgl
+})
+);
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const floodplainBtn = document.getElementById("floodplain-button");
+  if (floodplainBtn) {
+    floodplainBtn.addEventListener("click", function () {
+      const current = map.getLayoutProperty('floodplain', 'visibility');
+      const newVis = current === 'visible' ? 'none' : 'visible';
+      map.setLayoutProperty('floodplain', newVis);
+      map.setLayoutProperty('floodplain-line', newVis);
+      this.classList.toggle('active', newVis === 'visible');
+    });
+  }
 });
 </script>
 </body>
