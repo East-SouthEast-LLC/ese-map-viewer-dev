@@ -1,8 +1,4 @@
-console.log("floodplain.js loaded");
-
 map.on('load', function () {
-	console.log("Map loaded — adding floodplain source and layers");
-
 	// LiMWA Source + Layer
 	map.addSource('LiMWA', {
 		type: 'vector',
@@ -25,7 +21,6 @@ map.on('load', function () {
 		type: 'vector',
 		url: 'mapbox://ese-toh.a7lml4y4'
 	});
-	console.log("Floodplain source added");
 
 	map.addLayer({
 		'id': 'floodplain',
@@ -53,7 +48,6 @@ map.on('load', function () {
 			]
 		}
 	});
-	console.log("Floodplain fill layer added");
 
 	map.addLayer({
 		'id': 'floodplain-line',
@@ -67,10 +61,8 @@ map.on('load', function () {
 			'line-opacity': 0.5 
 		}
 	});
-	console.log("Floodplain line layer added");
 
 	map.on('click', 'floodplain', function (e) {
-		console.log("Floodplain clicked:", e.features[0].properties);
 		new mapboxgl.Popup()
 			.setLngLat(e.lngLat)
 			.setHTML(
@@ -138,6 +130,4 @@ map.on('load', function () {
 	map.on('mouseleave', 'floodplain', function () {
 		map.getCanvas().style.cursor = '';
 	});
-
-	console.log("Floodplain event handlers attached");
 });

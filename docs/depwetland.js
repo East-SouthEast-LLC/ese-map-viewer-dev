@@ -1,8 +1,4 @@
-console.log("depwetland.js loaded");
-
 map.on('load', function() {
-	console.log("Map loaded — adding DEP wetland source and layers");
-
 	// add source and layer for DEP wetland
 	map.addSource('DEP wetland', {
 		type: 'vector',
