@@ -152,7 +152,6 @@
             map.setLayoutProperty('floodplain-line', 'visibility', newVisibility);
             map.setLayoutProperty('floodplain-labels', 'visibility', newVisibility);
           }
-          // ------------------------------------------------------------
 
           // handle dep wetland layers -----------------------------------
           if (clickedLayer === 'DEP wetland') {
@@ -160,7 +159,6 @@
             map.setLayoutProperty('dep-wetland-line', 'visibility', newVisibility);
             map.setLayoutProperty('dep-wetland-labels', 'visibility', newVisibility);
           }
-          // ------------------------------------------------------------
 
           // handle soils layers ----------------------------------------
           if (clickedLayer === 'soils') {
@@ -168,7 +166,15 @@
             map.setLayoutProperty('soils-labels', 'visibility', newVisibility);
             map.setLayoutProperty('soils-outline', 'visibility', newVisibility);
           }
+
+          // handle zone II layers ----------------------------------------
+          if (clickedLayer === 'zone II') {
+            // toggle the zone II line and labels visibility to the same as the zone II visibility
+            map.setLayoutProperty('zone-ii-outline', 'visibility', newVisibility);
+            map.setLayoutProperty('zone-ii-labels', 'visibility', newVisibility);
+          }
           // ------------------------------------------------------------
+
 
           // Always update button visual state based on new visibility
           this.className = newVisibility === 'visible' ? 'active' : '';
