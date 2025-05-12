@@ -46,7 +46,7 @@ map.on('load', function() {
         'source-layer': 'zoneII-01dowh',
         'layout': {
             'text-field': ['format', 'Zone II: ', {}, ['get', 'ZII_NUM'], {}], // Prefix "Zone II: " before the number
-            'text-size': 10, // Smaller font size for the labels
+            'text-size': 20,
             'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
             'symbol-placement': 'point', // Position the label as a point
             'text-anchor': 'center', // Centered text
