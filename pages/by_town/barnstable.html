@@ -99,7 +99,6 @@
   <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/conservation.js?v=2"></script>
   <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/contours.js?v=2"></script>
   <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/depwetland.js?v=2"></script>
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/depwetlandline.js?v=2"></script>
   <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/estimatedhabitat.js?v=2"></script>
   <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/floodplain.js?v=2"></script>
   <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/historic.js?v=2"></script>
@@ -145,29 +144,26 @@
           // Toggle main layer
           map.setLayoutProperty(clickedLayer, 'visibility', newVisibility);
 
-          // Handle related layers
-          if (clickedLayer === 'floodplain') {
-            console.log("Floodplain clicked");
-            console.log("Floodplain visibility:", newVisibility);
 
+          // handle floodplain layers -----------------------------------
+          if (clickedLayer === 'floodplain') {
             // toggle the limwa visibility to the same as the floodplain visibility
             map.setLayoutProperty('LiMWA', 'visibility', newVisibility);
             map.setLayoutProperty('floodplain-line', 'visibility', newVisibility);
             map.setLayoutProperty('floodplain-labels', 'visibility', newVisibility);
           }
+          // ------------------------------------------------------------
+
+          // handle dep wetland layers -----------------------------------
           if (clickedLayer === 'DEP wetland') {
-            map.setLayoutProperty('DEP wetland line', newVisibility);
+            // toggle the dep wetland visibility to the same as the floodplain visibility
+            map.setLayoutProperty('dep-wetland-line', 'visibility', newVisibility);
+            map.setLayoutProperty('dep-wetland-labels', 'visibility', newVisibility);
           }
+
 
           // Always update button visual state based on new visibility
           this.className = newVisibility === 'visible' ? 'active' : '';
-
-          var wetlandVisibility = map.getLayoutProperty('DEP wetland', 'visibility');
-          if (wetlandVisibility === 'visible') {
-            map.setLayoutProperty('DEP wetland line', 'visibility', 'visible');
-          } else {
-            map.setLayoutProperty('DEP wetland line', 'visibility', 'none');
-          }
         };
 
         var layers = document.getElementById('menu');
