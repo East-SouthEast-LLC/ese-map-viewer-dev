@@ -160,7 +160,15 @@
             map.setLayoutProperty('dep-wetland-line', 'visibility', newVisibility);
             map.setLayoutProperty('dep-wetland-labels', 'visibility', newVisibility);
           }
+          // ------------------------------------------------------------
 
+          // handle soils layers ----------------------------------------
+          if (clickedLayer === 'soils') {
+            // toggle the soils line and labels visibility to the same as the soils visibility
+            map.setLayoutProperty('soils-labels', 'visibility', newVisibility);
+            map.setLayoutProperty('soils-outline', 'visibility', newVisibility);
+          }
+          // ------------------------------------------------------------
 
           // Always update button visual state based on new visibility
           this.className = newVisibility === 'visible' ? 'active' : '';
