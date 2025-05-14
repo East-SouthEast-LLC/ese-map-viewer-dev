@@ -21,23 +21,28 @@ function getMarkerCoordinates() {
 function dropPinAtCenter() {
     const canvas = map.getCanvas();
     const visualOffset = 590 / 2;
-    const centerPixel = [canvas.width / 2, (canvas.height / 2) + visualOffset];
-    const centerLngLat = map.unproject(centerPixel);
 
-    if (marker) {
-        marker.setLngLat(centerLngLat);
-    } else {
+    if (!marker) {
+        const centerPixel = [canvas.width / 2, (canvas.height / 2) + visualOffset];
+        const centerLngLat = map.unproject(centerPixel);
+
         marker = new mapboxgl.Marker().setLngLat(centerLngLat).addTo(map);
+        markerCoordinates.lng = centerLngLat.lng;
+        markerCoordinates.lat = centerLngLat.lat;
+
+        console.log("Marker dropped at visually corrected center:", markerCoordinates);
+    } else {
+        const currentPos = marker.getLngLat();
+        markerCoordinates.lng = currentPos.lng;
+        markerCoordinates.lat = currentPos.lat;
+
+        map.flyTo({ center: currentPos, essential: true });
+        console.log("Map recentered to existing marker:", markerCoordinates);
     }
 
-    markerCoordinates.lng = centerLngLat.lng;
-    markerCoordinates.lat = centerLngLat.lat;
-
-    map.flyTo({ center: centerLngLat, essential: true });
-
-    console.log("Marker dropped at visually corrected center:", markerCoordinates);
     return markerCoordinates;
 }
+
 
 // Point button: activate placement mode
 document.getElementById('pointButton').addEventListener('click', function () {
