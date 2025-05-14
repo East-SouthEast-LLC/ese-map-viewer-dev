@@ -83,7 +83,7 @@ body {
 }
 
 /* Base button style */
-.geocoder-container button {
+#geocoder-container button {
     background-size: 60%;
     background-position: center;
     background-repeat: no-repeat;
@@ -98,7 +98,7 @@ body {
 }
 
 /* Hover for all */
-.geocoder-container button:hover {
+#geocoder-container button:hover {
     background-color: #f0f0f0;
 }
 
