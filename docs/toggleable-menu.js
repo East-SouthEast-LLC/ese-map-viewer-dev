@@ -78,11 +78,4 @@ map.on('load', function() {
         maxWidth: 200,
         unit: 'imperial'
     }), 'bottom-right');
-
-    map.addControl(
-        new MapboxGeocoder({
-            accessToken: mapboxgl.accessToken,
-            mapboxgl: mapboxgl
-        })
-    );
 });
