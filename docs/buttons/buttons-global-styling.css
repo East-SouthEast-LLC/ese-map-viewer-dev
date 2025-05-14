@@ -1,3 +1,16 @@
+/* == MAIN CONTAINER FOR CONTROL BUTTONS ====================== */
+#geocoder-container {
+    position: absolute;
+    top: 10px;
+    right: 40px;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-width: 250px;
+    width: auto;
+}
+
 /* General button styling for both buttons */
 .mapboxgl-ctrl-point-center, .mapboxgl-ctrl-parea, .mapboxgl-ctrl-three, .mapboxgl-ctrl-four, .mapboxgl-ctrl-sZoom {
     background-size: 60%;
