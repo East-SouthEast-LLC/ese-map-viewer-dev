@@ -1,5 +1,6 @@
 // JS file for endangered species overlay and vernal pools
 map.on('load', function() {
+    // == ENDANGERED SPECIES SOURCE AND LAYER ===================================
     map.addSource('endangered species', {
         type: 'vector',
         url: 'mapbox://ese-toh.8m58l8et'
@@ -26,55 +27,38 @@ map.on('load', function() {
             'fill-opacity': 0.3
         }
     });
-
-
-// map.addLayer({
-//     'id': 'endangered species-labels',
-//     'type': 'symbol',
-//     'source': 'endangered species',
-//     'source-layer': 'estimated_habitat-7mod86', 
-//     'layout': {
-//         'text-field': [
-//             'case',
-//             ['all', ['has', 'ESTHAB_ID'], ['has', 'PRIHAB_ID']], // If both exist
-//             ['concat', ['get', 'ESTHAB_ID'], '\n', ['get', 'PRIHAB_ID']], // Add line break
-//             ['coalesce', ['get', 'ESTHAB_ID'], ['get', 'PRIHAB_ID']] // Otherwise, show whichever exists
-//         ],
-//         'visibility': 'none',
-//         'text-size': 14, // Adjusting font size for readability
-//         'symbol-placement': 'point', // Treat each symbol as a point
-//         'symbol-spacing': 80, // Closer labels for more density
-//         'text-rotation-alignment': 'map', // Rotate with the map
-//     },
-//     'paint': {
-//         'text-color': '#000000', // Text color
-//         'text-halo-color': '#ffffff', // White halo for text
-//         'text-halo-width': 2, // Make halo wider to improve readability
-//     },
-//     'filter': [
-//         'any',
-//         ['has', 'ESTHAB_ID'], 
-//         ['has', 'PRIHAB_ID']
-//     ] // Show labels if either ID exists
-// });
+    
+    // == ENDANGERED SPECIES LABELS =========================================
+    map.addLayer({
+        'id': 'endangered-species-labels',
+        'type': 'symbol',
+        'source': 'endangered species',
+        'source-layer': 'estimated_habitat-7mod86', 
+        'layout': {
+            'text-field': [
+                'case',
+                ['all', ['has', 'ESTHAB_ID'], ['has', 'PRIHAB_ID']], // If both exist
+                ['concat', ['get', 'ESTHAB_ID'], '\n', ['get', 'PRIHAB_ID']], // Add line break
+                ['coalesce', ['get', 'ESTHAB_ID'], ['get', 'PRIHAB_ID']] // Otherwise, show whichever exists
+            ],
+            'visibility': 'none',
+            'text-size': 14, // Adjusting font size for readability
+            'symbol-placement': 'point', // Treat each symbol as a point
+            'symbol-spacing': 80, // Closer labels for more density
+            'text-rotation-alignment': 'map', // Rotate with the map
+        },
+        'paint': {
+            'text-color': '#000000', // Text color
+            'text-halo-color': '#ffffff', // White halo for text
+            'text-halo-width': 2, // Make halo wider to improve readability
+        },
+        'filter': [
+            'any',
+            ['has', 'ESTHAB_ID'], 
+            ['has', 'PRIHAB_ID']
+        ] // Show labels if either ID exists
+    });
 });
-
-map.on('click', 'endangered species', function (e) {   
-    new mapboxgl.Popup()
-        .setLngLat(e.lngLat)
-        .setHTML(
-            "Estimated Habitat ID: " + '<strong>' + e.features[0].properties.ESTHAB_ID + '</strong><br>' +
-            "Priority Habitat ID: " + '<strong>' + e.features[0].properties.PRIHAB_ID + '</strong><br>'
-        )
-        .addTo(map);
-});
-map.on('mouseenter', 'endangered species', function () {
-    map.getCanvas().style.cursor = 'pointer';
-});
-map.on('mouseleave', 'endangered species', function () {
-    map.getCanvas().style.cursor = '';
-});
-
 
 // map.on('load', function() {
 // map.addSource('vernal pools', {
@@ -123,17 +107,41 @@ map.on('mouseleave', 'endangered species', function () {
 // });
 
 
+// == ON CLICK AND MOUSE EVENTS FOR ENDANGERED SPECIES =====================
+map.on('click', 'endangered species', function(e) {   
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(
+            "Estimated Habitat ID: " + '<strong>' + e.features[0].properties.ESTHAB_ID + '</strong><br>' +
+            "Priority Habitat ID: " + '<strong>' + e.features[0].properties.PRIHAB_ID + '</strong><br>'
+        )
+        .addTo(map);
+});
+
+map.on('mouseenter', 'endangered species', function() {
+    map.getCanvas().style.cursor = 'pointer';
+});
+
+map.on('mouseleave', 'endangered species', function() {
+    map.getCanvas().style.cursor = '';
+});
+
+// map.on('click', 'vernal pools', function(e) {  
+//     new mapboxgl.Popup()
+//         .setLngLat(e.lngLat)
+//         .setHTML(
+//             "Vernal Pool ID: " + '<strong>' + e.features[0].properties.cvp_num + '</strong><br>' +
+//             "Certified: " + '<strong>' + e.features[0].properties.certified + '</strong><br>' +
+//             "Criteria: " + '<strong>' + e.features[0].properties.criteria + '</strong><br>'
+//         )
+//         .addTo(map);
 // });
-//       map.on('click', 'vernal pools', function (e) {  
-//           new mapboxgl.Popup()
-//             .setLngLat(e.lngLat)
-//             .setHTML("Vernal Pool ID: "+'<strong>'+e.features[0].properties.cvp_num + '</strong><br>'+"Certified: "+'<strong>'+e.features[0].properties.certified + '</strong><br>'+"Criteria: "+'<strong>'+e.features[0].properties.criteria + '</strong><br>' )
-//             .addTo(map);
-//      //(e.features[0].properties.PID + " - " + e.features[0].properties.LINK)  <strong>97 Tilipi Run</strong><p>Parcel ID:14A3-2-B<p>
-//     });
-//     map.on('mouseenter', 'vernal pools', function () {
-//         map.getCanvas().style.cursor = 'pointer';
-//     });
-//     map.on('mouseleave', 'vernal pools', function () {
-//         map.getCanvas().style.cursor = '';
-//     });
+
+// map.on('mouseenter', 'vernal pools', function() {
+//     map.getCanvas().style.cursor = 'pointer';
+// });
+
+// map.on('mouseleave', 'vernal pools', function() {
+//     map.getCanvas().style.cursor = '';
+// });
+// =============================================================================
