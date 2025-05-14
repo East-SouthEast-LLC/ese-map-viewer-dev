@@ -20,7 +20,8 @@ function getMarkerCoordinates() {
 
 function dropPinAtCenter() {
     const canvas = map.getCanvas();
-    const centerPixel = [canvas.width / 2, canvas.height / 2];
+    const visualOffset = 590 / 2;
+    const centerPixel = [canvas.width / 2, (canvas.height / 2) + visualOffset];
     const centerLngLat = map.unproject(centerPixel);
 
     if (marker) {
@@ -34,7 +35,7 @@ function dropPinAtCenter() {
 
     map.flyTo({ center: centerLngLat, essential: true });
 
-    console.log("Marker dropped at visual center:", markerCoordinates);
+    console.log("Marker dropped at visually corrected center:", markerCoordinates);
     return markerCoordinates;
 }
 
