@@ -58,54 +58,56 @@ map.on('load', function() {
             ['has', 'PRIHAB_ID']
         ] // Show labels if either ID exists
     });
+
+    // == VERNAL POOLS SOURCE AND LAYER =======================================
+    map.addSource('vernal-pools', {
+        type: 'vector',
+        url: 'mapbox://ese-toh.7p4glkq9'
+    });
+    
+    map.addLayer({
+        'id': 'vernal-pools',
+        'type': 'circle',
+        'source': 'vernal-pools',
+        'source-layer': 'nhesp-cvp-5xj2xr',
+        'layout': {
+            // make layer invisible by default
+            'visibility': 'none'
+        },
+        'paint': {
+            'circle-color': '#0D71F9',
+            'circle-radius': {
+                'base': 1.5,
+                'stops': [
+                    [12, 3],
+                    [22, 180]
+                ]
+            }
+        }
+    });
+    
+    // == VERNAL POOLS LABELS =============================================
+    map.addLayer({
+        'id': 'vernal-pools-labels',
+        'type': 'symbol',
+        'source': 'vernal-pools',
+        'source-layer': 'nhesp-cvp-5xj2xr',
+        'layout': {
+            'text-field': ['concat', 'VP: ', ['get', 'cvp_num']], // Prefix VP: before number
+            'visibility': 'none',
+            'text-size': 14,
+            'text-anchor': 'left', // Anchors text to the left of the label point
+            'text-offset': [1, 0], // Moves label to the right of the circle
+            'symbol-placement': 'point'
+        },
+        'paint': {
+            'text-color': '#000000',
+            'text-halo-color': '#ffffff',
+            'text-halo-width': 2
+        },
+        'filter': ['!=', ['get', 'cvp_num'], null] // Exclude null values
+    });
 });
-
-// map.on('load', function() {
-// map.addSource('vernal pools', {
-// type: 'vector',
-// url: 'mapbox://ese-toh.7p4glkq9'
-// });
-// map.addLayer({
-// 'id': 'vernal pools',
-// 'type': 'circle',
-// 'source': 'vernal pools',
-// 'source-layer': 'nhesp-cvp-5xj2xr',
-// 'layout': {
-// // make layer invisible by default
-// 'visibility': 'none'
-// },
-// 'paint': {
-// 'circle-color': '#0D71F9',
-// 'circle-radius': {
-// 'base': 1.5,
-// 'stops': [
-// [12, 3],
-// [22, 180]
-// ]
-// }
-// }
-// });
-// map.addLayer({
-//     'id': 'vernal pools-labels',
-//     'type': 'symbol',
-//     'source': 'vernal pools',
-//     'source-layer': 'nhesp-cvp-5xj2xr',
-//     'layout': {
-//         'text-field': ['concat', 'VP: ', ['get', 'cvp_num']], // Prefix VP: before number
-//         'visibility': 'none',
-//         'text-size': 14,
-//         'text-anchor': 'left', // Anchors text to the left of the label point
-//         'text-offset': [1, 0], // Moves label to the right of the circle
-//         'symbol-placement': 'point'
-//     },
-//     'paint': {
-//         'text-color': '#000000',
-//         'text-halo-color': '#ffffff',
-//         'text-halo-width': 2
-//     },
-//     'filter': ['!=', ['get', 'cvp_num'], null] // Exclude null values
-// });
-
 
 // == ON CLICK AND MOUSE EVENTS FOR ENDANGERED SPECIES =====================
 map.on('click', 'endangered species', function(e) {   
