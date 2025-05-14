@@ -19,29 +19,23 @@ function getMarkerCoordinates() {
 }
 
 function dropPinAtCenter() {
-    const canvas = map.getCanvas();
-    const visualOffset = 590 / 2;
+    const frameCoords = getFrameCoordinates(map);
+    const centerLngLat = frameCoords.middle;
 
     if (!marker) {
-        const centerPixel = [canvas.width / 2, (canvas.height / 2) + visualOffset];
-        const centerLngLat = map.unproject(centerPixel);
-
         marker = new mapboxgl.Marker().setLngLat(centerLngLat).addTo(map);
-        markerCoordinates.lng = centerLngLat.lng;
-        markerCoordinates.lat = centerLngLat.lat;
-
-        console.log("Marker dropped at visually corrected center:", markerCoordinates);
+        console.log("Marker dropped at visual center:", centerLngLat);
     } else {
-        const currentPos = marker.getLngLat();
-        markerCoordinates.lng = currentPos.lng;
-        markerCoordinates.lat = currentPos.lat;
-
-        map.flyTo({ center: currentPos, essential: true });
-        console.log("Map recentered to existing marker:", markerCoordinates);
+        map.flyTo({ center: marker.getLngLat(), essential: true });
+        console.log("Map recentered to existing marker.");
     }
+
+    markerCoordinates.lng = centerLngLat.lng;
+    markerCoordinates.lat = centerLngLat.lat;
 
     return markerCoordinates;
 }
+
 
 
 // Point button: activate placement mode
