@@ -71,19 +71,19 @@ body {
     width: auto;
 }
 
-#geocoder-container > div {
-    display: flex;
-    flex-direction: row;
-    gap: 5px;
-}
-
 #geocoder {
     width: 100%; /* Make the geocoder width dynamic */
     max-width: 250px; /* Limit to 280px for a maximum width */
 }
 
-/* General button styling for both buttons */
-.mapboxgl-ctrl-point-center, .mapboxgl-ctrl-parea, .mapboxgl-ctrl-three, .mapboxgl-ctrl-four, .mapboxgl-ctrl-sZoom {
+#geocoder-container div {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+/* Base button style */
+.geocoder-container button {
     background-size: 60%;
     background-position: center;
     background-repeat: no-repeat;
@@ -97,104 +97,27 @@ body {
     margin-right: 5px;
 }
 
-.mapboxgl-ctrl-print {
-    background-image: url('https://img.icons8.com/ios-glyphs/30/000000/print.png'); /* Print icon */
-}
-
-/* button BLUE MARKER CENTER */
-.mapboxgl-ctrl-point-center {
-    background-image: url('https://www.ese-llc.com/s/marker-blue-center.svg'); /* Ruler icon (example) */
-}
-
-/* print area button custom styling */
-.mapboxgl-ctrl-parea {
-    background-image: url('https://www.ese-llc.com/s/square-50.png'); /* Box icon (example) */
-}
-
-/* three button custom styling */
-.mapboxgl-ctrl-three {
-    background-image: url('https://img.icons8.com/ios-filled/50/000000/ruler0692n.png'); /* Ruler icon (example) */
-}
-
-/* four button custom styling */
-.mapboxgl-ctrl-four {
-    background-image: url('https://img.icons8.com/ios-filled/50/000000/ruler0692n.png'); /* Ruler icon (example) */
-}
-
-/* sZoom scale to zoom button custom styling */
-.mapboxgl-ctrl-sZoom {
-    background-image: url('https://www.ese-llc.com/s/scale-zoom.png'); /* Ruler icon (example) */
-}
-
-/* Hover effect for all buttons */
-.mapboxgl-ctrl-print:hover, .mapboxgl-ctrl-point:hover, .mapboxgl-ctrl-measure:hover, .mapboxgl-ctrl-septicMap:hover, .mapboxgl-ctrl-zoom:hover {
-    background-color: #f0f0f0;
-}
-.mapboxgl-ctrl-point-center:hover, .mapboxgl-ctrl-parea:hover, .mapboxgl-ctrl-three:hover, .mapboxgl-ctrl-four:hover, .mapboxgl-ctrl-sZoom:hover {
-    background-color: #f0f0f0;
-}
-.mapboxgl-ctrl-point-off:hover, .mapboxgl-ctrl-seven:hover, .mapboxgl-ctrl-clear:hover, .mapboxgl-ctrl-nine:hover, .mapboxgl-ctrl-ten:hover {
+/* Hover for all */
+.geocoder-container button:hover {
     background-color: #f0f0f0;
 }
 
-/* button BLUE MARKER RANDOM */
-.mapboxgl-ctrl-point {
-    background-image: url('https://www.ese-llc.com/s/marker-blue-random.svg'); /* Pointing hand icon */
-}
+/* Individual icon images */
+.mapboxgl-ctrl-point         { background-image: url('https://www.ese-llc.com/s/marker-blue-random.svg'); }
+.mapboxgl-ctrl-print         { background-image: url('https://img.icons8.com/ios-glyphs/30/000000/print.png'); }
+.mapboxgl-ctrl-measure       { background-image: url('https://www.ese-llc.com/s/marker-blue-measure.svg'); }
+.mapboxgl-ctrl-septicMap     { background-image: none; }
+.mapboxgl-ctrl-zoom          { background-image: url('https://www.ese-llc.com/s/zoom.png'); }
 
-/* Measure button custom styling */
-.mapboxgl-ctrl-measure {
-    background-image: url('https://www.ese-llc.com/s/marker-blue-measure.svg');
-}
+.mapboxgl-ctrl-point-center  { background-image: url('https://www.ese-llc.com/s/marker-blue-center.svg'); }
+.mapboxgl-ctrl-parea         { background-image: url('https://www.ese-llc.com/s/square-50.png'); }
+.mapboxgl-ctrl-sZoom         { background-image: url('https://www.ese-llc.com/s/scale-zoom.png'); }
 
-/* Measure button custom styling */
-.mapboxgl-ctrl-zoom {
-    background-image: url('https://www.ese-llc.com/s/zoom.png'); /* zoom icon (example) */
-}
+.mapboxgl-ctrl-point-off     { background-image: url('https://www.ese-llc.com/s/marker-blue-off.svg'); }
+.mapboxgl-ctrl-clear         { background-image: url('https://www.ese-llc.com/s/marker-blue-measure-cancel.svg'); }
+.mapboxgl-ctrl-ten           { background-image: none; }
 
-/* General button styling for both buttons */
-.mapboxgl-ctrl-point-off, .mapboxgl-ctrl-seven, .mapboxgl-ctrl-clear, .mapboxgl-ctrl-nine, .mapboxgl-ctrl-ten {
-    background-size: 60%;
-    background-position: center;
-    background-repeat: no-repeat;
-    width: 40px;
-    height: 40px;
-    border: none;
-    background-color: white;
-    border-radius: 5px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    margin-right: 5px;
-}
-
-.mapboxgl-ctrl-point,
-.mapboxgl-ctrl-print,
-.mapboxgl-ctrl-measure,
-.mapboxgl-ctrl-septicMap,
-.mapboxgl-ctrl-zoom {
-    background-size: 60%;
-    background-position: center;
-    background-repeat: no-repeat;
-    width: 40px;
-    height: 40px;
-    border: none;
-    background-color: white;
-    border-radius: 5px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    margin-right: 5px;
-}
-
-/* button BLUE MARKER OFF */
-.mapboxgl-ctrl-point-off {
-    background-image: url('https://www.ese-llc.com/s/marker-blue-off.svg'); /* Ruler icon (example) */
-}
-
-/* eight button custom styling */
-.mapboxgl-ctrl-clear {
-    background-image: url('https://www.ese-llc.com/s/marker-blue-measure-cancel.svg');
-	}
-
+/* Share button stays styled separately */
 .mapboxgl-ctrl-share {
     width: 240px;
     height: 40px;
