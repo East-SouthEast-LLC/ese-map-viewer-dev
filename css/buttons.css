@@ -17,6 +17,11 @@
     gap: 5px;
 }
 
+#geocoder {
+    width: 100%; /* Make the geocoder width dynamic */
+    max-width: 250px; /* Limit to 280px for a maximum width */
+}
+
 /* General button styling for both buttons */
 .mapboxgl-ctrl-point-center, .mapboxgl-ctrl-parea, .mapboxgl-ctrl-three, .mapboxgl-ctrl-four, .mapboxgl-ctrl-sZoom {
     background-size: 60%;
