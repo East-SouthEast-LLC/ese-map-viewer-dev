@@ -2,7 +2,7 @@
 #geocoder-container {
     position: absolute;
     top: 10px;
-    right: 70px;
+    right: 100px;
     z-index: 1;
     display: flex;
     flex-direction: column;
@@ -55,6 +55,42 @@
 /* sZoom scale to zoom button custom styling */
 .mapboxgl-ctrl-sZoom {
     background-image: url('https://www.ese-llc.com/s/scale-zoom.png'); /* Ruler icon (example) */
+}
+
+/* Hover effect for all buttons */
+.mapboxgl-ctrl-print:hover, .mapboxgl-ctrl-point:hover, .mapboxgl-ctrl-measure:hover, .mapboxgl-ctrl-septicMap:hover, .mapboxgl-ctrl-zoom:hover {
+    background-color: #f0f0f0;
+}
+.mapboxgl-ctrl-point-center:hover, .mapboxgl-ctrl-parea:hover, .mapboxgl-ctrl-three:hover, .mapboxgl-ctrl-four:hover, .mapboxgl-ctrl-sZoom:hover {
+    background-color: #f0f0f0;
+}
+.mapboxgl-ctrl-point-off:hover, .mapboxgl-ctrl-seven:hover, .mapboxgl-ctrl-clear:hover, .mapboxgl-ctrl-nine:hover, .mapboxgl-ctrl-ten:hover {
+    background-color: #f0f0f0;
+}
+
+/* button PRINT */
+.mapboxgl-ctrl-print {
+    background-image: url('https://img.icons8.com/ios-glyphs/30/000000/print.png'); /* Print icon */
+}
+
+/* button BLUE MARKER RANDOM */
+.mapboxgl-ctrl-point {
+    background-image: url('https://www.ese-llc.com/s/marker-blue-random.svg'); /* Pointing hand icon */
+}
+
+/* Measure button custom styling */
+.mapboxgl-ctrl-measure {
+    background-image: url('https://www.ese-llc.com/s/marker-blue-measure.svg');
+}
+
+/* Septic Map button custom styling */
+.mapboxgl-ctrl-septicMap {
+    background-image: url('https://img.icons8.com/ios-filled/50/000000/map09n47.png'); /* Water icon (example) */
+}
+
+/* Measure button custom styling */
+.mapboxgl-ctrl-zoom {
+    background-image: url('https://www.ese-llc.com/s/zoom.png'); /* zoom icon (example) */
 }
 
 /* General button styling for both buttons */
