@@ -52,35 +52,8 @@
 	<div id="sZoomBox" class="hidden"></div>
 </div>
 
-  <script>
-    mapboxgl.accessToken = 'pk.eyJ1IjoiZXNlLXRvaCIsImEiOiJja2Vhb24xNTEwMDgxMzFrYjVlaTVjOXkxIn0.IsPo5lOndNUc3lDLuBa1ZA';
-    var map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/ese-toh/ckh2ss32s06i119paer9mt67h',
-      center: [-70.36, 41.660],
-      zoom: 12
-    });
-    
-    map.on('load', function() {
-      // add source and layer for raster
-      map.addSource('satellite', {
-        type: 'raster',
-        url: 'mapbox://mapbox.satellite'
-      });
-      
-      map.addLayer({
-        'id': 'satellite',
-        'type': 'raster',
-        'source': 'satellite',
-        'layout': {
-          // make layer visible by default
-          'visibility': 'none'
-        },
-        'source-layer': 'satellite'
-      });
-    });
-  </script>
-  
+  <!-- import js files for layer menu -->
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/satellite.js?v=2"></script>
   <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/acec.js?v=2"></script>
   <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/agis.js?v=2"></script>
   <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/conservancydistricts.js?v=2"></script>
