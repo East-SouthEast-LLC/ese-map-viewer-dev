@@ -13,30 +13,31 @@ function setPinPosition(lat, lng) {
 function getMarkerCoordinates() {
     if (marker) {
         let { lng, lat } = marker.getLngLat();
+        console.log("Marker coordinates:", { lng, lat });
         return { lng, lat };
     }
+    console.log("No marker is currently placed.");
     return null;
 }
 
 function dropPinAtCenter() {
-    const frameCoords = getFrameCoordinates(map);
-    const centerLngLat = frameCoords.middle;
-
-    if (!marker) {
-        marker = new mapboxgl.Marker().setLngLat(centerLngLat).addTo(map);
-        console.log("Marker dropped at visual center:", centerLngLat);
+    if (marker) {
+        // A marker exists, center the map on it
+        let { lng, lat } = marker.getLngLat();
+        markerCoordinates.lng = lng;  // update the coordinate values
+        markerCoordinates.lat = lat;
+        map.flyTo({ center: markerCoordinates, essential: true });
     } else {
-        map.flyTo({ center: marker.getLngLat(), essential: true });
-        console.log("Map recentered to existing marker.");
+        // No marker exists, create one at the map's center
+        let center = map.getCenter();
+        marker = new mapboxgl.Marker().setLngLat(center).addTo(map);
+        markerCoordinates.lng = center.lng;
+        markerCoordinates.lat = center.lat;
     }
 
-    markerCoordinates.lng = centerLngLat.lng;
-    markerCoordinates.lat = centerLngLat.lat;
-
+    console.log(`Marker Coordinates: ${markerCoordinates.lng}, ${markerCoordinates.lat}`);
     return markerCoordinates;
 }
-
-
 
 // Point button: activate placement mode
 document.getElementById('pointButton').addEventListener('click', function () {
