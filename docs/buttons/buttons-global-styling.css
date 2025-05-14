@@ -2,7 +2,7 @@
 #geocoder-container {
     position: absolute;
     top: 10px;
-    right: 100px;
+    right: 105px;
     z-index: 1;
     display: flex;
     flex-direction: column;
@@ -68,11 +68,6 @@
     background-color: #f0f0f0;
 }
 
-/* button PRINT */
-.mapboxgl-ctrl-print {
-    background-image: url('https://img.icons8.com/ios-glyphs/30/000000/print.png'); /* Print icon */
-}
-
 /* button BLUE MARKER RANDOM */
 .mapboxgl-ctrl-point {
     background-image: url('https://www.ese-llc.com/s/marker-blue-random.svg'); /* Pointing hand icon */
@@ -81,11 +76,6 @@
 /* Measure button custom styling */
 .mapboxgl-ctrl-measure {
     background-image: url('https://www.ese-llc.com/s/marker-blue-measure.svg');
-}
-
-/* Septic Map button custom styling */
-.mapboxgl-ctrl-septicMap {
-    background-image: url('https://img.icons8.com/ios-filled/50/000000/map09n47.png'); /* Water icon (example) */
 }
 
 /* Measure button custom styling */
@@ -131,25 +121,10 @@
     background-image: url('https://www.ese-llc.com/s/marker-blue-off.svg'); /* Ruler icon (example) */
 }
 
-/* seven button custom styling */
-.mapboxgl-ctrl-seven {
-    background-image: url('https://img.icons8.com/ios-filled/50/000000/ruler0692n.png'); /* Ruler icon (example) */
-}
-
 /* eight button custom styling */
 .mapboxgl-ctrl-clear {
     background-image: url('https://www.ese-llc.com/s/marker-blue-measure-cancel.svg');
 	}
-
-/* nine button custom styling */
-.mapboxgl-ctrl-nine {
-    background-image: url('https://img.icons8.com/ios-filled/50/000000/ruler0692n.png'); /* Ruler icon (example) */
-}
-
-/* ten button custom styling */
-.mapboxgl-ctrl-ten {
-    background-image: url('https://img.icons8.com/ios-filled/50/000000/ruler0692n.png'); /* Ruler icon (example) */
-}
 
 .mapboxgl-ctrl-share {
     width: 240px;
