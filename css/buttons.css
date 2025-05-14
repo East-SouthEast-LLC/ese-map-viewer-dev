@@ -32,6 +32,10 @@
     margin-right: 5px;
 }
 
+.mapboxgl-ctrl-print {
+    background-image: url('https://img.icons8.com/ios-glyphs/30/000000/print.png'); /* Print icon */
+}
+
 /* button BLUE MARKER CENTER */
 .mapboxgl-ctrl-point-center {
     background-image: url('https://www.ese-llc.com/s/marker-blue-center.svg'); /* Ruler icon (example) */
