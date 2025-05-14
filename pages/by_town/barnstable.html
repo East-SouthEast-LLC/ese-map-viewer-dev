@@ -7,60 +7,16 @@
   <script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
   <link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet" />
   
-  <!-- add new stylesheet for buttons -->
+  <!-- import css files -->
+  <link rel="stylesheet" href="https://east-southeast-llc.github.io/ese-map-viewer/css/globals.css?v=2" type="text/css" />
   <link rel="stylesheet" href="https://east-southeast-llc.github.io/ese-map-viewer/css/buttons.css?v=2" type="text/css" />
   
-  <style>
-    body { margin: 0; padding: 0; }
-    #map { position: relative; margin-top: -590px; border: none; top: 0; left: 0; height: 80vh; width: 95vw; }
-    #geocoder { position: relative; top: -50; left: 0; width: 80px; }
-    #ScaleControl { position: relative; top: 0; left: 0; width: 80px; }
-  </style>
-
   <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
   <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css" type="text/css" />
   <!-- Promise polyfill script required to use Mapbox GL Geocoder in IE 11 -->
   <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
   
-  <style>
-    #menu {
-      background: #fff;
-      position: relative;
-      z-index: 1;
-      top: 0px;
-      left: 0px;
-      border-radius: 3px;
-      width: 144px;
-      border: 1px solid rgba(0, 0, 0, 0.4);
-      font-family: 'Open Sans', sans-serif;
-    }
-    #menu a {
-      font-size: 13px;
-      color: #404040;
-      display: block;
-      margin: 0;
-      padding: 0;
-      padding: 1px;
-      text-decoration: none;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-      text-align: center;
-    }
-    #menu a:last-child {
-      border: none;
-    }
-    #menu a:hover {
-      background-color: #f8f8f8;
-      color: #404040;
-    }
-    #menu a.active {
-      background-color: #3887be;
-      color: #ffffff;
-    }
-    #menu a.active:hover {
-      background: #3074a4;
-    }
-  </style>
 </head>
 <body>
   <nav id="menu"></nav>
