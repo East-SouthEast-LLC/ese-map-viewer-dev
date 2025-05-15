@@ -4,6 +4,23 @@
 // HELPER FUNCTION FOR PRINT FUNCTIONALITY
 // ============================================================================
 
+// Helper function to calculate the centroid of a simple Polygon
+function getPolygonCentroid(coordinates) {
+    const flatCoords = coordinates[0]; // Use the first ring (outer boundary)
+    const xSum = flatCoords.reduce((sum, coord) => sum + coord[0], 0);
+    const ySum = flatCoords.reduce((sum, coord) => sum + coord[1], 0);
+    const centroidX = xSum / flatCoords.length;
+    const centroidY = ySum / flatCoords.length;
+
+    return [centroidX, centroidY];
+}
+
+// Helper function to calculate the centroid of a MultiPolygon
+function getMultiPolygonCentroid(coordinates) {
+    // Return the centroid of the first polygon in the MultiPolygon
+    return getPolygonCentroid(coordinates[0]);
+}
+
 function adjustLabelsForPrint(map, frameElement) {
     // Step 1: Get the visible layers
     const visibleLayers = listVisibleLayers(map);
@@ -48,10 +65,64 @@ function adjustLabelsForPrint(map, frameElement) {
     });
 }
 
+// get centroids in frame
+function getCentroidsInFrame(map, layerId, frameElement) {
+    // Step 1: Get the printing frame coordinates (returns pixel coordinates)
+    const frameCoordinates = getPrintingFrameCoordinates(map, frameElement);
+
+    // Step 2: Query all features in the specified layer within visible bounds
+    const features = map.queryRenderedFeatures({
+        layers: [layerId], // Specify the layer (e.g., 'floodplain')
+    });
+
+    // Step 3: Process each feature to calculate centroids
+    const centroids = features.map(feature => {
+        const coordinates = feature.geometry.coordinates;
+
+        // Skip unsupported geometries
+        if (feature.geometry.type !== 'Polygon' && feature.geometry.type !== 'MultiPolygon') {
+            console.warn(`Unsupported geometry type: ${feature.geometry.type}`);
+            return null;
+        }
+
+        // Calculate centroid based on geometry type
+        let centroid;
+        if (feature.geometry.type === 'Polygon') {
+            centroid = getPolygonCentroid(coordinates);
+        } else if (feature.geometry.type === 'MultiPolygon') {
+            centroid = getMultiPolygonCentroid(coordinates);
+        }
+
+        // Ensure centroid calculation succeeded
+        if (!centroid) {
+            console.warn("Centroid calculation failed for feature:", feature.id);
+            return null;
+        }
+
+        // Step 4: Check if centroid is within the printing frame bounds
+        const [centroidX, centroidY] = centroid;
+        const centroidPixel = map.project([centroidX, centroidY]); // Convert to pixel coordinates
+
+        const isWithinFrame =
+            centroidPixel.x >= frameCoordinates.lowerLeft[0] &&
+            centroidPixel.x <= frameCoordinates.upperRight[0] &&
+            centroidPixel.y >= frameCoordinates.lowerLeft[1] &&
+            centroidPixel.y <= frameCoordinates.upperRight[1];
+
+        if (isWithinFrame) {
+            return { centroid, featureId: feature.id };
+        }
+
+        return null; // Skip features outside the printing frame
+    }).filter(Boolean); // Remove null entries
+
+    return centroids;
+}
+
 
 
 // ============================================================================
-// MAIN PRINT FUNCTION
+// MAIN PRINT FUNCTION (event listener)
 // ============================================================================
 
 document.getElementById('printButton').addEventListener('click', () => {
