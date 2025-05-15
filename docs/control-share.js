@@ -10,7 +10,7 @@ function obtainZoom() {
 }
 
 function generateShareLink(map, zoomLevel, layerIds) {
-    let baseUrl = window.location.origin + window.location.pathname; // Current page URL
+    const baseUrl = window.eseMapBaseUrl || (window.location.origin + window.location.pathname);
     // Encode each layer name to avoid issues with special characters and spaces
     let encodedLayerIds = layerIds.map(layerId => encodeURIComponent(layerId));
     // Construct the URL
