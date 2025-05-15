@@ -24,7 +24,7 @@ function applyUrlParams(map) {
     // Ensure the layers are loaded and then simulate the button click for each layer
     
     // console log to display the link
-    console.log("[URL] Current URL:", window.location.href);
+    console.log("[URL] Current URL:", urlParams.toString());
 
     let layers = urlParams.get('layers')?.split(',') || [];
     console.log("[URL] Parsed layers from URL:", layers);
