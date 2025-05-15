@@ -22,6 +22,8 @@ function applyUrlParams(map) {
     }
 
     // Ensure the layers are loaded and then simulate the button click for each layer
+    console.log("[DEBUG] About to parse location.search:", window.location.search);
+
     let layers = urlParams.get('layers')?.split(',') || [];
     console.log("[URL] Parsed layers from URL:", layers);
 
