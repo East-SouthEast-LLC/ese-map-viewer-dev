@@ -118,7 +118,7 @@ body {
 .mapboxgl-ctrl-ten           { background-image: none; }
 
 /* Share button stays styled separately */
-.mapboxgl-ctrl-share {
+#geocoder-container button.mapboxgl-ctrl-share {
     width: 240px;
     height: 40px;
     background-color: white; 
