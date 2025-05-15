@@ -4,17 +4,8 @@
 // HELPER FUNCTIONS FOR SCALE FUNCTIONALITY
 // ============================================================================
 
-
-document.addEventListener("DOMContentLoaded", function () {
-    const scaleZoomButton = document.getElementById("scaleZoom");
-    const geocoderContainer = document.getElementById("geocoder-container");
-
-    if (!scaleZoomButton || !geocoderContainer) {
-        console.error("Required elements not found in the DOM.");
-        return;
-    }
-
-    // Create the dropdown element
+// Function to create and configure the scale dropdown
+function createScaleDropdown() {
     const scaleDropdown = document.createElement("div");
     scaleDropdown.id = "scaleDropdown";
     scaleDropdown.style.display = "none"; // Hidden initially
@@ -40,6 +31,54 @@ document.addEventListener("DOMContentLoaded", function () {
         <input type="text" id="zoomInput" readonly style="width: 100%; text-align: center; margin-bottom: 5px;">
         <input type="range" id="zoomSlider" min="0" max="22" step="0.01" style="width: 100%;">
     `;
+    
+    return scaleDropdown;
+}
+
+// Function to handle scale button click events
+function toggleScaleDropdown(scaleDropdown, zoomListenerAdded) {
+    if (scaleDropdown.style.display === "none") {
+        scaleDropdown.style.display = "block";
+
+        // Add zoom event listener only once
+        if (!zoomListenerAdded) {
+            map.on('zoom', () => {
+                const currentZoom = map.getZoom().toFixed(2);
+                document.getElementById("zoomInput").value = currentZoom;
+                document.getElementById("zoomSlider").value = currentZoom;
+            });
+            return true;
+        }
+    } else {
+        scaleDropdown.style.display = "none";
+    }
+    return zoomListenerAdded;
+}
+
+// Function to handle clicks outside the dropdown
+function setupOutsideClickHandler(geocoderContainer, scaleZoomButton, scaleDropdown) {
+    document.addEventListener("click", function (event) {
+        if (!geocoderContainer.contains(event.target) && event.target !== scaleZoomButton) {
+            scaleDropdown.style.display = "none";
+        }
+    });
+}
+
+// ============================================================================
+// MAIN SCALE FUNCTION (event listener)
+// ============================================================================
+
+document.addEventListener("DOMContentLoaded", function () {
+    const scaleZoomButton = document.getElementById("scaleZoom");
+    const geocoderContainer = document.getElementById("geocoder-container");
+
+    if (!scaleZoomButton || !geocoderContainer) {
+        console.error("Required elements not found in the DOM.");
+        return;
+    }
+
+    // Create the dropdown element
+    const scaleDropdown = createScaleDropdown();
 
     // Create a wrapper div to position the dropdown correctly
     const scaleDropdownWrapper = document.createElement("div");
@@ -57,31 +96,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Toggle dropdown and set up zoom tracking
     scaleZoomButton.addEventListener("click", function () {
-        if (scaleDropdown.style.display === "none") {
-            scaleDropdown.style.display = "block";
-
-            // Add zoom event listener only once
-            if (!zoomListenerAdded) {
-                map.on('zoom', () => {
-                    const currentZoom = map.getZoom().toFixed(2);
-                    document.getElementById("zoomInput").value = currentZoom;
-                    document.getElementById("zoomSlider").value = currentZoom;
-                });
-                zoomListenerAdded = true;
-            }
-        } else {
-            scaleDropdown.style.display = "none";
-        }
+        zoomListenerAdded = toggleScaleDropdown(scaleDropdown, zoomListenerAdded);
     });
 
     // Close dropdown when clicking outside
-    document.addEventListener("click", function (event) {
-        if (!geocoderContainer.contains(event.target) && event.target !== scaleZoomButton) {
-            scaleDropdown.style.display = "none";
-        }
-    });
+    setupOutsideClickHandler(geocoderContainer, scaleZoomButton, scaleDropdown);
 });
-
-// ============================================================================
-// MAIN SCALE FUNCTION (event listener)
-// ============================================================================
