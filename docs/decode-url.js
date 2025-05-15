@@ -1,11 +1,8 @@
 function applyUrlParams(map) {
-    console.log("[URL] Current window.location.search:", window.location.search);
-
+    console.log("applyUrlParams function called.");
+    console.log("current URL:", window.location.search);
     const urlParams = new URLSearchParams(window.location.search);
 
-    console.log("[URL] applyUrlParams called.");
-    console.log("[URL] Map object:", map);
-    console.log("[URL] Current map style layers:", map.getStyle().layers.map(l => l.id));
 
     // Get and set zoom level
     const zoom = parseFloat(urlParams.get('zoom'));
