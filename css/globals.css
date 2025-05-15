@@ -180,3 +180,14 @@ DISTANCE WINDOW ALIGNMENT
 #distanceWindow div:nth-child(2) {
   text-align: right;
 }
+
+/* Styling for markers with measure distance */
+.marker-label {
+  font-size: 14px;
+  color: black;
+  background-color: white;
+  padding: 3px 5px;
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  font-weight: bold;
+}
