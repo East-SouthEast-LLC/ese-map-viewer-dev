@@ -25,7 +25,7 @@ function createZoomDialog() {
                 <input type="number" id="zoomInput" value="${map.getZoom().toFixed(2)}" 
                     style="width: 50px; text-align: center;" onchange="updateZoom(parseFloat(this.value))" />
                 <button style="font-size: 10px;" onclick="zoomIn(0.1)">+0.1</button>
-				<button style="font-size: 10px;" onclick="zoomIn(0.01)">+0.01</button>
+                <button style="font-size: 10px;" onclick="zoomIn(0.01)">+0.01</button>
             </div>
         </div>`;
 
@@ -52,19 +52,6 @@ function closeZoomDialog() {
     document.getElementById("sliderPopup")?.remove();
 }
 
-map.on('zoom', () => {
-    const currentZoom = map.getZoom().toFixed(2);
-    document.getElementById("zoomInput").value = currentZoom;
-    document.getElementById("zoomSlider").value = currentZoom;
-});
-
-// Toggle zoom dialog
-let isZoomDialogOpen = false;
-document.getElementById("zoomButton").addEventListener("click", function () {
-    isZoomDialogOpen ? closeZoomDialog() : createZoomDialog();
-    isZoomDialogOpen = !isZoomDialogOpen;
-});
-
 function updateZoom(newZoom) {
     const clampedZoom = Math.max(0, Math.min(22, newZoom));
     map.setZoom(clampedZoom);
@@ -83,3 +70,16 @@ function zoomOut(step) {
 // ============================================================================
 // MAIN ZOOM FUNCTION (event listener)
 // ============================================================================
+
+map.on('zoom', () => {
+    const currentZoom = map.getZoom().toFixed(2);
+    document.getElementById("zoomInput").value = currentZoom;
+    document.getElementById("zoomSlider").value = currentZoom;
+});
+
+// Toggle zoom dialog
+let isZoomDialogOpen = false;
+document.getElementById("zoomButton").addEventListener("click", function () {
+    isZoomDialogOpen ? closeZoomDialog() : createZoomDialog();
+    isZoomDialogOpen = !isZoomDialogOpen;
+});
