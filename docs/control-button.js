@@ -845,3 +845,7 @@ document.getElementById('printButton').addEventListener('click', () => {
     map.resize();
     map.triggerRepaint();
 });
+
+map.on('zoomend', () => {
+    zoom.z = map.getZoom();
+});

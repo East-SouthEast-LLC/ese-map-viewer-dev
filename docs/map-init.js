@@ -7,6 +7,7 @@ var map = new mapboxgl.Map({
     center: [-70.36, 41.660],
     zoom: 12
 });
+let zoom = { z: 12 };
 
 const geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
