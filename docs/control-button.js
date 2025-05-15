@@ -13,23 +13,29 @@ function setPinPosition(lat, lng) {
 function getMarkerCoordinates() {
     if (marker) {
         let { lng, lat } = marker.getLngLat();
+        console.log("Marker coordinates:", { lng, lat });
         return { lng, lat };
     }
+    console.log("No marker is currently placed.");
     return null;
 }
 
 function dropPinAtCenter() {
     if (marker) {
+        // A marker exists, center the map on it
         let { lng, lat } = marker.getLngLat();
-        markerCoordinates.lng = lng;
+        markerCoordinates.lng = lng;  // update the coordinate values
         markerCoordinates.lat = lat;
         map.flyTo({ center: markerCoordinates, essential: true });
     } else {
+        // No marker exists, create one at the map's center
         let center = map.getCenter();
         marker = new mapboxgl.Marker().setLngLat(center).addTo(map);
         markerCoordinates.lng = center.lng;
         markerCoordinates.lat = center.lat;
     }
+
+    console.log(`Marker Coordinates: ${markerCoordinates.lng}, ${markerCoordinates.lat}`);
     return markerCoordinates;
 }
 
