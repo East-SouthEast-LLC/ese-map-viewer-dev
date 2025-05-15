@@ -108,7 +108,9 @@
 
   <script>
   map.on('load', function () {
-    applyUrlParams(map);
+    setTimeout(function() {
+      applyUrlParams(map);
+    }, 500); // Try 500ms; increase if needed for testing
   });
   </script>
 
