@@ -4,6 +4,45 @@
 // HELPER FUNCTION FOR PRINT FUNCTIONALITY
 // ============================================================================
 
+function getPrintingFrameCoordinates(map, frameElement) {
+    if (!frameElement) {
+        console.error("frameElement is not defined or is invalid.");
+        return null;
+    }
+
+    // Ensure the map container is valid
+    if (!map || !map.getContainer()) {
+        console.error("Map container is not defined.");
+        return null;
+    }
+
+    // Get the printing frame dimensions and offsets
+    const frameRect = frameElement.getBoundingClientRect();
+    const mapRect = map.getContainer().getBoundingClientRect();
+
+    // Calculate relative positions of the frame within the map
+    const frameTopLeft = [frameRect.left - mapRect.left, frameRect.top - mapRect.top];
+    const frameBottomRight = [
+        frameRect.right - mapRect.left,
+        frameRect.bottom - mapRect.top,
+    ];
+
+    // Define positions in the printing frame (Middle point)
+    const positions = {
+        middle: {
+            x: (frameTopLeft[0] + frameBottomRight[0]) / 2,
+            y: (frameTopLeft[1] + frameBottomRight[1]) / 2,
+        },
+    };
+
+    // Convert printing frame positions to geographical coordinates (map.unproject)
+    const coordinates = {
+        middle: map.unproject([positions.middle.x, positions.middle.y]).toArray(),
+    };
+
+    return coordinates;
+}
+
 // Helper function to calculate the centroid of a simple Polygon
 function getPolygonCentroid(coordinates) {
     const flatCoords = coordinates[0]; // Use the first ring (outer boundary)
