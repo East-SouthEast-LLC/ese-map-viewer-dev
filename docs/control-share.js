@@ -49,7 +49,7 @@ function showSharePopup(shareLink) {
     copyButton.style.marginRight = "10px";
     copyButton.onclick = function () {
         navigator.clipboard.writeText(shareLink).then(() => {
-        //    alert("Link copied to clipboard!");
+            //    alert("Link copied to clipboard!");
         });
         document.body.removeChild(modal); // Close popup
     };

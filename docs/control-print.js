@@ -158,8 +158,6 @@ function getCentroidsInFrame(map, layerId, frameElement) {
     return centroids;
 }
 
-
-
 // ============================================================================
 // MAIN PRINT FUNCTION (event listener)
 // ============================================================================
@@ -288,21 +286,21 @@ document.getElementById('printButton').addEventListener('click', () => {
                         .date, .scale, .base-map {
                             font-family: Arial, sans-serif;
                         }
-						.disclaimer {
-							font-size: 9px;
-						}
+                        .disclaimer {
+                            font-size: 9px;
+                        }
                         .date {
                             font-size: 11px;
                         }
                         .scale {
                             font-size: 11px;
                         }
-						.sources {
-							font-size: 10px;
-						}
-						.massgis {
-							font-size: 10px;
-						}
+                        .sources {
+                            font-size: 10px;
+                        }
+                        .massgis {
+                            font-size: 10px;
+                        }
                         .base-map {
                             font-size: 10px;
                         }
@@ -316,7 +314,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                     <div class="frame">
                         <div class="top-frame">
                             <div class="map-container">
-							    <!-- Embed map image with markers -->
+                                <!-- Embed map image with markers -->
                                 <img src="${canvas.toDataURL()}" alt="Map Image" />
                             </div>
                         </div>
@@ -327,10 +325,10 @@ document.getElementById('printButton').addEventListener('click', () => {
                             </div>
                             <div class="inner-frame">
                                 <span class="gis-map">GIS Map</span>
-								<span class="disclaimer">This map is for illustrative purposes only and is not adequate for legal boundary determination or regulatory interpretation.</span>
+                                <span class="disclaimer">This map is for illustrative purposes only and is not adequate for legal boundary determination or regulatory interpretation.</span>
                                 <span class="date">${currentDate}</span></br>
-								<span class="sources">Map sources include:</span>
-								<span class="massgis">Bureau of Geographic Information (MassGIS), Commonwealth of Massachusetts, Executive Office of Technology and Security Services</span>								
+                                <span class="sources">Map sources include:</span>
+                                <span class="massgis">Bureau of Geographic Information (MassGIS), Commonwealth of Massachusetts, Executive Office of Technology and Security Services</span>
                                 <span class="base-map">
                                     © <a href="https://www.mapbox.com/about/maps">Mapbox</a> </br>
                                     © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> </br>
