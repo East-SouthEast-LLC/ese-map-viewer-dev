@@ -1,4 +1,6 @@
 function applyUrlParams(map) {
+    console.log("[URL] Current window.location.search:", window.location.search);
+
     const urlParams = new URLSearchParams(window.location.search);
 
     console.log("[URL] applyUrlParams called.");
