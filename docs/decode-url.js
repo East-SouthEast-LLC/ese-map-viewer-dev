@@ -1,7 +1,3 @@
-map.on('load', function () {
-    applyUrlParams(map);
-});
-
 function applyUrlParams(map) {
     const urlParams = new URLSearchParams(window.location.search);
 

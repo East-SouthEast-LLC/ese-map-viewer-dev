@@ -105,5 +105,12 @@
 
   <!-- import file for decoding shared link -->
   <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/decode-url.js?v=2"></script>
+
+  <script>
+  map.on('load', function () {
+    applyUrlParams(map);
+  });
+  </script>
+
 </body>
 </html>
