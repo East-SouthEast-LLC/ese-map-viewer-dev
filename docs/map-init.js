@@ -1,7 +1,7 @@
 // MUST INCLUDE THIS FILE TO INITIALIZE MAPBOX GL AND GEOCODER
 // create a mapbox map
 mapboxgl.accessToken = 'pk.eyJ1IjoiZXNlLXRvaCIsImEiOiJja2Vhb24xNTEwMDgxMzFrYjVlaTVjOXkxIn0.IsPo5lOndNUc3lDLuBa1ZA';
-map = new mapboxgl.Map({
+var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/ese-toh/ckh2ss32s06i119paer9mt67h',
     center: [-70.36, 41.660],
