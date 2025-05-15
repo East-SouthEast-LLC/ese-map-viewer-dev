@@ -5,6 +5,10 @@ map.on('load', function () {
 function applyUrlParams(map) {
     const urlParams = new URLSearchParams(window.location.search);
 
+    console.log("[URL] applyUrlParams called.");
+    console.log("[URL] Map object:", map);
+    console.log("[URL] Current map style layers:", map.getStyle().layers.map(l => l.id));
+
     // Get and set zoom level
     const zoom = parseFloat(urlParams.get('zoom'));
     if (!isNaN(zoom)) {
@@ -21,10 +25,18 @@ function applyUrlParams(map) {
 
     // Ensure the layers are loaded and then simulate the button click for each layer
     let layers = urlParams.get('layers')?.split(',') || [];
+    console.log("[URL] Parsed layers from URL:", layers);
+
     map.on('styledata', function () {
+        console.log("[URL] styledata event triggered. Map layers at this point:", map.getStyle().layers.map(l => l.id));
+
         layers.forEach(layerId => {
+            console.log(`[URL] Processing layer from URL: "${layerId}"`);
+
             // Check if the layer exists in the map style
             if (map.getLayer(layerId)) {
+                console.log(`[URL] Found layer: ${layerId}. Setting visibility to visible.`);
+
                 // Toggle layer visibility by changing the layout object's visibility property
                 let visibility = map.getLayoutProperty(layerId, 'visibility');
                 if (visibility === 'none') {
@@ -39,6 +51,9 @@ function applyUrlParams(map) {
                         button.classList.add('active');
                     }
                 });
+            }
+            else {
+                console.warn(`[URL] Layer "${layerId}" not found in the map style.`);
             }
         });
 
