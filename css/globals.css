@@ -1,105 +1,127 @@
+/* ============================================================
+GLOBAL RESETS
+=============================================================== */
 body { 
-    margin: 0; 
-    padding: 0; 
+  margin: 0; 
+  padding: 0; 
 }
 
+/* ============================================================
+MAP CONTAINER
+=============================================================== */
 #map { 
-    position: absolute;
-    top: 0; 
-    left: 0; 
-    z-index: 0;
-    height: 80vh; 
-    width: 95vw; 
+  position: absolute;
+  top: 0; 
+  left: 0; 
+  z-index: 0;
+  height: 80vh; 
+  width: 95vw; 
 }
 
+/* ============================================================
+SCALE CONTROL 
+=============================================================== */
 #ScaleControl { 
-    position: relative; 
-    top: 0; 
-    left: 0; 
-    width: 80px; 
+  position: relative; 
+  top: 0; 
+  left: 0; 
+  width: 80px; 
 }
 
+/* ============================================================
+MENU (Layer toggle UI)
+=============================================================== */
 #menu {
-    background: #fff;
-    position: absolute;
-    z-index: 1;
-    top: 10px;
-    left: 10px;
-    border-radius: 3px;
-    width: 144px;
-    border: 1px solid rgba(0, 0, 0, 0.4);
-    font-family: 'Open Sans', sans-serif;
-  }
-  #menu a {
-    font-size: 13px;
-    color: #404040;
-    display: block;
-    margin: 0;
-    padding: 0;
-    padding: 1px;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-    text-align: center;
-  }
-  #menu a:last-child {
-    border: none;
-  }
-  #menu a:hover {
-    background-color: #f8f8f8;
-    color: #404040;
-  }
-  #menu a.active {
-    background-color: #3887be;
-    color: #ffffff;
-  }
-  #menu a.active:hover {
-    background: #3074a4;
-  }
+  background: #fff;
+  position: absolute;
+  z-index: 1;
+  top: 10px;
+  left: 10px;
+  border-radius: 3px;
+  width: 144px;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  font-family: 'Open Sans', sans-serif;
+}
 
+#menu a {
+  font-size: 13px;
+  color: #404040;
+  display: block;
+  margin: 0;
+  padding: 1px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
 
+#menu a:last-child {
+  border: none;
+}
 
-/* == MAIN CONTAINER FOR CONTROL BUTTONS ====================== */
+#menu a:hover {
+  background-color: #f8f8f8;
+  color: #404040;
+}
+
+#menu a.active {
+  background-color: #3887be;
+  color: #ffffff;
+}
+
+#menu a.active:hover {
+  background: #3074a4;
+}
+
+/* ============================================================
+GEOCODER CONTAINER (for control buttons and search bar)
+=============================================================== */
 #geocoder-container {
-    position: absolute;
-    top: 10px;
-    right: 105px;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    max-width: 250px;
-    width: auto;
+  position: absolute;
+  top: 10px;
+  right: 105px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-width: 250px;
+  width: auto;
 }
 
+/* Geocoder input box styling */
 #geocoder {
-    width: 100%; /* Make the geocoder width dynamic */
-    max-width: 250px; /* Limit to 280px for a maximum width */
+  width: 100%; /* Make the geocoder width dynamic */
+  max-width: 250px; /* Limit to 280px for a maximum width */
 }
 
+/* Row layout for grouped control buttons */
 #geocoder-container div {
-    display: flex;
-    flex-direction: row;
-    gap: 5px;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
 }
 
-/* Base button style */
+/* ============================================================
+CONTROL BUTTON STYLES
+=============================================================== */
+
+/* Shared base button styling */
 #geocoder-container button {
-    background-size: 60%;
-    background-position: center;
-    background-repeat: no-repeat;
-    width: 40px;
-    height: 40px;
-    border: none;
-    background-color: white;
-    border-radius: 5px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    margin-right: 5px;
+  background-size: 60%;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  margin-right: 5px;
 }
 
-/* Hover for all */
+/* Button hover effect */
 #geocoder-container button:hover {
-    background-color: #f0f0f0;
+  background-color: #f0f0f0;
 }
 
 /* Individual icon images */
@@ -117,37 +139,44 @@ body {
 .mapboxgl-ctrl-clear         { background-image: url('https://www.ese-llc.com/s/marker-blue-measure-cancel.svg'); }
 .mapboxgl-ctrl-ten           { background-image: none; }
 
-/* Share button stays styled separately */
+/* ============================================================
+SHARE BUTTON 
+=============================================================== */
 #geocoder-container button.mapboxgl-ctrl-share {
-    width: 240px;
-    height: 40px;
-    background-color: white; 
-    color: black;
-    font-size: 14px;
-    border: none;
-    border-radius: 5px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    text-align: center;
-    line-height: 40px;
+  width: 240px;
+  height: 40px;
+  background-color: white; 
+  color: black;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  text-align: center;
+  line-height: 40px;
 }
 
-.custom-tooltip {
-    position: absolute;
-    background: rgba(0, 0, 0, 0.85);
-    color: white;
-    padding: 0px 4px;
-    border-radius: 5px;
-    font-size: 10px;
-    white-space: nowrap;
-    z-index: 1000;
-    pointer-events: none;
-    transform: translateX(-50%);
-    opacity: 0; /* Start hidden */
-    transition: opacity 0.3s ease; /* Smooth transition */
+/* ============================================================
+TOOLTIP STYLES
+=============================================================== */
+#custom-tooltip {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 0px 4px;
+  border-radius: 5px;
+  font-size: 10px;
+  white-space: nowrap;
+  z-index: 1000;
+  pointer-events: none;
+  transform: translateX(-50%);
+  opacity: 0; /* Start hidden */
+  transition: opacity 0.3s ease; /* Smooth transition */
 }
 
-
+/* ============================================================
+DISTANCE WINDOW ALIGNMENT
+=============================================================== */
 #distanceWindow div:nth-child(2) {
-    text-align: right;
+  text-align: right;
 }
