@@ -1,7 +1,7 @@
 // External js file for toggleable layers menu that appears on the left side of the map
 map.on('load', function() {
     // enumerate ids of the layers
-    var toggleableLayerIds = ['satellite', 'parcels', 'parcel highlight', 'contours', 'agis', 'historic', 'floodplain', 'acec', 'DEP wetland', 'endangered species', 'zone II', 'soils', 'conservancy districts', 'zoning', 'conservation', 'sewer', 'stories', 'intersection', 'towns'];
+    var toggleableLayerIds = ['tools', 'satellite', 'parcels', 'parcel highlight', 'contours', 'agis', 'historic', 'floodplain', 'acec', 'DEP wetland', 'endangered species', 'zone II', 'soils', 'conservancy districts', 'zoning', 'conservation', 'sewer', 'stories', 'intersection', 'towns'];
 
     // set up the corresponding toggle button for each layer
     for (var i = 0; i < toggleableLayerIds.length; i++) {
@@ -16,6 +16,19 @@ map.on('load', function() {
             var clickedLayer = this.textContent;
             e.preventDefault();
             e.stopPropagation();
+
+            if (clickedLayer === "tools") {
+                var geocoderContainer = document.getElementById("geocoder-container");
+                // Toggle display
+                if (geocoderContainer.style.display === "none") {
+                    geocoderContainer.style.display = "flex";
+                    this.className = 'active';
+                } else {
+                    geocoderContainer.style.display = "none";
+                    this.className = '';
+                }
+                return;
+            }
 
             if (!map.getLayer(clickedLayer)) {
                 console.warn("Layer not found:", clickedLayer);

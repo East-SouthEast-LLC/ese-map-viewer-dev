@@ -76,11 +76,11 @@ MENU (Layer toggle UI)
 GEOCODER CONTAINER (for control buttons and search bar)
 =============================================================== */
 #geocoder-container {
+  display: none; /* Initially hidden */
   position: absolute;
   top: 10px;
   left: 164px;
   z-index: 1;
-  display: flex;
   flex-direction: column;
   gap: 5px;
   max-width: auto;
