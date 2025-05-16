@@ -32,38 +32,38 @@ function applyUrlParams(map) {
                 // handle floodplain layers -----------------------------------
                 if (layerId === 'floodplain') {
                     // toggle the limwa visibility to the same as the floodplain visibility
-                    map.setLayoutProperty('LiMWA', 'visibility', visibility);
-                    map.setLayoutProperty('floodplain-line', 'visibility', visibility);
-                    map.setLayoutProperty('floodplain-labels', 'visibility', visibility);
+                    map.setLayoutProperty('LiMWA', 'visibility', 'visible');
+                    map.setLayoutProperty('floodplain-line', 'visibility', 'visible');
+                    map.setLayoutProperty('floodplain-labels', 'visibility', 'visible');
                 }
 
                 // handle dep wetland layers -----------------------------------
                 if (layerId === 'DEP wetland') {
                     // toggle the dep line and labels visibility to the same as the dep wetland visibility
-                    map.setLayoutProperty('dep-wetland-line', 'visibility', visibility);
-                    map.setLayoutProperty('dep-wetland-labels', 'visibility', visibility);
+                    map.setLayoutProperty('dep-wetland-line', 'visibility', 'visible');
+                    map.setLayoutProperty('dep-wetland-labels', 'visibility', 'visible');
                 }
 
                 // handle soils layers ----------------------------------------
                 if (layerId === 'soils') {
                     // toggle the soils line and labels visibility to the same as the soils visibility
-                    map.setLayoutProperty('soils-labels', 'visibility', visibility);
-                    map.setLayoutProperty('soils-outline', 'visibility', visibility);
+                    map.setLayoutProperty('soils-labels', 'visibility', 'visible');
+                    map.setLayoutProperty('soils-outline', 'visibility', 'visible');
                 }
 
                 // handle zone II layers ----------------------------------------
                 if (layerId === 'zone II') {
                     // toggle the zone II line and labels visibility to the same as the zone II visibility
-                    map.setLayoutProperty('zone-ii-outline', 'visibility', visibility);
-                    map.setLayoutProperty('zone-ii-labels', 'visibility', visibility);
+                    map.setLayoutProperty('zone-ii-outline', 'visibility', 'visible');
+                    map.setLayoutProperty('zone-ii-labels', 'visibility', 'visible');
                 }
 
                 // handle endangered species layers -----------------------
                 if (layerId === 'endangered species') {
                     // toggle the endangered species labels visibility to the same as the endangered species visibility
-                    map.setLayoutProperty('endangered-species-labels', 'visibility', visibility);
-                    map.setLayoutProperty('vernal-pools', 'visibility', visibility);
-                    map.setLayoutProperty('vernal-pools-labels', 'visibility', visibility);
+                    map.setLayoutProperty('endangered-species-labels', 'visibility', 'visible');
+                    map.setLayoutProperty('vernal-pools', 'visibility', 'visible');
+                    map.setLayoutProperty('vernal-pools-labels', 'visibility', 'visible');
                 }
                 // ------------------------------------------------------------
 
