@@ -1,5 +1,3 @@
-// point.js — controls for dropping and removing markers
-
 let placingPoint = false;
 let marker = null;
 const markerCoordinates = { lat: null, lng: null };
@@ -8,16 +6,6 @@ function setPinPosition(lat, lng) {
     markerCoordinates.lat = lat;
     markerCoordinates.lng = lng;
     console.log("Pin position updated:", markerCoordinates);
-}
-
-function getMarkerCoordinates() {
-    if (marker) {
-        let { lng, lat } = marker.getLngLat();
-        console.log("Marker coordinates:", { lng, lat });
-        return { lng, lat };
-    }
-    console.log("No marker is currently placed.");
-    return null;
 }
 
 function dropPinAtCenter() {
@@ -75,3 +63,25 @@ document.getElementById('pointOffButton').addEventListener('click', function () 
     markerCoordinates.lng = null;
     console.log("Marker removed.");
 });
+
+// List Visible Layers - the major Label IDs
+function listVisibleLayers(map, layerIds) {
+  if (!Array.isArray(layerIds)) {
+    console.error("layerIds must be an array.");
+    return [];
+  }
+
+  const visibleLayers = [];
+  layerIds.forEach(layerId => {
+    // Check if the layer exists in the map style
+    if (map.getLayer(layerId)) {
+      const visibility = map.getLayoutProperty(layerId, 'visibility');
+      if (visibility === 'visible') {
+        visibleLayers.push(layerId);  // Add visible layers to the array
+      }
+    } else {
+      console.warn(`Layer "${layerId}" not found in the current map style.`);
+    }
+  });
+  return visibleLayers;
+}
