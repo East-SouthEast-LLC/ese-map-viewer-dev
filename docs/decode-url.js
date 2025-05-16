@@ -59,7 +59,7 @@ function applyUrlParams(map) {
                 }
 
                 // handle endangered species layers -----------------------
-                if (clickedLayer === 'endangered species') {
+                if (layerId === 'endangered species') {
                     // toggle the endangered species labels visibility to the same as the endangered species visibility
                     map.setLayoutProperty('endangered-species-labels', 'visibility', visibility);
                     map.setLayoutProperty('vernal-pools', 'visibility', visibility);
