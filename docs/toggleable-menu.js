@@ -17,10 +17,11 @@ map.on('load', function() {
             e.preventDefault();
             e.stopPropagation();
 
+            // handling for tools/geocoder button and display
             if (clickedLayer === "tools") {
                 var geocoderContainer = document.getElementById("geocoder-container");
                 // Toggle display
-                if (geocoderContainer.style.display === "none") {
+                if (getComputedStyle(geocoderContainer).display === "none") {
                     geocoderContainer.style.display = "flex";
                     this.className = 'active';
                 } else {
