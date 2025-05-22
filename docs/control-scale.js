@@ -36,6 +36,7 @@ function getFeetPerInch() {
 document.addEventListener("DOMContentLoaded", function () {
     const scaleZoomButton = document.getElementById("scaleZoom");
     const geocoderContainer = document.getElementById("geocoder-container");
+    const scaleBoxDiv = document.getElementById("scale-box");
     let scaleVisibility = false; // Track visibility
 
 
