@@ -48,11 +48,14 @@ document.addEventListener("DOMContentLoaded", function () {
     scaleBoxDiv.style.display = 'none';
 
     scaleZoomButton.addEventListener('click', () => {
+        scaleVisibility = !scaleVisibility; // toggle state
         if (scaleVisibility) {
-            scaleBoxDiv.style.display = 'none'; // Hide scale box
+            // Calculate the scale value and show it
+            const feetPerInch = getFeetPerInch();
+            scaleBoxDiv.innerHTML = `1 inch = ${feetPerInch.toFixed(2)} feet`;
+            scaleBoxDiv.style.display = 'block';
         } else {
-            // update the scale display
-            scaleBoxDiv.style.display = 'block'; // Show scale box
+            scaleBoxDiv.style.display = 'none';
         }
     });
 
