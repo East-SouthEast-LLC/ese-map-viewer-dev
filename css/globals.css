@@ -10,12 +10,14 @@ body {
 MAP CONTAINER
 =============================================================== */
 #map { 
-  position: absolute;
+  /* position: absolute;
   top: 0; 
-  left: 0; 
+  left: 0;  */
   z-index: 0;
-  height: 80vh; 
-  width: 95vw; 
+  height: 80vh;
+  width: 95vw;
+  margin: 0 auto;
+  display: block;
 }
 
 /* ============================================================
