@@ -29,6 +29,7 @@ function getFeetPerInch() {
     const mapDiagonalInches = Math.sqrt(7.5 ** 2 + 8.0 ** 2);
     return diagonalFeet / mapDiagonalInches;
 }
+
 // ============================================================================
 // MAIN SCALE FUNCTION (event listener)
 // ============================================================================
@@ -37,8 +38,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const scaleZoomButton = document.getElementById("scaleZoom");
     const geocoderContainer = document.getElementById("geocoder-container");
     const scaleBoxDiv = document.getElementById("scale-box");
-    let scaleVisibility = false; // Track visibility
-
+    let scaleVisibility = false;
+    let userNumber = null; // Variable to store the number
 
     if (!scaleZoomButton || !geocoderContainer) {
         console.error("Required elements not found in the DOM.");
@@ -48,12 +49,23 @@ document.addEventListener("DOMContentLoaded", function () {
     scaleBoxDiv.style.display = 'none';
 
     scaleZoomButton.addEventListener('click', () => {
-        scaleVisibility = !scaleVisibility; // toggle state
+        scaleVisibility = !scaleVisibility;
         if (scaleVisibility) {
-            // Calculate the scale value and show it
             const feetPerInch = getFeetPerInch();
-            scaleBoxDiv.innerHTML = `1 inch = ${feetPerInch.toFixed(2)} feet`;
+            // Add an input field and a label
+            scaleBoxDiv.innerHTML = `
+                1 inch = ${feetPerInch.toFixed(2)} feet<br>
+                <label for="scale-input">Enter a number:</label>
+                <input type="number" id="scale-input" style="width: 60px;">
+            `;
             scaleBoxDiv.style.display = 'block';
+            // Attach event listener to input
+            const scaleInput = document.getElementById('scale-input');
+            scaleInput.addEventListener('input', (e) => {
+                userNumber = e.target.value;
+                // You can use userNumber as needed elsewhere
+                console.log('User number:', userNumber);
+            });
         } else {
             scaleBoxDiv.style.display = 'none';
         }
@@ -62,14 +74,31 @@ document.addEventListener("DOMContentLoaded", function () {
     map.on('moveend', () => {
         if (scaleVisibility) {
             const feetPerInch = getFeetPerInch();
-            scaleBoxDiv.innerHTML = `1 inch = ${feetPerInch.toFixed(2)} feet`;
+            // Also restore input field and keep value
+            scaleBoxDiv.innerHTML = `
+                1 inch = ${feetPerInch.toFixed(2)} feet<br>
+                <label for="scale-input">Enter a number:</label>
+                <input type="number" id="scale-input" style="width: 60px;" value="${userNumber !== null ? userNumber : ''}">
+            `;
+            const scaleInput = document.getElementById('scale-input');
+            scaleInput.addEventListener('input', (e) => {
+                userNumber = e.target.value;
+            });
         }
     });
 
     map.on('zoom', () => {
         if (scaleVisibility) {
             const feetPerInch = getFeetPerInch();
-            scaleBoxDiv.innerHTML = `1 inch = ${feetPerInch.toFixed(2)} feet`;        
+            scaleBoxDiv.innerHTML = `
+                1 inch = ${feetPerInch.toFixed(2)} feet<br>
+                <label for="scale-input">Enter a number:</label>
+                <input type="number" id="scale-input" style="width: 60px;" value="${userNumber !== null ? userNumber : ''}">
+            `;
+            const scaleInput = document.getElementById('scale-input');
+            scaleInput.addEventListener('input', (e) => {
+                userNumber = e.target.value;
+            });
         }
     });
 });
