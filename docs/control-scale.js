@@ -52,19 +52,19 @@ document.addEventListener("DOMContentLoaded", function () {
         scaleVisibility = !scaleVisibility;
         if (scaleVisibility) {
             const feetPerInch = getFeetPerInch();
-            // Add an input field and a label
             scaleBoxDiv.innerHTML = `
                 1 inch = ${feetPerInch.toFixed(2)} feet<br>
                 <label for="scale-input">Enter a number:</label>
-                <input type="number" id="scale-input" style="width: 60px;">
+                <input type="number" id="scale-input" style="width: 60px;" value="${userNumber !== null ? userNumber : ''}">
+                <button id="scale-submit" style="margin-left: 5px;">Submit</button>
             `;
             scaleBoxDiv.style.display = 'block';
-            // Attach event listener to input
+
             const scaleInput = document.getElementById('scale-input');
-            scaleInput.addEventListener('input', (e) => {
-                userNumber = e.target.value;
-                // You can use userNumber as needed elsewhere
-                console.log('User number:', userNumber);
+            const scaleSubmit = document.getElementById('scale-submit');
+            scaleSubmit.addEventListener('click', () => {
+                userNumber = scaleInput.value;
+                console.log('User number submitted:', userNumber);
             });
         } else {
             scaleBoxDiv.style.display = 'none';
@@ -74,15 +74,17 @@ document.addEventListener("DOMContentLoaded", function () {
     map.on('moveend', () => {
         if (scaleVisibility) {
             const feetPerInch = getFeetPerInch();
-            // Also restore input field and keep value
             scaleBoxDiv.innerHTML = `
                 1 inch = ${feetPerInch.toFixed(2)} feet<br>
                 <label for="scale-input">Enter a number:</label>
                 <input type="number" id="scale-input" style="width: 60px;" value="${userNumber !== null ? userNumber : ''}">
+                <button id="scale-submit" style="margin-left: 5px;">Submit</button>
             `;
             const scaleInput = document.getElementById('scale-input');
-            scaleInput.addEventListener('input', (e) => {
-                userNumber = e.target.value;
+            const scaleSubmit = document.getElementById('scale-submit');
+            scaleSubmit.addEventListener('click', () => {
+                userNumber = scaleInput.value;
+                console.log('User number submitted:', userNumber);
             });
         }
     });
@@ -94,10 +96,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 1 inch = ${feetPerInch.toFixed(2)} feet<br>
                 <label for="scale-input">Enter a number:</label>
                 <input type="number" id="scale-input" style="width: 60px;" value="${userNumber !== null ? userNumber : ''}">
+                <button id="scale-submit" style="margin-left: 5px;">Submit</button>
             `;
             const scaleInput = document.getElementById('scale-input');
-            scaleInput.addEventListener('input', (e) => {
-                userNumber = e.target.value;
+            const scaleSubmit = document.getElementById('scale-submit');
+            scaleSubmit.addEventListener('click', () => {
+                userNumber = scaleInput.value;
+                console.log('User number submitted:', userNumber);
             });
         }
     });
