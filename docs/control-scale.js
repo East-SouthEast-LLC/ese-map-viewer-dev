@@ -30,6 +30,26 @@ function getFeetPerInch() {
     return diagonalFeet / mapDiagonalInches;
 }
 
+function setMapToScale(targetFeetPerInch, tolerance = 1) {
+    let minZoom = map.getMinZoom();
+    let maxZoom = map.getMaxZoom();
+    let bestZoom = map.getZoom();
+    let bestDiff = Infinity;
+    let finalZoom = bestZoom;
+
+    for (let i = 0; i < 20; i++) {
+        map.jumpTo({ zoom: bestZoom }); // Use jumpTo for instant update
+        let scale = getFeetPerInch();
+        let diff = scale - targetFeetPerInch;
+        if (Math.abs(diff) < tolerance) break;
+        if (diff > 0) minZoom = bestZoom;
+        else maxZoom = bestZoom;
+        bestZoom = (minZoom + maxZoom) / 2;
+        finalZoom = bestZoom;
+    }
+    map.jumpTo({ zoom: finalZoom }); // Set zoom only once at the end
+}
+
 // ============================================================================
 // MAIN SCALE FUNCTION (event listener)
 // ============================================================================
@@ -65,6 +85,8 @@ document.addEventListener("DOMContentLoaded", function () {
             scaleSubmit.addEventListener('click', () => {
                 userNumber = scaleInput.value;
                 console.log('User number submitted:', userNumber);
+                // add code here to update the scale according to the user input
+                setMapToScale(userNumber);
             });
         } else {
             scaleBoxDiv.style.display = 'none';
