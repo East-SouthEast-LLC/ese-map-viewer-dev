@@ -4,31 +4,31 @@
 // HELPER FUNCTIONS FOR SCALE FUNCTIONALITY
 // ============================================================================
 
-// function getFeetPerInch() {
-//     const center = map.getCenter();
-//     const bounds = map.getBounds();
-//     const northLat = bounds.getNorth();
-//     const centerLat = center.lat;
+function getFeetPerInch() {
+    const center = map.getCenter();
+    const bounds = map.getBounds();
+    const northLat = bounds.getNorth();
+    const centerLat = center.lat;
 
-//     // Distance from center to top in meters
-//     const halfHeightMeters = turf.distance(
-//         [center.lng, center.lat],
-//         [center.lng, northLat],
-//         { units: 'meters' }
-//     );
-//     const halfWidthMeters = halfHeightMeters * 75 / 80;
-//     const north = centerLat + (halfHeightMeters / 111320);
-//     const south = centerLat - (halfHeightMeters / 111320);
-//     const lngDiff = halfWidthMeters / (111320 * Math.cos(centerLat * (Math.PI / 180)));
-//     const east = center.lng + lngDiff;
-//     const west = center.lng - lngDiff;
-//     const diagonalMeters = turf.distance(
-//         [west, north], [east, south], { units: 'meters' }
-//     );
-//     const diagonalFeet = diagonalMeters * 3.28084;
-//     const mapDiagonalInches = Math.sqrt(7.5 ** 2 + 8.0 ** 2);
-//     return diagonalFeet / mapDiagonalInches;
-// }
+    // Distance from center to top in meters
+    const halfHeightMeters = turf.distance(
+        [center.lng, center.lat],
+        [center.lng, northLat],
+        { units: 'meters' }
+    );
+    const halfWidthMeters = halfHeightMeters * 75 / 80;
+    const north = centerLat + (halfHeightMeters / 111320);
+    const south = centerLat - (halfHeightMeters / 111320);
+    const lngDiff = halfWidthMeters / (111320 * Math.cos(centerLat * (Math.PI / 180)));
+    const east = center.lng + lngDiff;
+    const west = center.lng - lngDiff;
+    const diagonalMeters = turf.distance(
+        [west, north], [east, south], { units: 'meters' }
+    );
+    const diagonalFeet = diagonalMeters * 3.28084;
+    const mapDiagonalInches = Math.sqrt(7.5 ** 2 + 8.0 ** 2);
+    return diagonalFeet / mapDiagonalInches;
+}
 // ============================================================================
 // MAIN SCALE FUNCTION (event listener)
 // ============================================================================
@@ -61,13 +61,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     map.on('moveend', () => {
         if (scaleVisibility) {
-            // update the scale display
+            const feetPerInch = getFeetPerInch();
+            scaleBoxDiv.innerHTML = `1 inch = ${feetPerInch.toFixed(2)} feet`;
         }
     });
 
     map.on('zoom', () => {
         if (scaleVisibility) {
-            // Update the scale display
+            const feetPerInch = getFeetPerInch();
+            scaleBoxDiv.innerHTML = `1 inch = ${feetPerInch.toFixed(2)} feet`;        
         }
     });
 });
