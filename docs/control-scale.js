@@ -29,52 +29,41 @@ function getFeetPerInch() {
     const mapDiagonalInches = Math.sqrt(7.5 ** 2 + 8.0 ** 2);
     return diagonalFeet / mapDiagonalInches;
 }
-
-function setMapToScale(targetFeetPerInch, tolerance = 1) {
-    let minZoom = map.getMinZoom();
-    let maxZoom = map.getMaxZoom();
-    let zoom = map.getZoom();
-    let iterations = 0;
-    while (iterations < 20) {
-        map.setZoom(zoom);
-        let scale = getFeetPerInch();
-        let diff = scale - targetFeetPerInch;
-        if (Math.abs(diff) < tolerance) break;
-        if (diff > 0) minZoom = zoom;
-        else maxZoom = zoom;
-        zoom = (minZoom + maxZoom) / 2;
-        iterations++;
-    }
-    map.setZoom(zoom);
-}
-
 // ============================================================================
 // MAIN SCALE FUNCTION (event listener)
 // ============================================================================
 
 document.addEventListener("DOMContentLoaded", function () {
     const scaleZoomButton = document.getElementById("scaleZoom");
-    const scaleInput = document.getElementById("scaleInput");
-    const scaleDisplay = document.getElementById("scaleDisplay");
+    const geocoderContainer = document.getElementById("geocoder-container");
+    let scaleVisibility = false; // Track visibility
 
-    if (!scaleZoomButton || !scaleInput || !scaleDisplay) {
+
+    if (!scaleZoomButton || !geocoderContainer) {
         console.error("Required elements not found in the DOM.");
         return;
     }
 
-    function updateScaleDisplay() {
-        const scale = Math.round(getFeetPerInch());
-        scaleDisplay.innerText = `1" = ${scale} feet`;
-    }
+    scaleBoxDiv.style.display = 'none';
 
-    scaleZoomButton.addEventListener("click", () => {
-        const target = Number(scaleInput.value);
-        if (target > 0) setMapToScale(target);
+    scaleZoomButton.addEventListener('click', () => {
+        if (scaleVisibility) {
+            scaleBoxDiv.style.display = 'none'; // Hide scale box
+        } else {
+            // update the scale display
+            scaleBoxDiv.style.display = 'block'; // Show scale box
+        }
     });
 
-    map.on('moveend', updateScaleDisplay);
-    map.on('zoom', updateScaleDisplay);
+    map.on('moveend', () => {
+        if (scaleVisibility) {
+            // update the scale display
+        }
+    });
 
-    // Initialize
-    updateScaleDisplay();
+    map.on('zoom', () => {
+        if (scaleVisibility) {
+            // Update the scale display
+        }
+    });
 });
