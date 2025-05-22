@@ -4,64 +4,48 @@
 // HELPER FUNCTIONS FOR SCALE FUNCTIONALITY
 // ============================================================================
 
-// Function to create and configure the scale dropdown
-function createScaleDropdown() {
-    const scaleDropdown = document.createElement("div");
-    scaleDropdown.id = "scaleDropdown";
-    scaleDropdown.style.display = "none"; // Hidden initially
-    scaleDropdown.style.background = "white";
-    scaleDropdown.style.padding = "5px";
-    scaleDropdown.style.borderRadius = "5px";
-    scaleDropdown.style.boxShadow = "0 2px 5px rgba(0,0,0,0.3)";
-    scaleDropdown.style.width = "200px";
-    scaleDropdown.style.boxSizing = "border-box";
+function getFeetPerInch() {
+    const center = map.getCenter();
+    const bounds = map.getBounds();
+    const northLat = bounds.getNorth();
+    const centerLat = center.lat;
 
-    // Dropdown content including scale select and zoom tracking inputs
-    scaleDropdown.innerHTML = `
-        <select id="scaleSelect" style="width: 100%; margin-bottom: 5px;">
-            <option selected>[Current scale]</option>
-            <option value="50">1" = 50'</option>
-            <option value="100">1" = 100'</option>
-            <option value="250">1" = 250'</option>
-            <option value="500">1" = 500'</option>
-            <option value="1000">1" = 1000'</option>
-            <option value="custom">[Custom Scale]</option>
-        </select>
-        <label for="zoomInput">Current Zoom:</label>
-        <input type="text" id="zoomInput" readonly style="width: 100%; text-align: center; margin-bottom: 5px;">
-        <input type="range" id="zoomSlider" min="0" max="22" step="0.01" style="width: 100%;">
-    `;
-    
-    return scaleDropdown;
+    // Distance from center to top in meters
+    const halfHeightMeters = turf.distance(
+        [center.lng, center.lat],
+        [center.lng, northLat],
+        { units: 'meters' }
+    );
+    const halfWidthMeters = halfHeightMeters * 75 / 80;
+    const north = centerLat + (halfHeightMeters / 111320);
+    const south = centerLat - (halfHeightMeters / 111320);
+    const lngDiff = halfWidthMeters / (111320 * Math.cos(centerLat * (Math.PI / 180)));
+    const east = center.lng + lngDiff;
+    const west = center.lng - lngDiff;
+    const diagonalMeters = turf.distance(
+        [west, north], [east, south], { units: 'meters' }
+    );
+    const diagonalFeet = diagonalMeters * 3.28084;
+    const mapDiagonalInches = Math.sqrt(7.5 ** 2 + 8.0 ** 2);
+    return diagonalFeet / mapDiagonalInches;
 }
 
-// Function to handle scale button click events
-function toggleScaleDropdown(scaleDropdown, zoomListenerAdded) {
-    if (scaleDropdown.style.display === "none") {
-        scaleDropdown.style.display = "block";
-
-        // Add zoom event listener only once
-        if (!zoomListenerAdded) {
-            map.on('zoom', () => {
-                const currentZoom = map.getZoom().toFixed(2);
-                document.getElementById("zoomInput").value = currentZoom;
-                document.getElementById("zoomSlider").value = currentZoom;
-            });
-            return true;
-        }
-    } else {
-        scaleDropdown.style.display = "none";
+function setMapToScale(targetFeetPerInch, tolerance = 1) {
+    let minZoom = map.getMinZoom();
+    let maxZoom = map.getMaxZoom();
+    let zoom = map.getZoom();
+    let iterations = 0;
+    while (iterations < 20) {
+        map.setZoom(zoom);
+        let scale = getFeetPerInch();
+        let diff = scale - targetFeetPerInch;
+        if (Math.abs(diff) < tolerance) break;
+        if (diff > 0) minZoom = zoom;
+        else maxZoom = zoom;
+        zoom = (minZoom + maxZoom) / 2;
+        iterations++;
     }
-    return zoomListenerAdded;
-}
-
-// Function to handle clicks outside the dropdown
-function setupOutsideClickHandler(geocoderContainer, scaleZoomButton, scaleDropdown) {
-    document.addEventListener("click", function (event) {
-        if (!geocoderContainer.contains(event.target) && event.target !== scaleZoomButton) {
-            scaleDropdown.style.display = "none";
-        }
-    });
+    map.setZoom(zoom);
 }
 
 // ============================================================================
@@ -70,35 +54,27 @@ function setupOutsideClickHandler(geocoderContainer, scaleZoomButton, scaleDropd
 
 document.addEventListener("DOMContentLoaded", function () {
     const scaleZoomButton = document.getElementById("scaleZoom");
-    const geocoderContainer = document.getElementById("geocoder-container");
+    const scaleInput = document.getElementById("scaleInput");
+    const scaleDisplay = document.getElementById("scaleDisplay");
 
-    if (!scaleZoomButton || !geocoderContainer) {
+    if (!scaleZoomButton || !scaleInput || !scaleDisplay) {
         console.error("Required elements not found in the DOM.");
         return;
     }
 
-    // Create the dropdown element
-    const scaleDropdown = createScaleDropdown();
+    function updateScaleDisplay() {
+        const scale = Math.round(getFeetPerInch());
+        scaleDisplay.innerText = `1" = ${scale} feet`;
+    }
 
-    // Create a wrapper div to position the dropdown correctly
-    const scaleDropdownWrapper = document.createElement("div");
-    scaleDropdownWrapper.id = "scaleDropdownWrapper";
-    scaleDropdownWrapper.style.display = "flex";
-    scaleDropdownWrapper.style.flexDirection = "column";
-    scaleDropdownWrapper.style.width = "100%";
-    scaleDropdownWrapper.appendChild(scaleDropdown);
-
-    // Append dropdown inside geocoder-container, below buttons
-    geocoderContainer.appendChild(scaleDropdownWrapper);
-
-    // Track if zoom listener was added
-    let zoomListenerAdded = false;
-
-    // Toggle dropdown and set up zoom tracking
-    scaleZoomButton.addEventListener("click", function () {
-        zoomListenerAdded = toggleScaleDropdown(scaleDropdown, zoomListenerAdded);
+    scaleZoomButton.addEventListener("click", () => {
+        const target = Number(scaleInput.value);
+        if (target > 0) setMapToScale(target);
     });
 
-    // Close dropdown when clicking outside
-    setupOutsideClickHandler(geocoderContainer, scaleZoomButton, scaleDropdown);
+    map.on('moveend', updateScaleDisplay);
+    map.on('zoom', updateScaleDisplay);
+
+    // Initialize
+    updateScaleDisplay();
 });
