@@ -254,12 +254,12 @@ document.getElementById('printButton').addEventListener('click', () => {
                             height: 100%;
                             display: flex;
                             justify-content: center;
-                            align-items: right;
+                            align-items: center;
                             overflow: hidden;
                         }
                         .image-container img {
-                            width: 100%;
-                            height: 100%;
+                            width: 90%;
+                            height: 90%;
                             object-fit: contain;
                         }
                         .inner-frame {
