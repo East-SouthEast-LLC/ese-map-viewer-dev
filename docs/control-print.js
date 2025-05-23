@@ -206,13 +206,13 @@ document.getElementById('printButton').addEventListener('click', () => {
                             height: 11in;
                         }
                         .frame {
-                            width: calc(100% - 1in); /* 1/2" margins on both sides */
+                            width: calc(100% - .5in); /* 1/2" margins on both sides */
                             position: absolute;
-                            left: 0.5in;
-                            right: 0.5in;
+                            left: 0.25in;
+                            right: 0.25in;
                         }
                         .top-frame {
-                            height: 8.0in;
+                            height: 8in;
                             border: 4px solid black; /* Frame border */
                             border-bottom: none; /* Remove bottom border */
                             position: relative;
@@ -228,7 +228,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                             margin: 0; /* Remove margin to avoid any spacing issues */
                         }
                         .bottom-frame {
-                            height: 2.0in;
+                            height: 2.5in;
                             border: 4px solid black; /* Frame border */
                             border-top: none; /* Remove top border */
                             display: flex;
@@ -261,8 +261,8 @@ document.getElementById('printButton').addEventListener('click', () => {
                             object-fit: contain;
                         }
                         .inner-frame {
-                            width: 2in;
-                            height: 2in;
+                            width: 2.5in;
+                            height: 2.5in;
                             position: absolute;
                             right: 0; /* Position it to the right */
                             top: 0;
