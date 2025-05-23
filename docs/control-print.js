@@ -212,6 +212,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                             right: 0.25in;
                             z-index: 1;
                             border: 4px;
+                            border-style: solid;
                             border-color: black;
                             box-sizing: border-box; 
                             background: white;
@@ -225,6 +226,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                             width: 100%;
                             height: 0px; /* Line thickness */
                             border-top: 4px;
+                            border-style: solid;
                             border-color: black;
                             position: absolute;
                             top: 8in; /* Place it below the top frame */
@@ -331,11 +333,9 @@ document.getElementById('printButton').addEventListener('click', () => {
                                 <span class="disclaimer">This map is for illustrative purposes only and is not adequate for legal boundary determination or regulatory interpretation.</span>
                                 <span class="date">${currentDate}</span>
                                 ${getPrintScaleBarHTML(map)}
-                                <span class="sources">Map sources include:</span>
+                                <br><span class="sources">Map sources include:</span>
                                 <span class="massgis">Bureau of Geographic Information (MassGIS), Commonwealth of Massachusetts, Executive Office of Technology and Security Services</span>
-                                <span class="base-map">
-                                    © <a href="https://www.mapbox.com/about/maps">Mapbox</a> </br>
-                                    © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> </br>
+                                <span class="base-map">© <a href="https://www.mapbox.com/about/maps">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a><br>
                                     <strong><a href="https://apps.mapbox.com/feedback/" target="_blank">Improve this map, www.apps.mapbox.com/feedback</a></strong>
                                 </span>
                             </div>
