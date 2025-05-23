@@ -311,7 +311,6 @@ document.getElementById('printButton').addEventListener('click', () => {
                                 <img src="${canvas.toDataURL()}" alt="Map Image" />
                             </div>
                         </div>
-                        <div class="middle-line"></div>
                         <div class="bottom-frame">
                             <div class="image-container">
                                 <img src="https://static1.squarespace.com/static/536cf42ee4b0465238027de5/t/67a783e42bb54b7b434b79f1/1739031525647/ESE-GIS.jpg" alt="Company Logo" />
