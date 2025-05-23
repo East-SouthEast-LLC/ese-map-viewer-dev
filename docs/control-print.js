@@ -347,8 +347,8 @@ document.getElementById('printButton').addEventListener('click', () => {
             win.document.close();
 
             win.onload = () => {
-                win.print();
-                win.close();
+                // win.print();
+                // win.close();
             };
         } else {
             alert("Popup blocked! Please allow popups for this site.");
