@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <strong>1 inch = ${Math.round(feetPerInch)} feet</strong><br>
                 <label for="scale-input" style="display:inline-block; margin-bottom:5px;">Set feet per inch:</label>
                 <input type="number" id="scale-input" style="width: 70px; display:inline-block; margin-left:5px;" value="${userNumber !== null ? userNumber : ''}">
-                <button id="scale-submit" style="display: block; margin: 8px auto 8px auto; width: 90%; height: 24px; padding: 0; font-size: 12px;">Submit</button>
+                <button id="scale-submit" style="display: block; margin: 0 auto 8px auto; width: 90%; height: 24px; padding: 0; font-size: 12px;">Submit</button>
                 <label for="scale-dropdown">Or select a preset:</label>
                 <select id="scale-dropdown" style="margin-top:5px;">
                     <option value="">-- Select --</option>
@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <strong>1 inch = ${Math.round(feetPerInch)} feet</strong><br>
                 <label for="scale-input" style="display:inline-block; margin-bottom:5px;">Set feet per inch:</label>
                 <input type="number" id="scale-input" style="width: 70px; display:inline-block; margin-left:5px;" value="${userNumber !== null ? userNumber : ''}">
-                <button id="scale-submit" style="display: block; margin: 8px auto 8px auto; width: 90%; height: 24px; padding: 0; font-size: 12px;">Submit</button>
+                <button id="scale-submit" style="display: block; margin: 0 auto 8px auto; width: 90%; height: 24px; padding: 0; font-size: 12px;">Submit</button>
                 <label for="scale-dropdown">Or select a preset:</label>
                 <select id="scale-dropdown" style="margin-top:5px;">
                     <option value="">-- Select --</option>
@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <strong>1 inch = ${Math.round(feetPerInch)} feet</strong><br>
                 <label for="scale-input" style="display:inline-block; margin-bottom:5px;">Set feet per inch:</label>
                 <input type="number" id="scale-input" style="width: 70px; display:inline-block; margin-left:5px;" value="${userNumber !== null ? userNumber : ''}">
-                <button id="scale-submit" style="display: block; margin: 8px auto 8px auto; width: 90%; height: 24px; padding: 0; font-size: 12px;">Submit</button>
+                <button id="scale-submit" style="display: block; margin: 0 auto 8px auto; width: 90%; height: 24px; padding: 0; font-size: 12px;">Submit</button>
                 <label for="scale-dropdown">Or select a preset:</label>
                 <select id="scale-dropdown" style="margin-top:5px;">
                     <option value="">-- Select --</option>
