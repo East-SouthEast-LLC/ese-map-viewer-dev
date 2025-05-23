@@ -254,7 +254,8 @@ document.getElementById('printButton').addEventListener('click', () => {
                             height: 100%;
                             display: flex;
                             justify-content: center;
-                            align-items: center;
+                            align-items: right;
+                            overflow: hidden;
                         }
                         .image-container img {
                             width: 100%;

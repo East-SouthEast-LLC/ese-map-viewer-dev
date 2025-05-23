@@ -93,7 +93,7 @@ function getPrintScaleBarHTML(map) {
     // Width: 2in; adjust as needed for your layout
     return `
     <div style="margin-top:0;">
-      <svg width="2in" height="0.15in" viewBox="0 0 200 15">
+      <svg width="2in" height="0.30in" viewBox="0 0 200 30">
         <rect x="10" y="15" width="180" height="5" fill="black"/>
         <rect x="10" y="10" width="2" height="15" fill="black"/>
         <rect x="100" y="10" width="2" height="15" fill="black"/>
