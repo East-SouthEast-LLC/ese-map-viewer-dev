@@ -216,7 +216,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                             border-color: black;
                             box-sizing: border-box; 
                             background: white;
-                            z-index: 11; /* Ensure it appears above all other elements */
+                            padding: 4px; /* Space between border and content */
                         }
                         .top-frame {
                             height: 8in;
@@ -234,6 +234,8 @@ document.getElementById('printButton').addEventListener('click', () => {
                             display: flex;
                             justify-content: center;
                             align-items: center;
+                            box-sizing: border-box;
+                            overflow: hidden;
                         }
                         .map-container img {
                             width: 100%;
@@ -249,8 +251,8 @@ document.getElementById('printButton').addEventListener('click', () => {
                             overflow: hidden;
                         }
                         .image-container img {
-                            width: 90%;
-                            height: 90%;
+                            width: 100%;
+                            height: 100%;
                             object-fit: contain;
                         }
                         .inner-frame {
