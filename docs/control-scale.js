@@ -30,7 +30,7 @@ function getFeetPerInch() {
     return diagonalFeet / mapDiagonalInches;
 }
 
-function setMapToScale(targetFeetPerInch, tolerance = 1) {
+function setMapToScale(targetFeetPerInch, tolerance = .1) {
     let minZoom = map.getMinZoom();
     let maxZoom = map.getMaxZoom();
     let bestZoom = map.getZoom();
@@ -73,15 +73,15 @@ document.addEventListener("DOMContentLoaded", function () {
         if (scaleVisibility) {
             const feetPerInch = getFeetPerInch();
             scaleBoxDiv.innerHTML = `
-                1 inch = ${feetPerInch.toFixed(2)} feet<br>
-                <label for="scale-input">Enter a number:</label>
+                1 inch = ${Math.round(feetPerInch)} feet<br>
+                <label for="scale-input">Enter custom feet per inch:</label><br>
                 <input type="number" id="scale-input" style="width: 60px;" value="${userNumber !== null ? userNumber : ''}">
                 <button id="scale-submit" style="margin-left: 5px;">Submit</button>
                 <br>
                 <label for="scale-dropdown">Or select a preset:</label>
                 <select id="scale-dropdown" style="margin-top:5px;">
                     <option value="">-- Select --</option>
-                    <option value="50">50</option>
+                    <option value="100">1" = 100 feet</option>
                     <option value="100">100</option>
                     <option value="200">200</option>
                     <option value="500">500</option>
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (scaleVisibility) {
             const feetPerInch = getFeetPerInch();
             scaleBoxDiv.innerHTML = `
-                1 inch = ${feetPerInch.toFixed(2)} feet<br>
+                1 inch = ${Math.round(feetPerInch)} feet<br>
                 <label for="scale-input">Enter a number:</label>
                 <input type="number" id="scale-input" style="width: 60px;" value="${userNumber !== null ? userNumber : ''}">
                 <button id="scale-submit" style="margin-left: 5px;">Submit</button>
@@ -159,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (scaleVisibility) {
             const feetPerInch = getFeetPerInch();
             scaleBoxDiv.innerHTML = `
-                1 inch = ${feetPerInch.toFixed(2)} feet<br>
+                1 inch = ${Math.round(feetPerInch)} feet<br>
                 <label for="scale-input">Enter a number:</label>
                 <input type="number" id="scale-input" style="width: 60px;" value="${userNumber !== null ? userNumber : ''}">
                 <button id="scale-submit" style="margin-left: 5px;">Submit</button>
