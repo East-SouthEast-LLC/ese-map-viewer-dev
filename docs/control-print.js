@@ -211,7 +211,8 @@ document.getElementById('printButton').addEventListener('click', () => {
                             left: 0.25in;
                             right: 0.25in;
                             z-index: 1;
-                            border: 4px solid black;
+                            border: 4px;
+                            border-color: black;
                             box-sizing: border-box; 
                             background: white;
                             z-index: 11; /* Ensure it appears above all other elements */
@@ -223,7 +224,8 @@ document.getElementById('printButton').addEventListener('click', () => {
                         .middle-line {
                             width: 100%;
                             height: 0px; /* Line thickness */
-                            border-top: 4px solid black; /* Set color and thickness */
+                            border-top: 4px;
+                            border-color: black;
                             position: absolute;
                             top: 8in; /* Place it below the top frame */
                             left: 0;
@@ -265,7 +267,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                             width: 2.5in;
                             height: 2.5in;
                             position: absolute;
-                            right: 0; /* Position it to the right */
+                            right: 0;
                             top: 0;
                             display: flex;
                             justify-content: center;

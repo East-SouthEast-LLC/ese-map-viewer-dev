@@ -76,34 +76,47 @@ function getScaleBoxHTML(feetPerInch, userNumber) {
 
 function getPrintScaleBarHTML(map) {
     const feetPerInch = getFeetPerInch();
-
-    // Choose a round bar length (in inches for print); 2" is a good default
     const barInches = 2;
     const totalFeet = feetPerInch * barInches;
 
-    // Round totalFeet to a nice number (nearest 10/50/100 for clarity)
-    const niceFeet = Math.round(totalFeet / 10) * 10;
+    function getNiceFeet(feet) {
+        if (feet < 100) return Math.round(feet);
+        if (feet < 1000) return Math.round(feet / 10) * 10;
+        if (feet < 5000) return Math.round(feet / 50) * 50;
+        return Math.round(feet / 100) * 100;
+    }
 
-    // Adjust barInches if you want to round the bar itself (optional, for "nice" numbers)
-    // e.g., barInches = niceFeet / feetPerInch;
+    const niceFeet = getNiceFeet(totalFeet);
+    const quarterFeet = getNiceFeet(niceFeet / 4);
+    const halfFeet = getNiceFeet(niceFeet / 2);
+    const threeQuarterFeet = getNiceFeet(niceFeet * 0.75);
 
-    const halfFeet = Math.round(niceFeet / 2);
-
-    // SVG for 3 ticks: 0, half, full
-    // Width: 2in; adjust as needed for your layout
+    // 4 alternating blocks, black and white
     return `
-    <div style="margin-top:0;">
-      <svg width="2in" height="0.30in" viewBox="0 0 200 30">
-        <rect x="10" y="15" width="180" height="5" fill="black"/>
-        <rect x="10" y="10" width="2" height="15" fill="black"/>
-        <rect x="100" y="10" width="2" height="15" fill="black"/>
-        <rect x="190" y="10" width="2" height="15" fill="black"/>
-        <text x="10" y="28" font-size="10">0</text>
-        <text x="100" y="28" font-size="10" text-anchor="middle">${halfFeet}</text>
-        <text x="190" y="28" font-size="10" text-anchor="end">${niceFeet} ft</text>
+    <div style="margin-top:2px;">
+      <svg width="2in" height="0.40in" viewBox="0 0 200 40">
+        <!-- Alternating rectangles -->
+        <rect x="10" y="20" width="45" height="12" fill="black"/>
+        <rect x="55" y="20" width="45" height="12" fill="white" stroke="black" stroke-width="1"/>
+        <rect x="100" y="20" width="45" height="12" fill="black"/>
+        <rect x="145" y="20" width="45" height="12" fill="white" stroke="black" stroke-width="1"/>
+        <!-- Main border -->
+        <rect x="10" y="20" width="180" height="12" fill="none" stroke="black" stroke-width="1.5"/>
+        <!-- Tick marks -->
+        <line x1="10" y1="15" x2="10" y2="35" stroke="black" stroke-width="2"/>
+        <line x1="55" y1="15" x2="55" y2="35" stroke="black" stroke-width="1"/>
+        <line x1="100" y1="15" x2="100" y2="35" stroke="black" stroke-width="2"/>
+        <line x1="145" y1="15" x2="145" y2="35" stroke="black" stroke-width="1"/>
+        <line x1="190" y1="15" x2="190" y2="35" stroke="black" stroke-width="2"/>
+        <!-- Labels -->
+        <text x="10" y="39" font-size="9" text-anchor="start">0</text>
+        <text x="55" y="39" font-size="9" text-anchor="middle">${quarterFeet}</text>
+        <text x="100" y="39" font-size="9" text-anchor="middle">${halfFeet}</text>
+        <text x="145" y="39" font-size="9" text-anchor="middle">${threeQuarterFeet}</text>
+        <text x="190" y="39" font-size="9" text-anchor="end">${niceFeet} ft</text>
       </svg>
       <div style="font-size:10px; text-align:center;">
-        Scale bar: 1 inch = ${feetPerInch.toFixed(0)} ft
+        Scale bar: 1 inch = ${getNiceFeet(feetPerInch)} ft
       </div>
     </div>
     `;
