@@ -94,12 +94,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
         scaleSubmit.addEventListener('click', () => {
             userNumber = scaleInput.value;
+            if (!userNumber || isNaN(userNumber) || Number(userNumber) <= 0) {
+                alert('Please enter a valid feet-per-inch value or select a preset.');
+                return;
+            }
             setMapToScale(userNumber);
         });
 
         scaleInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 userNumber = scaleInput.value;
+                if (!userNumber || isNaN(userNumber) || Number(userNumber) <= 0) {
+                    alert('Please enter a valid feet-per-inch value or select a preset.');
+                    return;
+                }
                 setMapToScale(userNumber);
             }
         });
