@@ -215,6 +215,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                             border-color: red;
                             box-sizing: border-box; 
                             background: white;
+                            z-index: 11; /* Ensure it appears above all other elements */
                         }
                         .top-frame {
                             height: 8in;
@@ -254,7 +255,6 @@ document.getElementById('printButton').addEventListener('click', () => {
                             display: flex;
                             justify-content: center;
                             align-items: center;
-                            margin-left: .1 in;
                         }
                         .image-container img {
                             width: 100%;
