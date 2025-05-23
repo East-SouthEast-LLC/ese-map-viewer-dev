@@ -73,10 +73,10 @@ document.addEventListener("DOMContentLoaded", function () {
         if (scaleVisibility) {
             const feetPerInch = getFeetPerInch();
             scaleBoxDiv.innerHTML = `
-                <strong>1 inch = ${Math.round(feetPerInch)} feet<strong><br>
+                <strong>1 inch = ${Math.round(feetPerInch)} feet</strong><br>
                 <label for="scale-input" style="display:inline-block; margin-bottom:5px;">Custom feet per inch:</label>
                 <input type="number" id="scale-input" style="width: 70px; display:inline-block; margin-left:5px;" value="${userNumber !== null ? userNumber : ''}">
-                <button id="scale-submit" style="margin-left:5px; margin-right:5px; width:140px; height:28px; padding:0 5px; font-size:12px;">Submit</button><br>
+                <button id="scale-submit" style="margin-left:5px; margin-right:5px; width:(100% - 10px); height:22px; padding:0 5px; font-size:12px;">Submit</button><br>
                 <label for="scale-dropdown">Or select a preset:</label>
                 <select id="scale-dropdown" style="margin-top:5px;">
                     <option value="">-- Select --</option>
