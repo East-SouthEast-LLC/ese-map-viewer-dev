@@ -227,3 +227,17 @@ INFO DISPLAY PANELS (for distance and scale)
   width: 100%;
   box-sizing: border-box;
 }
+
+.scale-submit-btn {
+    display: block;
+    margin: 0 auto 8px auto;
+    width: 90%;
+    height: 24px;
+    padding: 0;
+    font-size: 12px;
+}
+.scale-input {
+    width: 70px;
+    display: inline-block;
+    margin-left: 5px;
+}
