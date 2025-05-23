@@ -211,8 +211,9 @@ document.getElementById('printButton').addEventListener('click', () => {
                             left: 0.25in;
                             right: 0.25in;
                             z-index: 1;
-                            border: 4px solid black; /* <--- Move border here */
-                            box-sizing: border-box;  /* <--- Ensures border is inside width */
+                            border: 4px solid black;
+                            border-color: red;
+                            box-sizing: border-box; 
                             background: white;
                         }
                         .top-frame {
@@ -222,7 +223,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                         .middle-line {
                             width: 100%;
                             height: 0px; /* Line thickness */
-                            border-top: 4px solid black; /* Set color and thickness */
+                            border-top: 4px solid blue; /* Set color and thickness */
                             position: absolute;
                             top: 8in; /* Place it below the top frame */
                             left: 0;
@@ -271,7 +272,6 @@ document.getElementById('printButton').addEventListener('click', () => {
                             align-items: center;
                             text-align: center;
                             padding: 4px;
-                            border: 0px; /* Border set to 0px */
                             flex-direction: column; /* Stack text vertically */
                         }
                         .inner-frame span {
