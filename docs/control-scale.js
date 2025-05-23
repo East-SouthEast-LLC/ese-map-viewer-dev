@@ -77,16 +77,37 @@ document.addEventListener("DOMContentLoaded", function () {
                 <label for="scale-input">Enter a number:</label>
                 <input type="number" id="scale-input" style="width: 60px;" value="${userNumber !== null ? userNumber : ''}">
                 <button id="scale-submit" style="margin-left: 5px;">Submit</button>
+                <br>
+                <label for="scale-dropdown">Or select a preset:</label>
+                <select id="scale-dropdown" style="margin-top:5px;">
+                    <option value="">-- Select --</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="500">500</option>
+                    <option value="1000">1000</option>
+                    <option value="5000">5000</option>
+                </select>
             `;
             scaleBoxDiv.style.display = 'block';
 
             const scaleInput = document.getElementById('scale-input');
             const scaleSubmit = document.getElementById('scale-submit');
+            const scaleDropdown = document.getElementById('scale-dropdown');
+
             scaleSubmit.addEventListener('click', () => {
                 userNumber = scaleInput.value;
                 console.log('User number submitted:', userNumber);
-                // add code here to update the scale according to the user input
                 setMapToScale(userNumber);
+            });
+
+            scaleDropdown.addEventListener('change', () => {
+                if (scaleDropdown.value) {
+                    userNumber = scaleDropdown.value;
+                    scaleInput.value = userNumber;
+                    console.log('User number selected from dropdown:', userNumber);
+                    setMapToScale(userNumber);
+                }
             });
         } else {
             scaleBoxDiv.style.display = 'none';
@@ -101,12 +122,35 @@ document.addEventListener("DOMContentLoaded", function () {
                 <label for="scale-input">Enter a number:</label>
                 <input type="number" id="scale-input" style="width: 60px;" value="${userNumber !== null ? userNumber : ''}">
                 <button id="scale-submit" style="margin-left: 5px;">Submit</button>
+                <br>
+                <label for="scale-dropdown">Or select a preset:</label>
+                <select id="scale-dropdown" style="margin-top:5px;">
+                    <option value="">-- Select --</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="500">500</option>
+                    <option value="1000">1000</option>
+                    <option value="5000">5000</option>
+                </select>
             `;
             const scaleInput = document.getElementById('scale-input');
             const scaleSubmit = document.getElementById('scale-submit');
+            const scaleDropdown = document.getElementById('scale-dropdown');
+
             scaleSubmit.addEventListener('click', () => {
                 userNumber = scaleInput.value;
                 console.log('User number submitted:', userNumber);
+                setMapToScale(userNumber);
+            });
+
+            scaleDropdown.addEventListener('change', () => {
+                if (scaleDropdown.value) {
+                    userNumber = scaleDropdown.value;
+                    scaleInput.value = userNumber;
+                    console.log('User number selected from dropdown:', userNumber);
+                    setMapToScale(userNumber);
+                }
             });
         }
     });
@@ -119,12 +163,35 @@ document.addEventListener("DOMContentLoaded", function () {
                 <label for="scale-input">Enter a number:</label>
                 <input type="number" id="scale-input" style="width: 60px;" value="${userNumber !== null ? userNumber : ''}">
                 <button id="scale-submit" style="margin-left: 5px;">Submit</button>
+                <br>
+                <label for="scale-dropdown">Or select a preset:</label>
+                <select id="scale-dropdown" style="margin-top:5px;">
+                    <option value="">-- Select --</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="500">500</option>
+                    <option value="1000">1000</option>
+                    <option value="5000">5000</option>
+                </select>
             `;
             const scaleInput = document.getElementById('scale-input');
             const scaleSubmit = document.getElementById('scale-submit');
+            const scaleDropdown = document.getElementById('scale-dropdown');
+
             scaleSubmit.addEventListener('click', () => {
                 userNumber = scaleInput.value;
                 console.log('User number submitted:', userNumber);
+                setMapToScale(userNumber);
+            });
+
+            scaleDropdown.addEventListener('change', () => {
+                if (scaleDropdown.value) {
+                    userNumber = scaleDropdown.value;
+                    scaleInput.value = userNumber;
+                    console.log('User number selected from dropdown:', userNumber);
+                    setMapToScale(userNumber);
+                }
             });
         }
     });
