@@ -50,58 +50,6 @@ function setMapToScale(targetFeetPerInch, tolerance = .1) {
     map.jumpTo({ zoom: finalZoom }); // Set zoom only once at the end
 }
 
-function getScaleBoxHTML(feetPerInch, userNumber) {
-    return `
-        <strong>1 inch = ${Math.round(feetPerInch)} feet</strong><br>
-        <label for="scale-input" style="display:inline-block; margin-bottom:5px;">Set feet per inch:</label>
-        <input type="number" id="scale-input" class="scale-input" value="${userNumber !== null ? userNumber : ''}">
-        <button id="scale-submit" class="scale-submit-btn">Submit</button>
-        <label for="scale-dropdown">Or select a preset:</label>
-        <select id="scale-dropdown" style="margin-top:5px;">
-            <option value="">-- Select --</option>
-            <option value="100">1" = 100 feet</option>
-            <option value="200">1" = 200 feet</option>
-            <option value="300">1" = 300 feet</option>
-            <option value="400">1" = 400 feet</option>
-            <option value="500">1" = 500 feet</option>
-            <option value="1000">1" = 1000 feet</option>
-        </select>
-    `;
-}
-
-function attachScaleBoxListeners() {
-    const scaleInput = document.getElementById('scale-input');
-    const scaleSubmit = document.getElementById('scale-submit');
-    const scaleDropdown = document.getElementById('scale-dropdown');
-
-    scaleSubmit.addEventListener('click', () => {
-        userNumber = scaleInput.value;
-        setMapToScale(userNumber);
-    });
-
-    scaleInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            userNumber = scaleInput.value;
-            setMapToScale(userNumber);
-        }
-    });
-
-    scaleDropdown.addEventListener('change', () => {
-        if (scaleDropdown.value) {
-            userNumber = scaleDropdown.value;
-            scaleInput.value = userNumber;
-            setMapToScale(userNumber);
-        }
-    });
-}
-
-function updateScaleBox() {
-    const feetPerInch = getFeetPerInch();
-    scaleBoxDiv.innerHTML = getScaleBoxHTML(feetPerInch, userNumber);
-    scaleBoxDiv.style.display = 'block';
-    attachScaleBoxListeners();
-}
-
 // ============================================================================
 // MAIN SCALE FUNCTION (event listener)
 // ============================================================================
@@ -119,6 +67,58 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     scaleBoxDiv.style.display = 'none';
+
+    function getScaleBoxHTML(feetPerInch, userNumber) {
+        return `
+            <strong>1 inch = ${Math.round(feetPerInch)} feet</strong><br>
+            <label for="scale-input" style="display:inline-block; margin-bottom:5px;">Set feet per inch:</label>
+            <input type="number" id="scale-input" class="scale-input" value="${userNumber !== null ? userNumber : ''}">
+            <button id="scale-submit" class="scale-submit-btn">Submit</button>
+            <label for="scale-dropdown">Or select a preset:</label>
+            <select id="scale-dropdown" style="margin-top:5px;">
+                <option value="">-- Select --</option>
+                <option value="100">1" = 100 feet</option>
+                <option value="200">1" = 200 feet</option>
+                <option value="300">1" = 300 feet</option>
+                <option value="400">1" = 400 feet</option>
+                <option value="500">1" = 500 feet</option>
+                <option value="1000">1" = 1000 feet</option>
+            </select>
+        `;
+    }
+
+    function attachScaleBoxListeners() {
+        const scaleInput = document.getElementById('scale-input');
+        const scaleSubmit = document.getElementById('scale-submit');
+        const scaleDropdown = document.getElementById('scale-dropdown');
+
+        scaleSubmit.addEventListener('click', () => {
+            userNumber = scaleInput.value;
+            setMapToScale(userNumber);
+        });
+
+        scaleInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                userNumber = scaleInput.value;
+                setMapToScale(userNumber);
+            }
+        });
+
+        scaleDropdown.addEventListener('change', () => {
+            if (scaleDropdown.value) {
+                userNumber = scaleDropdown.value;
+                scaleInput.value = userNumber;
+                setMapToScale(userNumber);
+            }
+        });
+    }
+
+    function updateScaleBox() {
+        const feetPerInch = getFeetPerInch();
+        scaleBoxDiv.innerHTML = getScaleBoxHTML(feetPerInch, userNumber);
+        scaleBoxDiv.style.display = 'block';
+        attachScaleBoxListeners();
+    }
 
     scaleZoomButton.addEventListener('click', () => {
         scaleVisibility = !scaleVisibility;
