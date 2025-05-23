@@ -210,12 +210,13 @@ document.getElementById('printButton').addEventListener('click', () => {
                             position: absolute;
                             left: 0.25in;
                             right: 0.25in;
-                            z-index: 1; /* Ensure it appears above all other elements */
+                            z-index: 1;
+                            border: 4px solid black; /* <--- Move border here */
+                            box-sizing: border-box;  /* <--- Ensures border is inside width */
+                            background: white;
                         }
                         .top-frame {
                             height: 8in;
-                            border: 4px solid black; /* Frame border */
-                            border-bottom: none; /* Remove bottom border */
                             position: relative;
                         }
                         .middle-line {
@@ -230,8 +231,6 @@ document.getElementById('printButton').addEventListener('click', () => {
                         }
                         .bottom-frame {
                             height: 2.5in;
-                            border: 4px solid black; /* Frame border */
-                            border-top: none; /* Remove top border */
                             display: flex;
                             align-items: center;
                             position: relative;
