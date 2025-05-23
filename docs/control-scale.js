@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return `
             <strong>1 inch = ${Math.round(feetPerInch)} feet</strong><br>
             <label for="scale-input" style="display:inline-block; margin-bottom:5px;">Set feet per inch:</label>
-            <input type="number" id="scale-input" class="scale-input" value="${userNumber !== null ? userNumber : ''}">
+            <input type="number" id="scale-input" class="scale-input" value="${userNumber !== null ? userNumber : ''}"><br>
             <button id="scale-submit" class="scale-submit-btn">Submit</button>
             <label for="scale-dropdown">Or select a preset:</label>
             <select id="scale-dropdown" style="margin-top:5px;">
