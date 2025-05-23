@@ -108,6 +108,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     setMapToScale(userNumber);
                 }
             });
+
+            scaleInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    userNumber = scaleInput.value;
+                    console.log('User number submitted:', userNumber);
+                    setMapToScale(userNumber);
+                }
+            });
         } else {
             scaleBoxDiv.style.display = 'none';
         }
@@ -149,6 +157,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     userNumber = scaleDropdown.value;
                     scaleInput.value = userNumber;
                     console.log('User number selected from dropdown:', userNumber);
+                    setMapToScale(userNumber);
+                }
+            });
+
+            scaleInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    userNumber = scaleInput.value;
+                    console.log('User number submitted:', userNumber);
                     setMapToScale(userNumber);
                 }
             });
@@ -194,6 +210,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     setMapToScale(userNumber);
                 }
             });
+
+            scaleInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    userNumber = scaleInput.value;
+                    console.log('User number submitted:', userNumber);
+                    setMapToScale(userNumber);
+                }
+            });
+
         }
     });
 });
