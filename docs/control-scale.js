@@ -115,9 +115,9 @@ function getPrintScaleBarHTML(map) {
         <text x="145" y="32" font-size="9" text-anchor="middle">${threeQuarterFeet}</text>
         <text x="190" y="32" font-size="9" text-anchor="end">${niceFeet} ft</text>
       </svg>
-      <div style="font-size:10px; text-align:center;">
+      <div style="font-size:10px;  text-align:center; margin-bottom:5px;">
         Scale : 1 inch = ${getNiceFeet(feetPerInch)} ft
-      </div><br>
+      </div>
     </div>
     `;
 }
