@@ -210,6 +210,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                             position: absolute;
                             left: 0.25in;
                             right: 0.25in;
+                            z-index: 1; /* Ensure it appears above all other elements */
                         }
                         .top-frame {
                             height: 8in;
@@ -347,8 +348,8 @@ document.getElementById('printButton').addEventListener('click', () => {
             win.document.close();
 
             win.onload = () => {
-                // win.print();
-                // win.close();
+                win.print();
+                win.close();
             };
         } else {
             alert("Popup blocked! Please allow popups for this site.");
