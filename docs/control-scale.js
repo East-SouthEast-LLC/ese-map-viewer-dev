@@ -69,6 +69,47 @@ function getScaleBoxHTML(feetPerInch, userNumber) {
     `;
 }
 
+
+// ============================================================================
+// HELPER FUNCTION TO CREATE SCALE BAR ON PRINT
+// ============================================================================
+
+function getPrintScaleBarHTML(map) {
+    const feetPerInch = getFeetPerInch();
+
+    // Choose a round bar length (in inches for print); 2" is a good default
+    const barInches = 2;
+    const totalFeet = feetPerInch * barInches;
+
+    // Round totalFeet to a nice number (nearest 10/50/100 for clarity)
+    const niceFeet = Math.round(totalFeet / 10) * 10;
+
+    // Adjust barInches if you want to round the bar itself (optional, for "nice" numbers)
+    // e.g., barInches = niceFeet / feetPerInch;
+
+    const halfFeet = Math.round(niceFeet / 2);
+
+    // SVG for 3 ticks: 0, half, full
+    // Width: 2in; adjust as needed for your layout
+    return `
+    <div style="margin-top:4px;">
+      <svg width="2in" height="0.3in" viewBox="0 0 200 30">
+        <rect x="10" y="15" width="180" height="5" fill="black"/>
+        <rect x="10" y="10" width="2" height="15" fill="black"/>
+        <rect x="100" y="10" width="2" height="15" fill="black"/>
+        <rect x="190" y="10" width="2" height="15" fill="black"/>
+        <text x="10" y="28" font-size="10">0</text>
+        <text x="100" y="28" font-size="10" text-anchor="middle">${halfFeet}</text>
+        <text x="190" y="28" font-size="10" text-anchor="end">${niceFeet} ft</text>
+      </svg>
+      <div style="font-size:10px; text-align:center;">
+        Scale bar: 1 inch = ${feetPerInch.toFixed(0)} ft
+      </div>
+    </div>
+    `;
+}
+
+
 // ============================================================================
 // MAIN SCALE FUNCTION (event listener)
 // ============================================================================
