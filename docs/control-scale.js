@@ -93,7 +93,7 @@ function getPrintScaleBarHTML(map) {
 
     // 4 alternating blocks, black and white
     return `
-    <div style="margin-top:2px;">
+    <div>
       <svg width="2in" height="0.52in" viewBox="0 0 200 52">
         <!-- Alternating rectangles -->
         <rect x="10" y="20" width="45" height="12" fill="black"/>
