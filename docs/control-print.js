@@ -327,10 +327,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                                 <span class="gis-map">GIS Map</span>
                                 <span class="disclaimer">This map is for illustrative purposes only and is not adequate for legal boundary determination or regulatory interpretation.</span>
                                 <span class="date">${currentDate}</span></br>
-
-                                // add call to function to get scale bar
                                 ${getPrintScaleBarHTML(map)}
-                                
                                 <span class="sources">Map sources include:</span>
                                 <span class="massgis">Bureau of Geographic Information (MassGIS), Commonwealth of Massachusetts, Executive Office of Technology and Security Services</span>
                                 <span class="base-map">
