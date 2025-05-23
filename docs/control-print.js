@@ -235,6 +235,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                             justify-content: center;
                             align-items: center;
                             overflow: hidden;
+                            border-bottom: 2px solid black;
                         }
                         .map-container img {
                             width: 100%;
