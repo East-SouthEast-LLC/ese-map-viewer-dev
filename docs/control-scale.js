@@ -76,11 +76,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 <strong>1 inch = ${Math.round(feetPerInch)} feet</strong><br>
                 <label for="scale-input" style="display:inline-block; margin-bottom:5px;">Set feet per inch:</label>
                 <input type="number" id="scale-input" style="width: 70px; display:inline-block; margin-left:5px;" value="${userNumber !== null ? userNumber : ''}">
-                <button id="scale-submit" style="display: block; margin: 8px auto; width: 90%; height: 24px; padding: 0; font-size: 12px;">Submit</button><br>
+                <button id="scale-submit" style="display: block; margin: 8px auto 0 auto; width: 90%; height: 24px; padding: 0; font-size: 12px;">Submit</button><br>
                 <label for="scale-dropdown">Or select a preset:</label>
                 <select id="scale-dropdown" style="margin-top:5px;">
                     <option value="">-- Select --</option>
                     <option value="100">1" = 100 feet</option>
+                    <option value="200">1" = 200 feet</option>
+                    <option value="300">1" = 300 feet</option>
+                    <option value="400">1" = 400 feet</option>
+                    <option value="500">1" = 500 feet</option>
+                    <option value="1000">1" = 1000 feet</option>
                 </select>
             `;
             scaleBoxDiv.style.display = 'block';
