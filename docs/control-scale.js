@@ -94,7 +94,7 @@ function getPrintScaleBarHTML(map) {
     // 4 alternating blocks, black and white
     return `
     <div style="margin-top:2px;">
-      <svg width="2in" height="0.40in" viewBox="0 0 200 40">
+      <svg width="2in" height="0.52in" viewBox="0 0 200 52">
         <!-- Alternating rectangles -->
         <rect x="10" y="20" width="45" height="12" fill="black"/>
         <rect x="55" y="20" width="45" height="12" fill="white" stroke="black" stroke-width="1"/>
@@ -109,12 +109,12 @@ function getPrintScaleBarHTML(map) {
         <line x1="145" y1="15" x2="145" y2="35" stroke="black" stroke-width="1"/>
         <line x1="190" y1="15" x2="190" y2="35" stroke="black" stroke-width="2"/>
         <!-- Labels -->
-        <text x="10" y="39" font-size="9" text-anchor="start">0</text>
-        <text x="55" y="39" font-size="9" text-anchor="middle">${quarterFeet}</text>
-        <text x="100" y="39" font-size="9" text-anchor="middle">${halfFeet}</text>
-        <text x="145" y="39" font-size="9" text-anchor="middle">${threeQuarterFeet}</text>
-        <text x="190" y="39" font-size="9" text-anchor="end">${niceFeet} ft</text>
-      </svg>
+        <text x="10" y="46" font-size="9" text-anchor="start">0</text>
+        <text x="55" y="46" font-size="9" text-anchor="middle">${quarterFeet}</text>
+        <text x="100" y="46" font-size="9" text-anchor="middle">${halfFeet}</text>
+        <text x="145" y="46" font-size="9" text-anchor="middle">${threeQuarterFeet}</text>
+        <text x="190" y="46" font-size="9" text-anchor="end">${niceFeet} ft</text>
+        </svg>
       <div style="font-size:10px; text-align:center;">
         Scale bar: 1 inch = ${getNiceFeet(feetPerInch)} ft
       </div>

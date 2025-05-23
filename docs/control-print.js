@@ -222,18 +222,6 @@ document.getElementById('printButton').addEventListener('click', () => {
                             height: 8in;
                             position: relative;
                         }
-                        .middle-line {
-                            width: 100%;
-                            height: 0px; /* Line thickness */
-                            border-top: 4px;
-                            border-style: solid;
-                            border-color: black;
-                            position: absolute;
-                            top: 8in; /* Place it below the top frame */
-                            left: 0;
-                            z-index: 10; /* Ensure it appears above all other elements */
-                            margin: 0; /* Remove margin to avoid any spacing issues */
-                        }
                         .bottom-frame {
                             height: 2.5in;
                             display: flex;
