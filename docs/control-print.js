@@ -216,7 +216,6 @@ document.getElementById('printButton').addEventListener('click', () => {
                             border-color: black;
                             box-sizing: border-box; 
                             background: white;
-                            padding: 2px; /* Space between border and content */
                         }
                         .top-frame {
                             height: 8in;
