@@ -234,7 +234,6 @@ document.getElementById('printButton').addEventListener('click', () => {
                             display: flex;
                             justify-content: center;
                             align-items: center;
-                            box-sizing: border-box;
                             overflow: hidden;
                         }
                         .map-container img {
