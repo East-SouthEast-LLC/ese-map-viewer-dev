@@ -254,7 +254,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                             display: flex;
                             justify-content: center;
                             align-items: center;
-                            margin-right: 4px; /* Optional space for alignment */
+                            margin-left: .1 in;
                         }
                         .image-container img {
                             width: 100%;
