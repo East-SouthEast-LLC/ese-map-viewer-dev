@@ -36,6 +36,20 @@ map.on('load', function() {
 			]
 		}
     });
+
+    // add layer for outline
+    map.addLayer({
+        'id': 'sewer-plans-outline',
+        'type': 'line',
+        'source': 'sewer plans',
+        'source-layer': 'TOC_SEWER_2025-06-06b-6awmyx',
+        'layout': { 'visibility': 'none' },
+        'paint': {
+            'line-width': 0.5, 
+            'line-color': '#000000', 
+            'line-opacity': 0.5 
+        }
+	});
 });
 
 // add popup for sewer plan info

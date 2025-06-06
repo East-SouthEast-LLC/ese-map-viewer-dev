@@ -78,6 +78,12 @@ map.on('load', function() {
                 map.setLayoutProperty('vernal-pools', 'visibility', newVisibility);
                 map.setLayoutProperty('vernal-pools-labels', 'visibility', newVisibility);
             }
+
+            // handle sewer plans layers -----------------------------------
+            if (clickedLayer === 'sewer plans') {
+                // toggle the sewer plans outline visibility to the same as the sewer plans visibility
+                map.setLayoutProperty('sewer-plans-outline', 'visibility', newVisibility);
+            }
             // ------------------------------------------------------------
 
             // Always update button visual state based on new visibility
