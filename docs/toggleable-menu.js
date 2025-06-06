@@ -1,7 +1,7 @@
 // External js file for toggleable layers menu that appears on the left side of the map
 map.on('load', function() {
     // enumerate ids of the layers
-    var toggleableLayerIds = ['tools', 'satellite', 'parcels', 'parcel highlight', 'contours', 'agis', 'historic', 'floodplain', 'acec', 'DEP wetland', 'endangered species', 'zone II', 'soils', 'conservancy districts', 'zoning', 'conservation', 'sewer', 'stories', 'intersection'];
+    var toggleableLayerIds = ['tools', 'satellite', 'parcels', 'parcel highlight', 'contours', 'agis', 'historic', 'floodplain', 'acec', 'DEP wetland', 'endangered species', 'zone II', 'soils', 'conservancy districts', 'zoning', 'conservation', 'sewer', 'sewer plans', 'stories', 'intersection'];
 
     // set up the corresponding toggle button for each layer
     for (var i = 0; i < toggleableLayerIds.length; i++) {
@@ -77,6 +77,12 @@ map.on('load', function() {
                 map.setLayoutProperty('endangered-species-labels', 'visibility', newVisibility);
                 map.setLayoutProperty('vernal-pools', 'visibility', newVisibility);
                 map.setLayoutProperty('vernal-pools-labels', 'visibility', newVisibility);
+            }
+
+            // handle sewer plans layers -----------------------------------
+            if (clickedLayer === 'sewer plans') {
+                // toggle the sewer plans outline visibility to the same as the sewer plans visibility
+                map.setLayoutProperty('sewer-plans-outline', 'visibility', newVisibility);
             }
             // ------------------------------------------------------------
 
