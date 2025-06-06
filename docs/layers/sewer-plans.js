@@ -23,6 +23,18 @@ map.on('load', function() {
     });
 });
 
+// add popup for sewer plan info
+map.on('click', 'sewer plans', function(e) {
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(e.features && e.features.length > 0 && e.features[0].properties ? 
+                 "Date: " + '<strong>' + (e.features[0].properties.DATE || 'N/A') + '</strong><br>' + 
+                 "Plan ID: " + '<strong>' + (e.features[0].properties.SHEET || 'N/A') + '</strong><br>' + 
+                 "Link to plan: " + (e.features[0].properties.URL ? '<a href=\"'+ e.features[0].properties.URL +'" target="_blank"><b><u>Link to plan</u></b></a>' : 'N/A')
+                 : "No feature information available.")
+        .addTo(map);
+});
+
 // Change the cursor to a pointer when the mouse is over the layer
 map.on('mouseenter', 'sewer plans', function() {
     map.getCanvas().style.cursor = 'pointer';
