@@ -206,31 +206,24 @@ document.getElementById('printButton').addEventListener('click', () => {
                             height: 11in;
                         }
                         .frame {
-                            width: calc(100% - 1in); /* 1/2" margins on both sides */
+                            width: calc(100% - .5in); /* 1/2" margins on both sides */
                             position: absolute;
-                            left: 0.5in;
-                            right: 0.5in;
+                            left: 0.25in;
+                            right: 0.25in;
+                            z-index: 1;
+                            border: 4px;
+                            border-style: solid;
+                            border-color: black;
+                            box-sizing: border-box; 
+                            background: white;
+                            padding: 1px;
                         }
                         .top-frame {
-                            height: 8.0in;
-                            border: 4px solid black; /* Frame border */
-                            border-bottom: none; /* Remove bottom border */
+                            height: 8in;
                             position: relative;
                         }
-                        .middle-line {
-                            width: 100%;
-                            height: 0px; /* Line thickness */
-                            border-top: 4px solid black; /* Set color and thickness */
-                            position: absolute;
-                            top: 8in; /* Place it below the top frame */
-                            left: 0;
-                            z-index: 10; /* Ensure it appears above all other elements */
-                            margin: 0; /* Remove margin to avoid any spacing issues */
-                        }
                         .bottom-frame {
-                            height: 2.0in;
-                            border: 4px solid black; /* Frame border */
-                            border-top: none; /* Remove top border */
+                            height: 2.5in;
                             display: flex;
                             align-items: center;
                             position: relative;
@@ -241,6 +234,8 @@ document.getElementById('printButton').addEventListener('click', () => {
                             display: flex;
                             justify-content: center;
                             align-items: center;
+                            overflow: hidden;
+                            border-bottom: 2px solid black;
                         }
                         .map-container img {
                             width: 100%;
@@ -253,7 +248,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                             display: flex;
                             justify-content: center;
                             align-items: center;
-                            margin-right: 4px; /* Optional space for alignment */
+                            overflow: hidden;
                         }
                         .image-container img {
                             width: 100%;
@@ -261,17 +256,16 @@ document.getElementById('printButton').addEventListener('click', () => {
                             object-fit: contain;
                         }
                         .inner-frame {
-                            width: 2in;
-                            height: 2in;
+                            width: 2.5in;
+                            height: 2.5in;
                             position: absolute;
-                            right: 0; /* Position it to the right */
+                            right: 0;
                             top: 0;
                             display: flex;
                             justify-content: center;
                             align-items: center;
                             text-align: center;
                             padding: 4px;
-                            border: 0px; /* Border set to 0px */
                             flex-direction: column; /* Stack text vertically */
                         }
                         .inner-frame span {
@@ -290,7 +284,8 @@ document.getElementById('printButton').addEventListener('click', () => {
                             font-size: 9px;
                         }
                         .date {
-                            font-size: 11px;
+                            font-size: 10px;
+                            margin-bottom: 0;
                         }
                         .scale {
                             font-size: 11px;
@@ -318,7 +313,6 @@ document.getElementById('printButton').addEventListener('click', () => {
                                 <img src="${canvas.toDataURL()}" alt="Map Image" />
                             </div>
                         </div>
-                        <div class="middle-line"></div>
                         <div class="bottom-frame">
                             <div class="image-container">
                                 <img src="https://static1.squarespace.com/static/536cf42ee4b0465238027de5/t/67a783e42bb54b7b434b79f1/1739031525647/ESE-GIS.jpg" alt="Company Logo" />
@@ -326,13 +320,12 @@ document.getElementById('printButton').addEventListener('click', () => {
                             <div class="inner-frame">
                                 <span class="gis-map">GIS Map</span>
                                 <span class="disclaimer">This map is for illustrative purposes only and is not adequate for legal boundary determination or regulatory interpretation.</span>
-                                <span class="date">${currentDate}</span></br>
+                                <span class="date">${currentDate}</span>
+                                ${getPrintScaleBarHTML(map)}
                                 <span class="sources">Map sources include:</span>
                                 <span class="massgis">Bureau of Geographic Information (MassGIS), Commonwealth of Massachusetts, Executive Office of Technology and Security Services</span>
-                                <span class="base-map">
-                                    © <a href="https://www.mapbox.com/about/maps">Mapbox</a> </br>
-                                    © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> </br>
-                                    <strong><a href="https://apps.mapbox.com/feedback/" target="_blank">Improve this map, www.apps.mapbox.com/feedback</a></strong>
+                                <span class="base-map">© <a href="https://www.mapbox.com/about/maps">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a><br>
+                                    <strong><a style="margin-top: 3px" href="https://apps.mapbox.com/feedback/" target="_blank">Improve this map, www.apps.mapbox.com/feedback</a></strong>
                                 </span>
                             </div>
                         </div>
