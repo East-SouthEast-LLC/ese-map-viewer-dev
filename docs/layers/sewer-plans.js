@@ -59,7 +59,8 @@ map.on('click', 'sewer plans', function(e) {
         .setHTML(e.features && e.features.length > 0 && e.features[0].properties ? 
                  "Year of plan: " + '<strong>' + (e.features[0].properties.DATE || 'N/A') + '</strong><br>' + 
                  "Plan ID: " + '<strong>' + (e.features[0].properties.SHEET || 'N/A') + '</strong><br>' + 
-                 "Link to plan: " + (e.features[0].properties.URL ? '<a href=\"'+ e.features[0].properties.URL +'" target="_blank"><b><u>Link to plan</u></b></a>' : 'N/A')
+                 "Link to plan: " + (e.features[0].properties.URL ? '<a href=\"'+ e.features[0].properties.URL +'" target="_blank"><b><u>Link to plan</u></b></a>' : 'N/A') + '<br>' +
+                 "Disclaimer: This is a work in progress, some information may be inaccurate."
                  : "No feature information available.")
         .addTo(map);
 });
