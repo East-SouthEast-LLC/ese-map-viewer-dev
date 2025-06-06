@@ -17,9 +17,23 @@ map.on('load', function() {
             'visibility': 'none'
         },
         'paint': {
-            'fill-color': '#ff7f0e', // Orange color for visibility
-            'fill-opacity': 0.4
-        }
+            'fill-opacity': 0.4,
+
+            // map sewer colors based on year of plan
+            'fill-color': [
+                'match',
+                ['get', 'DATE'],
+                '2019', '#e8f5e9', // lightest green
+                '2017', '#c8e6c9',
+                '2013', '#a5d6a7',
+                '2010', '#81c784',
+                '2007', '#66bb6a',
+                '1996', '#4caf50',
+                '1982', '#388e3c',
+                '1969', '#2e7d32', // darkest green
+				/* fallback */ '#ff0000'
+			]
+		}
     });
 });
 
@@ -28,7 +42,7 @@ map.on('click', 'sewer plans', function(e) {
     new mapboxgl.Popup()
         .setLngLat(e.lngLat)
         .setHTML(e.features && e.features.length > 0 && e.features[0].properties ? 
-                 "Date: " + '<strong>' + (e.features[0].properties.DATE || 'N/A') + '</strong><br>' + 
+                 "Year of plan: " + '<strong>' + (e.features[0].properties.DATE || 'N/A') + '</strong><br>' + 
                  "Plan ID: " + '<strong>' + (e.features[0].properties.SHEET || 'N/A') + '</strong><br>' + 
                  "Link to plan: " + (e.features[0].properties.URL ? '<a href=\"'+ e.features[0].properties.URL +'" target="_blank"><b><u>Link to plan</u></b></a>' : 'N/A')
                  : "No feature information available.")
