@@ -23,14 +23,14 @@ map.on('load', function() {
             'fill-color': [
                 'match',
                 ['get', 'DATE'],
-                '2019', '#e8f5e9', // lightest green
-                '2017', '#c8e6c9',
-                '2013', '#a5d6a7',
-                '2010', '#81c784',
-                '2007', '#66bb6a',
-                '1996', '#4caf50',
-                '1982', '#388e3c',
-                '1969', '#2e7d32', // darkest green
+                2019, '#e8f5e9', // lightest green
+                2017, '#c8e6c9',
+                2013, '#a5d6a7',
+                2010, '#81c784',
+                2007, '#66bb6a',
+                1996, '#4caf50',
+                1982, '#388e3c',
+                1969, '#2e7d32', // darkest green
 				/* fallback */ '#ff0000'
 			]
 		}
