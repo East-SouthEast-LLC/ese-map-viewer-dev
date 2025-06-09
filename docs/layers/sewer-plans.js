@@ -11,7 +11,7 @@ map.on('load', function() {
         'id': 'sewer plans',
         'type': 'fill',
         'source': 'sewer plans',
-        'source-layer': 'TOC_SEWER_2025-06-06b-6awmyx',
+        'source-layer': 'TOC_SEWER_2025-06-09a-a4y5hl',
         'layout': {
             // make layer invisible by default
             'visibility': 'none'
