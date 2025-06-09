@@ -3,7 +3,7 @@ map.on('load', function() {
     // add source for sewer plans
     map.addSource('sewer plans', {
         type: 'vector',
-        url: 'mapbox://ese-toh.dlhonnu3'
+        url: 'mapbox://ese-toh.bb22eiot'
     });
 
     // add layer for sewer plans
@@ -42,7 +42,7 @@ map.on('load', function() {
         'id': 'sewer-plans-outline',
         'type': 'line',
         'source': 'sewer plans',
-        'source-layer': 'TOC_SEWER_2025-06-06b-6awmyx',
+        'source-layer': 'TOC_SEWER_2025-06-09a-a4y5hl',
         'layout': { 'visibility': 'none' },
         'paint': {
             'line-width': 0.5, 
