@@ -50,30 +50,55 @@ map.on('load', function() {
 	});
 });
 
-// add popup for sewer plan info
+/**
+ * Creates the HTML content for the sewer plans popup based on feature properties.
+ * @param {object} props The properties object from a clicked map feature.
+ * @returns {string} The HTML string for the popup.
+ */
+function createSewerPopupHTML(props) {
+  // First, handle the case where there are no properties
+  if (!props) {
+    return "No feature information available.";
+  }
+
+  // Handle Conservation properties
+  // Note: We check for 'Y' specifically to be more precise
+  if (props.CONSERV === 'Y') {
+    return "Conservation Property<br>Disclaimer: Work in progress, information may be inaccurate.";
+  }
+
+  // Build the standard HTML string
+  // Using template literals (backticks ``) makes this cleaner
+  let html = `Year of plan: <strong>${props.DATE || 'N/A'}</strong><br>
+              Plan ID: <strong>${props.SHEET || 'N/A'}</strong><br>`;
+
+  // Append different text based on the 'ADDED' property
+  if (props.ADDED === 'Y') {
+    html += "On sewer but not included in original plans<br>";
+    html += `Website: ${props.URL ? `<a href="${props.URL}" target="_blank"><b><u>Link to page</u></b></a>` : 'N/A'}<br>`;
+  } else {
+    html += `Link to plan: ${props.URL ? `<a href="${props.URL}" target="_blank"><b><u>Link to plan</u></b></a>` : 'N/A'}<br>`;
+  }
+
+  // Add the final disclaimer
+  html += "Disclaimer: Work in progress, information may be inaccurate.";
+
+  return html;
+}
+
+// Add popup for sewer plan info
 map.on('click', 'sewer plans', function(e) {
-    new mapboxgl.Popup()
-        .setLngLat(e.lngLat)
-        .setHTML(() => {
-            const props = e.features && e.features.length > 0 && e.features[0].properties ? e.features[0].properties : null;
-            if (props && props.CONSERV) {
-                return "Conservation Property<br>Disclaimer: Work in progress, information may be inaccurate.";
-            }
-            if (props) {
-                let html = "Year of plan: <strong>" + (props.DATE || 'N/A') + "</strong><br>" +
-                           "Plan ID: <strong>" + (props.SHEET || 'N/A') + "</strong><br>";
-                if (props.ADDED) {
-                    html += "On sewer but not included in original plans<br>";
-                    html += "Website: " + (props.URL ? '<a href="' + props.URL + '" target="_blank"><b><u>Link to page</u></b></a>' : 'N/A') + "<br>";
-                } else {
-                    html += "Link to plan: " + (props.URL ? '<a href="' + props.URL + '" target="_blank"><b><u>Link to plan</u></b></a>' : 'N/A') + "<br>";
-                }
-                html += "Disclaimer: Work in progress, information may be inaccurate.";
-                return html;
-            }
-            return "No feature information available.";
-        })
-        .addTo(map);
+  // Get the properties of the first feature that was clicked
+  const properties = e.features && e.features.length > 0 ? e.features[0].properties : null;
+
+  // 1. Call our new function to get the HTML string
+  const popupHTML = createSewerPopupHTML(properties);
+
+  // 2. Create the popup and set its HTML to the returned string
+  new mapboxgl.Popup()
+    .setLngLat(e.lngLat)
+    .setHTML(popupHTML) // Pass the generated HTML string here
+    .addTo(map);
 });
 
 // Change the cursor to a pointer when the mouse is over the layer
