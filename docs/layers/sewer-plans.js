@@ -19,18 +19,31 @@ map.on('load', function() {
         'paint': {
             'fill-opacity': 0.4,
 
-            // map sewer colors based on year of plan
+            // Use a nested case expression for advanced color mapping
             'fill-color': [
                 'case',
-                ['all', ['>=', ['to-number', ['get', 'DATE']], 2016], ['<=', ['to-number', ['get', 'DATE']], 2019]], '#66bb6a', // 2016-2019
-                ['all', ['>=', ['to-number', ['get', 'DATE']], 2014], ['<', ['to-number', ['get', 'DATE']], 2016]], '#4caf50', // 2014-2015
-                ['all', ['>=', ['to-number', ['get', 'DATE']], 2011], ['<', ['to-number', ['get', 'DATE']], 2014]], '#388e3c', // 2011-2013
-                ['all', ['>=', ['to-number', ['get', 'DATE']], 2008], ['<', ['to-number', ['get', 'DATE']], 2011]], '#2e7d32', // 2008-2010
-                ['all', ['>=', ['to-number', ['get', 'DATE']], 2007], ['<', ['to-number', ['get', 'DATE']], 2008]], '#1b5e20', // 2007
-                ['all', ['>=', ['to-number', ['get', 'DATE']], 2000], ['<', ['to-number', ['get', 'DATE']], 2007]], '#104c1a', // 2000-2006
-                ['all', ['>=', ['to-number', ['get', 'DATE']], 1983], ['<', ['to-number', ['get', 'DATE']], 2000]], '#0a3810', // 1983-1999
-                ['all', ['>=', ['to-number', ['get', 'DATE']], 1969], ['<', ['to-number', ['get', 'DATE']], 1983]], '#052a08', // 1969-1982
-                /* fallback */ '#ff0000'
+
+                // Rule 1: Check for Conservation parcels first
+                ['==', ['get', 'CONSERV'], 'Y'],
+                '#9b59b6',
+
+                // Rule 2: If not conservation, check for "Added" parcels
+                ['==', ['get', 'ADDED'], 'Y'],
+                '#f1c40f', 
+
+                // if neither of the above, use the date-based coloring
+                [
+                    'case',
+                    ['all', ['>=', ['to-number', ['get', 'DATE']], 2016], ['<=', ['to-number', ['get', 'DATE']], 2019]], '#66bb6a', // 2016-2019
+                    ['all', ['>=', ['to-number', ['get', 'DATE']], 2014], ['<', ['to-number', ['get', 'DATE']], 2016]], '#4caf50', // 2014-2015
+                    ['all', ['>=', ['to-number', ['get', 'DATE']], 2011], ['<', ['to-number', ['get', 'DATE']], 2014]], '#388e3c', // 2011-2013
+                    ['all', ['>=', ['to-number', ['get', 'DATE']], 2008], ['<', ['to-number', ['get', 'DATE']], 2011]], '#2e7d32', // 2008-2010
+                    ['all', ['>=', ['to-number', ['get', 'DATE']], 2007], ['<', ['to-number', ['get', 'DATE']], 2008]], '#1b5e20', // 2007
+                    ['all', ['>=', ['to-number', ['get', 'DATE']], 2000], ['<', ['to-number', ['get', 'DATE']], 2007]], '#104c1a', // 2000-2006
+                    ['all', ['>=', ['to-number', ['get', 'DATE']], 1983], ['<', ['to-number', ['get', 'DATE']], 2000]], '#0a3810', // 1983-1999
+                    ['all', ['>=', ['to-number', ['get', 'DATE']], 1969], ['<', ['to-number', ['get', 'DATE']], 1983]], '#052a08', // 1969-1982
+                    /* fallback */ '#ff0000'
+                ]
             ]
         }
     });
@@ -64,7 +77,7 @@ function createSewerPopupHTML(props) {
   // Handle Conservation properties
   // Note: We check for 'Y' specifically to be more precise
   if (props.CONSERV === 'Y') {
-    return "Conservation Property<br>Disclaimer: Work in progress, information may be inaccurate.";
+    return "Conservation Property<br>Disclaimer: Information may be inaccurate.";
   }
 
   // Build the standard HTML string
@@ -81,7 +94,7 @@ function createSewerPopupHTML(props) {
   }
 
   // Add the final disclaimer
-  html += "Disclaimer: Work in progress, information may be inaccurate.";
+  html += "Disclaimer: Information may be inaccurate.";
 
   return html;
 }
