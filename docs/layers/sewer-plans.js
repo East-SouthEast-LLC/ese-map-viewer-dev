@@ -3,7 +3,7 @@ map.on('load', function() {
     // add source for sewer plans
     map.addSource('sewer plans', {
         type: 'vector',
-        url: 'mapbox://ese-toh.bb22eiot'
+        url: 'mapbox://ese-toh.6t88pujd'
     });
 
     // add layer for sewer plans
@@ -11,7 +11,7 @@ map.on('load', function() {
         'id': 'sewer plans',
         'type': 'fill',
         'source': 'sewer plans',
-        'source-layer': 'TOC_SEWER_2025-06-09a-a4y5hl',
+        'source-layer': 'TOC_SEWER_2025-06-10a-7xxql4',
         'layout': {
             // make layer invisible by default
             'visibility': 'none'
@@ -21,20 +21,18 @@ map.on('load', function() {
 
             // map sewer colors based on year of plan
             'fill-color': [
-                'match',
-                ['get', 'DATE'],
-                2019, '#66bb6a', // a medium green
-                2017, '#4caf50',
-                2013, '#388e3c',
-                2010, '#2e7d32',
-                2007, '#1b5e20',
-                2006, '#104c1a', 
-                1996, '#0a3810',
-                1982, '#052a08',
-                1969, '#001a00', // darkest green
-				/* fallback */ '#ff0000'
-			]
-		}
+                'case',
+                ['all', ['>=', ['to-number', ['get', 'DATE']], 2016], ['<=', ['to-number', ['get', 'DATE']], 2019]], '#66bb6a', // 2016-2019
+                ['all', ['>=', ['to-number', ['get', 'DATE']], 2014], ['<', ['to-number', ['get', 'DATE']], 2016]], '#4caf50', // 2014-2015
+                ['all', ['>=', ['to-number', ['get', 'DATE']], 2011], ['<', ['to-number', ['get', 'DATE']], 2014]], '#388e3c', // 2011-2013
+                ['all', ['>=', ['to-number', ['get', 'DATE']], 2008], ['<', ['to-number', ['get', 'DATE']], 2011]], '#2e7d32', // 2008-2010
+                ['all', ['>=', ['to-number', ['get', 'DATE']], 2007], ['<', ['to-number', ['get', 'DATE']], 2008]], '#1b5e20', // 2007
+                ['all', ['>=', ['to-number', ['get', 'DATE']], 2000], ['<', ['to-number', ['get', 'DATE']], 2007]], '#104c1a', // 2000-2006
+                ['all', ['>=', ['to-number', ['get', 'DATE']], 1983], ['<', ['to-number', ['get', 'DATE']], 2000]], '#0a3810', // 1983-1999
+                ['all', ['>=', ['to-number', ['get', 'DATE']], 1969], ['<', ['to-number', ['get', 'DATE']], 1983]], '#052a08', // 1969-1982
+                /* fallback */ '#ff0000'
+            ]
+        }
     });
 
     // add layer for outline
@@ -56,12 +54,25 @@ map.on('load', function() {
 map.on('click', 'sewer plans', function(e) {
     new mapboxgl.Popup()
         .setLngLat(e.lngLat)
-        .setHTML(e.features && e.features.length > 0 && e.features[0].properties ? 
-                 "Year of plan: " + '<strong>' + (e.features[0].properties.DATE || 'N/A') + '</strong><br>' + 
-                 "Plan ID: " + '<strong>' + (e.features[0].properties.SHEET || 'N/A') + '</strong><br>' + 
-                 "Link to plan: " + (e.features[0].properties.URL ? '<a href=\"'+ e.features[0].properties.URL +'" target="_blank"><b><u>Link to plan</u></b></a>' : 'N/A') + '<br>' +
-                 "Disclaimer: This is a work in progress, some information may be inaccurate."
-                 : "No feature information available.")
+        .setHTML(() => {
+            const props = e.features && e.features.length > 0 && e.features[0].properties ? e.features[0].properties : null;
+            if (props && props.CONSERV) {
+                return "Conservation Property<br>Disclaimer: Work in progress, information may be inaccurate.";
+            }
+            if (props) {
+                let html = "Year of plan: <strong>" + (props.DATE || 'N/A') + "</strong><br>" +
+                           "Plan ID: <strong>" + (props.SHEET || 'N/A') + "</strong><br>";
+                if (props.ADDED) {
+                    html += "On sewer but not included in original plans<br>";
+                    html += "Website: " + (props.URL ? '<a href="' + props.URL + '" target="_blank"><b><u>Link to page</u></b></a>' : 'N/A') + "<br>";
+                } else {
+                    html += "Link to plan: " + (props.URL ? '<a href="' + props.URL + '" target="_blank"><b><u>Link to plan</u></b></a>' : 'N/A') + "<br>";
+                }
+                html += "Disclaimer: Work in progress, information may be inaccurate.";
+                return html;
+            }
+            return "No feature information available.";
+        })
         .addTo(map);
 });
 
