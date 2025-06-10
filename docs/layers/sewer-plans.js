@@ -19,15 +19,15 @@ map.on('load', function() {
         'paint': {
             'fill-opacity': 0.4,
 
-            // Use a nested case expression for advanced color mapping
+            // set fill color based on properties
             'fill-color': [
                 'case',
 
-                // Rule 1: Check for Conservation parcels first
+                // handle conservation properties
                 ['==', ['get', 'CONSERV'], 'Y'],
                 '#9b59b6',
 
-                // Rule 2: If not conservation, check for "Added" parcels
+                // handle added parcels
                 ['==', ['get', 'ADDED'], 'Y'],
                 '#f1c40f', 
 
@@ -60,66 +60,65 @@ map.on('load', function() {
             'line-color': '#000000', 
             'line-opacity': 0.5 
         }
-	});
+    });
 });
 
+// define parameters
 /**
- * Creates the HTML content for the sewer plans popup based on feature properties.
  * @param {object} props The properties object from a clicked map feature.
  * @returns {string} The HTML string for the popup.
  */
+
+// create the popup HTML for sewer plans
 function createSewerPopupHTML(props) {
-  // First, handle the case where there are no properties
-  if (!props) {
-    return "No feature information available.";
-  }
+    if (!props) {
+        return "No feature information available.";
+    }
 
-  // Handle Conservation properties
-  // Note: We check for 'Y' specifically to be more precise
-  if (props.CONSERV === 'Y') {
-    return "Conservation Property<br>Disclaimer: Information may be inaccurate.";
-  }
+    // for conservation properties, return a specific message
+    if (props.CONSERV === 'Y') {
+        return "Conservation Property<br>Disclaimer: Information may be inaccurate.";
+    }
 
-  // Build the standard HTML string
-  // Using template literals (backticks ``) makes this cleaner
-  let html = `Year of plan: <strong>${props.DATE || 'N/A'}</strong><br>
-              Plan ID: <strong>${props.SHEET || 'N/A'}</strong><br>`;
+    // for all other features, return the standard popup HTML
+    let html = `Year of plan: <strong>${props.DATE || 'N/A'}</strong><br>
+                Plan ID: <strong>${props.SHEET || 'N/A'}</strong><br>`;
 
-  // Append different text based on the 'ADDED' property
-  if (props.ADDED === 'Y') {
-    html += "On sewer but not included in original plans<br>";
-    html += `Website: ${props.URL ? `<a href="${props.URL}" target="_blank"><b><u>Link to page</u></b></a>` : 'N/A'}<br>`;
-  } else {
-    html += `Link to plan: ${props.URL ? `<a href="${props.URL}" target="_blank"><b><u>Link to plan</u></b></a>` : 'N/A'}<br>`;
-  }
+    // handle case of post plan added properties
+    if (props.ADDED === 'Y') {
+        html += `Website: ${props.URL ? `<a href="${props.URL}" target="_blank"><b><u>Link to page</u></b></a>` : 'N/A'}<br>`;
+        html += "On sewer but not included in original plans<br>";
+    } else {
+        html += `Link to plan: ${props.URL ? `<a href="${props.URL}" target="_blank"><b><u>Link to plan</u></b></a>` : 'N/A'}<br>`;
+    }
 
-  // Add the final disclaimer
-  html += "Disclaimer: Information may be inaccurate.";
+    // add the disclaimer
+    html += "Disclaimer: Information may be inaccurate.";
 
-  return html;
+    return html;
 }
 
-// Add popup for sewer plan info
+// add click event listener for sewer plans popups
 map.on('click', 'sewer plans', function(e) {
-  // Get the properties of the first feature that was clicked
-  const properties = e.features && e.features.length > 0 ? e.features[0].properties : null;
 
-  // 1. Call our new function to get the HTML string
-  const popupHTML = createSewerPopupHTML(properties);
+    // get properties from the clicked feature
+    const properties = e.features && e.features.length > 0 ? e.features[0].properties : null;
+    // generate the popup HTML
+    const popupHTML = createSewerPopupHTML(properties);
 
-  // 2. Create the popup and set its HTML to the returned string
-  new mapboxgl.Popup()
-    .setLngLat(e.lngLat)
-    .setHTML(popupHTML) // Pass the generated HTML string here
-    .addTo(map);
+    // create the popup
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(popupHTML)
+        .addTo(map);
 });
 
-// Change the cursor to a pointer when the mouse is over the layer
+// change the cursor to a pointer when the mouse is over the layer
 map.on('mouseenter', 'sewer plans', function() {
     map.getCanvas().style.cursor = 'pointer';
 });
 
-// Change it back to a pointer when it leaves.
+// change it back to a pointer when it leaves
 map.on('mouseleave', 'sewer plans', function() {
     map.getCanvas().style.cursor = '';
 });
