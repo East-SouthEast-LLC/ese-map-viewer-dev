@@ -3,7 +3,7 @@ map.on('load', function() {
     // add source for sewer plans
     map.addSource('sewer plans', {
         type: 'vector',
-        url: 'mapbox://ese-toh.7oyjjs3d'
+        url: 'mapbox://ese-toh.1bmgjygf'
     });
 
     // add layer for sewer plans
@@ -11,7 +11,7 @@ map.on('load', function() {
         'id': 'sewer plans',
         'type': 'fill',
         'source': 'sewer plans',
-        'source-layer': 'TOC_SEWER_2025-06-13a-5r49l0',
+        'source-layer': 'TOC_SEWER_2025-06-13b-cj246y',
         'layout': {
             // make layer invisible by default
             'visibility': 'none'
@@ -46,7 +46,7 @@ map.on('load', function() {
                 ]
             ]
         }
-        
+          
     });
 
     // add layer for outline
