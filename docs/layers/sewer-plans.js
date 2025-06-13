@@ -29,20 +29,20 @@ map.on('load', function() {
 
                 // handle added parcels
                 ['==', ['get', 'ADDED'], 'Y'],
-                '#f1c40f', 
+                '#e57373', 
 
-                // if neither of the above, use the date-based coloring
+                // if neither of the above, use the date-based coloring (red spectrum, light to dark)
                 [
                     'case',
-                    ['all', ['>=', ['to-number', ['get', 'DATE']], 2016], ['<=', ['to-number', ['get', 'DATE']], 2019]], '#66bb6a', // 2016-2019
-                    ['all', ['>=', ['to-number', ['get', 'DATE']], 2014], ['<', ['to-number', ['get', 'DATE']], 2016]], '#4caf50', // 2014-2015
-                    ['all', ['>=', ['to-number', ['get', 'DATE']], 2011], ['<', ['to-number', ['get', 'DATE']], 2014]], '#388e3c', // 2011-2013
-                    ['all', ['>=', ['to-number', ['get', 'DATE']], 2008], ['<', ['to-number', ['get', 'DATE']], 2011]], '#2e7d32', // 2008-2010
-                    ['all', ['>=', ['to-number', ['get', 'DATE']], 2007], ['<', ['to-number', ['get', 'DATE']], 2008]], '#1b5e20', // 2007
-                    ['all', ['>=', ['to-number', ['get', 'DATE']], 2000], ['<', ['to-number', ['get', 'DATE']], 2007]], '#104c1a', // 2000-2006
-                    ['all', ['>=', ['to-number', ['get', 'DATE']], 1983], ['<', ['to-number', ['get', 'DATE']], 2000]], '#0a3810', // 1983-1999
-                    ['all', ['>=', ['to-number', ['get', 'DATE']], 1969], ['<', ['to-number', ['get', 'DATE']], 1983]], '#052a08', // 1969-1982
-                    /* fallback */ '#ff0000'
+                    ['all', ['>=', ['to-number', ['get', 'DATE']], 2016], ['<=', ['to-number', ['get', 'DATE']], 2019]], '#ffebee', // 2016-2019 (very light red)
+                    ['all', ['>=', ['to-number', ['get', 'DATE']], 2014], ['<', ['to-number', ['get', 'DATE']], 2016]], '#ffcdd2', // 2014-2015 (light red)
+                    ['all', ['>=', ['to-number', ['get', 'DATE']], 2011], ['<', ['to-number', ['get', 'DATE']], 2014]], '#ef9a9a', // 2011-2013
+                    ['all', ['>=', ['to-number', ['get', 'DATE']], 2008], ['<', ['to-number', ['get', 'DATE']], 2011]], '#e57373', // 2008-2010
+                    ['all', ['>=', ['to-number', ['get', 'DATE']], 2007], ['<', ['to-number', ['get', 'DATE']], 2008]], '#ef5350', // 2007
+                    ['all', ['>=', ['to-number', ['get', 'DATE']], 2000], ['<', ['to-number', ['get', 'DATE']], 2007]], '#f44336', // 2000-2006
+                    ['all', ['>=', ['to-number', ['get', 'DATE']], 1983], ['<', ['to-number', ['get', 'DATE']], 2000]], '#d32f2f', // 1983-1999
+                    ['all', ['>=', ['to-number', ['get', 'DATE']], 1969], ['<', ['to-number', ['get', 'DATE']], 1983]], '#b71c1c', // 1969-1982
+                    /* fallback */ '#ffffff'
                 ]
             ]
         }
