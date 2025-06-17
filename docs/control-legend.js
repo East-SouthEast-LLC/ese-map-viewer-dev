@@ -4,11 +4,17 @@
 // HELPER FUNCTIONS FOR LEGEND FUNCTIONALITY
 // ============================================================================
 
+// DEFINE 2D MAP TO STORE LAYER INFO
+const layers = new Map([
+    ['sewer plans', new Map([
+        ['2014-2019', '#d32f2f'],
+        ['2008-2013', '#b71c1c']
+    ])]
+])
+
+
 function updateLegend(legendBox) {
     console.log("Updating legend...");
-
-    // define layers to be displayed in the legend
-    let toggleableLayers = ['sewer plans'];
 
     // get a list of the layers visible in the current viewport
     const visibleLayers = new Set();
@@ -24,10 +30,14 @@ function updateLegend(legendBox) {
     // create the html
     let legendHTML = '';
     
-    // iterate over all the toggelable layers and check if they are in the visible set
-    for (let i = 0; i < toggleableLayers.length; i++) {
-        if (visibleLayers.has(toggleableLayers[i])) {
-            legendHTML += `<div>${toggleableLayers[i]}</div>`;
+    // iterate over all the layers and check if they are in the visible set
+    for (const layer of layers.keys()) {
+        if (visibleLayers.has(layer)) {
+            if (layers.has(layer)) {
+                for (const [key, value] of layers.get(layer)) {
+                legendHTML += `<div style="color: ${value};">${key}</div>`;
+                }
+            }
         }
     }
 
