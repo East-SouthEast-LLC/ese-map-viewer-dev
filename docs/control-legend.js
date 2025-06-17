@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (legendVisibility) updateLegend(legendBox);
     });
 
-    map.on('zoomend', () => {
+    map.on('zoom', () => {
         if (legendVisibility) updateLegend(legendBox);
     });
 });
