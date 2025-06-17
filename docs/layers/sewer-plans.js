@@ -54,7 +54,7 @@ map.on('load', function() {
         'id': 'sewer-plans-outline',
         'type': 'line',
         'source': 'sewer plans',
-        'source-layer': 'TOC_SEWER_2025-06-09a-a4y5hl',
+        'source-layer': 'TOC_SEWER_2025-06-13c-dao5gl',
         'layout': { 'visibility': 'none' },
         'paint': {
             'line-width': 0.5, 

@@ -6,8 +6,22 @@
 
 function updateLegend() {
     console.log("Updating legend...");
-    const style = map.getStyle();
-    console.log('Map style has loaded:', style);
+
+    // Get a list of the layers visible in the current viewport
+    const visibleLayers = new Set();
+
+    // Query the rendered features in the current viewport
+    const features = map.queryRenderedFeatures();
+
+    // Iterate over the features and add the layer ID to the set
+    features.forEach(feature => {
+        visibleLayers.add(feature.layer.id);
+    });
+
+    // Convert the set to an array
+    const visibleLayerIds = Array.from(visibleLayers);
+
+    console.log(visibleLayerIds);
 }
 
 
