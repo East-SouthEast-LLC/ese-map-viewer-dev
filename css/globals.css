@@ -130,7 +130,7 @@ CONTROL BUTTON STYLES
 .mapboxgl-ctrl-point         { background-image: url('https://www.ese-llc.com/s/marker-blue-random.svg'); }
 .mapboxgl-ctrl-print         { background-image: url('https://img.icons8.com/ios-glyphs/30/000000/print.png'); }
 .mapboxgl-ctrl-measure       { background-image: url('https://www.ese-llc.com/s/marker-blue-measure.svg'); }
-.mapboxgl-ctrl-legend        { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iYmxhY2siIHdpZHRoPSIxOHB4IiBoZWlnaHQ9IjE4cHgiPjxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNMjEgM0gzdjJogenM0djJoLTR2MnM0djJoLTR2Mkgzdi0ySDV2LTJIM3YtMkI1IDdIM3YtMmgxOHYyek0xMyAxNWgydi0yaC0yem0wLTNoMnYtMmgtMmptMCA2aDJ2LTJoLTJ6bS00LTZoMnYtMmgtMnptMCAzaDJ2LTJoLTJ6bS00IDNoMnYtMmgtMnptMCAzaDJ2LTJoLTJ6bS00LTNoMnYtMmgtMnptNCAzaDJ2LTJoLTJ6Ii8+PC9zdmc+'); }
+.mapboxgl-ctrl-legend        { background-image: url('https://east-southeast-llc.github.io/ese-map-viewer/img/legend.png'); }
 .mapboxgl-ctrl-zoom          { background-image: url('https://www.ese-llc.com/s/zoom.png'); }
 
 .mapboxgl-ctrl-point-center  { background-image: url('https://www.ese-llc.com/s/marker-blue-center.svg'); }
