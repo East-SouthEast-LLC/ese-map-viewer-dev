@@ -245,7 +245,16 @@ INFO DISPLAY PANELS (for distance and scale)
 }
 
 #legend-box div {
-  display: flex;
+ display: flex;
   align-items: center;
   margin-bottom: 5px;
+  font-family: sans-serif;
+  font-size: 16px;
+}
+
+.color-box {
+    width: 15px;
+    height: 15px;
+    border: 1px solid #555;
+    margin-right: 8px;
 }
