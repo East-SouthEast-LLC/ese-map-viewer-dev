@@ -243,3 +243,9 @@ INFO DISPLAY PANELS (for distance and scale)
   box-sizing: border-box;
   display: none; /* initially hidden */
 }
+
+#legend-box div {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}

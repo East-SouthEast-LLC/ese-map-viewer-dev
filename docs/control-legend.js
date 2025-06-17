@@ -7,26 +7,36 @@
 function updateLegend() {
     console.log("Updating legend...");
 
-    // Get a list of the layers visible in the current viewport
+    // define layers to be displayed in the legend
+    let toggleableLayers = ['sewer plans'];
+
+    // get a list of the layers visible in the current viewport
     const visibleLayers = new Set();
 
-    // Query the rendered features in the current viewport
+    // query the rendered features in the current viewport
     const features = map.queryRenderedFeatures();
 
-    // Iterate over the features and add the layer ID to the set
+    // iterate over the features and add the layer ID to the set
     features.forEach(feature => {
         visibleLayers.add(feature.layer.id);
     });
 
-    // Convert the set to an array
-    const visibleLayerIds = Array.from(visibleLayers);
+    // create the html
+    let legendHTML = '';
+    
+    // iterate over all the toggelable layers and check if they are in the visible set
+    for (let i = 0; i < toggleableLayers.length; i++) {
+        if (visibleLayers.has(toggleableLayers[i])) {
+            legendHTML += `<div>${toggleableLayers[i]}</div>`;
+        }
+    }
 
-    console.log(visibleLayerIds);
+    // if no layers are visible, show a message
+    if (legendHTML === '') {
+        legendHTML = '<div>No visible layers</div>';
+    }
+    legendBox.innerHTML = legendHTML;
 }
-
-
-
-
 
 
 
@@ -59,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (legendVisibility) updateLegend();
     });
 
-    map.on('zoom', () => {
+    map.on('zoomend', () => {
         if (legendVisibility) updateLegend();
     });
 });

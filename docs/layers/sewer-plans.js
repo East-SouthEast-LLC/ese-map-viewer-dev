@@ -29,7 +29,7 @@ map.on('load', function() {
 
                 // handle added parcels
                 ['==', ['get', 'ADDED'], 'Y'],
-                '#e57373', 
+                '#ffcccc',
 
                 // if neither of the above, use the date-based coloring (red spectrum, light to dark, now darker)
                 [
