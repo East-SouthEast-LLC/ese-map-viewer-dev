@@ -4,7 +4,7 @@
 // HELPER FUNCTIONS FOR LEGEND FUNCTIONALITY
 // ============================================================================
 
-function updateLegend() {
+function updateLegend(legendBox) {
     console.log("Updating legend...");
 
     // define layers to be displayed in the legend
@@ -59,17 +59,17 @@ document.addEventListener("DOMContentLoaded", function () {
     legendButton.addEventListener('click', () => {
         legendVisibility = !legendVisibility;
         if (legendVisibility) {
-            updateLegend();
+            updateLegend(legendBox);
         } else {
             legendBox.style.display = 'none';
         }
     });
 
     map.on('moveend', () => {
-        if (legendVisibility) updateLegend();
+        if (legendVisibility) updateLegend(legendBox);
     });
 
     map.on('zoomend', () => {
-        if (legendVisibility) updateLegend();
+        if (legendVisibility) updateLegend(legendBox);
     });
 });
