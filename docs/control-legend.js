@@ -65,6 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const legendButton = document.getElementById("legendButton");
     const legendBox = document.getElementById("legend-box");
     let legendVisibility = false
+    legendBox.style.display = ' none';
 
     if (!legendButton || !legendBox) {
         console.error("Required elements not found in the DOM.");

@@ -23,10 +23,6 @@ map.on('load', function() {
             'fill-color': [
                 'case',
 
-                // handle conservation properties
-                ['==', ['get', 'CONSERV'], 'Y'],
-                '#ffffff',
-
                 // handle added parcels
                 ['==', ['get', 'ADDED'], 'Y'],
                 '#ffcccc',
