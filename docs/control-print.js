@@ -304,13 +304,19 @@ document.getElementById('printButton').addEventListener('click', () => {
                             text-decoration: none;
                         }
                         .legend-frame {
-                            width: 4.5in;
+                            width: 3in;
                             height: 2.5in;
-                            flex-direction: column;
+                            display: flex;
+                            flex-direction: row;
                             justify-content: center;
                             align-items: center;
                             text-align: center;
                             padding: 4px;
+                        }
+                        .legend-frame-column {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
                         }
                     </style>
                 </head>
@@ -328,6 +334,8 @@ document.getElementById('printButton').addEventListener('click', () => {
                             </div>
                             <div class="legend-frame">
                                 <span><strong>Legend</strong></span>
+                                <div class="legend-frame-column">
+                                   <span>Parcels</span>
                             </div>
                             <div class="inner-frame">
                                 <span class="gis-map">GIS Map</span>
