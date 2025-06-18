@@ -1,5 +1,24 @@
 // control-legend.js
 
+// helper function to fetch legend data from JSON
+function fetchLegendData() {
+    // fetch legend data
+    fetch('https://east-southeast-llc.github.io/ese-map-viewer/docs/legend-data.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            return data;
+        })
+        .catch(error => {
+            console.error('Error fetching legend data:', error);
+            return;
+    });
+}
+
 // helper function to get printing frame coordinates
 function getPrintBoundingBox() {
     if (!map) return; // Ensure map is ready
@@ -38,6 +57,7 @@ function getLegendForPrint() {
     const visibleLayerIDs = new Set();
     const printBoundingBox = getPrintBoundingBox();
     const features = map.queryRenderedFeatures(printBoundingBox);
+    const legendData = fetchLegendData();
 
     // create an array of all json items that need space on the legend
     const legendItems = [];
@@ -58,29 +78,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const legendButton = document.getElementById("legendButton");
     const legendBox = document.getElementById("legend-box");
     let legendVisibility = false;
-    let legendData = [];
+    let legendData = fetchLegendData();
     legendBox.style.display = 'none';
 
     if (!legendButton || !legendBox) {
         console.error("Required elements not found in the DOM.");
         return;
     }
-
-    // fetch legend data
-    fetch('https://east-southeast-llc.github.io/ese-map-viewer/docs/legend-data.json')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            legendData = data;
-        })
-        .catch(error => {
-            console.error('Error fetching legend data:', error);
-            legendBox.innerHTML = "Could not load legend data.";
-    });
 
     function updateLegend() {
         if (legendBox.style.display === 'none') {
