@@ -38,6 +38,8 @@ map.on('load', function() {
 
             const isVisible = map.getLayoutProperty(clickedLayer, 'visibility') === 'visible';
             const newVisibility = isVisible ? 'none' : 'visible';
+            const legendBox = document.getElementById("legend-box");
+            updateLegend(legendBox);
 
             // Toggle main layer
             map.setLayoutProperty(clickedLayer, 'visibility', newVisibility);
