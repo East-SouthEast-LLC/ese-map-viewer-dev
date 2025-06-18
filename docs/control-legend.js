@@ -50,15 +50,16 @@ function getLegendForPrint() {
     features.forEach(feature => visibleLayerIDs.add(feature.layer.id));
     legendData.forEach(layerInfo => {
         if (visibleLayerIDs.has(layerInfo.id)) {
-            legendHTML += `<div>${layerInfo.displayName}</div>`;
+            legendHTML += `<div><strong>${layerInfo.displayName}</strong></div>`;
             count++;
 
                 // iterate over the legend items for a given set
                 for (let i = 0; i < layerInfo.items.length; i++) {
-                    if (count >= 20) {
+                    if (count >= 16) {
+                        legendHTML += '<div>...</div>';
                         break;
                     }
-                    if (count % 10 === 0) {
+                    if (count % 8 === 0) {
                         legendHTML += '</div><div class="legend-frame-column">';
                     }
                     const item = layerInfo.items[i];

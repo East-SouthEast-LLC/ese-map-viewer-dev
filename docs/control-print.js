@@ -322,10 +322,10 @@ document.getElementById('printButton').addEventListener('click', () => {
                         }
                         .legend-frame-column div {
                             display: flex;
-                            align-items: center;
+                            align-items: left;
                             width: 100%;
-                            font-size: 12px;
-                            margin-bottom: 4px;
+                            font-size: 10px;
+                            margin-bottom: 2px;
                         }
                         .color-box {
                             width: 10px;
@@ -380,7 +380,7 @@ document.getElementById('printButton').addEventListener('click', () => {
 
             win.onload = () => {
                 win.print();
-                //win.close();
+                win.close();
             };
         } else {
             alert("Popup blocked! Please allow popups for this site.");
