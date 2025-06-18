@@ -340,22 +340,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                                 <img src="https://static1.squarespace.com/static/536cf42ee4b0465238027de5/t/67a783e42bb54b7b434b79f1/1739031525647/ESE-GIS.jpg" alt="Company Logo" />
                             </div>
                             <div class="legend-frame">
-                                <div class="legend-frame-column">
-                                   <span>Parcels</span>
-                                   <span>Parcels</span>
-                                </div>
-                                <div class="legend-frame-column">
-                                   <span>Test</span>
-                                   <span>Parcels</span>
-                                   <span>Parcels</span>
-                                   <span>Parcels</span>
-                                   <span>Parcels</span>
-                                   <span>Parcels</span>
-                                   <span>Parcels</span>
-                                   <span>Parcels</span>
-                                   <span>Parcels</span>
-                                   <span>Parcels</span>
-                                </div>
+                                ${getLegendForPrint()} 
                             </div>
                             <div class="inner-frame">
                                 <span class="gis-map">GIS Map</span>
