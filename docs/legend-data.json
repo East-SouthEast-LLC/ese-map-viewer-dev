@@ -1,7 +1,7 @@
 [
   {
     "id": "sewer plans",
-    "displayName": "Sewer Plans",
+    "displayName": "Sewer Plans Legend",
     "items": [
       {
         "label": "Plan Year: 2014-2019",
@@ -43,7 +43,7 @@
   },
   {
     "id": "DEP wetland",
-    "displayName": "DEP Wetlands",
+    "displayName": "DEP Wetlands Legend",
     "items": [
       {
         "label": "Coastal Bank Bluff or Sea Cliff",
@@ -192,50 +192,50 @@
       {
         "label": "Edge of Ocean",
         "color": "#08ADEF",
-        "opacity": 0.4,
+        "opacity": 1,
         "isLine": true
       },
       {
         "label": "Shoreline",
         "color": "#EBF90A",
-        "opacity": 0.4,
+        "opacity": 1,
         "isLine": true
       },
       {
         "label": "Closure",
         "color": "#EBECDD",
-        "opacity": 0.4,
+        "opacity": 1,
         "isLine": true
       },
       {
         "label": "Apparent Wetland Limit",
         "color": "#F2A5EF",
-        "opacity": 0.4,
+        "opacity": 1,
         "isLine": true
       },
       {
         "label": "Hydro Connection",
         "color": "#0B11F0",
-        "opacity": 0.4,
+        "opacity": 1,
         "isLine": true
       },
       {
         "label": "MLW",
         "color": "#5E87ED",
-        "opacity": 0.4,
+        "opacity": 1,
         "isLine": true
       },
       {
         "label": "Edge Interupted",
         "color": "#5EE1ED",
-        "opacity": 0.4,
+        "opacity": 1,
         "isLine": true
       }
     ]
   },
   {
     "id": "acec",
-    "displayName": "ACEC",
+    "displayName": "ACEC Legend",
     "items": [
       {
         "label": "Area of Critical Environmental Concern",
@@ -247,12 +247,12 @@
   },
   {
     "id": "floodplain",
-    "displayName": "FEMA Flood Zones",
+    "displayName": "Flood Zones Legend",
     "items": [
       {
         "label": "LiMWA",
         "color": "#E70B0B",
-        "opacity": 0.4,
+        "opacity": 1,
         "isLine": true
       },
       {
@@ -301,12 +301,12 @@
   },
   {
     "id": "endangered species",
-    "displayName": "Endangered Species Habitat",
+    "displayName": "Endangered Species Legend",
     "items": [
       {
         "label": "Vernal Pools",
         "color": "#0D71F9",
-        "opacity": 0.4,
+        "opacity": 1,
         "isLine": false
       },
       {

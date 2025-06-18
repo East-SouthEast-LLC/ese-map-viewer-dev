@@ -265,5 +265,12 @@ INFO DISPLAY PANELS (for distance and scale)
   border: 1px solid #555;
   margin-right: 8px;
   flex-shrink: 0;
-  opacity: .4;
+}
+
+.color-line {
+  width: 2px;
+  height: 15px;
+  background-color: #555;
+  margin-right: 8px;
+  flex-shrink: 0;
 }
