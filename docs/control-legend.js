@@ -38,7 +38,7 @@ function getLegendForPrint() {
     const visibleLayerIDs = new Set();
     const printBoundingBox = getPrintBoundingBox();
     const features = map.queryRenderedFeatures(printBoundingBox);
-    const legendDataPrint = [];
+    let legendDataPrint = [];
 
     // fetch legend data
     fetch('https://east-southeast-llc.github.io/ese-map-viewer/docs/legend-data.json')
@@ -56,27 +56,34 @@ function getLegendForPrint() {
     });
 
     // build legend HTML
-    let legendHTML = '';
+    let legendHTML = '<div class="legend-frame-column">';
     let count = 0;
 
     features.forEach(feature => visibleLayerIDs.add(feature.layer.id));
         legendDataPrint.forEach(layerInfo => {
             if (visibleLayerIDs.has(layerInfo.id)) {
-                legendHTML += `<div class="legend-title">${layerInfo.displayName}</div>`;
+                legendHTML += `<span>${layerInfo.displayName}</span>`;
+                count++;
 
+                // iterate over the legend items for a given set
                 layerInfo.items.forEach(item => {
                     const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
                     const swatchClass = item.isLine ? 'color-line' : 'color-box';
                     legendHTML += `
-                        <div class="legend-item-row">
+                        <span>
                             <span class="${swatchClass}" style="${style}"></span>
                             <span>${item.label}</span>
-                        </div>
+                        </span>
                     `;
+                    count++;
+                    if (count < 10) {
+                        legendHTML += '<div class="legend-frame-column">';
+                    }
                 });
             }
         });
-    return 'temp';
+    legendHTML += '</div>';
+    return legendHTML;
 }
 
 document.addEventListener("DOMContentLoaded", function () {
