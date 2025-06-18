@@ -50,7 +50,14 @@ const layers = new Map([
     ['acec', new Map([
         ['Area of Critical Environmental Concern', '#CD06D8']
     ])],
-
+    ['floodplain', new Map([
+        ['LiMWA', '#E70B0B'],
+        ['AE', '#eb8c34'],
+        ['VE', '#eb3a34'],
+        ['AO', '#F7FE20'],
+        ['X', '#2578F9'],
+        ['A', '#2e4bf0']
+    ])],
     ['endangered species', new Map([
         ['Vernal Pools', '#0D71F9'],
         ['Priority and Estimated Habitat', '#e7ee1f'],

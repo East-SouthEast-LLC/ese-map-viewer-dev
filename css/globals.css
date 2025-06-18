@@ -249,6 +249,7 @@ INFO DISPLAY PANELS (for distance and scale)
 .legend-title {
   font-weight: bold;
   font-size: 14px;
+  margin-top: auto;
   text-align: center;
 }
 
