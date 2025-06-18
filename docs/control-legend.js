@@ -79,4 +79,11 @@ document.addEventListener("DOMContentLoaded", function () {
     // update on move and zoom
     map.on('moveend', updateLegend);
     map.on('zoom', updateLegend);
+
+    // helper function for print output
+    function getLegendForPrint() {
+        
+    }
+
+
 });
