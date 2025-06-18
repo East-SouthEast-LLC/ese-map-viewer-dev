@@ -328,15 +328,15 @@ document.getElementById('printButton').addEventListener('click', () => {
                             margin-bottom: 4px;
                         }
                         .color-box {
-                            width: 15px;
-                            height: 15px;
+                            width: 10px;
+                            height: 10px;
                             border: 1px solid #555;
                             margin-right: 8px;
                             flex-shrink: 0;
                         }
                         .color-line {
-                            width: 15px;
-                            height: 3px;
+                            width: 10px;
+                            height: 2px;
                             border: 1px solid #555;
                             margin-right: 8px;
                             flex-shrink: 0;

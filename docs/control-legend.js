@@ -58,7 +58,7 @@ function getLegendForPrint() {
                     if (count >= 20) {
                         break;
                     }
-                    if (count > 10) {
+                    if (count % 10 === 0) {
                         legendHTML += '</div><div class="legend-frame-column">';
                     }
                     const item = layerInfo.items[i];
