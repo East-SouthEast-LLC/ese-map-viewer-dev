@@ -29,6 +29,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function updateLegend() {
+        if (legendBox.style.display === 'none') {
+            return; 
+        }
+
         const visibleLayerIDs = new Set();
         const features = map.queryRenderedFeatures();
         features.forEach(feature => visibleLayerIDs.add(feature.layer.id));
@@ -37,26 +41,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
         legendData.forEach(layerInfo => {
             if (visibleLayerIDs.has(layerInfo.id)) {
-                // Use the new "displayName" property for the title
                 legendHTML += `<div class="legend-title">${layerInfo.displayName}</div>`;
 
                 layerInfo.items.forEach(item => {
                     const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
-                    if (item.isLine) { // set color line
-                        legendHTML += `
-                            <div class="legend-item-row">
-                                <span class="color-line" style="${style}"></span>
-                                <span>${item.label}</span>
-                            </div>
-                        `;
-                    } else { // if not line, set color box instead
-                        legendHTML += `
-                            <div class="legend-item-row">
-                                <span class="color-box" style="${style}"></span>
-                                <span>${item.label}</span>
-                            </div>
-                        `;
-                    }
+                    const swatchClass = item.isLine ? 'color-line' : 'color-box';
+                    legendHTML += `
+                        <div class="legend-item-row">
+                            <span class="${swatchClass}" style="${style}"></span>
+                            <span>${item.label}</span>
+                        </div>
+                    `;
                 });
             }
         });
@@ -66,6 +61,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         legendBox.innerHTML = legendHTML;
     }
+
+    // make updateLegend global
+    window.updateLegend = updateLegend;
 
     // main event listener
     legendButton.addEventListener('click', () => {
@@ -78,11 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    map.on('moveend', () => {
-        if (legendVisibility) updateLegend();
-    });
-
-    map.on('zoom', () => {
-        if (legendVisibility) updateLegend();
-    });
+    // update on move and zoom
+    map.on('moveend', updateLegend);
+    map.on('zoom', updateLegend);
 });

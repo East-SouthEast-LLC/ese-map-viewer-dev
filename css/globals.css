@@ -269,7 +269,7 @@ INFO DISPLAY PANELS (for distance and scale)
 
 .color-line {
   width: 15px;
-  height: 4px;
+  height: 3px;
   border: 1px solid #555;
   margin-right: 8px;
   flex-shrink: 0;
