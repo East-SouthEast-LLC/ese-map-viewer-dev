@@ -7,8 +7,12 @@
 // DEFINE 2D MAP TO STORE LAYER INFO
 const layers = new Map([
     ['sewer plans', new Map([
-        ['2014-2019', '#d32f2f'],
-        ['2008-2013', '#b71c1c']
+        ['Plan Year: 2014-2019', '#d32f2f'],
+        ['Plan Year: 2008-2013', '#b71c1c'],
+        ['Plan Year: 2000-2007', '#a31515'],
+        ['Plan Year: 1983-1999', '#7f1010'],
+        ['Plan Year: 1969-1982', '#4b0707'],
+        ['Not on original plan', '#ffcccc']
     ])]
 ])
 

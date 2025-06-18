@@ -25,7 +25,7 @@ map.on('load', function() {
 
                 // handle conservation properties
                 ['==', ['get', 'CONSERV'], 'Y'],
-                '#9b59b6',
+                '#ffffff',
 
                 // handle added parcels
                 ['==', ['get', 'ADDED'], 'Y'],

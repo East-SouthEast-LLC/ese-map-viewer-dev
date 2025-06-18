@@ -230,9 +230,8 @@ INFO DISPLAY PANELS (for distance and scale)
 
 /* ==== LEGEND STYLES ==== */
 
-/* The main container for the legend */
+/* main container for the legend */
 #legend-box {
-  /* Keep the visual styling from other panels */
   background: white;
   color: #333;
   padding: 10px 15px;
@@ -242,33 +241,28 @@ INFO DISPLAY PANELS (for distance and scale)
   max-width: 240px;
   width: 100%;
   box-sizing: border-box;
-
-  /* Layout: We will toggle between 'none' and 'block' with JavaScript. */
   display: none; 
 }
 
-/* The title for a legend section (e.g., "sewer plans") */
 .legend-title {
   font-weight: bold;
   font-size: 14px;
-  margin-bottom: 8px; /* Space below the title */
+  margin-bottom: 6px;
   text-align: center;
 }
 
-/* A single row in the legend (color box + text) */
 .legend-item-row {
-  display: flex;         /* This aligns the color box and text horizontally */
-  align-items: center;   /* This vertically centers them relative to each other */
-  margin-bottom: 5px;    /* Space between each legend item */
+  display: flex;
+  align-items: center;
+  margin-bottom: 2px;
   font-size: 12px;
 }
 
-/* The colored square swatch */
 .color-box {
   width: 15px;
   height: 15px;
   border: 1px solid #555;
   margin-right: 8px;
-  flex-shrink: 0;         /* Prevents the box from shrinking if text is long */
-  opacity: .4;            /* Matches your original opacity */
+  flex-shrink: 0;
+  opacity: .4;
 }
