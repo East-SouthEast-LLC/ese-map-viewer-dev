@@ -91,7 +91,10 @@ map.on('load', function() {
             // update the legend if it exists
             var legendBox = document.getElementById("legend-box");
             if (legendBox) {
-                updateLegend(legendBox);
+                // wait for the map to finish rendering before updating the legend
+                map.once('idle', function() {
+                    updateLegend(legendBox);
+                });
             }
         };
 
