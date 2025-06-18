@@ -1,24 +1,5 @@
 // control-legend.js
 
-// helper function to fetch legend data from JSON
-function fetchLegendData() {
-    // fetch legend data
-    fetch('https://east-southeast-llc.github.io/ese-map-viewer/docs/legend-data.json')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            return data;
-        })
-        .catch(error => {
-            console.error('Error fetching legend data:', error);
-            return;
-    });
-}
-
 // helper function to get printing frame coordinates
 function getPrintBoundingBox() {
     if (!map) return; // Ensure map is ready
@@ -59,11 +40,11 @@ function getLegendForPrint() {
     const features = map.queryRenderedFeatures(printBoundingBox);
     const legendData = fetchLegendData();
 
+    // build legend HTML
+    let legendHTML = '';
+    let count = 0;
+
     features.forEach(feature => visibleLayerIDs.add(feature.layer.id));
-
-        // build legend HTML
-        let legendHTML = '';
-
         legendData.forEach(layerInfo => {
             if (visibleLayerIDs.has(layerInfo.id)) {
                 legendHTML += `<div class="legend-title">${layerInfo.displayName}</div>`;
@@ -87,13 +68,29 @@ document.addEventListener("DOMContentLoaded", function () {
     const legendButton = document.getElementById("legendButton");
     const legendBox = document.getElementById("legend-box");
     let legendVisibility = false;
-    let legendData = fetchLegendData();
+    let legendData = [];
     legendBox.style.display = 'none';
 
     if (!legendButton || !legendBox) {
         console.error("Required elements not found in the DOM.");
         return;
     }
+
+    // fetch legend data
+    fetch('https://east-southeast-llc.github.io/ese-map-viewer/docs/legend-data.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            legendData = data;
+        })
+        .catch(error => {
+            console.error('Error fetching legend data:', error);
+            legendBox.innerHTML = "Could not load legend data.";
+    });
 
     function updateLegend() {
         if (legendBox.style.display === 'none') {
