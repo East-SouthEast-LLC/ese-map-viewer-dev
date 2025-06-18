@@ -33,10 +33,11 @@ function updateLegend(legendBox) {
     // iterate over all the layers and check if they are in the visible set
     for (const layer of layers.keys()) {
         if (visibleLayers.has(layer)) {
-            legendHTML += `<div style="font-weight: bold; margin-top: 5px;">${layer}</div>`;
+            // Use the new class for the title
+            legendHTML += `<div class="legend-title">${layer}</div>`;
             if (layers.has(layer)) {
                 for (const [key, value] of layers.get(layer)) {
-                    legendHTML += `<div><span class="color-box" style="background-color: ${value};"></span><span">${key}</span></div><br>`;
+                    legendHTML += `<div class="legend-item-row"><span class="color-box" style="background-color: ${value};"></span><span>${key}</span></div>`;
                 }
             }
         }
