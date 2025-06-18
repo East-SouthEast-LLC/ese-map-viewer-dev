@@ -303,6 +303,15 @@ document.getElementById('printButton').addEventListener('click', () => {
                             color: black;
                             text-decoration: none;
                         }
+                        .legend-frame {
+                            width: 4.5in;
+                            height: 2.5in;
+                            flex-direction: column;
+                            justify-content: center;
+                            align-items: center;
+                            text-align: center;
+                            padding: 4px;
+                        }
                     </style>
                 </head>
                 <body>
@@ -316,6 +325,9 @@ document.getElementById('printButton').addEventListener('click', () => {
                         <div class="bottom-frame">
                             <div class="image-container">
                                 <img src="https://static1.squarespace.com/static/536cf42ee4b0465238027de5/t/67a783e42bb54b7b434b79f1/1739031525647/ESE-GIS.jpg" alt="Company Logo" />
+                            </div>
+                            <div class="legend-frame">
+                                <span><strong>Legend</strong></span>
                             </div>
                             <div class="inner-frame">
                                 <span class="gis-map">GIS Map</span>
