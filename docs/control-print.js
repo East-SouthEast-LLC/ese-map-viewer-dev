@@ -40,6 +40,7 @@ function getPrintingFrameCoordinates(map, frameElement) {
         middle: map.unproject([positions.middle.x, positions.middle.y]).toArray(),
     };
 
+    console.log("Printing frame coordinates:", coordinates);
     return coordinates;
 }
 
