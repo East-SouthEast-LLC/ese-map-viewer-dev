@@ -1,5 +1,9 @@
 // control-legend.js
 
+// define the legendData globally
+let legendData = [];
+
+
 // helper function to get printing frame coordinates
 function getPrintBoundingBox() {
     if (!map) return; // Ensure map is ready
@@ -38,32 +42,16 @@ function getLegendForPrint() {
     const visibleLayerIDs = new Set();
     const printBoundingBox = getPrintBoundingBox();
     const features = map.queryRenderedFeatures();
-    let legendDataPrint = [];
-
-    // fetch legend data
-    fetch('https://east-southeast-llc.github.io/ese-map-viewer/docs/legend-data.json')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            legendDataPrint = data;
-        })
-        .catch(error => {
-            console.error('Error fetching legend data:', error);
-    });
 
     // build legend HTML
     let legendHTML = '<div class="legend-frame-column">';
     let count = 0;
 
     features.forEach(feature => visibleLayerIDs.add(feature.layer.id));
-        legendDataPrint.forEach(layerInfo => {
-            if (visibleLayerIDs.has(layerInfo.id)) {
-                legendHTML += `<div>${layerInfo.displayName}</div>`;
-                count++;
+    legendData.forEach(layerInfo => {
+        if (visibleLayerIDs.has(layerInfo.id)) {
+            legendHTML += `<div>${layerInfo.displayName}</div>`;
+            count++;
 
                 // iterate over the legend items for a given set
                 for (let i = 0; i < layerInfo.items.length; i++) {
@@ -95,7 +83,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const legendButton = document.getElementById("legendButton");
     const legendBox = document.getElementById("legend-box");
     let legendVisibility = false;
-    let legendData = [];
     legendBox.style.display = 'none';
 
     if (!legendButton || !legendBox) {
