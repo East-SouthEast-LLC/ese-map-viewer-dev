@@ -83,28 +83,22 @@ document.addEventListener("DOMContentLoaded", function () {
     // helper function for print output
     function getLegendForPrint() {
         const visibleLayerIDs = new Set();
-        const features = map.queryRenderedFeatures();
+        const printBoundingBox = getPrintingFrameCoordinates();
+        const features = map.queryRenderedFeatures(printBoundingBox);
         features.forEach(feature => visibleLayerIDs.add(feature.layer.id));
 
-        let legendHTML = '';
+        // create an array of all json items that need space on the legend
+        const legendItems = [];
 
         legendData.forEach(layerInfo => {
             if (visibleLayerIDs.has(layerInfo.id)) {
-                legendHTML += `<div class="legend-title">${layerInfo.displayName}</div>`;
-
                 layerInfo.items.forEach(item => {
-                    const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
-                    const swatchClass = item.isLine ? 'color-line' : 'color-box';
-                    legendHTML += `
-                        <div class="legend-item-row">
-                            <span class="${swatchClass}" style="${style}"></span>
-                            <span>${item.label}</span>
-                        </div>
-                    `;
+                    legendItems.push(item);
+                    console.log("Legend item added:", item);
                 });
             }
         });
-        return legendHTML;
+        //return legendHTML;
     }
 
 
