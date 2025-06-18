@@ -1,9 +1,42 @@
 // control-legend.js
 
+// helper function to get printing frame coordinates
+function getPrintBoundingBox() {
+    if (!map) return; // Ensure map is ready
+
+    const center = map.getCenter(); // Get the map's center point (lng, lat)
+    const bounds = map.getBounds(); // Get the map's bounds
+
+    const northLat = bounds.getNorth(); // North bound of map
+    const centerLat = center.lat; // Latitude of the map center
+
+    // Calculate the distance from center to the top of the visible map in meters
+    const halfHeightMeters = turf.distance(
+        [center.lng, center.lat], // Center point
+        [center.lng, northLat], // North point
+        { units: 'meters' }
+    );
+
+    // Calculate the half-width using the 75/80 ratio in meters
+    const halfWidthMeters = halfHeightMeters * 75 / 80;
+
+    // Convert distances back into lat/lng
+    const north = centerLat + (halfHeightMeters / 111320); // Convert meters to lat
+    const south = centerLat - (halfHeightMeters / 111320); // Convert meters to lat
+
+    // Convert width (meters) to longitude difference
+    const lngDiff = halfWidthMeters / (111320 * Math.cos(centerLat * (Math.PI / 180)));
+
+    const east = center.lng + lngDiff;
+    const west = center.lng - lngDiff;
+    console.log("Print bounding box coordinates:", west, north, east, south);
+    return [[west, north], [east, north], [east, south], [west, south], [west, north]];
+}
+
 // helper function for print output
 function getLegendForPrint() {
     const visibleLayerIDs = new Set();
-    const printBoundingBox = getPrintingFrameCoordinates();
+    const printBoundingBox = getPrintBoundingBox();
     const features = map.queryRenderedFeatures(printBoundingBox);
 
     // create an array of all json items that need space on the legend
