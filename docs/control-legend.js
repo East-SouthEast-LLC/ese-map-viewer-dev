@@ -47,6 +47,10 @@ const layers = new Map([
         ['MLW', '#5E87ED'],
         ['EDGE INTERUPTED', '#5EE1ED'],
     ])],
+    ['acec', new Map([
+        ['Area of Critical Environmental Concern', '#CD06D8']
+    ])],
+
     ['endangered species', new Map([
         ['Vernal Pools', '#0D71F9'],
         ['Priority and Estimated Habitat', '#e7ee1f'],

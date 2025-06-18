@@ -14,7 +14,7 @@ map.addLayer({
 },
 'paint': {
 'fill-color': '#CD06D8',
-'fill-opacity': 0.35
+'fill-opacity': 0.4
 }
 });
 });
