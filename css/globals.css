@@ -228,36 +228,47 @@ INFO DISPLAY PANELS (for distance and scale)
   box-sizing: border-box;
 }
 
-/* add styling for legend box */
+/* ==== LEGEND STYLES ==== */
+
+/* The main container for the legend */
 #legend-box {
-  font-size: 12px;
-  flex-direction: column;
-  color: #333;
+  /* Keep the visual styling from other panels */
   background: white;
-  padding: 5px 10px;
+  color: #333;
+  padding: 10px 15px;
   border-radius: 5px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   margin-top: 5px;
-  text-align: left;
   max-width: 240px;
   width: 100%;
   box-sizing: border-box;
-  display: none; /* initially hidden */
+
+  /* Layout: We will toggle between 'none' and 'block' with JavaScript. */
+  display: none; 
 }
 
+/* The title for a legend section (e.g., "sewer plans") */
+.legend-title {
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 8px; /* Space below the title */
+  text-align: center;
+}
+
+/* A single row in the legend (color box + text) */
 .legend-item-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 5px;
-  font-family: sans-serif;
-  font-size: 16px;
+  display: flex;         /* This aligns the color box and text horizontally */
+  align-items: center;   /* This vertically centers them relative to each other */
+  margin-bottom: 5px;    /* Space between each legend item */
+  font-size: 12px;
 }
 
+/* The colored square swatch */
 .color-box {
-    width: 10px;
-    height: 10px;
-    border: 1px solid #555;
-    margin-right: 8px;
-    opacity: .4;
+  width: 15px;
+  height: 15px;
+  border: 1px solid #555;
+  margin-right: 8px;
+  flex-shrink: 0;         /* Prevents the box from shrinking if text is long */
+  opacity: .4;            /* Matches your original opacity */
 }

@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
     legendButton.addEventListener('click', () => {
         legendVisibility = !legendVisibility;
         if (legendVisibility) {
-            legendBox.style.display = 'flex'; 
+            legendBox.style.display = 'block'; 
             updateLegend(legendBox);
         } else {
             legendBox.style.display = 'none';
