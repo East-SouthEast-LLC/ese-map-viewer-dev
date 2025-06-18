@@ -59,19 +59,28 @@ function getLegendForPrint() {
     const features = map.queryRenderedFeatures(printBoundingBox);
     const legendData = fetchLegendData();
 
-    // create an array of all json items that need space on the legend
-    const legendItems = [];
-    
     features.forEach(feature => visibleLayerIDs.add(feature.layer.id));
-    legendData.forEach(layerInfo => {
-        if (visibleLayerIDs.has(layerInfo.id)) {
-            layerInfo.items.forEach(item => {
-                legendItems.push(item);
-                console.log("Legend item added:", item);
-            });
-        }
-    });
-    return legendItems;
+
+        // build legend HTML
+        let legendHTML = '';
+
+        legendData.forEach(layerInfo => {
+            if (visibleLayerIDs.has(layerInfo.id)) {
+                legendHTML += `<div class="legend-title">${layerInfo.displayName}</div>`;
+
+                layerInfo.items.forEach(item => {
+                    const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
+                    const swatchClass = item.isLine ? 'color-line' : 'color-box';
+                    legendHTML += `
+                        <div class="legend-item-row">
+                            <span class="${swatchClass}" style="${style}"></span>
+                            <span>${item.label}</span>
+                        </div>
+                    `;
+                });
+            }
+        });
+    return 'temp';
 }
 
 document.addEventListener("DOMContentLoaded", function () {
