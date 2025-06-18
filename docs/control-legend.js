@@ -83,6 +83,7 @@ function getLegendForPrint() {
             }
         });
     legendHTML += '</div>';
+    console.log("Legend html:", legendHTML);
     return legendHTML;
 }
 
