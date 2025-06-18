@@ -88,14 +88,6 @@ map.on('load', function() {
 
             // Always update button visual state based on new visibility
             this.className = newVisibility === 'visible' ? 'active' : '';
-            // update the legend if it exists
-            var legendBox = document.getElementById("legend-box");
-            if (legendBox) {
-                // wait for the map to finish rendering before updating the legend
-                map.once('idle', function() {
-                    updateLegend(legendBox);
-                });
-            }
         };
 
         var layers = document.getElementById('menu');
