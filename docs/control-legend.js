@@ -1,5 +1,26 @@
 // control-legend.js
 
+// helper function for print output
+function getLegendForPrint() {
+    const visibleLayerIDs = new Set();
+    const printBoundingBox = getPrintingFrameCoordinates();
+    const features = map.queryRenderedFeatures(printBoundingBox);
+
+    // create an array of all json items that need space on the legend
+    const legendItems = [];
+    
+    features.forEach(feature => visibleLayerIDs.add(feature.layer.id));
+    legendData.forEach(layerInfo => {
+        if (visibleLayerIDs.has(layerInfo.id)) {
+            layerInfo.items.forEach(item => {
+                legendItems.push(item);
+                console.log("Legend item added:", item);
+            });
+        }
+    });
+    return legendItems;
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     const legendButton = document.getElementById("legendButton");
     const legendBox = document.getElementById("legend-box");
@@ -79,27 +100,4 @@ document.addEventListener("DOMContentLoaded", function () {
     // update on move and zoom
     map.on('moveend', updateLegend);
     map.on('zoom', updateLegend);
-
-    // helper function for print output
-    function getLegendForPrint() {
-        const visibleLayerIDs = new Set();
-        const printBoundingBox = getPrintingFrameCoordinates();
-        const features = map.queryRenderedFeatures(printBoundingBox);
-
-        // create an array of all json items that need space on the legend
-        const legendItems = [];
-        
-        features.forEach(feature => visibleLayerIDs.add(feature.layer.id));
-        legendData.forEach(layerInfo => {
-            if (visibleLayerIDs.has(layerInfo.id)) {
-                layerInfo.items.forEach(item => {
-                    legendItems.push(item);
-                    console.log("Legend item added:", item);
-                });
-            }
-        });
-        return legendItems;
-    }
-
-
 });
