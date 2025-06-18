@@ -321,8 +321,10 @@ document.getElementById('printButton').addEventListener('click', () => {
                             align-items: flex-start;
                         }
                         .legend-frame-column div {
-                            display: block;
+                            display: flex;
+                            align-items: center;
                             width: 100%;
+                            font-size: 12px;
                             margin-bottom: 4px;
                         }
                     </style>
