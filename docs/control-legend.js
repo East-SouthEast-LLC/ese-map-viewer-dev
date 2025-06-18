@@ -58,6 +58,9 @@ const layers = new Map([
         ['X', '#2578F9'],
         ['A', '#2e4bf0']
     ])],
+    ['zone II', new Map([
+        ['Zone II', '#2758d6']
+    ])],
     ['endangered species', new Map([
         ['Vernal Pools', '#0D71F9'],
         ['Priority and Estimated Habitat', '#e7ee1f'],
