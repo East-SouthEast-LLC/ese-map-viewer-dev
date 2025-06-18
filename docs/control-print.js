@@ -320,7 +320,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                             flex-direction: column;
                             align-items: flex-start;
                         }
-                        .legend-frame-column span {
+                        .legend-frame-column div {
                             display: block;
                             width: 100%;
                             margin-bottom: 4px;

@@ -37,7 +37,7 @@ function getPrintBoundingBox() {
 function getLegendForPrint() {
     const visibleLayerIDs = new Set();
     const printBoundingBox = getPrintBoundingBox();
-    const features = map.queryRenderedFeatures(printBoundingBox);
+    const features = map.queryRenderedFeatures();
     let legendDataPrint = [];
 
     // fetch legend data
@@ -62,24 +62,28 @@ function getLegendForPrint() {
     features.forEach(feature => visibleLayerIDs.add(feature.layer.id));
         legendDataPrint.forEach(layerInfo => {
             if (visibleLayerIDs.has(layerInfo.id)) {
-                legendHTML += `<span>${layerInfo.displayName}</span>`;
+                legendHTML += `<div>${layerInfo.displayName}</div>`;
                 count++;
 
                 // iterate over the legend items for a given set
-                layerInfo.items.forEach(item => {
+                for (let i = 0; i < layerInfo.items.length; i++) {
+                    if (count >= 20) {
+                        break;
+                    }
+                    if (count > 10) {
+                        legendHTML += '</div><div class="legend-frame-column">';
+                    }
+                    const item = layerInfo.items[i];
                     const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
                     const swatchClass = item.isLine ? 'color-line' : 'color-box';
                     legendHTML += `
-                        <span>
+                        <div>
                             <span class="${swatchClass}" style="${style}"></span>
                             <span>${item.label}</span>
-                        </span>
+                        </div>
                     `;
                     count++;
-                    if (count < 10) {
-                        legendHTML += '<div class="legend-frame-column">';
-                    }
-                });
+                }
             }
         });
     legendHTML += '</div>';
