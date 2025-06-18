@@ -327,6 +327,20 @@ document.getElementById('printButton').addEventListener('click', () => {
                             font-size: 12px;
                             margin-bottom: 4px;
                         }
+                        .color-box {
+                            width: 15px;
+                            height: 15px;
+                            border: 1px solid #555;
+                            margin-right: 8px;
+                            flex-shrink: 0;
+                        }
+                        .color-line {
+                            width: 15px;
+                            height: 3px;
+                            border: 1px solid #555;
+                            margin-right: 8px;
+                            flex-shrink: 0;
+                        }
                     </style>
                 </head>
                 <body>
