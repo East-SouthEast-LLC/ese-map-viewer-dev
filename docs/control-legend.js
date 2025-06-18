@@ -38,14 +38,29 @@ function getLegendForPrint() {
     const visibleLayerIDs = new Set();
     const printBoundingBox = getPrintBoundingBox();
     const features = map.queryRenderedFeatures(printBoundingBox);
-    const legendData = fetchLegendData();
+    const legendDataPrint = [];
+
+    // fetch legend data
+    fetch('https://east-southeast-llc.github.io/ese-map-viewer/docs/legend-data.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            legendDataPrint = data;
+        })
+        .catch(error => {
+            console.error('Error fetching legend data:', error);
+    });
 
     // build legend HTML
     let legendHTML = '';
     let count = 0;
 
     features.forEach(feature => visibleLayerIDs.add(feature.layer.id));
-        legendData.forEach(layerInfo => {
+        legendDataPrint.forEach(layerInfo => {
             if (visibleLayerIDs.has(layerInfo.id)) {
                 legendHTML += `<div class="legend-title">${layerInfo.displayName}</div>`;
 
