@@ -38,10 +38,7 @@ map.on('load', function() {
 
             const isVisible = map.getLayoutProperty(clickedLayer, 'visibility') === 'visible';
             const newVisibility = isVisible ? 'none' : 'visible';
-            const legendBox = document.getElementById("legend-box");
-            updateLegend(legendBox);
-            updateLegend(legendBox);
-
+            
             // Toggle main layer
             map.setLayoutProperty(clickedLayer, 'visibility', newVisibility);
 
@@ -91,6 +88,11 @@ map.on('load', function() {
 
             // Always update button visual state based on new visibility
             this.className = newVisibility === 'visible' ? 'active' : '';
+            // update the legend if it exists
+            var legendBox = document.getElementById("legend-box");
+            if (legendBox) {
+                updateLegend(legendBox);
+            }
         };
 
         var layers = document.getElementById('menu');
