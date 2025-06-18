@@ -38,7 +38,14 @@ const layers = new Map([
         ['TF', '#F3F4CC'],
         ['WS1', '#1F9A35'],
         ['WS2', '#056828'],
-        ['WS3', '#448842']
+        ['WS3', '#448842'],
+        ['0', '#08ADEF'], //EDGE OF OCEAN
+        ['1', '#EBF90A'], //SHORELINE
+        ['2', '#EBECDD'], //CLOSURE
+        ['3', '#F2A5EF'], //APPARENT WETLAND LIMIT
+        ['7', '#0B11F0'], //HYDRO CONNECTION
+        ['8', '#5E87ED'], //MLW
+        ['88', '#5EE1ED'], //EDGE INTERUPTED
     ])],
     ['endangered species', new Map([
         ['Vernal Pools', '#0D71F9'],
