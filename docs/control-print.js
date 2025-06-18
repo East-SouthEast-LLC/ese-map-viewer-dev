@@ -304,7 +304,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                             text-decoration: none;
                         }
                         .legend-frame {
-                            width: 3in;
+                            width: 3.25in;
                             height: 2.5in;
                             display: flex;
                             flex-direction: row;
@@ -313,16 +313,11 @@ document.getElementById('printButton').addEventListener('click', () => {
                             text-align: center;
                             padding: 4px;
                         }
-                        .legend-frame span {
-                            display: block;
-                            width: 100%;
-                            margin-bottom: 4px;
-                        }
                         .legend-frame-column {
                             display: flex;
-                            width: 1.5in;
+                            width: 1.6in;
                             flex-direction: column;
-                            align-items: center;
+                            align-items: flex-start;
                         }
                         .legend-frame-column span {
                             display: block;
@@ -344,12 +339,21 @@ document.getElementById('printButton').addEventListener('click', () => {
                                 <img src="https://static1.squarespace.com/static/536cf42ee4b0465238027de5/t/67a783e42bb54b7b434b79f1/1739031525647/ESE-GIS.jpg" alt="Company Logo" />
                             </div>
                             <div class="legend-frame">
-                                <span><strong>Legend</strong></span>
                                 <div class="legend-frame-column">
+                                   <span>Parcels</span>
                                    <span>Parcels</span>
                                 </div>
                                 <div class="legend-frame-column">
                                    <span>Test</span>
+                                   <span>Parcels</span>
+                                   <span>Parcels</span>
+                                   <span>Parcels</span>
+                                   <span>Parcels</span>
+                                   <span>Parcels</span>
+                                   <span>Parcels</span>
+                                   <span>Parcels</span>
+                                   <span>Parcels</span>
+                                   <span>Parcels</span>
                                 </div>
                             </div>
                             <div class="inner-frame">
