@@ -40,6 +40,7 @@ map.on('load', function() {
             const newVisibility = isVisible ? 'none' : 'visible';
             const legendBox = document.getElementById("legend-box");
             updateLegend(legendBox);
+            updateLegend(legendBox);
 
             // Toggle main layer
             map.setLayoutProperty(clickedLayer, 'visibility', newVisibility);
