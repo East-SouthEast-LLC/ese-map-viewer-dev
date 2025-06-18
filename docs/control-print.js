@@ -315,9 +315,10 @@ document.getElementById('printButton').addEventListener('click', () => {
                             padding: 4px;
                         }
                         .legend-frame-column {
-                            display: none;
+                            display: flex;
                             width: 1.6in;
-
+                            flex-direction: column;
+                            align-items: flex-start;
                         }
                         .legend-frame-column div {
                             display: flex;
@@ -325,21 +326,6 @@ document.getElementById('printButton').addEventListener('click', () => {
                             width: 100%;
                             font-size: 12px;
                             margin-bottom: 4px;
-                        }
-                        .color-box {
-                            width: 15px;
-                            height: 15px;
-                            border: 1px solid #555;
-                            margin-right: 8px;
-                            flex-shrink: 0;
-                        }
-
-                        .color-line {
-                            width: 15px;
-                            height: 3px;
-                            border: 1px solid #555;
-                            margin-right: 8px;
-                            flex-shrink: 0;
                         }
                     </style>
                 </head>
