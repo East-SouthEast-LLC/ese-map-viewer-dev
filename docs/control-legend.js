@@ -85,11 +85,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const visibleLayerIDs = new Set();
         const printBoundingBox = getPrintingFrameCoordinates();
         const features = map.queryRenderedFeatures(printBoundingBox);
-        features.forEach(feature => visibleLayerIDs.add(feature.layer.id));
 
         // create an array of all json items that need space on the legend
         const legendItems = [];
-
+        
+        features.forEach(feature => visibleLayerIDs.add(feature.layer.id));
         legendData.forEach(layerInfo => {
             if (visibleLayerIDs.has(layerInfo.id)) {
                 layerInfo.items.forEach(item => {
@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
             }
         });
-        //return legendHTML;
+        return legendItems;
     }
 
 
