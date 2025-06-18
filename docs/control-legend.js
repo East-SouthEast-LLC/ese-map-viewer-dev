@@ -34,10 +34,10 @@ function updateLegend(legendBox) {
     for (const layer of layers.keys()) {
         if (visibleLayers.has(layer)) {
             // Use the new class for the title
-            legendHTML += `<div class="legend-title">${layer}</div>`;
+            legendHTML += `<div class="legend-title">${layer}</div><br>`;
             if (layers.has(layer)) {
                 for (const [key, value] of layers.get(layer)) {
-                    legendHTML += `<div class="legend-item-row"><span class="color-box" style="background-color: ${value};"></span><span>${key}</span></div>`;
+                    legendHTML += `<div class="legend-item-row"><span class="color-box" style="background-color: ${value};"></span><span>${key}</span></div><br>`;
                 }
             }
         }
