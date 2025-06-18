@@ -13,9 +13,14 @@ const layers = new Map([
         ['Plan Year: 1983-1999', '#7f1010'],
         ['Plan Year: 1969-1982', '#4b0707'],
         ['Not on original plan', '#ffcccc']
+    ])],
+    ['endangered species', new Map([
+        ['Vernal Pools', '#0D71F9'],
+        ['Priority and Estimated Habitat', '#e7ee1f'],
+        ['Priority Habitat', '#1DB708'],
+        ['Estimated Habitat', '#A28F06']
     ])]
-])
-
+]);
 
 function updateLegend(legendBox) {
     console.log("Updating legend...");
@@ -65,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const legendButton = document.getElementById("legendButton");
     const legendBox = document.getElementById("legend-box");
     let legendVisibility = false
-    legendBox.style.display = ' none';
+    legendBox.style.display = 'none';
 
     if (!legendButton || !legendBox) {
         console.error("Required elements not found in the DOM.");

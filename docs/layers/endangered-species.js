@@ -24,7 +24,7 @@ map.on('load', function() {
                 ['==', ['get', 'EST_PRI'], 'EST_ONLY'], '#A28F06',   // Yellow for ESTonly - There is not much
                 '#FFFFFF'  // Default color (in case of no match)
             ],
-            'fill-opacity': 0.3
+            'fill-opacity': 0.4
         }
     });
     
