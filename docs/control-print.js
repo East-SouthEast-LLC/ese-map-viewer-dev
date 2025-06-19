@@ -337,11 +337,14 @@ document.getElementById('printButton').addEventListener('click', () => {
                         /* An individual item in the legend (swatch + label) */
                         .legend-item {
                             display: flex;
-                            align-items: center;
-                            font-size: 7.5pt; /* Smaller font to fit more items */
-                            white-space: nowrap;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
+                            align-items: flex-start; /* Aligns the color swatch to the top of the text */
+                            font-size: 7.5pt;
+                            margin-bottom: 2px;    /* Adds a little space between rows */
+                        }
+
+                        /* This new rule specifically targets the text part of the legend item */
+                        .legend-item span:last-child {
+                            white-space: normal; /* This is the key property that allows text to wrap */
                         }
 
                         /* Swatch styles can remain the same */
