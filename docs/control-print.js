@@ -304,34 +304,49 @@ document.getElementById('printButton').addEventListener('click', () => {
                             color: black;
                             text-decoration: none;
                         }
+                        /* Main container for the legend area in the print layout */
                         .legend-frame {
                             width: 3.25in;
-                            height: 2.5in;
-                            display: flex;
-                            flex-direction: row;
+                            height: 2.4in; /* Slightly adjusted height */
+                            padding: 5px;
+                            display: flex; /* This helps center the grid if it's not full */
                             justify-content: center;
-                            align-items: center;
-                            text-align: center;
-                            padding: 4px;
                         }
-                        .legend-frame-column {
-                            display: flex;
-                            width: 1.6in;
-                            flex-direction: column;
-                            align-items: flex-start;
-                        }
-                        .legend-section {
-                            font-size: .12in;
-                            font-weight: bold;
-                            margin-top: 2px;
-                            margin-bottom: 4px;
-                        }
-                        .legend-frame-column div {
-                            display: flex;
-                            align-items: left;
+
+                        /* The new grid container that will hold all legend items */
+                        .legend-grid {
+                            display: grid;
                             width: 100%;
-                            font-size: .1in;
-                            margin-bottom: 2px;
+                            /* Create 2 equal-width columns */
+                            grid-template-columns: 1fr 1fr;
+                            /* Define up to 12 auto-sized rows */
+                            grid-template-rows: repeat(12, auto);
+                            /* This is the magic part: it fills columns top-to-bottom */
+                            grid-auto-flow: column;
+                            /* Define spacing between items */
+                            row-gap: 2px;
+                            column-gap: 10px;
+                        }
+
+                        /* A title for a legend section (e.g., "DEP Wetlands") */
+                        .legend-section {
+                            font-size: 9px;
+                            font-weight: bold;
+                            margin-bottom: 3px;
+                            /* Ensures the title doesn't break a column weirdly */
+                            break-before: column;
+                            -webkit-column-break-before: always; /* Safari/Chrome */
+                            page-break-before: always;
+                        }
+
+                        /* An individual item in the legend (swatch + label) */
+                        .legend-item {
+                            display: flex;
+                            align-items: center;
+                            font-size: 8px;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
                         }
                         .color-box {
                             width: .1in;

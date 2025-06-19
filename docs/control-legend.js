@@ -38,15 +38,14 @@ function getPrintBoundingBox() {
 
 // helper function for print output
 function getLegendForPrint() {
-    // 1. Get all features currently rendered in the map's print area.
-    // NOTE: For now, this queries the entire viewport. We can add the bounding box later.
+    // Get all visible features from the current map view
     const allVisibleFeatures = map.queryRenderedFeatures();
     
     if (allVisibleFeatures.length === 0) {
-        return '<div class="legend-frame-column">No layers with a legend are visible.</div>';
+        return '<div class="legend-item">No layers with a legend are visible.</div>';
     }
 
-    // 2. Group features by their layer ID for efficient lookup.
+    // Group features by layer ID for efficiency
     const featuresByLayer = allVisibleFeatures.reduce((acc, feature) => {
         const layerId = feature.layer.id;
         if (!acc[layerId]) {
@@ -56,27 +55,25 @@ function getLegendForPrint() {
         return acc;
     }, {});
 
-    let columnsHTML = '';
-    let currentColumnHTML = '';
-    let totalItemCount = 0;
-    const maxItemsPerColumn = 11; // Max items before starting a new column
+    let itemsHTML = ''; // This will be a single, flat list of HTML elements
 
-    // 3. Loop through each entry in your legendData.
+    // Loop through our legend data from the JSON file
     legendData.forEach(layerInfo => {
         const sourceLayerIds = layerInfo.sources.map(s => s.id);
         const visibleFeaturesForLayer = sourceLayerIds.flatMap(id => featuresByLayer[id] || []);
 
         if (visibleFeaturesForLayer.length === 0) {
-            return; // Continue to the next legend entry
+            return; // Skip this section if no features are visible
         }
 
         const itemsToShow = new Set();
 
-        // 4. Determine which legend items are visible using your matching rules.
+        // Determine which legend items are visible using your matching rules
         layerInfo.items.forEach(item => {
             for (const feature of visibleFeaturesForLayer) {
                 const props = feature.properties;
-                if (item.match) { // Complex matching for Sewer Plans
+                // Complex 'match' rule logic
+                if (item.match) {
                     const rule = item.match;
                     if (rule.property === "DATE") {
                         if (Number(props.DATE) >= rule.min && Number(props.DATE) <= rule.max) {
@@ -87,7 +84,9 @@ function getLegendForPrint() {
                         itemsToShow.add(item.label);
                         break;
                     }
-                } else if (item.code) { // Simple matching for DEP Wetlands
+                } 
+                // Simple 'code' rule logic
+                else if (item.code) {
                     const source = layerInfo.sources.find(s => s.id === feature.layer.id);
                     if (source && String(props[source.propertyKey]) === String(item.code)) {
                         itemsToShow.add(item.label);
@@ -97,48 +96,33 @@ function getLegendForPrint() {
             }
         });
 
-        // 5. Build the HTML, checking for column breaks after each line.
+        // If items for this section are visible, build their HTML
         if (itemsToShow.size > 0) {
-            // Check if adding the title requires a new column
-            if (totalItemCount > 0 && totalItemCount % maxItemsPerColumn === 0) {
-                columnsHTML += `<div class="legend-frame-column">${currentColumnHTML}</div>`;
-                currentColumnHTML = '';
-            }
-            currentColumnHTML += `<div class="legend-section">${layerInfo.displayName}</div>`;
-            totalItemCount++;
+            itemsHTML += `<div class="legend-section">${layerInfo.displayName}</div>`;
 
             const visibleItems = layerInfo.items.filter(item => itemsToShow.has(item.label));
 
             visibleItems.forEach(item => {
-                // Check if adding this item requires a new column
-                if (totalItemCount > 0 && totalItemCount % maxItemsPerColumn === 0) {
-                    columnsHTML += `<div class="legend-frame-column">${currentColumnHTML}</div>`;
-                    currentColumnHTML = '';
-                }
                 const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
                 const swatchClass = item.isLine ? 'color-line' : 'color-box';
-                currentColumnHTML += `
-                    <div>
+                itemsHTML += `
+                    <div class="legend-item">
                         <span class="${swatchClass}" style="${style}"></span>
                         <span>${item.label}</span>
                     </div>
                 `;
-                totalItemCount++;
             });
         }
     });
 
-    // Add any remaining HTML to the last column
-    if (currentColumnHTML !== '') {
-        columnsHTML += `<div class="legend-frame-column">${currentColumnHTML}</div>`;
+    if (itemsHTML === '') {
+        return '<div class="legend-item">No layers with a legend are currently visible.</div>';
     }
 
-    if (columnsHTML === '') {
-        return '<div class="legend-frame-column">No layers with a legend are currently visible.</div>';
-    }
-
-    return columnsHTML;
+    // Finally, wrap the entire list of items in our new grid container
+    return `<div class="legend-grid">${itemsHTML}</div>`;
 }
+
 
 
 // helper function to get the visible legend items
