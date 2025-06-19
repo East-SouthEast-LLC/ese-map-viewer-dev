@@ -55,11 +55,11 @@ function getLegendForPrint() {
 
                 // iterate over the legend items for a given set
                 for (let i = 0; i < layerInfo.items.length; i++) {
-                    if (count >= 16) {
+                    if (count >= 30) {
                         legendHTML += '<div>...</div>';
                         break;
                     }
-                    if (count % 8 === 0) {
+                    if (count % 10 === 0) {
                         legendHTML += '</div><div class="legend-frame-column">';
                     }
                     const item = layerInfo.items[i];
