@@ -38,11 +38,32 @@ function getPrintBoundingBox() {
 
 // helper function for print output
 function getLegendForPrint() {
-    // Get all features from the current map view
-    const allVisibleFeatures = map.queryRenderedFeatures();
+    // --- This is the only section that has changed ---
+
+    // 1. Get the geographic coordinates of the print frame's corners.
+    const geoJsonBounds = getPrintBoundingBox();
     
+    // 2. Extract the top-left and bottom-right corners for the bounding box.
+    const topLeftGeo = geoJsonBounds[0];     // e.g., [west, north]
+    const bottomRightGeo = geoJsonBounds[2]; // e.g., [east, south]
+
+    // 3. Convert these geographic coordinates to screen pixel coordinates.
+    const topLeftPixel = map.project(topLeftGeo);
+    const bottomRightPixel = map.project(bottomRightGeo);
+
+    // 4. Create the pixel-based bounding box that queryRenderedFeatures needs.
+    const printPixelBoundingBox = [
+        [topLeftPixel.x, topLeftPixel.y],
+        [bottomRightPixel.x, bottomRightPixel.y]
+    ];
+
+    // 5. Query for features ONLY within that specific print area.
+    const allVisibleFeatures = map.queryRenderedFeatures(printPixelBoundingBox);
+
+    // --- The rest of the function remains exactly the same ---
+
     if (allVisibleFeatures.length === 0) {
-        return '<div class="legend-item">No layers with a legend are visible.</div>';
+        return '<div class="legend-item">No layers with a legend are visible in the print area.</div>';
     }
 
     // Group features by layer ID for efficiency
@@ -57,13 +78,13 @@ function getLegendForPrint() {
 
     const allItemsToRender = []; // A flat array to hold all potential HTML strings
 
-    // Loop through legend data to build a complete list of all items that should be shown
+    // (The rest of the logic to build the HTML is unchanged)
     legendData.forEach(layerInfo => {
         const sourceLayerIds = layerInfo.sources.map(s => s.id);
         const visibleFeaturesForLayer = sourceLayerIds.flatMap(id => featuresByLayer[id] || []);
 
         if (visibleFeaturesForLayer.length === 0) {
-            return; // Skip
+            return;
         }
 
         const itemsToShow = new Set();
@@ -81,7 +102,8 @@ function getLegendForPrint() {
                         itemsToShow.add(item.label);
                         break;
                     }
-                } else if (item.code) {
+                } 
+                else if (item.code) {
                     const source = layerInfo.sources.find(s => s.id === feature.layer.id);
                     if (source && String(props[source.propertyKey]) === String(item.code)) {
                         itemsToShow.add(item.label);
@@ -108,15 +130,14 @@ function getLegendForPrint() {
     });
 
     if (allItemsToRender.length === 0) {
-        return '<div class="legend-item">No layers with a legend are currently visible.</div>';
+        return '<div class="legend-item">No layers with a legend are visible in the print area.</div>';
     }
 
-    // --- NEW: Truncation Logic ---
-    const maxPrintableItems = 26; // Max items to show (e.g., 2 columns of 13)
+    // Truncation Logic
+    const maxPrintableItems = 26;
     let finalItemsHTML = '';
 
     if (allItemsToRender.length > maxPrintableItems) {
-        // Take the first N-1 items and add a "...and more" message at the end
         const truncatedItems = allItemsToRender.slice(0, maxPrintableItems - 1);
         truncatedItems.push('<div class="legend-item">... and more</div>');
         finalItemsHTML = truncatedItems.join('');
@@ -124,7 +145,6 @@ function getLegendForPrint() {
         finalItemsHTML = allItemsToRender.join('');
     }
 
-    // Wrap the final list of items in our grid container and return it.
     return `<div class="legend-grid">${finalItemsHTML}</div>`;
 }
 
