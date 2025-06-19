@@ -324,20 +324,20 @@ document.getElementById('printButton').addEventListener('click', () => {
                             display: flex;
                             align-items: left;
                             width: 100%;
-                            font-size: 10px;
+                            font-size: 8px;
                             margin-bottom: 2px;
                         }
                         .color-box {
-                            width: 10px;
-                            height: 10px;
-                            border: 1px solid #555;
+                            width: 8px;
+                            height: 8px;
+                            border: .5px solid #555;
                             margin-right: 8px;
                             flex-shrink: 0;
                         }
                         .color-line {
-                            width: 10px;
+                            width: 8px;
                             height: 2px;
-                            border: 1px solid #555;
+                            border: .5px solid #555;
                             margin-right: 8px;
                             flex-shrink: 0;
                         }

@@ -51,30 +51,34 @@ function getLegendForPrint() {
     legendData.forEach(layerInfo => {
         if (visibleLayerIDs.has(layerInfo.id)) {
             legendHTML += `<div><strong>${layerInfo.displayName}</strong></div>`;
+            if (count >= 33) {
+                legendHTML += '<div>...</div>';
+                return;
+            }
             count++;
 
-                // iterate over the legend items for a given set
-                for (let i = 0; i < layerInfo.items.length; i++) {
-                    if (count >= 30) {
-                        legendHTML += '<div>...</div>';
-                        break;
-                    }
-                    if (count % 10 === 0) {
-                        legendHTML += '</div><div class="legend-frame-column">';
-                    }
-                    const item = layerInfo.items[i];
-                    const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
-                    const swatchClass = item.isLine ? 'color-line' : 'color-box';
-                    legendHTML += `
-                        <div>
-                            <span class="${swatchClass}" style="${style}"></span>
-                            <span>${item.label}</span>
-                        </div>
-                    `;
-                    count++;
+            // iterate over the legend items for a given set
+            for (let i = 0; i < layerInfo.items.length; i++) {
+                if (count >= 33) {
+                    legendHTML += '<div>...</div>';
+                    return;
                 }
+                if (count % 11 === 0) {
+                    legendHTML += '</div><div class="legend-frame-column">';
+                }
+                const item = layerInfo.items[i];
+                const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
+                const swatchClass = item.isLine ? 'color-line' : 'color-box';
+                legendHTML += `
+                    <div>
+                        <span class="${swatchClass}" style="${style}"></span>
+                        <span>${item.label}</span>
+                    </div>
+                `;
+                count++;
             }
-        });
+        }
+    });
     legendHTML += '</div>';
     console.log("Legend html:", legendHTML);
     return legendHTML;
