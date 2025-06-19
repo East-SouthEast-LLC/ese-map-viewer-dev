@@ -3,7 +3,6 @@
 // define the legendData globally
 let legendData = [];
 
-
 // helper function to get printing frame coordinates
 function getPrintBoundingBox() {
     if (!map) return; // Ensure map is ready
@@ -99,15 +98,15 @@ function getVisibleLegendItems(layerId, propertyKey) {
         }
     } catch (e) {
         // This can happen if the map style is still loading.
-        return []; 
+        return [];
     }
 
     // Query all the rendered features for the specified layer in the current view.
     const features = map.queryRenderedFeatures({ layers: [layerId] });
-    
+
     // Use a Set to automatically store only the unique property values.
     const uniqueItems = new Set();
-    
+
     // Loop through the visible features and collect the values of the specified property.
     features.forEach(feature => {
         // Check if the property exists before adding it.
@@ -116,14 +115,13 @@ function getVisibleLegendItems(layerId, propertyKey) {
             uniqueItems.add(feature.properties[propertyKey]);
         }
     });
-    
+
     // Convert the Set into a simple array and return it.
     return Array.from(uniqueItems);
 }
 
 // Expose the function to the global window object so you can test it in the console.
 window.getVisibleLegendItems = getVisibleLegendItems;
-
 
 document.addEventListener("DOMContentLoaded", function () {
     const legendButton = document.getElementById("legendButton");
@@ -150,61 +148,74 @@ document.addEventListener("DOMContentLoaded", function () {
         .catch(error => {
             console.error('Error fetching legend data:', error);
             legendBox.innerHTML = "Could not load legend data.";
-    });
-
+        });
 
     // UPDATE LEGEND DRIVER FUNCTION
     function updateLegend() {
-    // 1. If the legend box is hidden, do nothing.
-    if (legendBox.style.display === 'none') {
-        return; 
-    }
-
-    let legendHTML = '';
-
-    // 2. Loop through each main entry in your legendData (e.g., "Sewer Plans", "DEP Wetlands").
-    legendData.forEach(layerInfo => {
-
-        // 3. Create a master Set to hold all unique codes for VISIBLE features for this section.
-        const visibleCodes = new Set();
-
-        // 4. Check all sources listed for this legend entry (e.g., both polygons and lines for wetlands).
-        if (layerInfo.sources) {
-            layerInfo.sources.forEach(source => {
-                // Call our helper function to get the codes for what's on screen.
-                const items = getVisibleLegendItems(source.id, source.propertyKey);
-                // Add the visible codes from this source to our master Set.
-                items.forEach(itemCode => visibleCodes.add(String(itemCode)));
-            });
+        if (legendBox.style.display === 'none') {
+            return;
         }
-        
-        // 5. Only build this legend section if there are items to show.
-        if (visibleCodes.size > 0) {
-            legendHTML += `<div class="legend-title">${layerInfo.displayName}</div>`;
 
-            // 6. Filter the full list of items from the JSON against the visible codes.
-            const visibleItems = layerInfo.items.filter(item => visibleCodes.has(String(item.code)));
+        let legendHTML = '';
 
-            // 7. Build the HTML for each of the visible items.
-            visibleItems.forEach(item => {
-                const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
-                const swatchClass = item.isLine ? 'color-line' : 'color-box';
-                legendHTML += `
-                    <div class="legend-item-row">
-                        <span class="${swatchClass}" style="${style}"></span>
-                        <span>${item.label}</span>
-                    </div>
-                `;
+        // Loop through each main entry in your legendData
+        legendData.forEach(layerInfo => {
+            // Get all visible features for all sources listed for this legend entry.
+            const sourceLayerIds = layerInfo.sources.map(s => s.id);
+            const visibleFeatures = map.queryRenderedFeatures({ layers: sourceLayerIds });
+
+            // If there are no visible features for any of the sources, skip this legend section.
+            if (visibleFeatures.length === 0) {
+                return; // 'continue' to the next layerInfo
+            }
+
+            const itemsToShow = new Set(); // Use a Set to store the labels of items to show
+
+            // For each legend item, check if any visible feature matches its rule.
+            layerInfo.items.forEach(item => {
+                for (const feature of visibleFeatures) {
+                    const props = feature.properties;
+                    const matchRule = item.match;
+
+                    // Check if the feature matches the rule for this legend item
+                    if (matchRule.property === "DATE") {
+                        const date = Number(props.DATE);
+                        if (date >= matchRule.min && date <= matchRule.max) {
+                            itemsToShow.add(item.label);
+                            break; // Found a match, no need to check other features for this item
+                        }
+                    } else if (props[matchRule.property] === matchRule.value) {
+                        itemsToShow.add(item.label);
+                        break; // Found a match
+                    }
+                }
             });
-        }
-    });
 
-    // If after checking all layers, nothing is visible, show a default message.
-    if (legendHTML === '') {
-        legendHTML = '<div>No layers with a legend are currently visible.</div>';
-    }
-    
-    legendBox.innerHTML = legendHTML;
+            // Now, build the HTML for the items we've identified as visible.
+            if (itemsToShow.size > 0) {
+                legendHTML += `<div class="legend-title">${layerInfo.displayName}</div>`;
+
+                // Filter the original items list to keep the order correct
+                const visibleItems = layerInfo.items.filter(item => itemsToShow.has(item.label));
+
+                visibleItems.forEach(item => {
+                    const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
+                    const swatchClass = item.isLine ? 'color-line' : 'color-box';
+                    legendHTML += `
+                        <div class="legend-item-row">
+                            <span class="${swatchClass}" style="${style}"></span>
+                            <span>${item.label}</span>
+                        </div>
+                    `;
+                });
+            }
+        });
+
+        if (legendHTML === '') {
+            legendHTML = '<div>No layers with a legend are currently visible.</div>';
+        }
+
+        legendBox.innerHTML = legendHTML;
     }
 
     // make updateLegend global

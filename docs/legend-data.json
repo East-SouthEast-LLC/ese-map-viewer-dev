@@ -3,50 +3,57 @@
     "id": "sewer plans",
     "displayName": "Sewer Plans",
     "sources": [
-      { "id": "sewer plans", "propertyKey": "DATE" }
+      { "id": "sewer plans" }
     ],
     "items": [
       {
-        "code": "2014-2019",
+        "label": "Conservation Property",
+        "color": "#9b59b6",
+        "opacity": 0.4,
+        "isLine": false,
+        "match": { "property": "CONSERV", "value": "Y" }
+      },
+      {
+        "label": "Not on original plan",
+        "color": "#e57373",
+        "opacity": 0.4,
+        "isLine": false,
+        "match": { "property": "ADDED", "value": "Y" }
+      },
+      {
         "label": "Plan Year: 2014-2019",
         "color": "#d32f2f",
         "opacity": 0.4,
-        "isLine": false
+        "isLine": false,
+        "match": { "property": "DATE", "min": 2014, "max": 2019 }
       },
       {
-        "code": "2008-2013",
         "label": "Plan Year: 2008-2013",
         "color": "#b71c1c",
         "opacity": 0.4,
-        "isLine": false
+        "isLine": false,
+        "match": { "property": "DATE", "min": 2008, "max": 2013 }
       },
       {
-        "code": "2000-2007",
         "label": "Plan Year: 2000-2007",
         "color": "#a31515",
         "opacity": 0.4,
-        "isLine": false
+        "isLine": false,
+        "match": { "property": "DATE", "min": 2000, "max": 2007 }
       },
       {
-        "code": "1983-1999",
         "label": "Plan Year: 1983-1999",
         "color": "#7f1010",
         "opacity": 0.4,
-        "isLine": false
+        "isLine": false,
+        "match": { "property": "DATE", "min": 1983, "max": 1999 }
       },
       {
-        "code": "1969-1982",
         "label": "Plan Year: 1969-1982",
         "color": "#4b0707",
         "opacity": 0.4,
-        "isLine": false
-      },
-      {
-        "code": "ADDED",
-        "label": "Not on original plan",
-        "color": "#ffcccc",
-        "opacity": 0.4,
-        "isLine": false
+        "isLine": false,
+        "match": { "property": "DATE", "min": 1969, "max": 1982 }
       }
     ]
   },
