@@ -323,6 +323,8 @@ document.getElementById('printButton').addEventListener('click', () => {
                         .legend-section {
                             font-size: .12in;
                             font-weight: bold;
+                            margin-top: 2px;
+                            margin-bottom: 4px;
                         }
                         .legend-frame-column div {
                             display: flex;
@@ -384,7 +386,7 @@ document.getElementById('printButton').addEventListener('click', () => {
 
             win.onload = () => {
                 win.print();
-                win.close();
+                //win.close();
             };
         } else {
             alert("Popup blocked! Please allow popups for this site.");
