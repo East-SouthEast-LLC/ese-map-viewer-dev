@@ -307,59 +307,56 @@ document.getElementById('printButton').addEventListener('click', () => {
                         /* Main container for the legend area in the print layout */
                         .legend-frame {
                             width: 3.25in;
-                            height: 2.4in; /* Slightly adjusted height */
+                            height: 2.4in; /* A little vertical padding within the 2.5in bottom-frame */
                             padding: 5px;
-                            display: flex; /* This helps center the grid if it's not full */
+                            display: flex;
                             justify-content: center;
+                            align-items: flex-start; /* Align grid to the top */
                         }
 
-                        /* The new grid container that will hold all legend items */
+                        /* The grid container that holds all legend items */
                         .legend-grid {
                             display: grid;
                             width: 100%;
-                            /* Create 2 equal-width columns */
-                            grid-template-columns: 1fr 1fr;
-                            /* Define up to 12 auto-sized rows */
-                            grid-template-rows: repeat(12, auto);
-                            /* This is the magic part: it fills columns top-to-bottom */
-                            grid-auto-flow: column;
-                            /* Define spacing between items */
-                            row-gap: 2px;
+                            grid-template-columns: 1fr 1fr; /* 2 equal-width columns */
+                            grid-template-rows: repeat(15, auto); /* Allow for more, smaller rows */
+                            grid-auto-flow: column; /* Fill columns top-to-bottom */
+                            row-gap: 1.5px; /* Tighter row spacing */
                             column-gap: 10px;
                         }
 
                         /* A title for a legend section (e.g., "DEP Wetlands") */
                         .legend-section {
-                            font-size: 9px;
+                            font-size: 8.5pt; /* Slightly smaller font */
                             font-weight: bold;
-                            margin-bottom: 3px;
-                            /* Ensures the title doesn't break a column weirdly */
-                            break-before: column;
-                            -webkit-column-break-before: always; /* Safari/Chrome */
-                            page-break-before: always;
+                            margin-bottom: 2px; /* Tighter margin */
+                            /* This helps prevent a title from being the last item in a column */
+                            break-after: avoid-page; 
                         }
 
                         /* An individual item in the legend (swatch + label) */
                         .legend-item {
                             display: flex;
                             align-items: center;
-                            font-size: 8px;
+                            font-size: 7.5pt; /* Smaller font to fit more items */
                             white-space: nowrap;
                             overflow: hidden;
                             text-overflow: ellipsis;
                         }
+
+                        /* Swatch styles can remain the same */
                         .color-box {
-                            width: .1in;
-                            height: .1in;
+                            width: 8px;
+                            height: 8px;
                             border: .5px solid #555;
-                            margin-right: 8px;
+                            margin-right: 5px; /* Tighter margin */
                             flex-shrink: 0;
                         }
                         .color-line {
-                            width: .1in;
+                            width: 8px;
                             height: 2px;
                             border: .5px solid #555;
-                            margin-right: 8px;
+                            margin-right: 5px; /* Tighter margin */
                             flex-shrink: 0;
                         }
                     </style>
