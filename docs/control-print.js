@@ -318,10 +318,13 @@ document.getElementById('printButton').addEventListener('click', () => {
                         .legend-grid {
                             display: grid;
                             width: 100%;
-                            grid-template-columns: 1fr 1fr; /* 2 equal-width columns */
-                            grid-template-rows: repeat(15, auto); /* Allow for more, smaller rows */
-                            grid-auto-flow: column; /* Fill columns top-to-bottom */
-                            row-gap: 1.5px; /* Tighter row spacing */
+                            grid-template-columns: 1fr 1fr; /* Keep the 2 equal-width columns */
+                            
+                            /* NEW: Let the grid create as many rows as needed, and make them compact */
+                            grid-auto-rows: min-content; 
+                            
+                            grid-auto-flow: column;        /* Keep filling columns top-to-bottom */
+                            row-gap: 1px;                  /* Make vertical spacing even tighter */
                             column-gap: 10px;
                         }
 
@@ -330,6 +333,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                             font-size: 8.5pt; /* Slightly smaller font */
                             font-weight: bold;
                             margin-bottom: 2px; /* Tighter margin */
+                            margin-top: 4px;  /* Adds a little space above section titles */
                             /* This helps prevent a title from being the last item in a column */
                             break-after: avoid-page; 
                         }
