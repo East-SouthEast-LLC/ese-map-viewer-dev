@@ -304,7 +304,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                             color: black;
                             text-decoration: none;
                         }
-                            
+
                         /* Main container for the legend area in the print layout */
                         .legend-frame {
                             width: 3.25in;
@@ -322,6 +322,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                             grid-template-columns: 1fr 1fr; /* 2 equal-width columns */
                             grid-template-rows: repeat(15, auto); /* Allow for more, smaller rows */
                             grid-auto-flow: column; /* Fill columns top-to-bottom */
+                            grid-auto-flow: row; /* Fill rows left-to-right */
                             row-gap: 1.5px; /* Tighter row spacing */
                             column-gap: 10px;
                         }

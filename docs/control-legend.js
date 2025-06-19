@@ -38,7 +38,7 @@ function getPrintBoundingBox() {
 
 // helper function for print output
 function getLegendForPrint() {
-    // Get all visible features from the current map view
+    // Get all features from the current map view
     const allVisibleFeatures = map.queryRenderedFeatures();
     
     if (allVisibleFeatures.length === 0) {
@@ -55,24 +55,21 @@ function getLegendForPrint() {
         return acc;
     }, {});
 
-    let itemsHTML = ''; // This will be a single, flat list of HTML elements
+    const allItemsToRender = []; // A flat array to hold all potential HTML strings
 
-    // Loop through our legend data from the JSON file
+    // Loop through legend data to build a complete list of all items that should be shown
     legendData.forEach(layerInfo => {
         const sourceLayerIds = layerInfo.sources.map(s => s.id);
         const visibleFeaturesForLayer = sourceLayerIds.flatMap(id => featuresByLayer[id] || []);
 
         if (visibleFeaturesForLayer.length === 0) {
-            return; // Skip this section if no features are visible
+            return; // Skip
         }
 
         const itemsToShow = new Set();
-
-        // Determine which legend items are visible using your matching rules
         layerInfo.items.forEach(item => {
             for (const feature of visibleFeaturesForLayer) {
                 const props = feature.properties;
-                // Complex 'match' rule logic
                 if (item.match) {
                     const rule = item.match;
                     if (rule.property === "DATE") {
@@ -84,9 +81,7 @@ function getLegendForPrint() {
                         itemsToShow.add(item.label);
                         break;
                     }
-                } 
-                // Simple 'code' rule logic
-                else if (item.code) {
+                } else if (item.code) {
                     const source = layerInfo.sources.find(s => s.id === feature.layer.id);
                     if (source && String(props[source.propertyKey]) === String(item.code)) {
                         itemsToShow.add(item.label);
@@ -95,32 +90,42 @@ function getLegendForPrint() {
                 }
             }
         });
-
-        // If items for this section are visible, build their HTML
+        
         if (itemsToShow.size > 0) {
-            itemsHTML += `<div class="legend-section">${layerInfo.displayName}</div>`;
-
+            allItemsToRender.push(`<div class="legend-section">${layerInfo.displayName}</div>`);
             const visibleItems = layerInfo.items.filter(item => itemsToShow.has(item.label));
-
             visibleItems.forEach(item => {
                 const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
                 const swatchClass = item.isLine ? 'color-line' : 'color-box';
-                itemsHTML += `
+                allItemsToRender.push(`
                     <div class="legend-item">
                         <span class="${swatchClass}" style="${style}"></span>
                         <span>${item.label}</span>
                     </div>
-                `;
+                `);
             });
         }
     });
 
-    if (itemsHTML === '') {
+    if (allItemsToRender.length === 0) {
         return '<div class="legend-item">No layers with a legend are currently visible.</div>';
     }
 
-    // Finally, wrap the entire list of items in our new grid container
-    return `<div class="legend-grid">${itemsHTML}</div>`;
+    // --- NEW: Truncation Logic ---
+    const maxPrintableItems = 26; // Max items to show (e.g., 2 columns of 13)
+    let finalItemsHTML = '';
+
+    if (allItemsToRender.length > maxPrintableItems) {
+        // Take the first N-1 items and add a "...and more" message at the end
+        const truncatedItems = allItemsToRender.slice(0, maxPrintableItems - 1);
+        truncatedItems.push('<div class="legend-item">... and more</div>');
+        finalItemsHTML = truncatedItems.join('');
+    } else {
+        finalItemsHTML = allItemsToRender.join('');
+    }
+
+    // Wrap the final list of items in our grid container and return it.
+    return `<div class="legend-grid">${finalItemsHTML}</div>`;
 }
 
 
