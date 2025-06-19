@@ -304,6 +304,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                             color: black;
                             text-decoration: none;
                         }
+                            
                         /* Main container for the legend area in the print layout */
                         .legend-frame {
                             width: 3.25in;
@@ -318,13 +319,10 @@ document.getElementById('printButton').addEventListener('click', () => {
                         .legend-grid {
                             display: grid;
                             width: 100%;
-                            grid-template-columns: 1fr 1fr; /* Keep the 2 equal-width columns */
-                            
-                            /* NEW: Let the grid create as many rows as needed, and make them compact */
-                            grid-auto-rows: min-content; 
-                            
-                            grid-auto-flow: column;        /* Keep filling columns top-to-bottom */
-                            row-gap: 1px;                  /* Make vertical spacing even tighter */
+                            grid-template-columns: 1fr 1fr; /* 2 equal-width columns */
+                            grid-template-rows: repeat(15, auto); /* Allow for more, smaller rows */
+                            grid-auto-flow: column; /* Fill columns top-to-bottom */
+                            row-gap: 1.5px; /* Tighter row spacing */
                             column-gap: 10px;
                         }
 
@@ -333,7 +331,6 @@ document.getElementById('printButton').addEventListener('click', () => {
                             font-size: 8.5pt; /* Slightly smaller font */
                             font-weight: bold;
                             margin-bottom: 2px; /* Tighter margin */
-                            margin-top: 4px;  /* Adds a little space above section titles */
                             /* This helps prevent a title from being the last item in a column */
                             break-after: avoid-page; 
                         }
@@ -341,14 +338,11 @@ document.getElementById('printButton').addEventListener('click', () => {
                         /* An individual item in the legend (swatch + label) */
                         .legend-item {
                             display: flex;
-                            align-items: flex-start; /* Aligns the color swatch to the top of the text */
-                            font-size: 7.5pt;
-                            margin-bottom: 2px;    /* Adds a little space between rows */
-                        }
-
-                        /* This new rule specifically targets the text part of the legend item */
-                        .legend-item span:last-child {
-                            white-space: normal; /* This is the key property that allows text to wrap */
+                            align-items: center;
+                            font-size: 7.5pt; /* Smaller font to fit more items */
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
                         }
 
                         /* Swatch styles can remain the same */
