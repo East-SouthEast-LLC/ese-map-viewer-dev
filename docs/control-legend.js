@@ -152,13 +152,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // UPDATE LEGEND DRIVER FUNCTION
     function updateLegend() {
+        // 1. If the legend box is hidden, do nothing.
         if (legendBox.style.display === 'none') {
             return;
         }
 
         let legendHTML = '';
 
-        // Loop through each main entry in your legendData
+        // 2. Loop through each main entry in your legendData (e.g., "Sewer Plans", "DEP Wetlands").
         legendData.forEach(layerInfo => {
             // Get all visible features for all sources listed for this legend entry.
             const sourceLayerIds = layerInfo.sources.map(s => s.id);
@@ -166,27 +167,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // If there are no visible features for any of the sources, skip this legend section.
             if (visibleFeatures.length === 0) {
-                return; // 'continue' to the next layerInfo
+                return; // This is like 'continue' in a forEach loop
             }
 
             const itemsToShow = new Set(); // Use a Set to store the labels of items to show
 
-            // For each legend item, check if any visible feature matches its rule.
+            // For each legend item defined in the JSON, check if it should be displayed.
             layerInfo.items.forEach(item => {
+                // Check all visible features to see if any of them match this item's rule.
                 for (const feature of visibleFeatures) {
                     const props = feature.properties;
-                    const matchRule = item.match;
-
-                    // Check if the feature matches the rule for this legend item
-                    if (matchRule.property === "DATE") {
-                        const date = Number(props.DATE);
-                        if (date >= matchRule.min && date <= matchRule.max) {
+                    
+                    // CASE 1: The item has a complex 'match' rule (for Sewer Plans)
+                    if (item.match) {
+                        const rule = item.match;
+                        if (rule.property === "DATE") {
+                            const date = Number(props.DATE);
+                            if (date >= rule.min && date <= rule.max) {
+                                itemsToShow.add(item.label);
+                                break; // Found a match, move to the next legend item
+                            }
+                        } else if (props[rule.property] === rule.value) {
                             itemsToShow.add(item.label);
-                            break; // Found a match, no need to check other features for this item
+                            break; // Found a match
                         }
-                    } else if (props[matchRule.property] === matchRule.value) {
-                        itemsToShow.add(item.label);
-                        break; // Found a match
+                    } 
+                    // CASE 2: The item has a simple 'code' rule (for DEP Wetlands)
+                    else if (item.code) {
+                        // Find which property key to check (e.g., IT_VALC or ARC_CODE)
+                        const source = layerInfo.sources.find(s => s.id === feature.layer.id);
+                        if (source && String(props[source.propertyKey]) === String(item.code)) {
+                            itemsToShow.add(item.label);
+                            break; // Found a match
+                        }
                     }
                 }
             });
@@ -214,23 +227,10 @@ document.addEventListener("DOMContentLoaded", function () {
         if (legendHTML === '') {
             legendHTML = '<div>No layers with a legend are currently visible.</div>';
         }
-
+        
         legendBox.innerHTML = legendHTML;
     }
 
-    // make updateLegend global
-    window.updateLegend = updateLegend;
-
-    // main event listener
-    legendButton.addEventListener('click', () => {
-        legendVisibility = !legendVisibility;
-        if (legendVisibility) {
-            legendBox.style.display = 'block';
-            updateLegend();
-        } else {
-            legendBox.style.display = 'none';
-        }
-    });
 
     // update on move and zoom
     map.on('moveend', updateLegend);
