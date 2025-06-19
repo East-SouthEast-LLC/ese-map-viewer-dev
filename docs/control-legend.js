@@ -231,6 +231,19 @@ document.addEventListener("DOMContentLoaded", function () {
         legendBox.innerHTML = legendHTML;
     }
 
+    // make updateLegend global
+    window.updateLegend = updateLegend;
+
+    // main event listener
+    legendButton.addEventListener('click', () => {
+        legendVisibility = !legendVisibility;
+        if (legendVisibility) {
+            legendBox.style.display = 'block';
+            updateLegend();
+        } else {
+            legendBox.style.display = 'none';
+        }
+    });
 
     // update on move and zoom
     map.on('moveend', updateLegend);
