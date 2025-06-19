@@ -320,22 +320,26 @@ document.getElementById('printButton').addEventListener('click', () => {
                             flex-direction: column;
                             align-items: flex-start;
                         }
+                        .legend-section {
+                            font-size: .12in;
+                            font-weight: bold;
+                        }
                         .legend-frame-column div {
                             display: flex;
                             align-items: left;
                             width: 100%;
-                            font-size: 8px;
+                            font-size: .1in;
                             margin-bottom: 2px;
                         }
                         .color-box {
-                            width: 8px;
-                            height: 8px;
+                            width: .1in;
+                            height: .1in;
                             border: .5px solid #555;
                             margin-right: 8px;
                             flex-shrink: 0;
                         }
                         .color-line {
-                            width: 8px;
+                            width: .1in;
                             height: 2px;
                             border: .5px solid #555;
                             margin-right: 8px;

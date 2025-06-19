@@ -101,7 +101,7 @@ function getLegendForPrint() {
 
         // 5. Build the HTML for the items we've identified as visible.
         if (itemsToShow.size > 0) {
-            let sectionHTML = `<div><strong>${layerInfo.displayName}</strong></div>`;
+            let sectionHTML = `<div class="legend-section">${layerInfo.displayName}</div>`;
             totalItemCount++;
 
             const visibleItems = layerInfo.items.filter(item => itemsToShow.has(item.label));
