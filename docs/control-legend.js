@@ -84,6 +84,47 @@ function getLegendForPrint() {
     return legendHTML;
 }
 
+// helper function to get the visible legend items
+/**
+ * Queries the map to find which unique categories for a layer are currently visible.
+ * @param {string} layerId The ID of the map layer to query (e.g., 'DEP wetland').
+ * @param {string} propertyKey The key in the feature's properties to check (e.g., 'IT_VALC').
+ * @returns {string[]} An array containing the unique string values found (e.g., ['OW', 'SS', 'WS1']).
+ */
+function getVisibleLegendItems(layerId, propertyKey) {
+    // First, check if the layer exists and is visible on the map.
+    try {
+        if (!map.getLayer(layerId) || map.getLayoutProperty(layerId, 'visibility') === 'none') {
+            return []; // Return an empty array if the layer is off.
+        }
+    } catch (e) {
+        // This can happen if the map style is still loading.
+        return []; 
+    }
+
+    // Query all the rendered features for the specified layer in the current view.
+    const features = map.queryRenderedFeatures({ layers: [layerId] });
+    
+    // Use a Set to automatically store only the unique property values.
+    const uniqueItems = new Set();
+    
+    // Loop through the visible features and collect the values of the specified property.
+    features.forEach(feature => {
+        // Check if the property exists before adding it.
+        if (feature.properties && typeof feature.properties[propertyKey] !== 'undefined') {
+            // Add the code (e.g., "OW", "SS", "1") to our Set.
+            uniqueItems.add(feature.properties[propertyKey]);
+        }
+    });
+    
+    // Convert the Set into a simple array and return it.
+    return Array.from(uniqueItems);
+}
+
+// Expose the function to the global window object so you can test it in the console.
+window.getVisibleLegendItems = getVisibleLegendItems;
+
+
 document.addEventListener("DOMContentLoaded", function () {
     const legendButton = document.getElementById("legendButton");
     const legendBox = document.getElementById("legend-box");
