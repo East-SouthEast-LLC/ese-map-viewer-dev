@@ -38,7 +38,8 @@ function getPrintBoundingBox() {
 
 // helper function for print output
 function getLegendForPrint() {
-    // 1. Get all features currently rendered in the map viewport.
+    // 1. Get all features currently rendered in the map's print area.
+    // NOTE: For now, this queries the entire viewport. We can add the bounding box later.
     const allVisibleFeatures = map.queryRenderedFeatures();
     
     if (allVisibleFeatures.length === 0) {
@@ -60,7 +61,7 @@ function getLegendForPrint() {
     let totalItemCount = 0;
     const maxItemsPerColumn = 11; // Max items before starting a new column
 
-    // 3. Loop through each entry in your legendData (e.g., "Sewer Plans", "DEP Wetlands").
+    // 3. Loop through each entry in your legendData.
     legendData.forEach(layerInfo => {
         const sourceLayerIds = layerInfo.sources.map(s => s.id);
         const visibleFeaturesForLayer = sourceLayerIds.flatMap(id => featuresByLayer[id] || []);
@@ -71,12 +72,11 @@ function getLegendForPrint() {
 
         const itemsToShow = new Set();
 
-        // 4. For each legend item, check if any visible feature matches its rule.
+        // 4. Determine which legend items are visible using your matching rules.
         layerInfo.items.forEach(item => {
             for (const feature of visibleFeaturesForLayer) {
                 const props = feature.properties;
-                // CASE A: The item has a complex 'match' rule (for Sewer Plans)
-                if (item.match) {
+                if (item.match) { // Complex matching for Sewer Plans
                     const rule = item.match;
                     if (rule.property === "DATE") {
                         if (Number(props.DATE) >= rule.min && Number(props.DATE) <= rule.max) {
@@ -87,9 +87,7 @@ function getLegendForPrint() {
                         itemsToShow.add(item.label);
                         break;
                     }
-                } 
-                // CASE B: The item has a simple 'code' rule (for DEP Wetlands)
-                else if (item.code) {
+                } else if (item.code) { // Simple matching for DEP Wetlands
                     const source = layerInfo.sources.find(s => s.id === feature.layer.id);
                     if (source && String(props[source.propertyKey]) === String(item.code)) {
                         itemsToShow.add(item.label);
@@ -99,21 +97,27 @@ function getLegendForPrint() {
             }
         });
 
-        // 5. Build the HTML for the items we've identified as visible.
+        // 5. Build the HTML, checking for column breaks after each line.
         if (itemsToShow.size > 0) {
-            let sectionHTML = `<div class="legend-section">${layerInfo.displayName}</div>`;
+            // Check if adding the title requires a new column
+            if (totalItemCount > 0 && totalItemCount % maxItemsPerColumn === 0) {
+                columnsHTML += `<div class="legend-frame-column">${currentColumnHTML}</div>`;
+                currentColumnHTML = '';
+            }
+            currentColumnHTML += `<div class="legend-section">${layerInfo.displayName}</div>`;
             totalItemCount++;
 
             const visibleItems = layerInfo.items.filter(item => itemsToShow.has(item.label));
 
             visibleItems.forEach(item => {
+                // Check if adding this item requires a new column
                 if (totalItemCount > 0 && totalItemCount % maxItemsPerColumn === 0) {
                     columnsHTML += `<div class="legend-frame-column">${currentColumnHTML}</div>`;
-                    currentColumnHTML = ''; // Reset for the new column
+                    currentColumnHTML = '';
                 }
                 const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
                 const swatchClass = item.isLine ? 'color-line' : 'color-box';
-                sectionHTML += `
+                currentColumnHTML += `
                     <div>
                         <span class="${swatchClass}" style="${style}"></span>
                         <span>${item.label}</span>
@@ -121,7 +125,6 @@ function getLegendForPrint() {
                 `;
                 totalItemCount++;
             });
-            currentColumnHTML += sectionHTML;
         }
     });
 
