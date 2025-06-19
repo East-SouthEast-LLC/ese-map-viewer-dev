@@ -134,7 +134,7 @@ function getLegendForPrint() {
     }
 
     // Truncation Logic
-    const maxPrintableItems = 26;
+    const maxPrintableItems = 36;
     let finalItemsHTML = '';
 
     if (allItemsToRender.length > maxPrintableItems) {
