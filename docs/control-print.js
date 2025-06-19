@@ -309,6 +309,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                         .legend-frame {
                             width: 3.25in;
                             height: 2.4in; /* A little vertical padding within the 2.5in bottom-frame */
+                            padding-top: 10px;
                             padding: 5px;
                             display: flex;
                             justify-content: center;
