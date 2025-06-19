@@ -1,232 +1,93 @@
-{
-  "displayName": "DEP Wetlands Legend",
-  "sources": [
-    {
-      "id": "DEP wetland",
-      "propertyKey": "IT_VALC"
-    },
-    {
-      "id": "dep-wetland-line",
-      "propertyKey": "ARC_CODE"
-    }
-  ],
-  "items": [
-    {
-      "code": "BA",
-      "label": "Coastal Bank Bluff or Sea Cliff",
-      "color": "#F7F124",
-      "opacity": 0.5,
-      "isLine": false
-    },
-    {
-      "code": "BB",
-      "label": "Barrier Beach System",
-      "color": "#DCD609",
-      "opacity": 0.4,
-      "isLine": false
-    },
-    {
-      "code": "BB-BE",
-      "label": "Barrier Beach-Coastal Beach",
-      "color": "#D0D041",
-      "opacity": 0.4,
-      "isLine": false
-    },
-    {
-      "code": "BB-D",
-      "label": "Barrier Beach-Coastal Dune",
-      "color": "#99F108",
-      "opacity": 0.4,
-      "isLine": false
-    },
-    {
-      "code": "BB-M",
-      "label": "Barrier Beach-Marsh",
-      "color": "#24AF0B",
-      "opacity": 0.4,
-      "isLine": false
-    },
-    {
-      "code": "BB-OW",
-      "label": "Barrier Beach-Open Water",
-      "color": "#1BB5CA",
-      "opacity": 0.4,
-      "isLine": false
-    },
-    {
-      "code": "BB-SM",
-      "label": "Barrier Beach-Salt Marsh",
-      "color": "#24AF0B",
-      "opacity": 0.6,
-      "isLine": false
-    },
-    {
-      "code": "BB-SS",
-      "label": "Barrier Beach-Shrub Swamp",
-      "color": "#32D34F",
-      "opacity": 0.6,
-      "isLine": false
-    },
-    {
-      "code": "BB-WS1",
-      "label": "Barrier Beach-Wooded Swamp Deciduous",
-      "color": "#1F9A35",
-      "opacity": 0.6,
-      "isLine": false
-    },
-    {
-      "code": "BB-WS2",
-      "label": "Barrier Beach-Wooded Swamp Coniferous",
-      "color": "#056828",
-      "opacity": 0.6,
-      "isLine": false
-    },
-    {
-      "code": "BE",
-      "label": "Coastal Beach",
-      "color": "#D7E00F",
-      "opacity": 0.4,
-      "isLine": false
-    },
-    {
-      "code": "BG",
-      "label": "Barrier Beach-Grassland",
-      "color": "#0C9955",
-      "opacity": 0.5,
-      "isLine": false
-    },
-    {
-      "code": "CB",
-      "label": "Cranberry Bog",
-      "color": "#BB0418",
-      "opacity": 0.5,
-      "isLine": false
-    },
-    {
-      "code": "D",
-      "label": "Coastal Dune",
-      "color": "#99F108",
-      "opacity": 0.4,
-      "isLine": false
-    },
-    {
-      "code": "DM",
-      "label": "Deep Marsh",
-      "color": "#056A56",
-      "opacity": 0.5,
-      "isLine": false
-    },
-    {
-      "code": "M",
-      "label": "Shallow Marsh Meadow or Fen",
-      "color": "#26A04E",
-      "opacity": 0.4,
-      "isLine": false
-    },
-    {
-      "code": "OW",
-      "label": "Open Water",
-      "color": "#2B8ACB",
-      "opacity": 0.4,
-      "isLine": false
-    },
-    {
-      "code": "RS",
-      "label": "Rocky Intertidal Shore",
-      "color": "#B5C0C8",
-      "opacity": 0.4,
-      "isLine": false
-    },
-    {
-      "code": "SM",
-      "label": "Salt Marsh",
-      "color": "#389C3F",
-      "opacity": 0.4,
-      "isLine": false
-    },
-    {
-      "code": "SS",
-      "label": "Shrub Swamp",
-      "color": "#24CF31",
-      "opacity": 0.4,
-      "isLine": false
-    },
-    {
-      "code": "TF",
-      "label": "Tidal Flat",
-      "color": "#F3F4CC",
-      "opacity": 0.5,
-      "isLine": false
-    },
-    {
-      "code": "WS1",
-      "label": "Wooded Swamp Deciduous",
-      "color": "#1F9A35",
-      "opacity": 0.5,
-      "isLine": false
-    },
-    {
-      "code": "WS2",
-      "label": "Wooded Swamp Coniferous",
-      "color": "#056828",
-      "opacity": 0.6,
-      "isLine": false
-    },
-    {
-      "code": "WS3",
-      "label": "Wooded Swamp Mixed Trees",
-      "color": "#448842",
-      "opacity": 0.6,
-      "isLine": false
-    },
-    {
-      "code": "0",
-      "label": "Edge of Ocean",
-      "color": "#08ADEF",
-      "opacity": 1.0,
-      "isLine": true
-    },
-    {
-      "code": "1",
-      "label": "Shoreline",
-      "color": "#EBF90A",
-      "opacity": 1.0,
-      "isLine": true
-    },
-    {
-      "code": "2",
-      "label": "Closure",
-      "color": "#EBECDD",
-      "opacity": 1.0,
-      "isLine": true
-    },
-    {
-      "code": "3",
-      "label": "Apparent Wetland Limit",
-      "color": "#F2A5EF",
-      "opacity": 1.0,
-      "isLine": true
-    },
-    {
-      "code": "7",
-      "label": "Hydro Connection",
-      "color": "#0B11F0",
-      "opacity": 1.0,
-      "isLine": true
-    },
-    {
-      "code": "8",
-      "label": "MLW",
-      "color": "#5E87ED",
-      "opacity": 1.0,
-      "isLine": true
-    },
-    {
-      "code": "88",
-      "label": "Edge Interupted",
-      "color": "#5EE1ED",
-      "opacity": 1.0,
-      "isLine": true
-    }
-  ]
-}
+[
+  {
+    "id": "sewer plans",
+    "displayName": "Sewer Plans",
+    "sources": [
+      { "id": "sewer plans", "propertyKey": "DATE" }
+    ],
+    "items": [
+      {
+        "code": "2014-2019",
+        "label": "Plan Year: 2014-2019",
+        "color": "#d32f2f",
+        "opacity": 0.4,
+        "isLine": false
+      },
+      {
+        "code": "2008-2013",
+        "label": "Plan Year: 2008-2013",
+        "color": "#b71c1c",
+        "opacity": 0.4,
+        "isLine": false
+      },
+      {
+        "code": "2000-2007",
+        "label": "Plan Year: 2000-2007",
+        "color": "#a31515",
+        "opacity": 0.4,
+        "isLine": false
+      },
+      {
+        "code": "1983-1999",
+        "label": "Plan Year: 1983-1999",
+        "color": "#7f1010",
+        "opacity": 0.4,
+        "isLine": false
+      },
+      {
+        "code": "1969-1982",
+        "label": "Plan Year: 1969-1982",
+        "color": "#4b0707",
+        "opacity": 0.4,
+        "isLine": false
+      },
+      {
+        "code": "ADDED",
+        "label": "Not on original plan",
+        "color": "#ffcccc",
+        "opacity": 0.4,
+        "isLine": false
+      }
+    ]
+  },
+  {
+    "displayName": "DEP Wetlands Legend",
+    "sources": [
+      { "id": "DEP wetland", "propertyKey": "IT_VALC" },
+      { "id": "dep-wetland-line", "propertyKey": "ARC_CODE" }
+    ],
+    "items": [
+      { "code": "BA", "label": "Coastal Bank Bluff or Sea Cliff", "color": "#F7F124", "opacity": 0.5, "isLine": false },
+      { "code": "BB", "label": "Barrier Beach System", "color": "#DCD609", "opacity": 0.4, "isLine": false },
+      { "code": "BB-BE", "label": "Barrier Beach-Coastal Beach", "color": "#D0D041", "opacity": 0.4, "isLine": false },
+      { "code": "BB-D", "label": "Barrier Beach-Coastal Dune", "color": "#99F108", "opacity": 0.4, "isLine": false },
+      { "code": "BB-M", "label": "Barrier Beach-Marsh", "color": "#24AF0B", "opacity": 0.4, "isLine": false },
+      { "code": "BB-OW", "label": "Barrier Beach-Open Water", "color": "#1BB5CA", "opacity": 0.4, "isLine": false },
+      { "code": "BB-SM", "label": "Barrier Beach-Salt Marsh", "color": "#24AF0B", "opacity": 0.6, "isLine": false },
+      { "code": "BB-SS", "label": "Barrier Beach-Shrub Swamp", "color": "#32D34F", "opacity": 0.6, "isLine": false },
+      { "code": "BB-WS1", "label": "Barrier Beach-Wooded Swamp Deciduous", "color": "#1F9A35", "opacity": 0.6, "isLine": false },
+      { "code": "BB-WS2", "label": "Barrier Beach-Wooded Swamp Coniferous", "color": "#056828", "opacity": 0.6, "isLine": false },
+      { "code": "BE", "label": "Coastal Beach", "color": "#D7E00F", "opacity": 0.4, "isLine": false },
+      { "code": "BG", "label": "Barrier Beach-Grassland", "color": "#0C9955", "opacity": 0.5, "isLine": false },
+      { "code": "CB", "label": "Cranberry Bog", "color": "#BB0418", "opacity": 0.5, "isLine": false },
+      { "code": "D", "label": "Coastal Dune", "color": "#99F108", "opacity": 0.4, "isLine": false },
+      { "code": "DM", "label": "Deep Marsh", "color": "#056A56", "opacity": 0.5, "isLine": false },
+      { "code": "M", "label": "Shallow Marsh Meadow or Fen", "color": "#26A04E", "opacity": 0.4, "isLine": false },
+      { "code": "OW", "label": "Open Water", "color": "#2B8ACB", "opacity": 0.4, "isLine": false },
+      { "code": "RS", "label": "Rocky Intertidal Shore", "color": "#B5C0C8", "opacity": 0.4, "isLine": false },
+      { "code": "SM", "label": "Salt Marsh", "color": "#389C3F", "opacity": 0.4, "isLine": false },
+      { "code": "SS", "label": "Shrub Swamp", "color": "#24CF31", "opacity": 0.4, "isLine": false },
+      { "code": "TF", "label": "Tidal Flat", "color": "#F3F4CC", "opacity": 0.5, "isLine": false },
+      { "code": "WS1", "label": "Wooded Swamp Deciduous", "color": "#1F9A35", "opacity": 0.5, "isLine": false },
+      { "code": "WS2", "label": "Wooded Swamp Coniferous", "color": "#056828", "opacity": 0.6, "isLine": false },
+      { "code": "WS3", "label": "Wooded Swamp Mixed Trees", "color": "#448842", "opacity": 0.6, "isLine": false },
+      { "code": "0", "label": "Edge of Ocean", "color": "#08ADEF", "opacity": 1.0, "isLine": true },
+      { "code": "1", "label": "Shoreline", "color": "#EBF90A", "opacity": 1.0, "isLine": true },
+      { "code": "2", "label": "Closure", "color": "#EBECDD", "opacity": 1.0, "isLine": true },
+      { "code": "3", "label": "Apparent Wetland Limit", "color": "#F2A5EF", "opacity": 1.0, "isLine": true },
+      { "code": "7", "label": "Hydro Connection", "color": "#0B11F0", "opacity": 1.0, "isLine": true },
+      { "code": "8", "label": "MLW", "color": "#5E87ED", "opacity": 1.0, "isLine": true },
+      { "code": "88", "label": "Edge Interupted", "color": "#5EE1ED", "opacity": 1.0, "isLine": true }
+    ]
+  }
+]
