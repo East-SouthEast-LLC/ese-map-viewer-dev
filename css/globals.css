@@ -130,7 +130,7 @@ CONTROL BUTTON STYLES
 .mapboxgl-ctrl-point         { background-image: url('https://www.ese-llc.com/s/marker-blue-random.svg'); }
 .mapboxgl-ctrl-print         { background-image: url('https://img.icons8.com/ios-glyphs/30/000000/print.png'); }
 .mapboxgl-ctrl-measure       { background-image: url('https://www.ese-llc.com/s/marker-blue-measure.svg'); }
-.mapboxgl-ctrl-septicMap     { background-image: none; }
+.mapboxgl-ctrl-legend        { background-image: url('https://east-southeast-llc.github.io/ese-map-viewer/img/legend.png'); }
 .mapboxgl-ctrl-zoom          { background-image: url('https://www.ese-llc.com/s/zoom.png'); }
 
 .mapboxgl-ctrl-point-center  { background-image: url('https://www.ese-llc.com/s/marker-blue-center.svg'); }
@@ -226,4 +226,51 @@ INFO DISPLAY PANELS (for distance and scale)
   max-width: 240px;
   width: 100%;
   box-sizing: border-box;
+}
+
+/* ==== LEGEND STYLES ==== */
+
+/* main container for the legend */
+#legend-box {
+  background: white;
+  color: #333;
+  padding: 10px 15px;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  margin-top: 5px;
+  max-width: 240px;
+  max-height: 400px;
+  overflow-y: auto; 
+  width: 100%;
+  box-sizing: border-box;
+  display: none; 
+}
+
+.legend-title {
+  font-weight: bold;
+  font-size: 14px;
+  margin-top: auto;
+  text-align: center;
+}
+
+.legend-item-row {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
+
+.color-box {
+  width: 15px;
+  height: 15px;
+  border: 1px solid #555;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.color-line {
+  width: 15px;
+  height: 3px;
+  border: 1px solid #555;
+  margin-right: 8px;
+  flex-shrink: 0;
 }

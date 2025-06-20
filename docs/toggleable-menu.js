@@ -38,7 +38,7 @@ map.on('load', function() {
 
             const isVisible = map.getLayoutProperty(clickedLayer, 'visibility') === 'visible';
             const newVisibility = isVisible ? 'none' : 'visible';
-
+            
             // Toggle main layer
             map.setLayoutProperty(clickedLayer, 'visibility', newVisibility);
 
@@ -88,6 +88,16 @@ map.on('load', function() {
 
             // Always update button visual state based on new visibility
             this.className = newVisibility === 'visible' ? 'active' : '';
+            // once map renders, update legend
+            if (typeof window.updateLegend === 'function') {
+                if (!map._legendUpdateListenerAdded) {
+                    map.once('idle', function() {
+                        window.updateLegend();
+                        map._legendUpdateListenerAdded = false; 
+                    });
+                    map._legendUpdateListenerAdded = true;
+                }
+            }
         };
 
         var layers = document.getElementById('menu');

@@ -23,13 +23,9 @@ map.on('load', function() {
             'fill-color': [
                 'case',
 
-                // handle conservation properties
-                ['==', ['get', 'CONSERV'], 'Y'],
-                '#9b59b6',
-
                 // handle added parcels
                 ['==', ['get', 'ADDED'], 'Y'],
-                '#e57373', 
+                '#ffcccc',
 
                 // if neither of the above, use the date-based coloring (red spectrum, light to dark, now darker)
                 [
@@ -54,7 +50,7 @@ map.on('load', function() {
         'id': 'sewer-plans-outline',
         'type': 'line',
         'source': 'sewer plans',
-        'source-layer': 'TOC_SEWER_2025-06-09a-a4y5hl',
+        'source-layer': 'TOC_SEWER_2025-06-13c-dao5gl',
         'layout': { 'visibility': 'none' },
         'paint': {
             'line-width': 0.5, 

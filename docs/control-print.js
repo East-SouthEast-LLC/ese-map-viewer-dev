@@ -40,6 +40,7 @@ function getPrintingFrameCoordinates(map, frameElement) {
         middle: map.unproject([positions.middle.x, positions.middle.y]).toArray(),
     };
 
+    console.log("Printing frame coordinates:", coordinates);
     return coordinates;
 }
 
@@ -303,6 +304,62 @@ document.getElementById('printButton').addEventListener('click', () => {
                             color: black;
                             text-decoration: none;
                         }
+                        /* Main container for the legend area in the print layout */
+                        .legend-frame {
+                            width: 3.3in;
+                            height: 2.2in; 
+                            padding: 5px;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                        }
+
+                        /* The grid container that holds all legend items */
+                        .legend-grid {
+                            display: grid;
+                            width: 100%;
+                            grid-template-columns: 1fr 1fr; /* 2 equal-width columns */
+                            grid-template-rows: repeat(15, auto); /* Allow for more, smaller rows */
+                            grid-auto-flow: column; /* Fill columns top-to-bottom */
+                            grid-auto-flow: row; /* Fill rows left-to-right */
+                            row-gap: 1.5px; /* Tighter row spacing */
+                            column-gap: 10px;
+                        }
+
+                        /* A title for a legend section (e.g., "DEP Wetlands") */
+                        .legend-section {
+                            font-size: .1in;
+                            font-weight: bold;
+                            font-family: Verdana, sans-serif;
+                            break-after: avoid-page; 
+                        }
+
+                        /* An individual item in the legend (swatch + label) */
+                        .legend-item {
+                            display: flex;
+                            font-family: Verdana, sans-serif;
+                            align-items: center;
+                            font-size: .1in;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                        }
+
+                        /* Swatch styles can remain the same */
+                        .color-box {
+                            width: .1in;
+                            height: .1in;
+                            border: .5px solid #555;
+                            margin-right: 5px; /* Tighter margin */
+                            flex-shrink: 0;
+                        }
+                        .color-line {
+                            width: .1in;
+                            height: 2px;
+                            border: .5px solid #555;
+                            margin-right: 5px; /* Tighter margin */
+                            flex-shrink: 0;
+                        }
                     </style>
                 </head>
                 <body>
@@ -316,6 +373,9 @@ document.getElementById('printButton').addEventListener('click', () => {
                         <div class="bottom-frame">
                             <div class="image-container">
                                 <img src="https://static1.squarespace.com/static/536cf42ee4b0465238027de5/t/67a783e42bb54b7b434b79f1/1739031525647/ESE-GIS.jpg" alt="Company Logo" />
+                            </div>
+                            <div class="legend-frame">
+                                ${getLegendForPrint()} 
                             </div>
                             <div class="inner-frame">
                                 <span class="gis-map">GIS Map</span>
