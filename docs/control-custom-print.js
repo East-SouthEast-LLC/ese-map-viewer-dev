@@ -1,12 +1,21 @@
 // CUSTOM PRINT CONTROL BUTTON SCRIPT
 
 // ============================================================================
+// STATE VARIABLES FOR PRINTING PROCESS
+// ============================================================================
+let fullHtml = '';
+let printDataGlobal = {};
+let pageConfigsGlobal = [];
+let initiallyVisibleLayersGlobal = [];
+let pageCounter = 0;
+
+
+// ============================================================================
 // HELPER FUNCTIONS FOR CUSTOM PRINT FUNCTIONALITY
 // ============================================================================
 
 /**
  * Returns the HTML string for the custom print input form.
- * This structure is similar to the getScaleBoxHTML function.
  * @returns {string} The HTML for the form.
  */
 function getCustomPrintFormHTML() {
@@ -31,7 +40,7 @@ function getCustomPrintFormHTML() {
  * Gathers the data from the input form and initiates the print generation process.
  */
 function processCustomPrint() {
-    const printData = {
+    printDataGlobal = {
         companyName: document.getElementById('custom-company-name').value,
         clientName: document.getElementById('custom-client-name').value,
         address: document.getElementById('custom-address').value,
@@ -41,33 +50,27 @@ function processCustomPrint() {
         scale: document.getElementById('custom-scale-input').value,
     };
 
-    // Validate that a scale was entered
-    if (!printData.scale || isNaN(printData.scale) || Number(printData.scale) <= 0) {
+    if (!printDataGlobal.scale || isNaN(printDataGlobal.scale) || Number(printDataGlobal.scale) <= 0) {
         alert('Please enter a valid scale in feet per inch.');
         return;
     }
 
-    console.log("Processing custom print with data:", printData);
-
-    // Hide the form after submission
     const customPrintBox = document.getElementById("custom-print-box");
     if(customPrintBox) customPrintBox.style.display = 'none';
 
-    // Pass the collected data to the print generation function
-    generateMultiPagePrintout(printData);
+    generateMultiPagePrintout();
 }
 
 /**
  * Generates the HTML for a single page of the printout.
- * @param {object} printData - The user-submitted information.
  * @param {string} mapImageSrc - The base64 encoded image of the map canvas.
  * @param {number} pageNumber - The current page number.
  * @returns {string} The complete HTML for a single print page.
  */
-function getPageHTML(printData, mapImageSrc, pageNumber) {
+function getPageHTML(mapImageSrc, pageNumber) {
     const currentDate = new Date().toLocaleDateString();
     return `
-        <div class="frame" style="page-break-after: always;">
+        <div class="frame">
             <div class="top-frame">
                 <div class="map-container">
                     <img src="${mapImageSrc}" alt="Map Image for Page ${pageNumber}" />
@@ -75,12 +78,12 @@ function getPageHTML(printData, mapImageSrc, pageNumber) {
             </div>
             <div class="bottom-frame">
                 <div class="custom-info-frame">
-                    <span><strong>${printData.companyName}</strong></span>
-                    <span>${printData.address}</span>
-                    <span>${printData.website} | ${printData.phone}</span>
+                    <span><strong>${printDataGlobal.companyName}</strong></span>
+                    <span>${printDataGlobal.address}</span>
+                    <span>${printDataGlobal.website} | ${printDataGlobal.phone}</span>
                     <hr style="width:100%; border:.5px solid black; margin:5px 0;">
-                    <span><strong>Client:</strong> ${printData.clientName}</span>
-                    <span><strong>Property:</strong> ${printData.propertyAddress}</span>
+                    <span><strong>Client:</strong> ${printDataGlobal.clientName}</span>
+                    <span><strong>Property:</strong> ${printDataGlobal.propertyAddress}</span>
                 </div>
                 <div class="image-container">
                     <img src="https://static1.squarespace.com/static/536cf42ee4b0465238027de5/t/67a783e42bb54b7b434b79f1/1739031525647/ESE-GIS.jpg" alt="Company Logo" />
@@ -90,105 +93,33 @@ function getPageHTML(printData, mapImageSrc, pageNumber) {
                 </div>
                 <div class="inner-frame">
                     <span class="gis-map">GIS Map - Page ${pageNumber}</span>
-                    <span class="disclaimer">This map is for illustrative purposes only and is not adequate for legal boundary determination or regulatory interpretation.</span>
+                    <span class="disclaimer">This map is for illustrative purposes only.</span>
                     <span class="date">${currentDate}</span>
                     ${getPrintScaleBarHTML(map)}
-                    <span class="sources">Map sources include:</span>
-                    <span class="massgis">Bureau of Geographic Information (MassGIS), Commonwealth of Massachusetts, Executive Office of Technology and Security Services</span>
-                    <span class="base-map">© <a href="https://www.mapbox.com/about/maps">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a><br>
-                        <strong><a style="margin-top: 3px" href="https://apps.mapbox.com/feedback/" target="_blank">Improve this map, www.apps.mapbox.com/feedback</a></strong>
-                    </span>
+                    <span class="sources">Map sources include: MassGIS, Mapbox, OpenStreetMap</span>
                 </div>
             </div>
         </div>
     `;
 }
 
-
 /**
- * Takes the user-provided data and generates the multi-page print preview.
- * @param {object} printData An object containing all the user-submitted information.
+ * Finalizes the print process by opening the print dialog.
  */
-async function generateMultiPagePrintout(printData) {
-    console.log("Generating multi-page printout with data:", printData);
-    
-    // Define the layer configurations for each page
-    const pageConfigs = [
-        { page: 1, layers: ['parcel highlight', 'contours', 'floodplain'] },
-        { page: 2, layers: ['parcel highlight', 'satellite', 'acec'] },
-        { page: 3, layers: ['parcel highlight', 'contours', 'DEP wetland'] },
-        { page: 4, layers: ['parcel highlight', 'satellite', 'endangered species'] }
-    ];
-
-    let fullHtml = '';
-
-    // Set map to the desired scale and center
-    // Note: setMapToScale is an existing function in control-scale.js
-    if (typeof setMapToScale === 'function') {
-        setMapToScale(Number(printData.scale));
-    } else {
-        console.error("setMapToScale function not found. Please ensure control-scale.js is loaded.");
-        return;
-    }
-    
-    // Center the map on the marker
-    if(marker) {
-        map.setCenter(marker.getLngLat());
-    }
-
-    // Temporarily hide all optional layers
-    const allToggleableLayers = ['satellite', 'parcels', 'parcel highlight', 'contours', 'agis', 'historic', 'floodplain', 'acec', 'DEP wetland', 'endangered species', 'zone II', 'soils', 'conservancy districts', 'zoning', 'conservation', 'sewer', 'sewer plans', 'stories', 'intersection'];
-    allToggleableLayers.forEach(layerId => {
+function finalizePrint() {
+    // Restore the original layer visibility
+    initiallyVisibleLayersGlobal.forEach(layerId => {
         if (map.getLayer(layerId)) {
-            map.setLayoutProperty(layerId, 'visibility', 'none');
+            map.setLayoutProperty(layerId, 'visibility', 'visible');
         }
     });
 
-
-    for (const config of pageConfigs) {
-        // Toggle the specific layers for the current page
-        config.layers.forEach(layerId => {
-            if (map.getLayer(layerId)) {
-                map.setLayoutProperty(layerId, 'visibility', 'visible');
-            }
-        });
-
-        // Wait for the map to become idle after layer changes
-        await new Promise(resolve => map.once('idle', resolve));
-
-        // Capture the canvas
-        const mapCanvas = map.getCanvas();
-        const mapImageSrc = mapCanvas.toDataURL();
-        
-        // Generate the HTML for the current page
-        fullHtml += getPageHTML(printData, mapImageSrc, config.page);
-
-        // Hide the layers again for the next iteration
-        config.layers.forEach(layerId => {
-            if (map.getLayer(layerId)) {
-                map.setLayoutProperty(layerId, 'visibility', 'none');
-            }
-        });
-    }
-
-    // Restore original layer visibility if needed (optional)
-    // For now, we leave them off.
-
-    // Open a new window and print
     const win = window.open('', '_blank');
     if (win) {
         win.document.write(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Custom Map Printout</title>
-                <link rel="stylesheet" href="https://east-southeast-llc.github.io/ese-map-viewer/css/globals.css?v=2" type="text/css" />
-            </head>
-            <body class="print-body">
-                ${fullHtml}
-            </body>
-            </html>
-        `);
+            <!DOCTYPE html><html><head><title>Custom Map Printout</title>
+            <link rel="stylesheet" href="https://east-southeast-llc.github.io/ese-map-viewer/css/globals.css?v=2" type="text/css" />
+            </head><body class="print-body">${fullHtml}</body></html>`);
         win.document.close();
         win.onload = () => {
             win.print();
@@ -199,6 +130,83 @@ async function generateMultiPagePrintout(printData) {
     }
 }
 
+/**
+ * Processes a single page for the printout and then calls itself for the next page.
+ */
+function processPage() {
+    // If we've processed all pages, finalize the printout.
+    if (pageCounter >= pageConfigsGlobal.length) {
+        finalizePrint();
+        return;
+    }
+
+    const config = pageConfigsGlobal[pageCounter];
+
+    // Set visibility for the current page's layers
+    config.layers.forEach(layerId => {
+        if (map.getLayer(layerId)) {
+            map.setLayoutProperty(layerId, 'visibility', 'visible');
+        }
+    });
+    
+    map.once('render', () => {
+        const mapCanvas = map.getCanvas();
+        const mapImageSrc = mapCanvas.toDataURL();
+        fullHtml += getPageHTML(mapImageSrc, config.page);
+
+        // Hide the layers for the current page
+        config.layers.forEach(layerId => {
+            if (map.getLayer(layerId)) {
+                map.setLayoutProperty(layerId, 'visibility', 'none');
+            }
+        });
+        
+        pageCounter++;
+        processPage(); // Process the next page
+    });
+
+    map.triggerRepaint();
+}
+
+/**
+ * Kicks off the multi-page print generation process.
+ */
+function generateMultiPagePrintout() {
+    console.log("Starting multi-page printout with data:", printDataGlobal);
+    
+    // Reset global state
+    fullHtml = '';
+    pageCounter = 0;
+    pageConfigsGlobal = [
+        { page: 1, layers: ['parcel highlight', 'contours', 'floodplain', 'floodplain-labels', 'floodplain-line', 'LiMWA'] },
+        { page: 2, layers: ['parcel highlight', 'satellite', 'acec'] },
+        { page: 3, layers: ['parcel highlight', 'contours', 'DEP wetland', 'dep-wetland-line', 'dep-wetland-labels'] },
+        { page: 4, layers: ['parcel highlight', 'satellite', 'endangered species', 'endangered-species-labels', 'vernal-pools', 'vernal-pools-labels'] }
+    ];
+    
+    if (typeof setMapToScale === 'function') {
+        setMapToScale(Number(printDataGlobal.scale));
+    } else {
+        console.error("setMapToScale function not found.");
+        return;
+    }
+    
+    if (marker) {
+        map.setCenter(marker.getLngLat());
+    }
+
+    const allToggleableLayers = ['satellite', 'parcels', 'parcel highlight', 'contours', 'agis', 'historic', 'floodplain', 'floodplain-labels', 'floodplain-line', 'LiMWA', 'acec', 'DEP wetland', 'dep-wetland-line', 'dep-wetland-labels', 'endangered species', 'endangered-species-labels', 'vernal-pools', 'vernal-pools-labels', 'zone II', 'soils', 'conservancy districts', 'zoning', 'conservation', 'sewer', 'sewer plans', 'stories', 'intersection'];
+    initiallyVisibleLayersGlobal = listVisibleLayers(map, allToggleableLayers);
+    
+    allToggleableLayers.forEach(layerId => {
+        if (map.getLayer(layerId)) {
+            map.setLayoutProperty(layerId, 'visibility', 'none');
+        }
+    });
+
+    // Start the processing chain
+    processPage();
+}
 
 // ============================================================================
 // MAIN CUSTOM PRINT FUNCTION (event listener)
@@ -208,15 +216,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const customPrintButton = document.getElementById("customPrintButton");
     const customPrintBox = document.getElementById("custom-print-box");
     let customPrintVisibility = false;
+    customPrintBox.style.display = 'none'; // always leave this line here
 
     if (!customPrintButton || !customPrintBox) {
         console.error("Required custom print elements not found in the DOM.");
         return;
     }
     
-    /**
-     * Attaches event listeners to the elements inside the custom print form.
-     */
     function attachCustomPrintFormListeners() {
         const submitButton = document.getElementById('custom-print-submit');
         if (submitButton) {
@@ -224,16 +230,12 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    /**
-     * Creates the form, displays it, and attaches the necessary event listeners.
-     */
     function updateCustomPrintBox() {
         customPrintBox.innerHTML = getCustomPrintFormHTML();
         customPrintBox.style.display = 'block';
         attachCustomPrintFormListeners();
     }
     
-    // Main event listener for the custom print button
     customPrintButton.addEventListener('click', () => {
         if (!marker) {
             alert('Please drop a pin on the map to set the center for your printout.');
