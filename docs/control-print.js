@@ -401,7 +401,7 @@ document.getElementById('printButton').addEventListener('click', () => {
 
             win.onload = () => {
                 win.print();
-                //win.close();
+                win.close();
             };
         } else {
             alert("Popup blocked! Please allow popups for this site.");
