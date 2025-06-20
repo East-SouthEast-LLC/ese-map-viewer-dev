@@ -53,5 +53,34 @@
       { "code": "8", "label": "MLW", "color": "#5E87ED", "opacity": 1.0, "isLine": true },
       { "code": "88", "label": "Edge Interupted", "color": "#5EE1ED", "opacity": 1.0, "isLine": true }
     ]
+  },
+  {
+    "displayName": "Zoning Districts",
+    "sources": [
+      { "id": "zoning", "propertyKey": "TOWNCODE" }
+    ],
+    "items": [
+      { "code": "RC3", "label": "RC3", "color": "#f1f748", "opacity": 0.4, "isLine": false },
+      { "code": "F", "label": "F", "color": "#f1f748", "opacity": 0.4, "isLine": false },
+      { "code": "NSP", "label": "NSP", "color": "#f1f748", "opacity": 0.4, "isLine": false },
+      { "code": "S", "label": "S", "color": "#f1f748", "opacity": 0.4, "isLine": false },
+      { "code": "SC", "label": "SC", "color": "#f1f748", "opacity": 0.4, "isLine": false },
+      { "code": "SS", "label": "SS", "color": "#f1f748", "opacity": 0.4, "isLine": false },
+      { "code": "M", "label": "M", "color": "#60cccc", "opacity": 0.4, "isLine": false },
+      { "code": "M/C", "label": "M/C", "color": "#4ed130", "opacity": 0.4, "isLine": false },
+      { "code": "R20", "label": "R20", "color": "#72a5ed", "opacity": 0.4, "isLine": false },
+      { "code": "R20A", "label": "R20A", "color": "#5877bf", "opacity": 0.4, "isLine": false },
+      { "code": "R25", "label": "R25", "color": "#877613", "opacity": 0.4, "isLine": false },
+      { "code": "R30", "label": "R30", "color": "#3d4eeb", "opacity": 0.4, "isLine": false },
+      { "code": "R40", "label": "R40", "color": "#2c97d1", "opacity": 0.4, "isLine": false },
+      { "code": "R40A", "label": "R40A", "color": "#4836cf", "opacity": 0.4, "isLine": false },
+      { "code": "R60", "label": "R60", "color": "#842cd1", "opacity": 0.4, "isLine": false },
+      { "code": "R80", "label": "R80", "color": "#877613", "opacity": 0.4, "isLine": false },
+      { "code": "I", "label": "I", "color": "#5f6069", "opacity": 0.4, "isLine": false },
+      { "code": "GB1", "label": "GB1", "color": "#ab5c46", "opacity": 0.4, "isLine": false },
+      { "code": "GB2", "label": "GB2", "color": "#c24a29", "opacity": 0.4, "isLine": false },
+      { "code": "GB3", "label": "GB3", "color": "#a32807", "opacity": 0.4, "isLine": false },
+      { "code": "SB", "label": "SB", "color": "#d97b09", "opacity": 0.4, "isLine": false }
+    ]
   }
 ]
