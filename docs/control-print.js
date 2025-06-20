@@ -307,7 +307,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                         /* Main container for the legend area in the print layout */
                         .legend-frame {
                             width: 3.3in;
-                            height: 2.1in; 
+                            height: 2.2in; 
                             padding: 5px;
                             display: flex;
                             justify-content: center;
@@ -328,11 +328,9 @@ document.getElementById('printButton').addEventListener('click', () => {
 
                         /* A title for a legend section (e.g., "DEP Wetlands") */
                         .legend-section {
-                            font-size: .12in;
+                            font-size: .1in;
                             font-weight: bold;
                             font-family: Verdana, sans-serif;
-                            margin-top: 5px;
-                            margin-bottom: 2px;
                             break-after: avoid-page; 
                         }
 
