@@ -304,12 +304,26 @@ document.getElementById('printButton').addEventListener('click', () => {
                             color: black;
                             text-decoration: none;
                         }
+                        legend-container {
+                            width: 3.25in;
+                            height: 2.4in;
+                            display: flex;
+                            flex-direction: column; /* This stacks the title on top of the legend */
+                            align-items: center;   /* This centers the title and legend grid horizontally */
+                        }
 
+                        /* The new static "Legend" title */
+                        .legend-main-title {
+                            font-family: 'Garamond', 'Times New Roman', serif;
+                            font-weight: bold;
+                            font-size: 12pt;
+                            margin-bottom: 5px; /* Creates space between the title and the legend content */
+                        }
                         /* Main container for the legend area in the print layout */
                         .legend-frame {
-                            width: 3.3in;
-                            height: 2.4in; 
-                            padding: 5px;
+                            width: 100%; /* Have it fill the new container */
+                            height: 100%;
+                            padding: 0; /* Padding will now be handled by the grid's gap */
                             display: flex;
                             justify-content: center;
                             align-items: center;
@@ -377,8 +391,11 @@ document.getElementById('printButton').addEventListener('click', () => {
                             <div class="image-container">
                                 <img src="https://static1.squarespace.com/static/536cf42ee4b0465238027de5/t/67a783e42bb54b7b434b79f1/1739031525647/ESE-GIS.jpg" alt="Company Logo" />
                             </div>
-                            <div class="legend-frame">
-                                ${getLegendForPrint()} 
+                            <div class="legend-container">
+                                <div class="legend-main-title">Legend</div>
+                                <div class="legend-frame">
+                                    ${getLegendForPrint()} 
+                                </div>
                             </div>
                             <div class="inner-frame">
                                 <span class="gis-map">GIS Map</span>
