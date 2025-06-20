@@ -304,12 +304,14 @@ document.getElementById('printButton').addEventListener('click', () => {
                             color: black;
                             text-decoration: none;
                         }
-                        legend-container {
+                        .legend-container {
                             width: 3.25in;
                             height: 2.4in;
                             display: flex;
-                            flex-direction: column; /* This stacks the title on top of the legend */
-                            align-items: center;   /* This centers the title and legend grid horizontally */
+                            flex-direction: column;
+                            align-items: center;     /* This centers the content horizontally */
+                            justify-content: center; /* ADD THIS: This centers the content vertically */
+                            flex-grow: 1;            /* ADD THIS: This tells the container to fill empty space */
                         }
 
                         /* The new static "Legend" title */
