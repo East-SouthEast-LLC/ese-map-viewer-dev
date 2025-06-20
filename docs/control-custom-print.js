@@ -5,6 +5,15 @@
 // ============================================================================
 
 /**
+ * Helper function to introduce a delay.
+ * @param {number} ms - The number of milliseconds to wait.
+ * @returns {Promise} A promise that resolves after the specified delay.
+ */
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
  * Returns the HTML string for the custom print input form.
  * This structure is similar to the getScaleBoxHTML function.
  * @returns {string} The HTML for the form.
@@ -146,9 +155,11 @@ async function generateMultiPagePrintout(printData) {
             }
         });
 
-        // ** CRITICAL STEP **
-        // Wait for the map to become idle, ensuring all data is loaded and rendered.
+        // Wait for the map to become idle, ensuring all base tiles are loaded.
         await new Promise(resolve => map.once('idle', resolve));
+
+        // Add a short, extra delay to ensure complex labels are rendered.
+        await sleep(500); 
 
         // Now that the map is fully rendered, capture the canvas
         const mapCanvas = map.getCanvas();
