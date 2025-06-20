@@ -6,6 +6,7 @@
 
 /**
  * Returns the HTML string for the custom print input form.
+ * This structure is similar to the getScaleBoxHTML function.
  * @returns {string} The HTML for the form.
  */
 function getCustomPrintFormHTML() {
@@ -40,14 +41,19 @@ function processCustomPrint() {
         scale: document.getElementById('custom-scale-input').value,
     };
 
+    // Validate that a scale was entered
     if (!printData.scale || isNaN(printData.scale) || Number(printData.scale) <= 0) {
         alert('Please enter a valid scale in feet per inch.');
         return;
     }
 
+    console.log("Processing custom print with data:", printData);
+
+    // Hide the form after submission
     const customPrintBox = document.getElementById("custom-print-box");
     if(customPrintBox) customPrintBox.style.display = 'none';
 
+    // Pass the collected data to the print generation function
     generateMultiPagePrintout(printData);
 }
 
@@ -61,7 +67,7 @@ function processCustomPrint() {
 function getPageHTML(printData, mapImageSrc, pageNumber) {
     const currentDate = new Date().toLocaleDateString();
     return `
-        <div class="frame">
+        <div class="frame" style="page-break-after: always;">
             <div class="top-frame">
                 <div class="map-container">
                     <img src="${mapImageSrc}" alt="Map Image for Page ${pageNumber}" />
@@ -84,125 +90,115 @@ function getPageHTML(printData, mapImageSrc, pageNumber) {
                 </div>
                 <div class="inner-frame">
                     <span class="gis-map">GIS Map - Page ${pageNumber}</span>
-                    <span class="disclaimer">This map is for illustrative purposes only.</span>
+                    <span class="disclaimer">This map is for illustrative purposes only and is not adequate for legal boundary determination or regulatory interpretation.</span>
                     <span class="date">${currentDate}</span>
                     ${getPrintScaleBarHTML(map)}
-                    <span class="sources">Map sources include: MassGIS, Mapbox, OpenStreetMap</span>
+                    <span class="sources">Map sources include:</span>
+                    <span class="massgis">Bureau of Geographic Information (MassGIS), Commonwealth of Massachusetts, Executive Office of Technology and Security Services</span>
+                    <span class="base-map">© <a href="https://www.mapbox.com/about/maps">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a><br>
+                        <strong><a style="margin-top: 3px" href="https://apps.mapbox.com/feedback/" target="_blank">Improve this map, www.apps.mapbox.com/feedback</a></strong>
+                    </span>
                 </div>
             </div>
         </div>
     `;
 }
 
-/**
- * Processes a single page for the printout. This function is called recursively.
- * @param {object} printData - The user-submitted information.
- * @param {Array} configs - The array of page configurations.
- * @param {number} index - The index of the current page to process.
- * @param {Array} pageHtmlArray - An array to accumulate the HTML for each page.
- * @param {Array} initiallyVisibleLayers - An array of layers that were visible before printing.
- */
-function processPage(printData, configs, index, pageHtmlArray, initiallyVisibleLayers) {
-    // Base case: If we've processed all pages, finalize the printout.
-    if (index >= configs.length) {
-        // Restore the original layer visibility
-        initiallyVisibleLayers.forEach(layerId => {
-            if (map.getLayer(layerId)) {
-                map.setLayoutProperty(layerId, 'visibility', 'visible');
-            }
-        });
-
-        // Open the print window with the complete HTML
-        const fullHtml = pageHtmlArray.join('');
-        const win = window.open('', '_blank');
-        if (win) {
-            win.document.write(`
-                <!DOCTYPE html><html><head><title>Custom Map Printout</title>
-                <link rel="stylesheet" href="https://east-southeast-llc.github.io/ese-map-viewer/css/globals.css?v=2" type="text/css" />
-                </head><body class="print-body">${fullHtml}</body></html>`);
-            win.document.close();
-            win.onload = () => {
-                win.print();
-                win.close();
-            };
-        } else {
-            alert("Popup blocked! Please allow popups for this site.");
-        }
-        return;
-    }
-
-    const config = configs[index];
-
-    // Set visibility for the current page's layers
-    config.layers.forEach(layerId => {
-        if (map.getLayer(layerId)) {
-            map.setLayoutProperty(layerId, 'visibility', 'visible');
-        }
-    });
-    
-    // Wait for the next 'render' event to ensure the map is drawn.
-    map.once('render', () => {
-        // Capture the canvas to an image
-        const mapCanvas = map.getCanvas();
-        const mapImageSrc = mapCanvas.toDataURL();
-
-        // Generate and store the HTML for the current page
-        pageHtmlArray.push(getPageHTML(printData, mapImageSrc, config.page));
-
-        // Hide the layers for the current page before moving to the next
-        config.layers.forEach(layerId => {
-            if (map.getLayer(layerId)) {
-                map.setLayoutProperty(layerId, 'visibility', 'none');
-            }
-        });
-        
-        // Recursively call this function to process the next page
-        processPage(printData, configs, index + 1, pageHtmlArray, initiallyVisibleLayers);
-    });
-
-    // Manually trigger a repaint to ensure the 'render' event fires
-    map.triggerRepaint();
-}
-
 
 /**
- * Kicks off the multi-page print generation process.
+ * Takes the user-provided data and generates the multi-page print preview.
  * @param {object} printData An object containing all the user-submitted information.
  */
-function generateMultiPagePrintout(printData) {
-    console.log("Starting multi-page printout with data:", printData);
+async function generateMultiPagePrintout(printData) {
+    console.log("Generating multi-page printout with data:", printData);
     
+    // Define the layer configurations for each page
     const pageConfigs = [
         { page: 1, layers: ['parcel highlight', 'contours', 'floodplain'] },
         { page: 2, layers: ['parcel highlight', 'satellite', 'acec'] },
         { page: 3, layers: ['parcel highlight', 'contours', 'DEP wetland'] },
         { page: 4, layers: ['parcel highlight', 'satellite', 'endangered species'] }
     ];
-    
+
+    let fullHtml = '';
+
+    // Set map to the desired scale and center
+    // Note: setMapToScale is an existing function in control-scale.js
     if (typeof setMapToScale === 'function') {
         setMapToScale(Number(printData.scale));
     } else {
-        console.error("setMapToScale function not found.");
+        console.error("setMapToScale function not found. Please ensure control-scale.js is loaded.");
         return;
     }
     
-    if (marker) {
+    // Center the map on the marker
+    if(marker) {
         map.setCenter(marker.getLngLat());
     }
 
+    // Temporarily hide all optional layers
     const allToggleableLayers = ['satellite', 'parcels', 'parcel highlight', 'contours', 'agis', 'historic', 'floodplain', 'acec', 'DEP wetland', 'endangered species', 'zone II', 'soils', 'conservancy districts', 'zoning', 'conservation', 'sewer', 'sewer plans', 'stories', 'intersection'];
-    const initiallyVisibleLayers = listVisibleLayers(map, allToggleableLayers);
-    
-    // Hide all layers to start with a clean slate
     allToggleableLayers.forEach(layerId => {
         if (map.getLayer(layerId)) {
             map.setLayoutProperty(layerId, 'visibility', 'none');
         }
     });
 
-    // Start the recursive page processing chain
-    processPage(printData, pageConfigs, 0, [], initiallyVisibleLayers);
+
+    for (const config of pageConfigs) {
+        // Toggle the specific layers for the current page
+        config.layers.forEach(layerId => {
+            if (map.getLayer(layerId)) {
+                map.setLayoutProperty(layerId, 'visibility', 'visible');
+            }
+        });
+
+        // Wait for the map to become idle after layer changes
+        await new Promise(resolve => map.once('idle', resolve));
+
+        // Capture the canvas
+        const mapCanvas = map.getCanvas();
+        const mapImageSrc = mapCanvas.toDataURL();
+        
+        // Generate the HTML for the current page
+        fullHtml += getPageHTML(printData, mapImageSrc, config.page);
+
+        // Hide the layers again for the next iteration
+        config.layers.forEach(layerId => {
+            if (map.getLayer(layerId)) {
+                map.setLayoutProperty(layerId, 'visibility', 'none');
+            }
+        });
+    }
+
+    // Restore original layer visibility if needed (optional)
+    // For now, we leave them off.
+
+    // Open a new window and print
+    const win = window.open('', '_blank');
+    if (win) {
+        win.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Custom Map Printout</title>
+                <link rel="stylesheet" href="https://east-southeast-llc.github.io/ese-map-viewer/css/globals.css?v=2" type="text/css" />
+            </head>
+            <body class="print-body">
+                ${fullHtml}
+            </body>
+            </html>
+        `);
+        win.document.close();
+        win.onload = () => {
+            win.print();
+            win.close();
+        };
+    } else {
+        alert("Popup blocked! Please allow popups for this site.");
+    }
 }
+
 
 // ============================================================================
 // MAIN CUSTOM PRINT FUNCTION (event listener)
@@ -218,6 +214,9 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
     
+    /**
+     * Attaches event listeners to the elements inside the custom print form.
+     */
     function attachCustomPrintFormListeners() {
         const submitButton = document.getElementById('custom-print-submit');
         if (submitButton) {
@@ -225,12 +224,16 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    /**
+     * Creates the form, displays it, and attaches the necessary event listeners.
+     */
     function updateCustomPrintBox() {
         customPrintBox.innerHTML = getCustomPrintFormHTML();
         customPrintBox.style.display = 'block';
         attachCustomPrintFormListeners();
     }
     
+    // Main event listener for the custom print button
     customPrintButton.addEventListener('click', () => {
         if (!marker) {
             alert('Please drop a pin on the map to set the center for your printout.');
