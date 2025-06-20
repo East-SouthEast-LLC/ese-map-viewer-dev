@@ -435,14 +435,12 @@ PRINT STYLES
     align-items: center;
 }
 .legend-grid {
-    display: grid;
-    width: 100%;
-    grid-template-columns: 1fr 1fr; /* 2 equal-width columns */
-    grid-template-rows: repeat(15, auto); /* Allow for more, smaller rows */
-    grid-auto-flow: column; /* Fill columns top-to-bottom */
-    grid-auto-flow: row; /* Fill rows left-to-right */
-    row-gap: 1.5px; /* Tighter row spacing */
-    column-gap: 10px;
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr; /* Single column */
+  grid-template-rows: repeat(30, auto); /* More rows if needed */
+  row-gap: 1.5px; /* Tighter row spacing */
+  column-gap: 0;
 }
 .legend-section {
     font-size: .1in;

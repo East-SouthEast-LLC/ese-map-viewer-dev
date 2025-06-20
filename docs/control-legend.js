@@ -134,7 +134,7 @@ function getLegendForPrint() {
     if (allItemsToRender.length === 0) {
         return '<div class="legend-item">No layers with a legend are visible in the print area.</div>';
     }
-    const maxPrintableItems = 30;
+    const maxPrintableItems = 15;
     let finalItemsHTML = '';
     if (allItemsToRender.length > maxPrintableItems) {
         const truncatedItems = allItemsToRender.slice(0, maxPrintableItems - 1);
