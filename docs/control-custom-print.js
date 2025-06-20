@@ -9,7 +9,7 @@
  * This function will be responsible for creating and showing the form
  * within the tools container.
  */
-function showCustomPrintForm() {
+function attachCustomPrintForm() {
     // We will add logic here to dynamically create and display the input form.
     console.log("Function to show custom print form called.");
 }
@@ -45,14 +45,27 @@ function generateMultiPagePrintout(printData) {
 
 // This event listener will be attached to our new 'Custom Print' button.
 // For now, we assume the button will have the ID 'customPrintButton'.
-document.getElementById('customPrintButton').addEventListener('click', function() {
-    // First, we check if a marker has been placed on the map.
-    // The 'marker' variable is globally accessible from 'control-button.js'.
-    if (!marker) {
-        alert('Please place a marker on the map to set the center for your printout.');
+document.addEventListener("DOMContentLoaded", function () {
+    const customPrintButton = document.getElementById("customPrintButton");
+    const customPrintBox = document.getElementById("custom-print-box");
+    let customPrintVisibility = false;
+    customPrintBox.style.display = 'none';
+
+    if (!customPrintButton || !customPrintBox) {
+        console.error("Required elements not found in the DOM.");
         return;
     }
 
-    // If a marker exists, we call the function to display the input form.
-    showCustomPrintForm();
+    // attach listeners to the custom print box
+    attachCustomPrintForm();
+
+    // main event listener
+    customPrintButton.addEventListener('click', () => {
+        customPrintVisibility = !customPrintVisibility;
+        if (customPrintVisibility) {
+            customPrintBox.style.display = 'block';
+        } else {
+            customPrintBox.style.display = 'none';
+        }
+    });    
 });
