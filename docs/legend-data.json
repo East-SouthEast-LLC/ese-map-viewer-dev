@@ -225,5 +225,46 @@
             "isLine": false
             }
         ]
+    },
+    {
+        "displayName": "Conservancy Districts",
+        "sources": [
+            { "id": "conservancy districts", "propertyKey": "CONS_TYPE" }
+        ],
+        "items": [
+            { "code": "BOG", "label": "Bog", "color": "#239607", "opacity": 0.4, "isLine": false },
+            { "code": "DITCH", "label": "Ditch", "color": "#072483", "opacity": 0.4, "isLine": false },
+            { "code": "MARSH", "label": "Marsh", "color": "#4FD33F", "opacity": 0.4, "isLine": false },
+            { "code": "SWAMP", "label": "Swamp", "color": "#21A546", "opacity": 0.4, "isLine": false },
+            { "code": "WATER", "label": "Water", "color": "#18A7AA", "opacity": 0.4, "isLine": false }
+        ]
+    },
+    {
+        "displayName": "Conservation Land",
+        "sources": [
+            { "id": "conservation", "propertyKey": "Last_Updat" }
+        ],
+        "items": [
+            { "code": "CCF_Owned_Parcels_JBedits", "label": "Approximate", "color": "#abe356", "opacity": 0.4, "isLine": false },
+            { "code": "other", "label": "Accurate", "color": "#22c410", "opacity": 0.4, "isLine": false }
+        ]
+    },
+    {
+        "displayName": "Contours",
+        "sources": [
+            { "id": "contours" }
+        ],
+        "items": [
+            { "label": "2ft Contours", "color": "#26b24f", "opacity": 1.0, "isLine": true }
+        ]
+    },
+    {
+        "displayName": "Aerial Photo Coverage",
+        "sources": [
+            { "id": "agis" }
+        ],
+        "items": [
+            { "label": "Historic Aerial Photo", "color": "#3CD935", "opacity": 0.4, "isLine": false }
+        ]
     }
 ]
