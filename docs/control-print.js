@@ -358,7 +358,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                         }
                         .color-line {
                             width: .1in;
-                            height: .1in;
+                            height: 2px;
                             border: .5px solid #555;
                             margin-right: 5px; /* Tighter margin */
                             flex-shrink: 0;
