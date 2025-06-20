@@ -329,19 +329,20 @@ document.getElementById('printButton').addEventListener('click', () => {
 
                         /* A title for a legend section (e.g., "DEP Wetlands") */
                         .legend-section {
-                            font-size: 8.5pt; /* Slightly smaller font */
+                            font-size: 1.2in;
                             font-weight: bold;
-                            margin-top: 5px; /* Space above the title */
-                            margin-bottom: 2px; /* Tighter margin */
-                            /* This helps prevent a title from being the last item in a column */
+                            font-family: 'Garamond', 'Times New Roman', serif; 
+                            margin-top: 5px;
+                            margin-bottom: 2px;
                             break-after: avoid-page; 
                         }
 
                         /* An individual item in the legend (swatch + label) */
                         .legend-item {
                             display: flex;
+                            font-family: 'Garamond', 'Times New Roman', serif; 
                             align-items: center;
-                            font-size: 7.5pt; /* Smaller font to fit more items */
+                            font-size: .1in;
                             white-space: nowrap;
                             overflow: hidden;
                             text-overflow: ellipsis;
@@ -349,15 +350,15 @@ document.getElementById('printButton').addEventListener('click', () => {
 
                         /* Swatch styles can remain the same */
                         .color-box {
-                            width: 8px;
-                            height: 8px;
+                            width: .1in;
+                            height: .1in;
                             border: .5px solid #555;
                             margin-right: 5px; /* Tighter margin */
                             flex-shrink: 0;
                         }
                         .color-line {
-                            width: 8px;
-                            height: 2px;
+                            width: .1in;
+                            height: .1in;
                             border: .5px solid #555;
                             margin-right: 5px; /* Tighter margin */
                             flex-shrink: 0;
