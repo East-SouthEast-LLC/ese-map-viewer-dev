@@ -38,8 +38,10 @@ function getPrintBoundingBox() {
 
 // helper function for print output
 function getLegendForPrint() {
-    // 1. Define and query the print area bounding box.
+    // 1. Get features from the print area
     const geoJsonBounds = getPrintBoundingBox();
+    if (!geoJsonBounds) return '<div class="legend-item">Error calculating print area.</div>';
+    
     const topLeftGeo = geoJsonBounds[0];
     const bottomRightGeo = geoJsonBounds[2];
     const topLeftPixel = map.project(topLeftGeo);
@@ -51,7 +53,7 @@ function getLegendForPrint() {
         return '<div class="legend-item">No layers with a legend are visible in the print area.</div>';
     }
 
-    // 2. Group features by layer ID for efficiency.
+    // Group features by layer ID for efficiency
     const featuresByLayer = allVisibleFeatures.reduce((acc, feature) => {
         const layerId = feature.layer.id;
         if (!acc[layerId]) {
@@ -61,9 +63,10 @@ function getLegendForPrint() {
         return acc;
     }, {});
 
-    const allItemsToRender = []; // This will hold the HTML for each legend line.
+    const allItemsToRender = []; // A flat array to hold all potential HTML strings
 
-    // 3. Loop through your legendData to determine which items to show.
+    // 2. Loop through legendData to determine which items to show.
+    //    This logic now mirrors the live updateLegend function.
     legendData.forEach(layerInfo => {
         const sourceLayerIds = layerInfo.sources.map(s => s.id);
         const visibleFeaturesForLayer = sourceLayerIds.flatMap(id => featuresByLayer[id] || []);
@@ -73,42 +76,44 @@ function getLegendForPrint() {
         }
 
         const itemsToShow = new Set();
-        
+        const matchedFeatureIds = new Set();
+
         layerInfo.items.forEach(item => {
             for (const feature of visibleFeaturesForLayer) {
+                if (matchedFeatureIds.has(feature.id) && item.code !== "__default__") {
+                    continue;
+                }
+                
                 const props = feature.properties;
-                // Case for simple layer presence (e.g., LiMWA)
-                if (!item.match && !item.code) {
-                    const source = layerInfo.sources.find(s => s.id === feature.layer.id && !s.propertyKey);
-                    if (source) {
-                        itemsToShow.add(item.label);
-                        break;
-                    }
-                } 
-                // Case for complex match rules (e.g., Sewer Plans)
-                else if (item.match) {
+
+                if (item.match) { // Handles Sewer Plans
                     const rule = item.match;
-                    if (rule.property === "DATE") {
-                        if (Number(props.DATE) >= rule.min && Number(props.DATE) <= rule.max) {
-                            itemsToShow.add(item.label);
-                            break;
-                        }
-                    } else if (props[rule.property] === rule.value) {
+                    if ((rule.property === "DATE" && (Number(props.DATE) >= rule.min && Number(props.DATE) <= rule.max)) || 
+                        (props[rule.property] === rule.value)) {
                         itemsToShow.add(item.label);
-                        break;
                     }
-                } 
-                // Case for simple code matching (e.g., DEP Wetlands)
-                else if (item.code) {
+                } else if (item.code && item.code !== "__default__") { // Handles specific codes like in DEP Wetlands
                     const source = layerInfo.sources.find(s => s.id === feature.layer.id);
                     if (source && String(props[source.propertyKey]) === String(item.code)) {
                         itemsToShow.add(item.label);
-                        break;
+                        matchedFeatureIds.add(feature.id);
                     }
+                } else if (item.code && item.code === "__default__") { // Handles the default case for Contours
+                    // Add the default item if any feature from this layer group is visible
+                    itemsToShow.add(item.label);
+                } else if (!item.match && !item.code) { // Handles simple layers like LiMWA
+                    itemsToShow.add(item.label);
                 }
             }
         });
         
+        // This logic ensures the default item doesn't show up if a more specific item does.
+        const hasSpecificItem = layerInfo.items.some(item => item.code !== "__default__" && itemsToShow.has(item.label));
+        const defaultItem = layerInfo.items.find(item => item.code === "__default__");
+        if (hasSpecificItem && defaultItem && itemsToShow.has(defaultItem.label)) {
+            itemsToShow.delete(defaultItem.label);
+        }
+
         if (itemsToShow.size > 0) {
             allItemsToRender.push(`<div class="legend-section">${layerInfo.displayName}</div>`);
             const visibleItems = layerInfo.items.filter(item => itemsToShow.has(item.label));
@@ -124,13 +129,12 @@ function getLegendForPrint() {
             });
         }
     });
-    
+
+    // 3. Truncate list and return final HTML
     if (allItemsToRender.length === 0) {
         return '<div class="legend-item">No layers with a legend are visible in the print area.</div>';
     }
-
-    // 4. Truncate the list if it's too long.
-    const maxPrintableItems = 28;
+    const maxPrintableItems = 30;
     let finalItemsHTML = '';
     if (allItemsToRender.length > maxPrintableItems) {
         const truncatedItems = allItemsToRender.slice(0, maxPrintableItems - 1);
@@ -139,8 +143,6 @@ function getLegendForPrint() {
     } else {
         finalItemsHTML = allItemsToRender.join('');
     }
-
-    // 5. Wrap the final content in the grid container.
     return `<div class="legend-grid">${finalItemsHTML}</div>`;
 }
 
