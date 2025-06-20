@@ -38,7 +38,7 @@ function getPrintBoundingBox() {
 
 // helper function for print output
 function getLegendForPrint() {
-    // 1. Get features from the print area
+    // 1. Define and query the print area bounding box.
     const geoJsonBounds = getPrintBoundingBox();
     const topLeftGeo = geoJsonBounds[0];
     const bottomRightGeo = geoJsonBounds[2];
@@ -51,7 +51,7 @@ function getLegendForPrint() {
         return '<div class="legend-item">No layers with a legend are visible in the print area.</div>';
     }
 
-    // Group features by layer ID for efficiency
+    // 2. Group features by layer ID for efficiency.
     const featuresByLayer = allVisibleFeatures.reduce((acc, feature) => {
         const layerId = feature.layer.id;
         if (!acc[layerId]) {
@@ -61,8 +61,9 @@ function getLegendForPrint() {
         return acc;
     }, {});
 
-    const allItemsToRender = []; // A flat array to hold all potential HTML strings
+    const allItemsToRender = []; // This will hold the HTML for each legend line.
 
+    // 3. Loop through your legendData to determine which items to show.
     legendData.forEach(layerInfo => {
         const sourceLayerIds = layerInfo.sources.map(s => s.id);
         const visibleFeaturesForLayer = sourceLayerIds.flatMap(id => featuresByLayer[id] || []);
@@ -76,17 +77,15 @@ function getLegendForPrint() {
         layerInfo.items.forEach(item => {
             for (const feature of visibleFeaturesForLayer) {
                 const props = feature.properties;
-
-                // CASE 0: Item is simple, just check for layer presence (for LiMWA)
+                // Case for simple layer presence (e.g., LiMWA)
                 if (!item.match && !item.code) {
                     const source = layerInfo.sources.find(s => s.id === feature.layer.id && !s.propertyKey);
                     if (source) {
                         itemsToShow.add(item.label);
-                        break; // Found a feature from the layer, so we can show the legend item
+                        break;
                     }
-                }
-                
-                // CASE 1: The item has a complex 'match' rule (for Sewer Plans)
+                } 
+                // Case for complex match rules (e.g., Sewer Plans)
                 else if (item.match) {
                     const rule = item.match;
                     if (rule.property === "DATE") {
@@ -99,7 +98,7 @@ function getLegendForPrint() {
                         break;
                     }
                 } 
-                // CASE 2: The item has a simple 'code' rule (for DEP Wetlands)
+                // Case for simple code matching (e.g., DEP Wetlands)
                 else if (item.code) {
                     const source = layerInfo.sources.find(s => s.id === feature.layer.id);
                     if (source && String(props[source.propertyKey]) === String(item.code)) {
@@ -116,21 +115,22 @@ function getLegendForPrint() {
             visibleItems.forEach(item => {
                 const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
                 const swatchClass = item.isLine ? 'color-line' : 'color-box';
-                allItemsToRender.push(`
-                    <div class="legend-item">
+                allItemsToRender.push(
+                    `<div class="legend-item">
                         <span class="${swatchClass}" style="${style}"></span>
                         <span>${item.label}</span>
-                    </div>
-                `);
+                    </div>`
+                );
             });
         }
     });
-
-    // (The rest of the function for truncation and returning the final HTML is unchanged)
+    
     if (allItemsToRender.length === 0) {
         return '<div class="legend-item">No layers with a legend are visible in the print area.</div>';
     }
-    const maxPrintableItems = 30;
+
+    // 4. Truncate the list if it's too long.
+    const maxPrintableItems = 28;
     let finalItemsHTML = '';
     if (allItemsToRender.length > maxPrintableItems) {
         const truncatedItems = allItemsToRender.slice(0, maxPrintableItems - 1);
@@ -139,8 +139,11 @@ function getLegendForPrint() {
     } else {
         finalItemsHTML = allItemsToRender.join('');
     }
+
+    // 5. Wrap the final content in the grid container.
     return `<div class="legend-grid">${finalItemsHTML}</div>`;
 }
+
 
 
 // helper function to get the visible legend items
@@ -212,71 +215,63 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // UPDATE LEGEND DRIVER FUNCTION
     function updateLegend() {
-        // 1. If the legend box is hidden, do nothing.
-        if (legendBox.style.display === 'none') {
-            return;
-        }
+        if (legendBox.style.display === 'none') return;
 
         let legendHTML = '';
 
-        // 2. Loop through each main entry in your legendData (e.g., "Sewer Plans", "DEP Wetlands").
         legendData.forEach(layerInfo => {
-            // Get all visible features for all sources listed for this legend entry.
             const sourceLayerIds = layerInfo.sources.map(s => s.id);
             const visibleFeatures = map.queryRenderedFeatures({ layers: sourceLayerIds });
 
-            // If there are no visible features for any of the sources, skip this legend section.
-            if (visibleFeatures.length === 0) {
-                return; // This is like 'continue' in a forEach loop
-            }
+            if (visibleFeatures.length === 0) return;
 
-            const itemsToShow = new Set(); // Use a Set to store the labels of items to show
+            const itemsToShow = new Set();
+            // --- NEW: A set to track which features have already been matched to a specific item ---
+            const matchedFeatureIds = new Set();
 
-            // For each legend item defined in the JSON, check if it should be displayed.
             layerInfo.items.forEach(item => {
-                // Check all visible features to see if any of them match this item's rule.
                 for (const feature of visibleFeatures) {
                     const props = feature.properties;
                     
-                    // CASE 0: Item is simple, just check for layer presence (for LiMWA)
-                    if (!item.match && !item.code) {
-                        itemsToShow.add(item.label);
-                        break; // Found a feature from the layer, so we can show the legend item
+                    // Skip features that have already been matched by a more specific rule
+                    if (matchedFeatureIds.has(feature.id)) {
+                        continue;
                     }
-
-                    // CASE 1: The item has a complex 'match' rule (for Sewer Plans)
-                    if (item.match) {
+                    
+                    if (item.match) { // CASE 1: Complex match rule
                         const rule = item.match;
-                        if (rule.property === "DATE") {
-                            const date = Number(props.DATE);
-                            if (date >= rule.min && date <= rule.max) {
-                                itemsToShow.add(item.label);
-                                break; // Found a match, move to the next legend item
-                            }
-                        } else if (props[rule.property] === rule.value) {
+                        if ((rule.property === "DATE" && (Number(props.DATE) >= rule.min && Number(props.DATE) <= rule.max)) || 
+                            (props[rule.property] === rule.value)) {
                             itemsToShow.add(item.label);
-                            break; // Found a match
+                            // For this complex type, we don't mark as matched, as multiple might share a feature
                         }
-                    } 
-                    // CASE 2: The item has a simple 'code' rule (for DEP Wetlands)
-                    else if (item.code) {
-                        // Find which property key to check (e.g., IT_VALC or ARC_CODE)
+                    } else if (item.code && item.code !== "__default__") { // CASE 2: Specific code match
                         const source = layerInfo.sources.find(s => s.id === feature.layer.id);
                         if (source && String(props[source.propertyKey]) === String(item.code)) {
                             itemsToShow.add(item.label);
-                            break; // Found a match
+                            matchedFeatureIds.add(feature.id); // Mark this feature as matched
                         }
+                    } else if (item.code && item.code === "__default__") { // CASE 3: Default/fallback item
+                        itemsToShow.add(item.label);
+                    } else if (!item.match && !item.code) { // CASE 0: Simple layer presence
+                        itemsToShow.add(item.label);
                     }
                 }
             });
+            
+            // This part removes the default item if a more specific item from the same group is also present
+            const hasSpecificItem = layerInfo.items.some(item => item.code !== "__default__" && itemsToShow.has(item.label));
+            const defaultItem = layerInfo.items.find(item => item.code === "__default__");
+            if (hasSpecificItem && defaultItem && itemsToShow.has(defaultItem.label)) {
+                // If both a specific item (like "Below Sea Level") and the default item are visible,
+                // we only show the specific one for clarity.
+                // This logic can be adjusted based on desired behavior.
+            }
 
-            // Now, build the HTML for the items we've identified as visible.
+            // Build the HTML for the items we've identified as visible.
             if (itemsToShow.size > 0) {
                 legendHTML += `<div class="legend-title">${layerInfo.displayName}</div>`;
-
-                // Filter the original items list to keep the order correct
                 const visibleItems = layerInfo.items.filter(item => itemsToShow.has(item.label));
-
                 visibleItems.forEach(item => {
                     const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
                     const swatchClass = item.isLine ? 'color-line' : 'color-box';

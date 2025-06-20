@@ -250,21 +250,97 @@
         ]
     },
     {
-        "displayName": "Contours",
-        "sources": [
-            { "id": "contours" }
-        ],
-        "items": [
-            { "label": "2ft Contours", "color": "#26b24f", "opacity": 1.0, "isLine": true }
-        ]
-    },
-    {
         "displayName": "Aerial Photo Coverage",
         "sources": [
             { "id": "agis" }
         ],
         "items": [
             { "label": "Historic Aerial Photo", "color": "#3CD935", "opacity": 0.4, "isLine": false }
+        ]
+    },
+    {
+        "displayName": "Historic Districts",
+        "sources": [
+            { "id": "historic", "propertyKey": "Status" }
+        ],
+        "items": [
+            { "code": "Proposed", "label": "Proposed", "color": "#F2BD67", "opacity": 0.4, "isLine": false },
+            { "code": "1024-0018", "label": "Old Kings Highway", "color": "#D75F48", "opacity": 0.4, "isLine": false }
+        ]
+    },
+    {
+        "displayName": "Intersections",
+        "sources": [
+            { "id": "intersection" }
+        ],
+        "items": [
+            { "label": "Intersection Improvement Area", "color": "#14B9F7", "opacity": 0.5, "isLine": false }
+        ]
+    },
+    {
+        "displayName": "Sewer Service Area",
+        "sources": [
+            { "id": "sewer", "propertyKey": "CONTRACT" }
+        ],
+        "items": [
+            { "code": "2010", "label": "2010", "color": "#473b02", "opacity": 0.4, "isLine": false },
+            { "code": "2011", "label": "2011", "color": "#756410", "opacity": 0.4, "isLine": false },
+            { "code": "2012", "label": "2012", "color": "#5e4f1e", "opacity": 0.4, "isLine": false },
+            { "code": "2013", "label": "2013", "color": "#86873d", "opacity": 0.4, "isLine": false },
+            { "code": "2014", "label": "2014", "color": "#8c872a", "opacity": 0.4, "isLine": false },
+            { "code": "2015", "label": "2015", "color": "#ced12e", "opacity": 0.4, "isLine": false },
+            { "code": "2016", "label": "2016", "color": "#87713d", "opacity": 0.4, "isLine": false },
+            { "code": "2017", "label": "2017", "color": "#634d19", "opacity": 0.4, "isLine": false },
+            { "code": "2018", "label": "2018", "color": "#4a3503", "opacity": 0.4, "isLine": false },
+            { "code": "2019", "label": "2019", "color": "#8a8506", "opacity": 0.4, "isLine": false },
+            { "code": "2020", "label": "2020", "color": "#e7fa16", "opacity": 0.4, "isLine": false },
+            { "code": "2021", "label": "2021", "color": "#3d3610", "opacity": 0.4, "isLine": false },
+            { "code": "2022", "label": "2022", "color": "#78672c", "opacity": 0.4, "isLine": false }
+        ]
+    },
+    {
+        "displayName": "Building Stories",
+        "sources": [
+            { "id": "stories", "propertyKey": "STORIESS" }
+        ],
+        "items": [
+            { "code": "0", "label": "0 Stories", "color": "#e2ffcc", "opacity": 0.4, "isLine": false },
+            { "code": "1", "label": "1 Story", "color": "#fffbb3", "opacity": 0.4, "isLine": false },
+            { "code": "1.5", "label": "1.5 Stories", "color": "#8cf2ff", "opacity": 0.4, "isLine": false },
+            { "code": "2", "label": "2 Stories", "color": "#5e90f2", "opacity": 0.4, "isLine": false },
+            { "code": "2.5", "label": "2.5 Stories", "color": "#3b64b8", "opacity": 0.4, "isLine": false },
+            { "code": "3", "label": "3 Stories", "color": "#3841e8", "opacity": 0.4, "isLine": false }
+        ]
+    },
+    {
+        "displayName": "Zone II",
+        "sources": [
+            { "id": "zone II" }
+        ],
+        "items": [
+            { "label": "Zone II Area", "color": "#2758d6", "opacity": 0.4, "isLine": false }
+        ]
+    },
+    {
+        "displayName": "LIDAR Contours",
+        "sources": [
+            { "id": "contours", "propertyKey": "Elevation" }
+        ],
+        "items": [
+            {
+            "code": "__default__",
+            "label": "Contour Line",
+            "color": "#07C327",
+            "opacity": 1.0,
+            "isLine": true
+            },
+            {
+            "code": "-2",
+            "label": "Below Sea Level Contour",
+            "color": "#08ADEF",
+            "opacity": 1.0,
+            "isLine": true
+            }
         ]
     }
 ]
