@@ -331,7 +331,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                         .legend-section {
                             font-size: .12in;
                             font-weight: bold;
-                            font-family: 'Garamond', 'Times New Roman', serif; 
+                            font-family: Verdana, sans-serif;
                             margin-top: 5px;
                             margin-bottom: 2px;
                             break-after: avoid-page; 
@@ -340,7 +340,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                         /* An individual item in the legend (swatch + label) */
                         .legend-item {
                             display: flex;
-                            font-family: 'Garamond', 'Times New Roman', serif; 
+                            font-family: Verdana, sans-serif;
                             align-items: center;
                             font-size: .1in;
                             white-space: nowrap;
