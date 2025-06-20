@@ -307,13 +307,12 @@ document.getElementById('printButton').addEventListener('click', () => {
 
                         /* Main container for the legend area in the print layout */
                         .legend-frame {
-                            width: 3.25in;
-                            height: 2.4in; /* A little vertical padding within the 2.5in bottom-frame */
-                            padding-top: 10px;
+                            width: 3.3in;
+                            height: 2.4in; 
                             padding: 5px;
                             display: flex;
                             justify-content: center;
-                            align-items: flex-start; /* Align grid to the top */
+                            align-items: center;
                         }
 
                         /* The grid container that holds all legend items */
@@ -332,6 +331,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                         .legend-section {
                             font-size: 8.5pt; /* Slightly smaller font */
                             font-weight: bold;
+                            margin-top: 5px; /* Space above the title */
                             margin-bottom: 2px; /* Tighter margin */
                             /* This helps prevent a title from being the last item in a column */
                             break-after: avoid-page; 
