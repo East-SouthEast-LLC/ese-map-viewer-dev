@@ -427,12 +427,12 @@ PRINT STYLES
     text-decoration: none;
 }
 .legend-frame {
-    width: 3.3in;
-    height: 2.2in; 
-    padding: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: 3.3in;
+  height: 2.2in; 
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .legend-grid {
   display: grid;
@@ -441,6 +441,7 @@ PRINT STYLES
   grid-template-rows: repeat(30, auto); /* More rows if needed */
   row-gap: 1.5px; /* Tighter row spacing */
   column-gap: 0;
+  justify-items: center; /* Center content horizontally */
 }
 .legend-section {
     font-size: .1in;

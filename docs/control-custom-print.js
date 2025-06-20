@@ -126,11 +126,15 @@ function getPageHTML(printData, mapImageSrc, pageNumber) {
                     ${getLegendForPrint()} 
                 </div>
                 <div class="inner-frame">
-                    <span class="gis-map">GIS Map - Page ${pageNumber}</span>
-                    <span class="disclaimer">This map is for illustrative purposes only.</span>
+                    <span class="gis-map">GIS Map</span>
+                    <span class="disclaimer">This map is for illustrative purposes only and is not adequate for legal boundary determination or regulatory interpretation.</span>
                     <span class="date">${currentDate}</span>
                     ${getPrintScaleBarHTML(map)}
-                    <span class="sources">Map sources include: MassGIS, Mapbox, OpenStreetMap</span>
+                    <span class="sources">Map sources include:</span>
+                    <span class="massgis">Bureau of Geographic Information (MassGIS), Commonwealth of Massachusetts, Executive Office of Technology and Security Services</span>
+                    <span class="base-map">© <a href="https://www.mapbox.com/about/maps">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a><br>
+                        <strong><a style="margin-top: 3px" href="https://apps.mapbox.com/feedback/" target="_blank">Improve this map, www.apps.mapbox.com/feedback</a></strong>
+                    </span>
                 </div>
             </div>
         </div>

@@ -333,13 +333,6 @@
             "color": "#07C327",
             "opacity": 1.0,
             "isLine": true
-            },
-            {
-            "code": "-2",
-            "label": "Below Sea Level Contour",
-            "color": "#08ADEF",
-            "opacity": 1.0,
-            "isLine": true
             }
         ]
     }
