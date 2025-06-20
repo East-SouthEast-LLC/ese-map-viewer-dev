@@ -211,5 +211,19 @@
             { "code": "EST_ONLY", "label": "Estimated Habitat Only", "color": "#A28F06", "opacity": 0.4, "isLine": false },
             { "label": "Vernal Pools", "color": "#0D71F9", "opacity": 0.8, "isLine": false }
         ]
+    },
+    {
+        "displayName": "ACEC",
+        "sources": [
+            { "id": "acec" }
+        ],
+        "items": [
+            {
+            "label": "Area of Critical Environmental Concern",
+            "color": "#CD06D8",
+            "opacity": 0.4,
+            "isLine": false
+            }
+        ]
     }
 ]
