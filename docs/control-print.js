@@ -329,7 +329,7 @@ document.getElementById('printButton').addEventListener('click', () => {
 
                         /* A title for a legend section (e.g., "DEP Wetlands") */
                         .legend-section {
-                            font-size: 1.2in;
+                            font-size: .12in;
                             font-weight: bold;
                             font-family: 'Garamond', 'Times New Roman', serif; 
                             margin-top: 5px;
