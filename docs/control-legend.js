@@ -245,6 +245,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 for (const feature of visibleFeatures) {
                     const props = feature.properties;
                     
+                    // CASE 0: Item is simple, just check for layer presence (for LiMWA)
+                    if (!item.match && !item.code) {
+                        itemsToShow.add(item.label);
+                        break; // Found a feature from the layer, so we can show the legend item
+                    }
+
                     // CASE 1: The item has a complex 'match' rule (for Sewer Plans)
                     if (item.match) {
                         const rule = item.match;
