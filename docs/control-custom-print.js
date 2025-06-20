@@ -78,6 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const customPrintButton = document.getElementById("customPrintButton");
     const customPrintBox = document.getElementById("custom-print-box");
     let customPrintVisibility = false;
+    customPrintBox.style.display = 'none';
 
     if (!customPrintButton || !customPrintBox) {
         console.error("Required custom print elements not found in the DOM.");
