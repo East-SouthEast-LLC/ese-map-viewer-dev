@@ -321,8 +321,8 @@ PRINT STYLES
     width: 8.5in;
 }
 .frame {
-    width: 7.5in; /* 8.5in - 0.5in margin left - 0.5in margin right */
-    height: 10in; /* 11in - 0.5in margin top - 0.5in margin bottom */
+    width: 8in;
+    height: 10.5in;
     position: relative;
     page-break-after: always; /* Ensure each frame is on a new page */
     z-index: 1;
@@ -330,14 +330,14 @@ PRINT STYLES
     box-sizing: border-box; 
     background: white;
     padding: 1px;
-    margin: 0.5in; /* Apply margin to center the frame */
+    margin: 0.25in; /* Apply margin to center the frame */
 }
 .top-frame {
-    height: 7.5in; /* Adjusted height */
+    height: 8in;
     position: relative;
 }
 .bottom-frame {
-    height: 2.5in; /* Height remains the same */
+    height: 2.5in; 
     display: flex;
     align-items: center;
     position: relative;
