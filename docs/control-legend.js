@@ -77,7 +77,6 @@ function getLegendForPrint() {
             for (const feature of visibleFeaturesForLayer) {
                 const props = feature.properties;
 
-                // --- THIS IS THE NEW LOGIC BLOCK ---
                 // CASE 0: Item is simple, just check for layer presence (for LiMWA)
                 if (!item.match && !item.code) {
                     const source = layerInfo.sources.find(s => s.id === feature.layer.id && !s.propertyKey);
@@ -86,7 +85,6 @@ function getLegendForPrint() {
                         break; // Found a feature from the layer, so we can show the legend item
                     }
                 }
-                // --- END NEW LOGIC ---
                 
                 // CASE 1: The item has a complex 'match' rule (for Sewer Plans)
                 else if (item.match) {
@@ -132,7 +130,7 @@ function getLegendForPrint() {
     if (allItemsToRender.length === 0) {
         return '<div class="legend-item">No layers with a legend are visible in the print area.</div>';
     }
-    const maxPrintableItems = 36;
+    const maxPrintableItems = 30;
     let finalItemsHTML = '';
     if (allItemsToRender.length > maxPrintableItems) {
         const truncatedItems = allItemsToRender.slice(0, maxPrintableItems - 1);
