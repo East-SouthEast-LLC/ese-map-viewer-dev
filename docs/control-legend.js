@@ -3,7 +3,7 @@
 // define the legendData globally
 let legendData = [];
 
-// helper function to get printing frame coordinates
+// helper function to get printing frame coordinates for an 8x8 inch area
 function getPrintBoundingBox() {
     if (!map) return; // Ensure map is ready
 
@@ -20,8 +20,7 @@ function getPrintBoundingBox() {
         { units: 'meters' }
     );
 
-    // Calculate the half-width using the 75/80 ratio in meters
-    const halfWidthMeters = halfHeightMeters * 75 / 80;
+    const halfWidthMeters = halfHeightMeters;
 
     // Convert distances back into lat/lng
     const north = centerLat + (halfHeightMeters / 111320); // Convert meters to lat
@@ -75,7 +74,6 @@ function getLegendForPrint() {
         const matchedFeatureIds = new Set();
 
         layerInfo.items.forEach(item => {
-            // ================== REPLACEMENT LOGIC BLOCK START ==================
             // This block handles simple items (no 'code' for categories, no 'match' for rules)
             if (!item.code && !item.match) {
                 // Determine the layer ID for this simple item.
@@ -88,7 +86,6 @@ function getLegendForPrint() {
                 }
                 return; // Move to the next item in the loop.
             }
-            // =================== REPLACEMENT LOGIC BLOCK END ===================
 
             for (const feature of visibleFeaturesForLayer) {
                 if (matchedFeatureIds.has(feature.id) && item.code !== "__default__") {
@@ -229,7 +226,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const matchedFeatureIds = new Set();
 
             layerInfo.items.forEach(item => {
-                // ================== REPLACEMENT LOGIC BLOCK START ==================
                 if (!item.code && !item.match) {
                     const itemLayerId = item.id || (layerInfo.sources.length === 1 ? layerInfo.sources[0].id : null);
                     if (itemLayerId && featuresByLayer[itemLayerId] && featuresByLayer[itemLayerId].length > 0) {
@@ -237,7 +233,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                     return; 
                 }
-                // =================== REPLACEMENT LOGIC BLOCK END ===================
 
                 for (const feature of allVisibleFeatures) {
                     if (matchedFeatureIds.has(feature.id)) {
