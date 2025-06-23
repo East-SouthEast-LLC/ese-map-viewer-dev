@@ -431,7 +431,7 @@ PRINT STYLES
   padding: 5px;
   display: flex;
   flex-direction: column; /* Stack title and grid vertically */
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
 }
 .legend-print-title {
