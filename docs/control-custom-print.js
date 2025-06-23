@@ -48,7 +48,7 @@ function setLayerVisibility(layerId, visibility) {
 
 
 /**
- * NEW: Loads company info and checkbox state from localStorage.
+ * Loads company info and checkbox state from localStorage.
  */
 function loadCompanyInfo() {
     // Check if the user has opted to save their info. Default to true if not set.
@@ -67,11 +67,16 @@ function loadCompanyInfo() {
 }
 
 /**
- * NEW: Saves the state of the "Save Info" checkbox to localStorage.
+ * Saves the state of the "Save Info" checkbox and deletes info if unchecked.
  */
 function handleCheckboxChange() {
     const isChecked = document.getElementById('save-info-checkbox').checked;
     localStorage.setItem('ese-should-save-info', isChecked);
+
+    // NEW: If the user unchecks the box, remove the saved company info.
+    if (!isChecked) {
+        localStorage.removeItem('ese-company-info');
+    }
 }
 
 /**
@@ -109,7 +114,7 @@ function getCustomPrintFormHTML() {
  * Gathers data, saves it if the checkbox is checked, and starts the print process.
  */
 function processCustomPrint() {
-    // NEW: Check if we should save the info
+    // Check if we should save the info
     if (document.getElementById('save-info-checkbox').checked) {
         const companyInfo = {
             companyName: document.getElementById('custom-company-name').value,
@@ -284,7 +289,7 @@ document.addEventListener("DOMContentLoaded", function () {
             submitButton.addEventListener('click', processCustomPrint);
         }
 
-        // NEW: Attach listener for the checkbox
+        // Attach listener for the checkbox
         const saveCheckbox = document.getElementById('save-info-checkbox');
         if (saveCheckbox) {
             saveCheckbox.addEventListener('change', handleCheckboxChange);
@@ -295,7 +300,7 @@ document.addEventListener("DOMContentLoaded", function () {
         customPrintBox.innerHTML = getCustomPrintFormHTML();
         customPrintBox.style.display = 'block';
         attachCustomPrintFormListeners();
-        // NEW: Load saved info and checkbox state
+        // Load saved info and checkbox state
         loadCompanyInfo(); 
     }
     
