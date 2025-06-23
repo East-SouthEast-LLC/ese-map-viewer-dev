@@ -46,12 +46,48 @@ function setLayerVisibility(layerId, visibility) {
     }
 }
 
+/**
+ * NEW: Saves company info to localStorage.
+ */
+function saveCompanyInfo() {
+    const companyInfo = {
+        companyName: document.getElementById('custom-company-name').value,
+        address: document.getElementById('custom-address').value,
+        website: document.getElementById('custom-website').value,
+        phone: document.getElementById('custom-phone').value
+    };
+
+    // localStorage can only store strings, so we convert the object to a JSON string.
+    localStorage.setItem('ese-company-info', JSON.stringify(companyInfo));
+    alert('Company Info Saved!');
+}
+
+/**
+ * NEW: Loads company info from localStorage and populates the form.
+ */
+function loadCompanyInfo() {
+    // Retrieve the saved data string from localStorage.
+    const savedInfo = localStorage.getItem('ese-company-info');
+
+    if (savedInfo) {
+        // If data exists, parse the JSON string back into an object.
+        const companyInfo = JSON.parse(savedInfo);
+        
+        // Populate the form fields with the loaded data.
+        document.getElementById('custom-company-name').value = companyInfo.companyName || '';
+        document.getElementById('custom-address').value = companyInfo.address || '';
+        document.getElementById('custom-website').value = companyInfo.website || '';
+        document.getElementById('custom-phone').value = companyInfo.phone || '';
+    }
+}
+
 
 /**
  * Returns the HTML string for the custom print input form.
  * @returns {string} The HTML for the form.
  */
 function getCustomPrintFormHTML() {
+    // Added a "Save Company Info" button
     return `
         <strong style="display:block; text-align:center; margin-bottom:8px;">Custom Print Details</strong>
         
@@ -59,6 +95,11 @@ function getCustomPrintFormHTML() {
         <input type="text" id="custom-address" placeholder="Company Address" style="width: 100%; margin-bottom: 5px; padding: 5px; box-sizing: border-box; border-radius: 3px; border: 1px solid #ccc;">
         <input type="text" id="custom-website" placeholder="Website" style="width: 100%; margin-bottom: 5px; padding: 5px; box-sizing: border-box; border-radius: 3px; border: 1px solid #ccc;">
         <input type="text" id="custom-phone" placeholder="Phone Number" style="width: 100%; margin-bottom: 5px; padding: 5px; box-sizing: border-box; border-radius: 3px; border: 1px solid #ccc;">
+        
+        <button id="save-company-info" style="display: block; margin: 8px auto; width: 90%; height: 24px; padding: 0; font-size: 12px; background-color: #4CAF50; color: white;">Save Company Info</button>
+
+        <hr style="margin: 10px 0;"/>
+
         <input type="text" id="custom-client-name" placeholder="Client Name" style="width: 100%; margin-bottom: 5px; padding: 5px; box-sizing: border-box; border-radius: 3px; border: 1px solid #ccc;">
         <input type="text" id="custom-property-address" placeholder="Property Address" style="width: 100%; margin-bottom: 10px; padding: 5px; box-sizing: border-box; border-radius: 3px; border: 1px solid #ccc;">
         
@@ -236,12 +277,19 @@ document.addEventListener("DOMContentLoaded", function () {
         if (submitButton) {
             submitButton.addEventListener('click', processCustomPrint);
         }
+
+        const saveButton = document.getElementById('save-company-info');
+        if(saveButton) {
+            saveButton.addEventListener('click', saveCompanyInfo);
+        }
     }
 
     function updateCustomPrintBox() {
         customPrintBox.innerHTML = getCustomPrintFormHTML();
         customPrintBox.style.display = 'block';
         attachCustomPrintFormListeners();
+        // NEW: Load any saved info after the form is on the page
+        loadCompanyInfo(); 
     }
     
     customPrintButton.addEventListener('click', () => {
