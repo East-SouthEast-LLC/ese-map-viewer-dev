@@ -172,12 +172,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
                 <div class="bottom-frame">
                     <div class="custom-info-frame" style="width: 2in;">
+                        <span><strong>Client:</strong> ${printData.clientName}</span><br>
+                        <span><strong>Property:</strong> ${printData.propertyAddress}</span>
+                        <hr style="width:100%; border:.5px solid black; margin:5px 0;">
                         <span><strong>${printData.companyName}</strong></span>
                         <span>${printData.address}</span><br>
                         <span>${printData.website} | ${printData.phone}</span><br>
-                        <hr style="width:100%; border:.5px solid black; margin:5px 0;">
-                        <span><strong>Client:</strong> ${printData.clientName}</span><br>
-                        <span><strong>Property:</strong> ${printData.propertyAddress}</span>
                     </div>
                     <div class="image-container">
                         <img src="https://static1.squarespace.com/static/536cf42ee4b0465238027de5/t/67a783e42bb54b7b434b79f1/1739031525647/ESE-GIS.jpg" alt="Company Logo" />
