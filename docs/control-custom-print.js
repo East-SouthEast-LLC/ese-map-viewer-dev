@@ -46,34 +46,19 @@ function setLayerVisibility(layerId, visibility) {
     }
 }
 
-/**
- * NEW: Saves company info to localStorage.
- */
-function saveCompanyInfo() {
-    const companyInfo = {
-        companyName: document.getElementById('custom-company-name').value,
-        address: document.getElementById('custom-address').value,
-        website: document.getElementById('custom-website').value,
-        phone: document.getElementById('custom-phone').value
-    };
-
-    // localStorage can only store strings, so we convert the object to a JSON string.
-    localStorage.setItem('ese-company-info', JSON.stringify(companyInfo));
-    alert('Company Info Saved!');
-}
 
 /**
- * NEW: Loads company info from localStorage and populates the form.
+ * NEW: Loads company info and checkbox state from localStorage.
  */
 function loadCompanyInfo() {
-    // Retrieve the saved data string from localStorage.
-    const savedInfo = localStorage.getItem('ese-company-info');
+    // Check if the user has opted to save their info. Default to true if not set.
+    const shouldSave = localStorage.getItem('ese-should-save-info') !== 'false';
+    document.getElementById('save-info-checkbox').checked = shouldSave;
 
+    // Load the company info if it exists
+    const savedInfo = localStorage.getItem('ese-company-info');
     if (savedInfo) {
-        // If data exists, parse the JSON string back into an object.
         const companyInfo = JSON.parse(savedInfo);
-        
-        // Populate the form fields with the loaded data.
         document.getElementById('custom-company-name').value = companyInfo.companyName || '';
         document.getElementById('custom-address').value = companyInfo.address || '';
         document.getElementById('custom-website').value = companyInfo.website || '';
@@ -81,13 +66,20 @@ function loadCompanyInfo() {
     }
 }
 
+/**
+ * NEW: Saves the state of the "Save Info" checkbox to localStorage.
+ */
+function handleCheckboxChange() {
+    const isChecked = document.getElementById('save-info-checkbox').checked;
+    localStorage.setItem('ese-should-save-info', isChecked);
+}
 
 /**
  * Returns the HTML string for the custom print input form.
  * @returns {string} The HTML for the form.
  */
 function getCustomPrintFormHTML() {
-    // Added a "Save Company Info" button
+    // Replaced button with a styled checkbox
     return `
         <strong style="display:block; text-align:center; margin-bottom:8px;">Custom Print Details</strong>
         
@@ -96,7 +88,10 @@ function getCustomPrintFormHTML() {
         <input type="text" id="custom-website" placeholder="Website" style="width: 100%; margin-bottom: 5px; padding: 5px; box-sizing: border-box; border-radius: 3px; border: 1px solid #ccc;">
         <input type="text" id="custom-phone" placeholder="Phone Number" style="width: 100%; margin-bottom: 5px; padding: 5px; box-sizing: border-box; border-radius: 3px; border: 1px solid #ccc;">
         
-        <button id="save-company-info" style="display: block; margin: 8px auto; width: 90%; height: 24px; padding: 0; font-size: 12px; background-color: #4CAF50; color: white;">Save Company Info</button>
+        <div style="text-align: center; margin: 8px 0;">
+            <input type="checkbox" id="save-info-checkbox" style="vertical-align: middle;">
+            <label for="save-info-checkbox" style="vertical-align: middle; font-size: 12px;">Save Company Info</label>
+        </div>
 
         <hr style="margin: 10px 0;"/>
 
@@ -111,9 +106,20 @@ function getCustomPrintFormHTML() {
 }
 
 /**
- * Gathers the data from the input form and initiates the print generation process.
+ * Gathers data, saves it if the checkbox is checked, and starts the print process.
  */
 function processCustomPrint() {
+    // NEW: Check if we should save the info
+    if (document.getElementById('save-info-checkbox').checked) {
+        const companyInfo = {
+            companyName: document.getElementById('custom-company-name').value,
+            address: document.getElementById('custom-address').value,
+            website: document.getElementById('custom-website').value,
+            phone: document.getElementById('custom-phone').value
+        };
+        localStorage.setItem('ese-company-info', JSON.stringify(companyInfo));
+    }
+
     const printData = {
         companyName: document.getElementById('custom-company-name').value,
         clientName: document.getElementById('custom-client-name').value,
@@ -278,9 +284,10 @@ document.addEventListener("DOMContentLoaded", function () {
             submitButton.addEventListener('click', processCustomPrint);
         }
 
-        const saveButton = document.getElementById('save-company-info');
-        if(saveButton) {
-            saveButton.addEventListener('click', saveCompanyInfo);
+        // NEW: Attach listener for the checkbox
+        const saveCheckbox = document.getElementById('save-info-checkbox');
+        if (saveCheckbox) {
+            saveCheckbox.addEventListener('change', handleCheckboxChange);
         }
     }
 
@@ -288,7 +295,7 @@ document.addEventListener("DOMContentLoaded", function () {
         customPrintBox.innerHTML = getCustomPrintFormHTML();
         customPrintBox.style.display = 'block';
         attachCustomPrintFormListeners();
-        // NEW: Load any saved info after the form is on the page
+        // NEW: Load saved info and checkbox state
         loadCompanyInfo(); 
     }
     
