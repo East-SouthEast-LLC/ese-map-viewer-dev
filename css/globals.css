@@ -431,6 +431,7 @@ PRINT STYLES
   height: 2.2in; 
   padding: 5px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -444,7 +445,7 @@ PRINT STYLES
   margin-bottom: 5px;
 }
 .legend-frame {
-  width: 100%;
+  width: 3.3%;
   height: 2in; 
   padding: 5px;
   display: flex;
