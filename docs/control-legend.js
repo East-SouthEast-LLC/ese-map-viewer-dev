@@ -38,7 +38,6 @@ function getPrintBoundingBox() {
 
 // helper function for print output
 function getLegendForPrint() {
-    // 1. Get features from the print area
     const geoJsonBounds = getPrintBoundingBox();
     if (!geoJsonBounds) return '<div class="legend-item">Error calculating print area.</div>';
     
@@ -50,10 +49,9 @@ function getLegendForPrint() {
     const allVisibleFeatures = map.queryRenderedFeatures(printPixelBoundingBox);
 
     if (allVisibleFeatures.length === 0) {
-        return '<div class="legend-item">No layers with a legend are visible in the print area.</div>';
+        return '<div class="legend-grid"></div>';
     }
 
-    // Group features by layer ID for efficiency
     const featuresByLayer = allVisibleFeatures.reduce((acc, feature) => {
         const layerId = feature.layer.id;
         if (!acc[layerId]) {
@@ -63,10 +61,8 @@ function getLegendForPrint() {
         return acc;
     }, {});
 
-    const allItemsToRender = []; // A flat array to hold all potential HTML strings
+    const allItemsToRender = []; 
 
-    // 2. Loop through legendData to determine which items to show.
-    //    This logic now mirrors the live updateLegend function.
     legendData.forEach(layerInfo => {
         const sourceLayerIds = layerInfo.sources.map(s => s.id);
         const visibleFeaturesForLayer = sourceLayerIds.flatMap(id => featuresByLayer[id] || []);
@@ -79,6 +75,22 @@ function getLegendForPrint() {
         const matchedFeatureIds = new Set();
 
         layerInfo.items.forEach(item => {
+            // --- NEW LOGIC TO HANDLE LiMWA and other simple items ---
+            if (!item.code && !item.match) {
+                if (item.label === 'LiMWA') { // Special case for LiMWA
+                    if (featuresByLayer['LiMWA'] && featuresByLayer['LiMWA'].length > 0) {
+                        itemsToShow.add(item.label);
+                    }
+                } else { // Generic simple items (ACEC, Parcel Highlight, etc.)
+                    const itemLayerId = layerInfo.sources[0].id; // These groups only have one source
+                    if (featuresByLayer[itemLayerId] && featuresByLayer[itemLayerId].length > 0) {
+                        itemsToShow.add(item.label);
+                    }
+                }
+                return; // Go to the next item
+            }
+            // --- END NEW LOGIC ---
+
             for (const feature of visibleFeaturesForLayer) {
                 if (matchedFeatureIds.has(feature.id) && item.code !== "__default__") {
                     continue;
@@ -86,28 +98,24 @@ function getLegendForPrint() {
                 
                 const props = feature.properties;
 
-                if (item.match) { // Handles Sewer Plans
+                if (item.match) { 
                     const rule = item.match;
                     if ((rule.property === "DATE" && (Number(props.DATE) >= rule.min && Number(props.DATE) <= rule.max)) || 
                         (props[rule.property] === rule.value)) {
                         itemsToShow.add(item.label);
                     }
-                } else if (item.code && item.code !== "__default__") { // Handles specific codes like in DEP Wetlands
+                } else if (item.code && item.code !== "__default__") {
                     const source = layerInfo.sources.find(s => s.id === feature.layer.id);
                     if (source && String(props[source.propertyKey]) === String(item.code)) {
                         itemsToShow.add(item.label);
                         matchedFeatureIds.add(feature.id);
                     }
-                } else if (item.code && item.code === "__default__") { // Handles the default case for Contours
-                    // Add the default item if any feature from this layer group is visible
-                    itemsToShow.add(item.label);
-                } else if (!item.match && !item.code) { // Handles simple layers like LiMWA
+                } else if (item.code && item.code === "__default__") {
                     itemsToShow.add(item.label);
                 }
             }
         });
         
-        // This logic ensures the default item doesn't show up if a more specific item does.
         const hasSpecificItem = layerInfo.items.some(item => item.code !== "__default__" && itemsToShow.has(item.label));
         const defaultItem = layerInfo.items.find(item => item.code === "__default__");
         if (hasSpecificItem && defaultItem && itemsToShow.has(defaultItem.label)) {
@@ -130,11 +138,11 @@ function getLegendForPrint() {
         }
     });
 
-    // 3. Truncate list and return final HTML
     if (allItemsToRender.length === 0) {
-        return '<div class="legend-item">No layers with a legend are visible in the print area.</div>';
+        return '<div class="legend-grid"></div>';
     }
-    const maxPrintableItems = 15;
+
+    const maxPrintableItems = 16;
     let finalItemsHTML = '';
     if (allItemsToRender.length > maxPrintableItems) {
         const truncatedItems = allItemsToRender.slice(0, maxPrintableItems - 1);
@@ -148,7 +156,6 @@ function getLegendForPrint() {
 
 
 
-// helper function to get the visible legend items
 /**
  * Queries the map to find which unique categories for a layer are currently visible.
  * @param {string} layerId The ID of the map layer to query (e.g., 'DEP wetland').
@@ -156,36 +163,26 @@ function getLegendForPrint() {
  * @returns {string[]} An array containing the unique string values found (e.g., ['OW', 'SS', 'WS1']).
  */
 function getVisibleLegendItems(layerId, propertyKey) {
-    // First, check if the layer exists and is visible on the map.
     try {
         if (!map.getLayer(layerId) || map.getLayoutProperty(layerId, 'visibility') === 'none') {
-            return []; // Return an empty array if the layer is off.
+            return [];
         }
     } catch (e) {
-        // This can happen if the map style is still loading.
         return [];
     }
 
-    // Query all the rendered features for the specified layer in the current view.
     const features = map.queryRenderedFeatures({ layers: [layerId] });
-
-    // Use a Set to automatically store only the unique property values.
     const uniqueItems = new Set();
 
-    // Loop through the visible features and collect the values of the specified property.
     features.forEach(feature => {
-        // Check if the property exists before adding it.
         if (feature.properties && typeof feature.properties[propertyKey] !== 'undefined') {
-            // Add the code (e.g., "OW", "SS", "1") to our Set.
             uniqueItems.add(feature.properties[propertyKey]);
         }
     });
 
-    // Convert the Set into a simple array and return it.
     return Array.from(uniqueItems);
 }
 
-// Expose the function to the global window object so you can test it in the console.
 window.getVisibleLegendItems = getVisibleLegendItems;
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -199,7 +196,6 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    // fetch legend data
     fetch('https://east-southeast-llc.github.io/ese-map-viewer/docs/legend-data.json')
         .then(response => {
             if (!response.ok) {
@@ -215,7 +211,6 @@ document.addEventListener("DOMContentLoaded", function () {
             legendBox.innerHTML = "Could not load legend data.";
         });
 
-    // UPDATE LEGEND DRIVER FUNCTION
     function updateLegend() {
         if (legendBox.style.display === 'none') return;
 
@@ -223,54 +218,71 @@ document.addEventListener("DOMContentLoaded", function () {
 
         legendData.forEach(layerInfo => {
             const sourceLayerIds = layerInfo.sources.map(s => s.id);
-            const visibleFeatures = map.queryRenderedFeatures({ layers: sourceLayerIds });
+            const allVisibleFeatures = map.queryRenderedFeatures({ layers: sourceLayerIds });
 
-            if (visibleFeatures.length === 0) return;
+            if (allVisibleFeatures.length === 0) return;
+
+            // Group features by layer to handle complex groups like FEMA
+            const featuresByLayer = allVisibleFeatures.reduce((acc, feature) => {
+                const layerId = feature.layer.id;
+                if (!acc[layerId]) {
+                    acc[layerId] = [];
+                }
+                acc[layerId].push(feature);
+                return acc;
+            }, {});
 
             const itemsToShow = new Set();
-            // --- NEW: A set to track which features have already been matched to a specific item ---
             const matchedFeatureIds = new Set();
 
             layerInfo.items.forEach(item => {
-                for (const feature of visibleFeatures) {
-                    const props = feature.properties;
-                    
-                    // Skip features that have already been matched by a more specific rule
+                // --- NEW LOGIC TO HANDLE LiMWA and other simple items ---
+                if (!item.code && !item.match) {
+                    if (item.label === 'LiMWA') { // Special case for LiMWA
+                        if (featuresByLayer['LiMWA'] && featuresByLayer['LiMWA'].length > 0) {
+                            itemsToShow.add(item.label);
+                        }
+                    } else { // Generic simple items (ACEC, Parcel Highlight, etc.)
+                         const itemLayerId = layerInfo.sources[0].id;
+                         if(featuresByLayer[itemLayerId] && featuresByLayer[itemLayerId].length > 0){
+                           itemsToShow.add(item.label);
+                         }
+                    }
+                    return; // Go to the next item
+                }
+                // --- END NEW LOGIC ---
+
+                for (const feature of allVisibleFeatures) {
                     if (matchedFeatureIds.has(feature.id)) {
                         continue;
                     }
                     
-                    if (item.match) { // CASE 1: Complex match rule
+                    const props = feature.properties;
+                    
+                    if (item.match) {
                         const rule = item.match;
                         if ((rule.property === "DATE" && (Number(props.DATE) >= rule.min && Number(props.DATE) <= rule.max)) || 
                             (props[rule.property] === rule.value)) {
                             itemsToShow.add(item.label);
-                            // For this complex type, we don't mark as matched, as multiple might share a feature
                         }
-                    } else if (item.code && item.code !== "__default__") { // CASE 2: Specific code match
+                    } else if (item.code && item.code !== "__default__") {
                         const source = layerInfo.sources.find(s => s.id === feature.layer.id);
                         if (source && String(props[source.propertyKey]) === String(item.code)) {
                             itemsToShow.add(item.label);
-                            matchedFeatureIds.add(feature.id); // Mark this feature as matched
+                            matchedFeatureIds.add(feature.id);
                         }
-                    } else if (item.code && item.code === "__default__") { // CASE 3: Default/fallback item
-                        itemsToShow.add(item.label);
-                    } else if (!item.match && !item.code) { // CASE 0: Simple layer presence
+                    } else if (item.code && item.code === "__default__") {
                         itemsToShow.add(item.label);
                     }
                 }
             });
             
-            // This part removes the default item if a more specific item from the same group is also present
             const hasSpecificItem = layerInfo.items.some(item => item.code !== "__default__" && itemsToShow.has(item.label));
             const defaultItem = layerInfo.items.find(item => item.code === "__default__");
             if (hasSpecificItem && defaultItem && itemsToShow.has(defaultItem.label)) {
-                // If both a specific item (like "Below Sea Level") and the default item are visible,
-                // we only show the specific one for clarity.
-                // This logic can be adjusted based on desired behavior.
+                 itemsToShow.delete(defaultItem.label);
             }
 
-            // Build the HTML for the items we've identified as visible.
             if (itemsToShow.size > 0) {
                 legendHTML += `<div class="legend-title">${layerInfo.displayName}</div>`;
                 const visibleItems = layerInfo.items.filter(item => itemsToShow.has(item.label));
@@ -294,10 +306,8 @@ document.addEventListener("DOMContentLoaded", function () {
         legendBox.innerHTML = legendHTML;
     }
 
-    // make updateLegend global
     window.updateLegend = updateLegend;
 
-    // main event listener
     legendButton.addEventListener('click', () => {
         legendVisibility = !legendVisibility;
         if (legendVisibility) {
@@ -308,7 +318,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // update on move and zoom
     map.on('moveend', updateLegend);
     map.on('zoom', updateLegend);
 });
