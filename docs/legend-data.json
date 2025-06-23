@@ -335,5 +335,33 @@
             "isLine": true
             }
         ]
+    },
+    {
+        "displayName": "Parcel Highlight",
+        "sources": [
+            { "id": "parcel highlight" }
+        ],
+        "items": [
+            {
+                "label": "Highlighted Parcel",
+                "color": "#a0fa39",
+                "opacity": 1.0,
+                "isLine": true
+            }
+        ]
+    },
+    {
+        "displayName": "Satellite Imagery",
+        "sources": [
+            { "id": "satellite" }
+        ],
+        "items": [
+            {
+                "label": "Satellite View",
+                "color": "#808080",
+                "opacity": 1.0,
+                "isLine": false
+            }
+        ]
     }
 ]
