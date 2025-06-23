@@ -85,3 +85,38 @@ function listVisibleLayers(map, layerIds) {
   });
   return visibleLayers;
 }
+
+
+// ============================================================================
+// TOOLTIP FUNCTIONALITY
+// ============================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    // Create a single tooltip element and add it to the page body.
+    const tooltipElement = document.createElement('div');
+    tooltipElement.id = 'custom-tooltip';
+    document.body.appendChild(tooltipElement);
+
+    // Select all elements that have a 'data-tooltip' attribute.
+    const elementsWithTooltip = document.querySelectorAll('[data-tooltip]');
+
+    elementsWithTooltip.forEach(element => {
+        // Show the tooltip on mouse enter
+        element.addEventListener('mouseenter', (e) => {
+            const tooltipText = element.getAttribute('data-tooltip');
+            tooltipElement.textContent = tooltipText;
+            tooltipElement.style.opacity = '1';
+        });
+
+        // Hide the tooltip on mouse leave
+        element.addEventListener('mouseleave', () => {
+            tooltipElement.style.opacity = '0';
+        });
+
+        // Move the tooltip with the mouse
+        element.addEventListener('mousemove', (e) => {
+            // Position the tooltip slightly below and centered with the cursor.
+            tooltipElement.style.left = e.pageX + 'px';
+            tooltipElement.style.top = (e.pageY + 20) + 'px'; // 20px below cursor
+        });
+    });
+});
