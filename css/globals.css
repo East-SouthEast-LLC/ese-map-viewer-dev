@@ -426,27 +426,9 @@ PRINT STYLES
     color: black;
     text-decoration: none;
 }
-.bottom-middle-frame {
+.legend-frame {
   width: 3.3in;
   height: 2.2in; 
-  padding: 5px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-.legend-title {
-  font-size: .1in;
-  font-weight: bold;
-  font-family: 'BankGothicMd', sans-serif;
-  font-style: italic;
-  font-size: 14px;
-  text-align: center;
-  margin-bottom: 5px;
-}
-.legend-frame {
-  width: 3.3%;
-  height: 2in; 
   padding: 5px;
   display: flex;
   justify-content: center;
