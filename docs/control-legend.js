@@ -32,7 +32,7 @@ function getPrintBoundingBox() {
 
     const east = center.lng + lngDiff;
     const west = center.lng - lngDiff;
-    console.log("Print bounding box coordinates:", west, north, east, south);
+    
     return [[west, north], [east, north], [east, south], [west, south], [west, north]];
 }
 
@@ -75,21 +75,20 @@ function getLegendForPrint() {
         const matchedFeatureIds = new Set();
 
         layerInfo.items.forEach(item => {
-            // --- NEW LOGIC TO HANDLE LiMWA and other simple items ---
+            // ================== REPLACEMENT LOGIC BLOCK START ==================
+            // This block handles simple items (no 'code' for categories, no 'match' for rules)
             if (!item.code && !item.match) {
-                if (item.label === 'LiMWA') { // Special case for LiMWA
-                    if (featuresByLayer['LiMWA'] && featuresByLayer['LiMWA'].length > 0) {
-                        itemsToShow.add(item.label);
-                    }
-                } else { // Generic simple items (ACEC, Parcel Highlight, etc.)
-                    const itemLayerId = layerInfo.sources[0].id; // These groups only have one source
-                    if (featuresByLayer[itemLayerId] && featuresByLayer[itemLayerId].length > 0) {
-                        itemsToShow.add(item.label);
-                    }
+                // Determine the layer ID for this simple item.
+                // Priority 1: Use the item's own 'id' if it exists (e.g., for Vernal Pools, LiMWA).
+                // Priority 2: If no item 'id', but the group has only one source, use that source's id (e.g., for ACEC).
+                const itemLayerId = item.id || (layerInfo.sources.length === 1 ? layerInfo.sources[0].id : null);
+
+                if (itemLayerId && featuresByLayer[itemLayerId] && featuresByLayer[itemLayerId].length > 0) {
+                    itemsToShow.add(item.label);
                 }
-                return; // Go to the next item
+                return; // Move to the next item in the loop.
             }
-            // --- END NEW LOGIC ---
+            // =================== REPLACEMENT LOGIC BLOCK END ===================
 
             for (const feature of visibleFeaturesForLayer) {
                 if (matchedFeatureIds.has(feature.id) && item.code !== "__default__") {
@@ -154,13 +153,8 @@ function getLegendForPrint() {
     return `<div class="legend-grid">${finalItemsHTML}</div>`;
 }
 
-
-
 /**
  * Queries the map to find which unique categories for a layer are currently visible.
- * @param {string} layerId The ID of the map layer to query (e.g., 'DEP wetland').
- * @param {string} propertyKey The key in the feature's properties to check (e.g., 'IT_VALC').
- * @returns {string[]} An array containing the unique string values found (e.g., ['OW', 'SS', 'WS1']).
  */
 function getVisibleLegendItems(layerId, propertyKey) {
     try {
@@ -222,7 +216,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (allVisibleFeatures.length === 0) return;
 
-            // Group features by layer to handle complex groups like FEMA
             const featuresByLayer = allVisibleFeatures.reduce((acc, feature) => {
                 const layerId = feature.layer.id;
                 if (!acc[layerId]) {
@@ -236,21 +229,15 @@ document.addEventListener("DOMContentLoaded", function () {
             const matchedFeatureIds = new Set();
 
             layerInfo.items.forEach(item => {
-                // --- NEW LOGIC TO HANDLE LiMWA and other simple items ---
+                // ================== REPLACEMENT LOGIC BLOCK START ==================
                 if (!item.code && !item.match) {
-                    if (item.label === 'LiMWA') { // Special case for LiMWA
-                        if (featuresByLayer['LiMWA'] && featuresByLayer['LiMWA'].length > 0) {
-                            itemsToShow.add(item.label);
-                        }
-                    } else { // Generic simple items (ACEC, Parcel Highlight, etc.)
-                         const itemLayerId = layerInfo.sources[0].id;
-                         if(featuresByLayer[itemLayerId] && featuresByLayer[itemLayerId].length > 0){
-                           itemsToShow.add(item.label);
-                         }
+                    const itemLayerId = item.id || (layerInfo.sources.length === 1 ? layerInfo.sources[0].id : null);
+                    if (itemLayerId && featuresByLayer[itemLayerId] && featuresByLayer[itemLayerId].length > 0) {
+                        itemsToShow.add(item.label);
                     }
-                    return; // Go to the next item
+                    return; 
                 }
-                // --- END NEW LOGIC ---
+                // =================== REPLACEMENT LOGIC BLOCK END ===================
 
                 for (const feature of allVisibleFeatures) {
                     if (matchedFeatureIds.has(feature.id)) {
