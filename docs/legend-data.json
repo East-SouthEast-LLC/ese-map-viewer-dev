@@ -15,7 +15,7 @@
         ]
     },
     {
-        "displayName": "DEP Wetlands Legend",
+        "displayName": "DEP Wetlands",
         "sources": [
             { "id": "DEP wetland", "propertyKey": "IT_VALC" },
             { "id": "dep-wetland-line", "propertyKey": "ARC_CODE" }
