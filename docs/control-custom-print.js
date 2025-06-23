@@ -56,10 +56,10 @@ function getCustomPrintFormHTML() {
         <strong style="display:block; text-align:center; margin-bottom:8px;">Custom Print Details</strong>
         
         <input type="text" id="custom-company-name" placeholder="Company Name" style="width: 100%; margin-bottom: 5px; padding: 5px; box-sizing: border-box; border-radius: 3px; border: 1px solid #ccc;">
-        <input type="text" id="custom-client-name" placeholder="Client Name" style="width: 100%; margin-bottom: 5px; padding: 5px; box-sizing: border-box; border-radius: 3px; border: 1px solid #ccc;">
         <input type="text" id="custom-address" placeholder="Company Address" style="width: 100%; margin-bottom: 5px; padding: 5px; box-sizing: border-box; border-radius: 3px; border: 1px solid #ccc;">
         <input type="text" id="custom-website" placeholder="Website" style="width: 100%; margin-bottom: 5px; padding: 5px; box-sizing: border-box; border-radius: 3px; border: 1px solid #ccc;">
         <input type="text" id="custom-phone" placeholder="Phone Number" style="width: 100%; margin-bottom: 5px; padding: 5px; box-sizing: border-box; border-radius: 3px; border: 1px solid #ccc;">
+        <input type="text" id="custom-client-name" placeholder="Client Name" style="width: 100%; margin-bottom: 5px; padding: 5px; box-sizing: border-box; border-radius: 3px; border: 1px solid #ccc;">
         <input type="text" id="custom-property-address" placeholder="Property Address" style="width: 100%; margin-bottom: 10px; padding: 5px; box-sizing: border-box; border-radius: 3px; border: 1px solid #ccc;">
         
         <label for="custom-scale-input" style="display:block; margin-bottom:5px;">Scale (feet per inch):</label>
@@ -116,7 +116,7 @@ function getPageHTML(printData, mapImageSrc, pageNumber) {
                     <span>${printData.address}</span><br>
                     <span>${printData.website} | ${printData.phone}</span><br>
                     <hr style="width:100%; border:.5px solid black; margin:5px 0;">
-                    <span><strong>Client:</strong> ${printData.clientName}</span>
+                    <span><strong>Client:</strong> ${printData.clientName}</span><br>
                     <span><strong>Property:</strong> ${printData.propertyAddress}</span>
                 </div>
                 <div class="image-container">
