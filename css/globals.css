@@ -454,6 +454,7 @@ PRINT STYLES
 .legend-section {
     font-size: .1in;
     font-weight: bold;
+    margin-top: 6px;
     font-family: Verdana, sans-serif;
     break-after: avoid-page; 
 }

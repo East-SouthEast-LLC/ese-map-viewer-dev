@@ -343,7 +343,7 @@
         ],
         "items": [
             {
-                "label": "Highlighted Parcel",
+                "label": "Parcel Highlight Line",
                 "color": "#a0fa39",
                 "opacity": 1.0,
                 "isLine": true
