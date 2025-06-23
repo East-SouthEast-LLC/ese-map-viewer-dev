@@ -207,7 +207,7 @@ async function generateMultiPagePrintout(printData) {
         win.document.close();
         win.onload = () => {
             win.print();
-            win.close();
+            //win.close();
         };
     } else {
         alert("Popup blocked! Please allow popups for this site.");
