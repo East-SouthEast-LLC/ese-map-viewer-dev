@@ -349,7 +349,7 @@ PRINT STYLES
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    border-bottom: 2px solid black;
+    border-bottom: 4px solid black;
 }
 .map-container img {
     width: 100%;
