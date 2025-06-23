@@ -374,8 +374,11 @@ document.getElementById('printButton').addEventListener('click', () => {
                             <div class="image-container">
                                 <img src="https://static1.squarespace.com/static/536cf42ee4b0465238027de5/t/67a783e42bb54b7b434b79f1/1739031525647/ESE-GIS.jpg" alt="Company Logo" />
                             </div>
-                            <div class="legend-frame">
-                                ${getLegendForPrint()} 
+                            <div class="bottom-middle-frame">
+                                <div class="legend-title">Legend & Layers</div>
+                                <div class="legend-frame">
+                                    ${getLegendForPrint()} 
+                                </div>
                             </div>
                             <div class="inner-frame">
                                 <span class="gis-map">GIS Map</span>
