@@ -296,18 +296,22 @@ CUSTOM PRINT BOX STYLES
 PRINT STYLES
 =============================================================== */
 @media print {
-    @page {
-        size: 8.5in 11in; /* Letter size, portrait orientation */
-        margin: 0; /* No additional margins */
-    }
-    body.print-body {
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-    }
+  @page {
+    size: 8.5in 11in; /* Letter size, portrait orientation */
+    margin: 0; /* No additional margins */
+  }
+  * {
+    -webkit-print-color-adjust: exact; /* For Chrome, Safari, and older Edge */
+    print-color-adjust: exact;          /* Standard property */
+  }
+  body.print-body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
 }
 .print-body {
     background-color: transparent;
