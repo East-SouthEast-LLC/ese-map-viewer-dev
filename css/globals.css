@@ -479,3 +479,12 @@ PRINT STYLES
     margin-right: 5px; /* Tighter margin */
     flex-shrink: 0;
 }
+.custom-info-frame {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    width: 2.5in;
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    text-align: left;
+}
