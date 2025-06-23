@@ -20,8 +20,8 @@ function updateBoundingBox() {
         { units: 'meters' }
     );
 
-    // Calculate the half-width using the 75/80 ratio in meters
-    const halfWidthMeters = halfHeightMeters * 75 / 80;
+    // Calculate the half-width to be equal to the half-height for an 8x8 aspect ratio
+    const halfWidthMeters = halfHeightMeters;
 
     // Convert distances back into lat/lng
     const north = centerLat + (halfHeightMeters / 111320); // Convert meters to lat
@@ -39,8 +39,8 @@ function updateBoundingBox() {
     );
     const diagonalFeet = diagonalMeters * 3.28084; // Convert meters to feet
 
-    // Compute scale: 1" = X feet
-    const mapDiagonalInches = Math.sqrt(7.5 ** 2 + 8.0 ** 2);
+    // Compute scale for an 8x8 inch area
+    const mapDiagonalInches = Math.sqrt(8.0 ** 2 + 8.0 ** 2);
     const scaleFeetPerInch = Math.round(diagonalFeet / mapDiagonalInches);
 
     // Update scale-box text
