@@ -123,6 +123,7 @@ function getPageHTML(printData, mapImageSrc, pageNumber) {
                     <img src="https://static1.squarespace.com/static/536cf42ee4b0465238027de5/t/67a783e42bb54b7b434b79f1/1739031525647/ESE-GIS.jpg" alt="Company Logo" />
                 </div>
                 <div class="legend-frame">
+                    <div class="legend-print-title">Legend & Layers</div>
                     ${getLegendForPrint()} 
                 </div>
                 <div class="inner-frame">
