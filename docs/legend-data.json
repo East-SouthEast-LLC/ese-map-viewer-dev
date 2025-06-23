@@ -90,7 +90,7 @@
             { "id": "LiMWA" }
         ],
         "items": [
-            { "label": "LiMWA", "color": "#E70B0B", "opacity": 1.0, "isLine": true },
+            { "id": "LiMWA", "label": "LiMWA", "color": "#E70B0B", "opacity": 1.0, "isLine": true },
             { "code": "AE", "label": "Flood Zone AE", "color": "#eb8c34", "opacity": 0.4, "isLine": false },
             { "code": "VE", "label": "Flood Zone VE", "color": "#eb3a34", "opacity": 0.4, "isLine": false },
             { "code": "AO", "label": "Flood Zone AO", "color": "#F7FE20", "opacity": 0.4, "isLine": false },
@@ -209,7 +209,7 @@
             { "code": "ESTandPRI", "label": "Priority & Estimated Habitat", "color": "#e7ee1f", "opacity": 0.4, "isLine": false },
             { "code": "PRI_ONLY", "label": "Priority Habitat Only", "color": "#1DB708", "opacity": 0.4, "isLine": false },
             { "code": "EST_ONLY", "label": "Estimated Habitat Only", "color": "#A28F06", "opacity": 0.4, "isLine": false },
-            { "label": "Vernal Pools", "color": "#0D71F9", "opacity": 0.8, "isLine": false }
+            { "id": "vernal-pools", "label": "Vernal Pools", "color": "#0D71F9", "opacity": 0.8, "isLine": false }
         ]
     },
     {
