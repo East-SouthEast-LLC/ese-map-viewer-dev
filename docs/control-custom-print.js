@@ -87,6 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
      * Returns the HTML string for the custom print input form.
      */
     function getCustomPrintFormHTML() {
+        // Updated the scale input section
         return `
             <strong style="display:block; text-align:center; margin-bottom:8px;">Custom Print Details</strong>
             
@@ -105,8 +106,19 @@ document.addEventListener("DOMContentLoaded", function () {
             <input type="text" id="custom-client-name" placeholder="Client Name" style="width: 100%; margin-bottom: 5px; padding: 5px; box-sizing: border-box; border-radius: 3px; border: 1px solid #ccc;">
             <input type="text" id="custom-property-address" placeholder="Property Address" style="width: 100%; margin-bottom: 10px; padding: 5px; box-sizing: border-box; border-radius: 3px; border: 1px solid #ccc;">
             
-            <label for="custom-scale-input" style="display:block; margin-bottom:5px;">Scale (feet per inch):</label>
-            <input type="number" id="custom-scale-input" style="width: 100%; margin-bottom: 10px; padding: 5px; box-sizing: border-box; border-radius: 3px; border: 1px solid #ccc;">
+            <label for="custom-scale-input" style="display:block; margin-bottom:5px;">Set Scale (1" = X feet):</label>
+            <input type="number" id="custom-scale-input" placeholder="e.g., 100" style="width: 100%; margin-bottom: 5px; padding: 5px; box-sizing: border-box; border-radius: 3px; border: 1px solid #ccc;">
+
+            <label for="custom-scale-dropdown" style="display:block; margin-bottom:5px;">Or select a preset:</label>
+            <select id="custom-scale-dropdown" style="width: 100%; margin-bottom: 10px; padding: 5px; box-sizing: border-box;">
+                <option value="">-- Select --</option>
+                <option value="100">1" = 100 feet</option>
+                <option value="200">1" = 200 feet</option>
+                <option value="300">1" = 300 feet</option>
+                <option value="400">1" = 400 feet</option>
+                <option value="500">1" = 500 feet</option>
+                <option value="1000">1" = 1000 feet</option>
+            </select>
 
             <button id="custom-print-submit" style="display: block; margin: 0 auto 8px auto; width: 90%; height: 24px; padding: 0; font-size: 12px;">Submit</button>
         `;
@@ -142,8 +154,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         customPrintBox.style.display = 'none';
-        // *** THE FIX IS HERE ***
-        // Reset the visibility flag so the toggle works correctly next time.
         customPrintVisibility = false; 
 
         generateMultiPagePrintout(printData);
@@ -262,6 +272,18 @@ document.addEventListener("DOMContentLoaded", function () {
         const saveCheckbox = document.getElementById('save-info-checkbox');
         if (saveCheckbox) {
             saveCheckbox.addEventListener('change', handleCheckboxChange);
+        }
+
+        // Add event listener for the new scale dropdown
+        const scaleDropdown = document.getElementById('custom-scale-dropdown');
+        const scaleInput = document.getElementById('custom-scale-input');
+        
+        if (scaleDropdown && scaleInput) {
+            scaleDropdown.addEventListener('change', () => {
+                if (scaleDropdown.value) {
+                    scaleInput.value = scaleDropdown.value;
+                }
+            });
         }
     }
 
