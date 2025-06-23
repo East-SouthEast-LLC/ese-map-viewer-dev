@@ -176,7 +176,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                 </div>
                 <div class="bottom-frame">
-                    <div class="custom-info-frame" style="width: 2.5in;">
+                    <div class="custom-info-frame" style="width: 2in;">
                         <span><strong>Client:</strong> ${printData.clientName}</span><br>
                         <span><strong>Property:</strong> ${printData.propertyAddress}</span>
                         <hr style="width:100%; border:.5px solid black; margin:5px 0;">
