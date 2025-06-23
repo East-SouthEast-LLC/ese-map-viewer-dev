@@ -87,7 +87,6 @@ document.addEventListener("DOMContentLoaded", function () {
      * Returns the HTML string for the custom print input form.
      */
     function getCustomPrintFormHTML() {
-        // Updated the scale input section
         return `
             <strong style="display:block; text-align:center; margin-bottom:8px;">Custom Print Details</strong>
             
@@ -274,7 +273,6 @@ document.addEventListener("DOMContentLoaded", function () {
             saveCheckbox.addEventListener('change', handleCheckboxChange);
         }
 
-        // Add event listener for the new scale dropdown
         const scaleDropdown = document.getElementById('custom-scale-dropdown');
         const scaleInput = document.getElementById('custom-scale-input');
         
@@ -285,6 +283,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
         }
+        
+        // *** THE FIX IS HERE ***
+        // Listen for the "Enter" key on the entire form container
+        customPrintBox.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                // Prevent the default browser action for the Enter key
+                event.preventDefault();
+                // Trigger the print process
+                processCustomPrint();
+            }
+        });
     }
 
     function updateCustomPrintBox() {
