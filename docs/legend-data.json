@@ -15,7 +15,7 @@
         ]
     },
     {
-        "displayName": "DEP Wetlands Legend",
+        "displayName": "DEP Wetlands",
         "sources": [
             { "id": "DEP wetland", "propertyKey": "IT_VALC" },
             { "id": "dep-wetland-line", "propertyKey": "ARC_CODE" }
@@ -333,13 +333,34 @@
             "color": "#07C327",
             "opacity": 1.0,
             "isLine": true
-            },
+            }
+        ]
+    },
+    {
+        "displayName": "Parcel Highlight",
+        "sources": [
+            { "id": "parcel highlight" }
+        ],
+        "items": [
             {
-            "code": "-2",
-            "label": "Below Sea Level Contour",
-            "color": "#08ADEF",
-            "opacity": 1.0,
-            "isLine": true
+                "label": "MassGIS Parcels",
+                "color": "#a0fa39",
+                "opacity": 1.0,
+                "isLine": true
+            }
+        ]
+    },
+    {
+        "displayName": "Satellite Imagery",
+        "sources": [
+            { "id": "satellite" }
+        ],
+        "items": [
+            {
+                "label": "Satellite View",
+                "color": "#808080",
+                "opacity": 1.0,
+                "isLine": false
             }
         ]
     }

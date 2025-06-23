@@ -129,6 +129,7 @@ CONTROL BUTTON STYLES
 /* Individual icon images */
 .mapboxgl-ctrl-point         { background-image: url('https://www.ese-llc.com/s/marker-blue-random.svg'); }
 .mapboxgl-ctrl-print         { background-image: url('https://img.icons8.com/ios-glyphs/30/000000/print.png'); }
+.mapboxgl-ctrl-custom-print  { background-image: url('https://east-southeast-llc.github.io/ese-map-viewer/img/custom-print.png'); }
 .mapboxgl-ctrl-measure       { background-image: url('https://www.ese-llc.com/s/marker-blue-measure.svg'); }
 .mapboxgl-ctrl-legend        { background-image: url('https://east-southeast-llc.github.io/ese-map-viewer/img/legend.png'); }
 .mapboxgl-ctrl-zoom          { background-image: url('https://www.ese-llc.com/s/zoom.png'); }
@@ -273,4 +274,212 @@ INFO DISPLAY PANELS (for distance and scale)
   border: 1px solid #555;
   margin-right: 8px;
   flex-shrink: 0;
+}
+
+/* ============================================================
+CUSTOM PRINT BOX STYLES
+=============================================================== */
+#custom-print-box {
+  display: none;
+  background: white;
+  color: #333;
+  padding: 10px 15px;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  margin-top: 5px;
+  max-width: 240px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ============================================================
+PRINT STYLES
+=============================================================== */
+@media print {
+  @page {
+    size: 8.5in 11in; /* Letter size, portrait orientation */
+    margin: 0; /* No additional margins */
+  }
+  * {
+    -webkit-print-color-adjust: exact; /* For Chrome, Safari, and older Edge */
+    print-color-adjust: exact;          /* Standard property */
+  }
+  body.print-body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+}
+.print-body {
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column; /* Stack pages vertically */
+    align-items: center;
+    position: relative;
+    width: 8.5in;
+}
+.frame {
+    width: 8in;
+    height: 10.5in;
+    position: relative;
+    page-break-after: always; /* Ensure each frame is on a new page */
+    z-index: 1;
+    border: 4px solid black;
+    box-sizing: border-box; 
+    background: white;
+    margin: 0.25in; /* Apply margin to center the frame */
+}
+.top-frame {
+    height: 8in;
+    position: relative;
+}
+.bottom-frame {
+    height: 2.5in; 
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+.map-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border-bottom: 4px solid black;
+}
+.map-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure the map scales properly */
+}
+.image-container {
+    width: 2in;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.custom-info-frame {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    width: 2.5in;
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    text-align: left;
+}
+.inner-frame {
+    width: 2.5in;
+    height: 2.5in;
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 4px;
+    flex-direction: column; /* Stack text vertically */
+}
+.inner-frame span {
+    display: block;
+    margin-bottom: 4px; /* Space between lines */
+}
+.gis-map {
+    font-family: 'BankGothicMd', sans-serif;
+    font-style: italic;
+    font-size: 14px;
+}
+.date, .scale, .base-map {
+    font-family: Arial, sans-serif;
+}
+.disclaimer {
+    font-size: 9px;
+}
+.date {
+    font-size: 10px;
+    margin-bottom: 0;
+}
+.scale {
+    font-size: 11px;
+}
+.sources {
+    font-size: 10px;
+}
+.massgis {
+    font-size: 10px;
+}
+.base-map {
+    font-size: 10px;
+}
+.inner-frame a {
+    color: black;
+    text-decoration: none;
+}
+.legend-frame {
+  width: 3.3in;
+  height: 2.2in; 
+  padding: 5px;
+  display: flex;
+  flex-direction: column; /* Stack title and grid vertically */
+  justify-content: flex-start;
+  align-items: center;
+}
+.legend-print-title {
+  font-family: 'BankGothicMd', sans-serif;
+  font-style: italic;
+  font-size: 14px;
+  text-align: center;
+}
+.legend-grid {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr; /* Single column */
+  grid-template-rows: repeat(30, auto); /* More rows if needed */
+  row-gap: 1.5px; /* Tighter row spacing */
+  column-gap: 0;
+  justify-items: center; /* Center content horizontally */
+}
+.legend-section {
+    font-size: .1in;
+    font-weight: bold;
+    margin-top: 4px;
+    font-family: Verdana, sans-serif;
+    break-after: avoid-page; 
+}
+.legend-item {
+    display: flex;
+    font-family: Verdana, sans-serif;
+    align-items: center;
+    font-size: .1in;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.color-box {
+    width: .1in;
+    height: .1in;
+    border: .5px solid #555;
+    margin-right: 5px; /* Tighter margin */
+    flex-shrink: 0;
+}
+.color-line {
+    width: .1in;
+    height: 2px;
+    border: .5px solid #555;
+    margin-right: 5px; /* Tighter margin */
+    flex-shrink: 0;
 }
