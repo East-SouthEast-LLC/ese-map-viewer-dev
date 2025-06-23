@@ -142,7 +142,7 @@ function getLegendForPrint() {
         return '<div class="legend-grid"></div>';
     }
 
-    const maxPrintableItems = 16;
+    const maxPrintableItems = 13;
     let finalItemsHTML = '';
     if (allItemsToRender.length > maxPrintableItems) {
         const truncatedItems = allItemsToRender.slice(0, maxPrintableItems - 1);
