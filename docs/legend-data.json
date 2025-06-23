@@ -343,7 +343,7 @@
         ],
         "items": [
             {
-                "label": "Parcel Highlight Line",
+                "label": "MassGIS Parcels",
                 "color": "#a0fa39",
                 "opacity": 1.0,
                 "isLine": true
