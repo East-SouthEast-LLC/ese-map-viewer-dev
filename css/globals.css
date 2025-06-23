@@ -329,7 +329,6 @@ PRINT STYLES
     border: 4px solid black;
     box-sizing: border-box; 
     background: white;
-    padding: 1px;
     margin: 0.25in; /* Apply margin to center the frame */
 }
 .top-frame {
@@ -440,7 +439,7 @@ PRINT STYLES
   font-style: italic;
   font-size: 14px;
   text-align: center;
-  margin-bottom: 12px; /* Space between title and grid */
+  margin-bottom: 8px; /* Space between title and grid */
 }
 .legend-grid {
   display: grid;
@@ -454,7 +453,7 @@ PRINT STYLES
 .legend-section {
     font-size: .1in;
     font-weight: bold;
-    margin-top: 6px;
+    margin-top: 4px;
     font-family: Verdana, sans-serif;
     break-after: avoid-page; 
 }
