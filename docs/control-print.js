@@ -21,6 +21,7 @@ function getStandardPrintPageHTML(mapImageSrc) {
                     <img src="https://static1.squarespace.com/static/536cf42ee4b0465238027de5/t/67a783e42bb54b7b434b79f1/1739031525647/ESE-GIS.jpg" alt="Company Logo" />
                 </div>
                 <div class="legend-frame">
+                    <div class="legend-print-title">Legend & Layers</div>
                     ${getLegendForPrint()} 
                 </div>
                 <div class="inner-frame">
@@ -60,7 +61,7 @@ document.getElementById('printButton').addEventListener('click', () => {
                     <title>Map Print</title>
                     <link rel="stylesheet" href="https://east-southeast-llc.github.io/ese-map-viewer/css/globals.css?v=3" type="text/css" />
                 </head>
-                <body class="print-body print-body-standard">
+                <body class="print-body">
                     ${getStandardPrintPageHTML(mapImageSrc)}
                 </body>
                 </html>
