@@ -111,7 +111,7 @@ function getPageHTML(printData, mapImageSrc, pageNumber) {
                 </div>
             </div>
             <div class="bottom-frame">
-                <div class="custom-info-frame">
+                <div class="custom-info-frame" style="width: 2in;">
                     <span><strong>${printData.companyName}</strong></span>
                     <span>${printData.address}</span>
                     <span>${printData.website} | ${printData.phone}</span>
