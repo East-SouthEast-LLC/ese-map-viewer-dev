@@ -64,6 +64,25 @@ function getLegendForPrint(expectedLayerIds = []) {
     const renderedLegendSections = new Set(); // Keep track of rendered sections by displayName
 
     legendData.forEach(layerInfo => {
+        // Handle Satellite layer as a special case since it's a raster and has no features to query
+        if (layerInfo.displayName === "Satellite Imagery") {
+            if (expectedLayerIds.includes('satellite')) {
+                allItemsToRender.push(`<div class="legend-section">${layerInfo.displayName}</div>`);
+                renderedLegendSections.add(layerInfo.displayName);
+                const item = layerInfo.items[0];
+                const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
+                const swatchClass = item.isLine ? 'color-line' : 'color-box';
+                allItemsToRender.push(
+                    `<div class="legend-item">
+                        <span class="${swatchClass}" style="${style}"></span>
+                        <span>${item.label}</span>
+                    </div>`
+                );
+            }
+            return; // Continue to the next item in legendData
+        }
+
+        // --- Existing logic for vector-based layers ---
         const sourceLayerIds = layerInfo.sources.map(s => s.id);
         const visibleFeaturesForLayer = sourceLayerIds.flatMap(id => featuresByLayer[id] || []);
 
@@ -131,11 +150,9 @@ function getLegendForPrint(expectedLayerIds = []) {
         }
     });
     
-    // --- NEW LOGIC: Add logic for layers expected but not present ---
+    // --- Add logic for layers expected but not present ---
     if (expectedLayerIds && expectedLayerIds.length > 0) {
         const expectedButNotRendered = [];
-
-        // Find the display names for all expected layers
         const expectedDisplayNames = new Set();
         expectedLayerIds.forEach(expectedId => {
             const layerInfo = legendData.find(info => 
@@ -146,7 +163,6 @@ function getLegendForPrint(expectedLayerIds = []) {
             }
         });
         
-        // Check which of the expected display names were not actually rendered
         expectedDisplayNames.forEach(displayName => {
             if (!renderedLegendSections.has(displayName)) {
                 expectedButNotRendered.push(
@@ -234,6 +250,24 @@ document.addEventListener("DOMContentLoaded", function () {
         let legendHTML = '';
 
         legendData.forEach(layerInfo => {
+            // Handle Satellite layer as a special case
+            if (layerInfo.displayName === "Satellite Imagery") {
+                if (map.getLayer('satellite') && map.getLayoutProperty('satellite', 'visibility') === 'visible') {
+                    legendHTML += `<div class="legend-title">${layerInfo.displayName}</div>`;
+                    const item = layerInfo.items[0];
+                    const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
+                    const swatchClass = item.isLine ? 'color-line' : 'color-box';
+                    legendHTML += `
+                        <div class="legend-item-row">
+                            <span class="${swatchClass}" style="${style}"></span>
+                            <span>${item.label}</span>
+                        </div>
+                    `;
+                }
+                return; // Continue to the next item in legendData
+            }
+
+            // --- Existing logic for vector-based layers ---
             const sourceLayerIds = layerInfo.sources.map(s => s.id);
             const allVisibleFeatures = map.queryRenderedFeatures({ layers: sourceLayerIds });
 
