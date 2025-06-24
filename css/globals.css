@@ -483,3 +483,14 @@ PRINT STYLES
     margin-right: 5px; /* Tighter margin */
     flex-shrink: 0;
 }
+.legend-item-not-present {
+    font-size: .09in;
+    font-style: italic;
+    color: #555555;
+    margin-top: 3px;
+    padding-left: .1in;
+    font-family: Verdana, sans-serif;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

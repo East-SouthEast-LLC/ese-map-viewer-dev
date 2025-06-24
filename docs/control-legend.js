@@ -36,7 +36,7 @@ function getPrintBoundingBox() {
 }
 
 // helper function for print output
-function getLegendForPrint() {
+function getLegendForPrint(expectedLayerIds = []) {
     const geoJsonBounds = getPrintBoundingBox();
     if (!geoJsonBounds) return '<div class="legend-item">Error calculating print area.</div>';
     
@@ -47,7 +47,7 @@ function getLegendForPrint() {
     const printPixelBoundingBox = [ [topLeftPixel.x, topLeftPixel.y], [bottomRightPixel.x, bottomRightPixel.y] ];
     const allVisibleFeatures = map.queryRenderedFeatures(printPixelBoundingBox);
 
-    if (allVisibleFeatures.length === 0) {
+    if (allVisibleFeatures.length === 0 && expectedLayerIds.length === 0) {
         return '<div class="legend-grid"></div>';
     }
 
@@ -61,8 +61,28 @@ function getLegendForPrint() {
     }, {});
 
     const allItemsToRender = []; 
+    const renderedLegendSections = new Set(); // Keep track of rendered sections by displayName
 
     legendData.forEach(layerInfo => {
+        // Handle Satellite layer as a special case since it's a raster and has no features to query
+        if (layerInfo.displayName === "Satellite Imagery") {
+            if (expectedLayerIds.includes('satellite')) {
+                allItemsToRender.push(`<div class="legend-section">${layerInfo.displayName}</div>`);
+                renderedLegendSections.add(layerInfo.displayName);
+                const item = layerInfo.items[0];
+                const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
+                const swatchClass = item.isLine ? 'color-line' : 'color-box';
+                allItemsToRender.push(
+                    `<div class="legend-item">
+                        <span class="${swatchClass}" style="${style}"></span>
+                        <span>${item.label}</span>
+                    </div>`
+                );
+            }
+            return; // Continue to the next item in legendData
+        }
+
+        // --- Existing logic for vector-based layers ---
         const sourceLayerIds = layerInfo.sources.map(s => s.id);
         const visibleFeaturesForLayer = sourceLayerIds.flatMap(id => featuresByLayer[id] || []);
 
@@ -74,17 +94,12 @@ function getLegendForPrint() {
         const matchedFeatureIds = new Set();
 
         layerInfo.items.forEach(item => {
-            // This block handles simple items (no 'code' for categories, no 'match' for rules)
             if (!item.code && !item.match) {
-                // Determine the layer ID for this simple item.
-                // Priority 1: Use the item's own 'id' if it exists (e.g., for Vernal Pools, LiMWA).
-                // Priority 2: If no item 'id', but the group has only one source, use that source's id (e.g., for ACEC).
                 const itemLayerId = item.id || (layerInfo.sources.length === 1 ? layerInfo.sources[0].id : null);
-
                 if (itemLayerId && featuresByLayer[itemLayerId] && featuresByLayer[itemLayerId].length > 0) {
                     itemsToShow.add(item.label);
                 }
-                return; // Move to the next item in the loop.
+                return;
             }
 
             for (const feature of visibleFeaturesForLayer) {
@@ -120,6 +135,7 @@ function getLegendForPrint() {
 
         if (itemsToShow.size > 0) {
             allItemsToRender.push(`<div class="legend-section">${layerInfo.displayName}</div>`);
+            renderedLegendSections.add(layerInfo.displayName); // Add to our set of rendered sections
             const visibleItems = layerInfo.items.filter(item => itemsToShow.has(item.label));
             visibleItems.forEach(item => {
                 const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
@@ -133,6 +149,32 @@ function getLegendForPrint() {
             });
         }
     });
+    
+    // --- Add logic for layers expected but not present ---
+    if (expectedLayerIds && expectedLayerIds.length > 0) {
+        const expectedButNotRendered = [];
+        const expectedDisplayNames = new Set();
+        expectedLayerIds.forEach(expectedId => {
+            const layerInfo = legendData.find(info => 
+                info.sources.some(s => s.id === expectedId) || info.items.some(i => i.id === expectedId)
+            );
+            if (layerInfo) {
+                expectedDisplayNames.add(layerInfo.displayName);
+            }
+        });
+        
+        expectedDisplayNames.forEach(displayName => {
+            if (!renderedLegendSections.has(displayName)) {
+                expectedButNotRendered.push(
+                    `<div class="legend-item-not-present">${displayName}: Not Present in Print Area</div>`
+                );
+            }
+        });
+
+        if (expectedButNotRendered.length > 0) {
+            allItemsToRender.push(...expectedButNotRendered);
+        }
+    }
 
     if (allItemsToRender.length === 0) {
         return '<div class="legend-grid"></div>';
@@ -208,6 +250,24 @@ document.addEventListener("DOMContentLoaded", function () {
         let legendHTML = '';
 
         legendData.forEach(layerInfo => {
+            // Handle Satellite layer as a special case
+            if (layerInfo.displayName === "Satellite Imagery") {
+                if (map.getLayer('satellite') && map.getLayoutProperty('satellite', 'visibility') === 'visible') {
+                    legendHTML += `<div class="legend-title">${layerInfo.displayName}</div>`;
+                    const item = layerInfo.items[0];
+                    const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
+                    const swatchClass = item.isLine ? 'color-line' : 'color-box';
+                    legendHTML += `
+                        <div class="legend-item-row">
+                            <span class="${swatchClass}" style="${style}"></span>
+                            <span>${item.label}</span>
+                        </div>
+                    `;
+                }
+                return; // Continue to the next item in legendData
+            }
+
+            // --- Existing logic for vector-based layers ---
             const sourceLayerIds = layerInfo.sources.map(s => s.id);
             const allVisibleFeatures = map.queryRenderedFeatures({ layers: sourceLayerIds });
 
