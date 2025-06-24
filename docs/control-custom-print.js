@@ -10,53 +10,56 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Required custom print elements not found in the DOM.");
         return;
     }
+
+    // ============================================================================
+    // PRESET CONFIGURATIONS
+    // ============================================================================
+    const printPresets = {
+        'Conservation': [
+            { page: 1, layers: ['parcel highlight', 'contours', 'floodplain'] },
+            { page: 2, layers: ['parcel highlight', 'satellite', 'acec'] },
+            { page: 3, layers: ['parcel highlight', 'contours', 'DEP wetland'] },
+            { page: 4, layers: ['parcel highlight', 'satellite', 'endangered species'] }
+        ],
+        'Sewer Planning': [
+            { page: 1, layers: ['parcel highlight', 'soils'] },
+            { page: 2, layers: ['parcel highlight', 'sewer plans'] }
+        ]
+    };
     
     // ============================================================================
     // HELPER FUNCTIONS FOR CUSTOM PRINT FUNCTIONALITY
     // ============================================================================
 
-    /**
-     * Sets the visibility of a layer and all of its dependent layers.
-     */
     function setLayerVisibility(layerId, visibility) {
         if (map.getLayer(layerId)) {
             map.setLayoutProperty(layerId, 'visibility', visibility);
         }
-
-        // Handle dependent layers
+        // Dependent layer logic...
         if (layerId === 'floodplain') {
             map.setLayoutProperty('LiMWA', 'visibility', visibility);
             map.setLayoutProperty('floodplain-line', 'visibility', visibility);
             map.setLayoutProperty('floodplain-labels', 'visibility', visibility);
-        }
-        else if (layerId === 'DEP wetland') {
+        } else if (layerId === 'DEP wetland') {
             map.setLayoutProperty('dep-wetland-line', 'visibility', visibility);
             map.setLayoutProperty('dep-wetland-labels', 'visibility', visibility);
-        }
-        else if (layerId === 'soils') {
+        } else if (layerId === 'soils') {
             map.setLayoutProperty('soils-labels', 'visibility', visibility);
             map.setLayoutProperty('soils-outline', 'visibility', visibility);
-        }
-        else if (layerId === 'zone II') {
+        } else if (layerId === 'zone II') {
             map.setLayoutProperty('zone-ii-outline', 'visibility', visibility);
             map.setLayoutProperty('zone-ii-labels', 'visibility', visibility);
-        }
-        else if (layerId === 'endangered species') {
+        } else if (layerId === 'endangered species') {
             map.setLayoutProperty('endangered-species-labels', 'visibility', visibility);
             map.setLayoutProperty('vernal-pools', 'visibility', visibility);
             map.setLayoutProperty('vernal-pools-labels', 'visibility', visibility);
-        }
-        else if (layerId === 'sewer plans') {
+        } else if (layerId === 'sewer plans') {
             map.setLayoutProperty('sewer-plans-outline', 'visibility', visibility);
-        }
-         else if (layerId === 'contours') {
+        } else if (layerId === 'contours') {
             map.setLayoutProperty('contour-labels', 'visibility', visibility);
         }
     }
 
-    /**
-     * Loads company info and checkbox state from localStorage.
-     */
     function loadCompanyInfo() {
         const shouldSave = localStorage.getItem('ese-should-save-info') !== 'false';
         document.getElementById('save-info-checkbox').checked = shouldSave;
@@ -71,9 +74,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    /**
-     * Saves the state of the "Save Info" checkbox and deletes info if unchecked.
-     */
     function handleCheckboxChange() {
         const isChecked = document.getElementById('save-info-checkbox').checked;
         localStorage.setItem('ese-should-save-info', isChecked);
@@ -83,10 +83,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    /**
-     * Returns the HTML string for the custom print input form.
-     */
     function getCustomPrintFormHTML() {
+        // Added a select dropdown for presets
         return `
             <strong style="display:block; text-align:center; margin-bottom:8px;">Custom Print Details</strong>
             
@@ -105,6 +103,9 @@ document.addEventListener("DOMContentLoaded", function () {
             <input type="text" id="custom-client-name" placeholder="Client Name" style="width: 100%; margin-bottom: 5px; padding: 5px; box-sizing: border-box; border-radius: 3px; border: 1px solid #ccc;">
             <input type="text" id="custom-property-address" placeholder="Property Address" style="width: 100%; margin-bottom: 10px; padding: 5px; box-sizing: border-box; border-radius: 3px; border: 1px solid #ccc;">
             
+            <label for="custom-print-preset" style="display:block; margin-bottom:5px;">Select Print Preset:</label>
+            <select id="custom-print-preset" style="width: 100%; margin-bottom: 10px; padding: 5px; box-sizing: border-box;"></select>
+
             <label for="custom-scale-input" style="display:block; margin-bottom:5px;">Set Scale (1" = X feet):</label>
             <input type="number" id="custom-scale-input" placeholder="e.g., 100" style="width: 100%; margin-bottom: 5px; padding: 5px; box-sizing: border-box; border-radius: 3px; border: 1px solid #ccc;">
 
@@ -123,9 +124,6 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
     }
 
-    /**
-     * Gathers data, saves it if needed, and starts the print process.
-     */
     function processCustomPrint() {
         if (document.getElementById('save-info-checkbox').checked) {
             const companyInfo = {
@@ -152,17 +150,24 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
+        // Get the selected page configuration from the presets object
+        const selectedPresetName = document.getElementById('custom-print-preset').value;
+        const pageConfigs = printPresets[selectedPresetName];
+
+        if (!pageConfigs) {
+            alert('Invalid print preset selected.');
+            return;
+        }
+
         customPrintBox.style.display = 'none';
         customPrintVisibility = false; 
 
-        generateMultiPagePrintout(printData);
+        generateMultiPagePrintout(printData, pageConfigs);
     }
 
-    /**
-     * Generates the HTML for a single page of the printout.
-     */
     function getPageHTML(printData, mapImageSrc, pageNumber) {
         const currentDate = new Date().toLocaleDateString();
+        // The HTML structure remains the same
         return `
             <div class="frame">
                 <div class="top-frame">
@@ -202,19 +207,9 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
     }
 
-    /**
-     * Takes the user-provided data and generates the multi-page print preview.
-     */
-    async function generateMultiPagePrintout(printData) {
-        console.log("Generating multi-page printout with data:", printData);
+    async function generateMultiPagePrintout(printData, pageConfigs) {
+        console.log(`Generating multi-page printout with preset: ${document.getElementById('custom-print-preset').value}`);
         
-        const pageConfigs = [
-            { page: 1, layers: ['parcel highlight', 'contours', 'floodplain'] },
-            { page: 2, layers: ['parcel highlight', 'satellite', 'acec'] },
-            { page: 3, layers: ['parcel highlight', 'contours', 'DEP wetland'] },
-            { page: 4, layers: ['parcel highlight', 'satellite', 'endangered species'] }
-        ];
-
         let fullHtml = '';
         const allToggleableLayers = ['satellite', 'parcels', 'parcel highlight', 'contours', 'agis', 'historic', 'floodplain', 'acec', 'DEP wetland', 'endangered species', 'zone II', 'soils', 'conservancy districts', 'zoning', 'conservation', 'sewer', 'sewer plans', 'stories', 'intersection'];
         const initiallyVisibleLayers = listVisibleLayers(map, allToggleableLayers);
@@ -263,19 +258,21 @@ document.addEventListener("DOMContentLoaded", function () {
     // ============================================================================
     
     function attachCustomPrintFormListeners() {
+        // Attach listener for submit button
         const submitButton = document.getElementById('custom-print-submit');
         if (submitButton) {
             submitButton.addEventListener('click', processCustomPrint);
         }
 
+        // Attach listener for save info checkbox
         const saveCheckbox = document.getElementById('save-info-checkbox');
         if (saveCheckbox) {
             saveCheckbox.addEventListener('change', handleCheckboxChange);
         }
 
+        // Attach listener for scale dropdown
         const scaleDropdown = document.getElementById('custom-scale-dropdown');
         const scaleInput = document.getElementById('custom-scale-input');
-        
         if (scaleDropdown && scaleInput) {
             scaleDropdown.addEventListener('change', () => {
                 if (scaleDropdown.value) {
@@ -284,13 +281,10 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
         
-        // *** THE FIX IS HERE ***
-        // Listen for the "Enter" key on the entire form container
+        // Attach listener for enter key
         customPrintBox.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
-                // Prevent the default browser action for the Enter key
                 event.preventDefault();
-                // Trigger the print process
                 processCustomPrint();
             }
         });
@@ -298,6 +292,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function updateCustomPrintBox() {
         customPrintBox.innerHTML = getCustomPrintFormHTML();
+
+        // Dynamically populate the preset dropdown
+        const presetDropdown = document.getElementById('custom-print-preset');
+        if (presetDropdown) {
+            for (const presetName in printPresets) {
+                const option = document.createElement('option');
+                option.value = presetName;
+                option.textContent = presetName;
+                presetDropdown.appendChild(option);
+            }
+        }
+        
         customPrintBox.style.display = 'block';
         attachCustomPrintFormListeners();
         loadCompanyInfo(); 
