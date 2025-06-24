@@ -168,9 +168,9 @@ document.addEventListener("DOMContentLoaded", function () {
         generateMultiPagePrintout(printData, pageConfigs);
     }
 
-    function getPageHTML(printData, mapImageSrc, pageNumber) {
+    function getPageHTML(printData, mapImageSrc, pageNumber, expectedLayers) {
         const currentDate = new Date().toLocaleDateString();
-        // The HTML structure remains the same
+        // The HTML structure remains the same, but the call to getLegendForPrint is now passing the expected layers
         return `
             <div class="frame">
                 <div class="top-frame">
@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                     <div class="legend-frame">
                         <div class="legend-print-title">Legend & Layers</div>
-                        ${getLegendForPrint()} 
+                        ${getLegendForPrint(expectedLayers)} 
                     </div>
                     <div class="inner-frame">
                         <span class="gis-map">GIS Map</span>
@@ -234,7 +234,8 @@ document.addEventListener("DOMContentLoaded", function () {
             await new Promise(resolve => map.once('idle', resolve));
             const mapCanvas = map.getCanvas();
             const mapImageSrc = mapCanvas.toDataURL();
-            fullHtml += getPageHTML(printData, mapImageSrc, config.page);
+            // Pass the page-specific layers to getPageHTML
+            fullHtml += getPageHTML(printData, mapImageSrc, config.page, config.layers);
             config.layers.forEach(layerId => setLayerVisibility(layerId, 'none'));
         }
 
