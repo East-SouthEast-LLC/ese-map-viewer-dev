@@ -21,9 +21,12 @@ document.addEventListener("DOMContentLoaded", function () {
             { page: 3, layers: ['parcel highlight', 'contours', 'DEP wetland'] },
             { page: 4, layers: ['parcel highlight', 'satellite', 'endangered species'] }
         ],
-        'Sewer Planning': [
-            { page: 1, layers: ['parcel highlight', 'soils'] },
-            { page: 2, layers: ['parcel highlight', 'sewer plans'] }
+        'Test Hole': [
+            { page: 1, layers: ['parcel highlight', 'contours'] },
+            { page: 2, layers: ['parcel highlight', 'floodplain', 'contours'] },
+            { page: 3, layers: ['parcel highlight', 'DEP wetland', 'contours'] },
+            { page: 4, layers: ['parcel highlight', 'zone II',] },
+            { page: 5, layers: ['parcel highlight', 'soils'] }
         ]
     };
     
