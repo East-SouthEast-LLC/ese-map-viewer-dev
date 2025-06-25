@@ -129,7 +129,7 @@ GEOCODER CONTAINER (for control buttons and search bar)
 /* Override Mapbox Geocoder's default width to fit our container */
 #geocoder .mapboxgl-ctrl-geocoder {
   width: 240px;
-  min-width: 240px;
+  min-width: 220px;
 }
 
 /* ============================================================
