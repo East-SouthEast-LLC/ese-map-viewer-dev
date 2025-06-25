@@ -1,78 +1,114 @@
 # East-SouthEast, LLC Interactive Map Viewer
 
-## Project Overview
+## 1. Project Overview
 
-This project is a sophisticated, open-source, interactive web map designed for East-SouthEast, LLC, to provide clear, visual access to GIS information. It is built using the Mapbox GL JS library and allows users to view and interact with a wide range of geospatial data layers relevant to the Chatham, Massachusetts area. The map viewer is embedded within a Squarespace website, with its core assets (JavaScript files, CSS, and data) hosted on GitHub Pages.
+The East-SouthEast (ESE) Map Viewer is a professional-grade, interactive web mapping application designed to provide clients and staff with clear, visual access to a rich set of GIS data for various towns, with a primary focus on Chatham, MA.
 
-The primary goal of this tool is to democratize access to important property and environmental data, serving the needs of surveyors, engineers, and clients who require detailed, printable maps for planning and analysis.
+The application is built to be embedded within a Squarespace website, with its core assets (JavaScript, CSS, and data files) hosted on a GitHub repository and served via GitHub Pages. Its primary goal is to centralize crucial property and environmental data, offering powerful interactive tools and generating professional, multi-page printouts for reports and analysis.
 
-### Key Technologies
+## 2. Key Technologies
 
-* **Mapping Library:** Mapbox GL JS
-* **Web Hosting:** Squarespace (for the main pages) and GitHub Pages (for assets)
+* **Mapping Library:** [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/api/)
+* **Hosting:**
+    * **Frontend Page:** Squarespace (via embedded code blocks).
+    * **Asset Hosting:** GitHub Pages.
 * **Core Languages:** HTML, CSS, JavaScript
-* **Data Format:** GeoJSON and Mapbox Vector Tiles, with legend information served from a central `legend-data.json` file.
-* **Styling:** A global stylesheet (`globals.css`) provides a consistent look and feel for both the on-screen map and the printed outputs.
+* **Key Libraries:**
+    * [Turf.js](https://turfjs.org/) for geospatial calculations (e.g., distance, print area bounding box).
+    * [Mapbox GL Geocoder](https://github.com/mapbox/mapbox-gl-geocoder) for address search functionality.
+* **Data Format:** Data is primarily served as Mapbox Vector Tiles, with legend information driven by a central JSON file (`legend-data.json`).
 
----
+## 3. Architecture and File Structure
 
-## Core Features
+The project uses a highly modular and organized architecture to ensure maintainability and ease of future development.
 
-The map viewer includes a rich set of features designed to provide a powerful and intuitive user experience for GIS professionals.
+* **`pages/by_town/*.html`** (e.g., `chatham.html`, `barnstable.html`): These are the main entry points for the application. The HTML content of these files is intended to be pasted into a Squarespace "Code Block." They are responsible for:
+    * Initializing the Mapbox map with a specific center point and zoom level.
+    * Loading the global stylesheet (`globals.css`).
+    * Importing all necessary JavaScript files for layers and controls from the `/docs/` directory.
 
-### 1. Layer Management
+* **`css/globals.css`**: This is the single, comprehensive stylesheet that controls the entire visual presentation of the application. It defines the layout and appearance of the map, menus, toolkit, popups, and provides print-specific styles using `@media print` rules for formatted outputs.
 
-A toggleable menu on the left side of the map allows users to turn a wide variety of data layers on and off. This feature is designed to be highly responsive and includes intelligent handling of dependent layers.
+* **`/docs/layers/*.js`**: Each file in this directory is responsible for adding a single data source and its corresponding layer(s) to the map. This modular approach keeps layer definitions isolated and easy to manage. For example:
+    * `zoning.js` adds the vector tile source for zoning districts and defines the fill color for each `TOWNCODE`.
+    * `satellite.js` adds the raster tile source for satellite imagery.
 
-* **Layer Categories:**
-    * **Basemaps:** Satellite imagery and a standard Mapbox street map.
-    * **Environmental Data:** FEMA Flood Zones (including LiMWA), DEP Wetlands, Endangered Species habitats (including vernal pools), and Areas of Critical Environmental Concern (ACEC).
-    * **Land Use & Planning:** Parcels, zoning districts, conservation land, and sewer plans.
-    * **Topographical & Historical:** LIDAR contours and historic aerial photos.
-    * **Infrastructure:** Sewer service areas and proposed intersection improvements.
-* **Dependent Layer Logic:** The application understands that some layers are related. For example, when a user toggles the "Floodplain" layer, the system automatically toggles the associated "LiMWA," "floodplain-line," and "floodplain-labels" layers, ensuring a complete and coherent map view.
+* **`/docs/control-*.js`**: These files contain the logic for the interactive UI components found in the toolkit panel. Key files include:
+    * `toggleable-menu.js`: Builds the layer menu on the left and handles the logic for toggling layer visibility. It is also responsible for the dynamic resizing of the map viewport when the toolkit is opened or closed.
+    * `control-legend.js`: Manages the dynamic on-screen legend and generates the legend for printouts.
+    * `control-custom-print.js`: Contains the logic for the powerful multi-page custom print feature, including the preset configurations.
+    * `control-measure.js`: Manages the state and functionality of the distance measurement tool.
 
-### 2. Interactive Tools
+* **`docs/legend-data.json`**: This file is the single source of truth for the map's legend. It defines the display name, source layer IDs, colors, and labels for each item that can appear in the legend. This data-driven approach means the legend can be updated without changing any JavaScript code.
 
-A toolbar, located in the upper-left of the map interface, provides users with a suite of professional-grade interactive tools:
+## 4. In-Depth Feature Explanations
 
-* **Geocoding/Search:** A standard search bar to find specific addresses or points of interest.
-* **Point Marker:** Allows users to drop a pin on the map. This is a prerequisite for using the Custom Print feature, as the pin serves as the center point for the printouts.
-* **Measurement:** A tool to measure distances on the map, providing instant feedback for quick analysis.
-* **Print Area Overlay:** A visual guide that shows the 8" x 8" area that will be captured in a printout, ensuring users know exactly what their printed map will look like.
-* **Zoom to Scale:** An interface that allows users to set the map to a specific engineering scale (e.g., 1" = 200'), which is critical for creating accurate and professional map documents.
-* **Share Map:** A button to generate a URL that saves the current map view, including the center point, zoom level, and all visible layers. This allows users to easily share a specific map configuration with colleagues or clients.
-* **Standard & Custom Printing:** Tools to generate single-page and multi-page, formatted printouts suitable for professional use.
+### 4.1. Dynamic UI and Viewport Management
 
-### 3. Print Functionality
+The application features a sophisticated UI that keeps the map unobscured by the menus.
 
-The application includes two distinct printing features designed to meet the needs of GIS professionals:
+* **Implementation (`toggleable-menu.js` & `globals.css`):**
+    * The layer menu and toolkit panel are absolutely positioned on the page.
+    * When the "tools" button is clicked, the `toggleable-menu.js` script dynamically calculates and sets the `width` and `marginLeft` of the main `#map` container using the CSS `calc()` function.
+    * A call to `map.resize()` is then made within a `setTimeout` to allow the map to redraw itself to fit the new dimensions smoothly.
+    * To handle vertical overflow, both the `#menu` and `#geocoder-container` panels have a `max-height` set to `80vh` (matching the map's height) and `overflow-y: auto`, which enables independent scrolling for each panel.
 
-* **Standard Print:** Generates a single-page, formatted printout of the current map view, including a dynamic legend, a north arrow, a scale bar, and other standard map elements.
-* **Custom Multi-Page Print:** A powerful feature designed for creating detailed, multi-page map packages. It allows users to create a four-page printout with pre-defined layer combinations on each page. A custom input form allows users to add their own company and client information, which is then dynamically added to a custom-designed title block on each page of the printout.
+### 4.2. Dynamic Legend System
 
----
+The legend is not static; it intelligently displays only what is relevant to the user's view.
 
-## Architecture & File Structure
+* **Implementation (`control-legend.js`):**
+    * **On-Screen Legend (`updateLegend`):** This function queries the features currently rendered in the map's viewport using `map.queryRenderedFeatures()`. It then iterates through the `legend-data.json` file, cross-referencing the visible features with their definitions to build the legend HTML.
+    * **Print Legend (`getLegendForPrint`):** This function operates similarly but queries features only within the specific print area bounding box.
+    * **Special Cases:** Raster layers like the `'satellite'` layer do not return features from the query. The logic contains a special case to check the layer's visibility property directly (`map.getLayoutProperty(...)`) instead of querying its features.
+    * **"Not Present" Feature:** For custom prints, the `getLegendForPrint` function accepts an array of "expected" layers for that print. It compares this list to the layers that were actually rendered and appends a "Not Present in Print Area" notice for any expected layers that were not found.
 
-The project is structured in a modular and organized way, which makes it easy to maintain and extend.
+### 4.3. Custom Multi-Page Printing
 
-* **HTML Files (`/pages/by_town/*.html`):** These are the main entry points for the map viewer. The HTML code is pasted into a Squarespace code block. `chatham.html` is the primary file we have been working with.
-* **CSS (`/css/globals.css`):** A single, comprehensive stylesheet that defines the look and feel of the map, its controls, and the printouts. It includes specific `@media print` rules to ensure high-quality, formatted outputs.
-* **JavaScript - Controls (`/docs/control-*.js`):** Each major feature in the geocoder toolbar has its own dedicated JavaScript file (e.g., `control-legend.js`, `control-print-area.js`, `control-custom-print.js`). This makes the code easy to manage and debug, as all the logic for a specific feature is contained in one place.
-* **JavaScript - Layers (`/docs/layers/*.js`):** Each data layer is defined in its own file, which handles adding the source and layer(s) to the map. This keeps the layer definitions separate and organized, making it easy to add, remove, or modify layers in the future.
-* **Data (`/docs/legend-data.json`):** A central JSON file that defines the content of the legend. It links layer IDs to their display names, colors, opacities, and other properties, creating a single source of truth for the legend's content.
+This is one of the most powerful features of the application, designed to generate professional, multi-page PDF map packages.
 
----
+* **Implementation (`control-custom-print.js`):**
+    * The feature is driven by the `printPresets` object, which defines the specific combination of layers for each page of a given printout (e.g., 'Conservation' preset).
+    * When a user submits a custom print job, the `generateMultiPagePrintout` function begins an `async` loop. For each page in the preset, it:
+        1.  Programmatically sets the visibility of the required layers using `setLayerVisibility()`.
+        2.  Waits for the map to fully render and settle using `await new Promise(resolve => map.once('idle', resolve));`. This is crucial for ensuring the map image is not captured prematurely.
+        3.  Captures the map canvas as a base64-encoded image using `map.getCanvas().toDataURL()`.
+        4.  Constructs the full HTML for that print page, embedding the map image and dynamically populating the title block with user-provided info and calling `getLegendForPrint()`.
+        5.  Hides the layers before moving to the next page in the loop.
+    * After the loop completes, the combined HTML for all pages is written to a new browser window, and the `print()` dialog is triggered.
 
-## Key Development Concepts
+## 5. How to Add a New Layer
 
-Several key concepts are central to the development of this map viewer:
+The modular architecture makes adding new data layers straightforward.
 
-* **Modularity:** The separation of concerns between HTML, CSS, and JavaScript, as well as the further division of JavaScript into control- and layer-specific files, is a core strength of this project. This makes the codebase easy to understand, maintain, and extend.
-* **Data-Driven Legend:** The legend is not hard-coded. It is dynamically generated based on the `legend-data.json` file and the features currently visible in the map view. This is a powerful and flexible approach that allows the legend to be updated by simply modifying the JSON data, without needing to change any of the application's code.
-* **Asynchronous Operations:** The application correctly handles the asynchronous nature of web mapping. It uses Mapbox GL JS events like `map.on('load', ...)` and `map.once('render', ...)` to ensure that code that depends on the map being fully loaded and drawn (like generating a printout) only runs when the map is ready.
-* **User Experience:** The project prioritizes a clean and intuitive user experience for its target audience of GIS professionals. Features like tooltips, clear error messages, and well-designed controls make the application easy to use and understand.
-* **Print Formatting:** The use of `@media print` CSS rules and the dynamic generation of HTML for the printouts demonstrate a sophisticated approach to creating professional, high-quality map outputs that are ready for use in reports and presentations.
-
----
+1.  **Prepare Data:** Upload your new geospatial data (e.g., a Shapefile) to your Mapbox account and create a new vector tileset. Copy the **Tileset ID**.
+2.  **Create Layer File:** In the `/docs/layers/` directory, create a new file named `your-layer-name.js`.
+3.  **Add Mapbox Code:** In this new file, add the necessary `map.addSource()` and `map.addLayer()` code. Use the Tileset ID from step 1 in your source definition.
+    ```javascript
+    // Example: docs/layers/your-layer-name.js
+    map.on('load', function() {
+      map.addSource('your-layer-name', {
+        type: 'vector',
+        url: 'mapbox://YOUR_TILESET_ID'
+      });
+      map.addLayer({
+        'id': 'your-layer-name',
+        'type': 'fill', // or 'line', 'circle', etc.
+        'source': 'your-layer-name',
+        'source-layer': 'YOUR_SOURCE_LAYER_NAME_FROM_MAPBOX',
+        'layout': {
+          'visibility': 'none'
+        },
+        'paint': {
+          /* Your paint styles here */
+        }
+      });
+      // Add a map.on('click', ...) event if desired
+    });
+    ```
+4.  **Update Legend (Optional):** If the new layer should appear in the legend, open `docs/legend-data.json` and add a new object to the main array for your layer, defining its `displayName`, `sources`, and legend `items`.
+5.  **Add to Toggle Menu:** Open `docs/toggleable-menu.js` and add the `id` of your new layer (e.g., `'your-layer-name'`) to the `toggleableLayerIds` array.
+6.  **Include in HTML:** Finally, open the relevant HTML file (e.g., `chatham.html`) and add a new `<script>` tag to include your new layer file:
+    ```html
+    <script src="[https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/your-layer-name.js?v=2](https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/your-layer-name.js?v=2)"></script>
+    ```
