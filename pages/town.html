@@ -56,72 +56,75 @@
     <div id="sZoomBox" class="hidden"></div>
   </div>
 
-  <script>
-    // SET THE TOWN ID HERE
-    const townId = "chatham"; // Example: "chatham", "harwich", etc.    
+    <script>
+        // SET THE TOWN ID HERE
+        const townId = "chatham"; // Example: "chatham", "harwich", etc.    
 
-    // Set the mapbox access token
-    mapboxgl.accessToken = 'pk.eyJ1IjoiZXNlLXRvaCIsImEiOiJja2Vhb24xNTEwMDgxMzFrYjVlaTVjOXkxIn0.IsPo5lOndNUc3lDLuBa1ZA';
-    
-    // Initialize the map
-    var map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/ese-toh/ckh2ss32s06i119paer9mt67h',
-    });
-
-    // Add geocoder control to the map
-    const geocoder = new MapboxGeocoder({
-      accessToken: mapboxgl.accessToken,
-      mapboxgl: mapboxgl
-    });
-    document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
-
-    // Define the function to load layer scripts
-    function loadLayerScript(layerName) {
-      const script = document.createElement('script');
-      let scriptName = layerName.replace(/ /g, '-');
-      if (layerName === "DEP wetland") {
-        scriptName = "depwetland";
-      } else if (layerName === "zone II") {
-        scriptName = "zoneii";
-      }
-      script.src = `https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/${scriptName}.js?v=2`;
-      document.head.appendChild(script);
-    }
-
-    // Wait for the map to be fully loaded before configuring it
-    map.on('load', function () {
-      // Fetch the town configuration data
-      fetch('https://east-southeast-llc.github.io/ese-map-viewer/docs/town-config.json')
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then(townConfig => {
-          const townData = townConfig.find(town => town.townID === townId);
-          if (townData) {
-            // Set the map center and zoom now that the map is ready
-            map.setCenter(townData.map.center);
-            map.setZoom(townData.map.zoom);
-
-            window.eseMapBaseUrl = townData.baseShareUrl;
-            window.toggleableLayerIds = townData.layers;
-
-            townData.layers.forEach(layer => {
-              loadLayerScript(layer);
-            });
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching town config data:', error);
+        // Set the mapbox access token
+        mapboxgl.accessToken = 'pk.eyJ1IjoiZXNlLXRvaCIsImEiOiJja2Vhb24xNTEwMDgxMzFrYjVlaTVjOXkxIn0.IsPo5lOndNUc3lDLuBa1ZA';
+        
+        // Initialize the map
+        var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/ese-toh/ckh2ss32s06i119paer9mt67h',
         });
-      
-      // This function for handling shared URLs should also be within the 'load' event
-      applyUrlParams(map);
-    });
-</script>
+
+        // Add geocoder control to the map
+        const geocoder = new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        mapboxgl: mapboxgl
+        });
+        document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+
+        // Define the function to load layer scripts
+        function loadLayerScript(layerName) {
+        const script = document.createElement('script');
+        let scriptName = layerName.replace(/ /g, '-');
+        if (layerName === "DEP wetland") {
+            scriptName = "depwetland";
+        } else if (layerName === "zone II") {
+            scriptName = "zoneii";
+        }
+        script.src = `https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/${scriptName}.js?v=2`;
+        document.head.appendChild(script);
+        }
+
+        // Wait for the map to be fully loaded before configuring it
+        map.on('load', function () {
+        // Fetch the town configuration data
+        fetch('https://east-southeast-llc.github.io/ese-map-viewer/docs/town-config.json')
+            .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+            })
+            .then(townConfig => {
+            const townData = townConfig.find(town => town.townID === townId);
+            if (townData) {
+                map.setCenter(townData.map.center);
+                map.setZoom(townData.map.zoom);
+
+                window.eseMapBaseUrl = townData.baseShareUrl;
+                window.toggleableLayerIds = townData.layers;
+
+                townData.layers.forEach(layer => {
+                loadLayerScript(layer);
+                });
+
+                // NOW that the layers are set, dynamically load the menu script
+                const menuScript = document.createElement('script');
+                menuScript.src = 'https://east-southeast-llc.github.io/ese-map-viewer/docs/toggleable-menu.js?v=2';
+                document.body.appendChild(menuScript); 
+            }
+            })
+            .catch(error => {
+            console.error('Error fetching town config data:', error);
+            });
+        
+        applyUrlParams(map);
+        });
+    </script>
 
   <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/control-button.js?v=2"></script>
   <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/control-print.js?v=2"></script>
@@ -131,8 +134,6 @@
   <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/control-scale.js?v=2"></script>
   <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/control-measure.js?v=2"></script>
   <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/control-legend.js?v=2"></script>
-
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/toggleable-menu.js?v=2"></script>
 
   <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/decode-url.js?v=2"></script>
 
