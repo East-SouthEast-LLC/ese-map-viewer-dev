@@ -126,9 +126,10 @@ GEOCODER CONTAINER (for control buttons and search bar)
   gap: 5px;
 }
 
-/* Override Mapbox Geocoder's default min-width to fit our container */
-#geocoder-container .mapboxgl-ctrl-geocoder {
-  min-width: auto;
+/* Override Mapbox Geocoder's default width to fit our container */
+#geocoder .mapboxgl-ctrl-geocoder {
+  width: 220px;
+  min-width: 220px;
 }
 
 /* ============================================================
