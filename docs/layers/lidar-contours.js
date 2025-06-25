@@ -1,13 +1,13 @@
 function addLidarContoursLayer() {
-    map.addSource('contours', {
+    map.addSource('lidar contours', {
         type: 'vector',
         url: 'mapbox://ese-toh.djcjlqsr'
     });
 
     map.addLayer({
-        id: 'contours',
+        id: 'lidar contours',
         type: 'line',
-        source: 'contours',
+        source: 'lidar contours',
         'source-layer': 'CONT-ELBOW-9gwgnx',
         layout: {
             visibility: 'none',
@@ -27,9 +27,9 @@ function addLidarContoursLayer() {
     });
 
     map.addLayer({
-        id: 'contour-labels',
+        id: 'lidar-contour-labels',
         type: 'symbol',
-        source: 'contours',
+        source: 'lidar contours',
         'source-layer': 'CONT-ELBOW-9gwgnx',
         layout: {
             'symbol-placement': 'line',

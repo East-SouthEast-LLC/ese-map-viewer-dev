@@ -88,6 +88,10 @@
             scriptName = "conservancydistricts";
         } else if (layerName === "endangered species") {
             scriptName = "endangered-species";
+        } else if (layerName === "parcel highlight") {
+            scriptName = "parcel-highlight";
+        } else if (layerName === "lidar contours") {
+            scriptName = "lidar-contours";
         }
         script.src = `https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/${scriptName}.js?v=2`;
         document.head.appendChild(script);
