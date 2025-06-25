@@ -126,6 +126,11 @@ CONTROL BUTTON STYLES
   background-color: #f0f0f0;
 }
 
+/* Style for active control buttons */
+#geocoder-container button.active {
+  box-shadow: 0 0 0 2px #007bff; /* Blue outline */
+}
+
 /* Individual icon images */
 .mapboxgl-ctrl-point         { background-image: url('https://www.ese-llc.com/s/marker-blue-random.svg'); }
 .mapboxgl-ctrl-print         { background-image: url('https://img.icons8.com/ios-glyphs/30/000000/print.png'); }

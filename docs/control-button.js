@@ -1,3 +1,5 @@
+// control-button.js
+
 let placingPoint = false;
 let marker = null;
 const markerCoordinates = { lat: null, lng: null };
@@ -30,6 +32,7 @@ function dropPinAtCenter() {
 // Point button: activate placement mode
 document.getElementById('pointButton').addEventListener('click', function () {
     placingPoint = true;
+    this.classList.add('active'); // Add active class
     map.getCanvas().style.cursor = 'crosshair';
     console.log("Click on the map to drop a point.");
 });
@@ -44,6 +47,7 @@ map.on('click', function (event) {
     marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
 
     placingPoint = false;
+    document.getElementById('pointButton').classList.remove('active'); // Remove active class
     map.getCanvas().style.cursor = '';
 });
 
@@ -59,6 +63,7 @@ document.getElementById('pointOffButton').addEventListener('click', function () 
         marker.remove();
         marker = null;
     }
+    document.getElementById('pointButton').classList.remove('active'); // Ensure active class is removed
     markerCoordinates.lat = null;
     markerCoordinates.lng = null;
     console.log("Marker removed.");

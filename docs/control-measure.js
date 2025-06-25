@@ -1,4 +1,4 @@
-// MEASUREMENT CONTROL BUTTON SCRIPT
+// control-measure.js
 
 // ============================================================================
 // HELPER FUNCTIONS FOR MEASUREMENT FUNCTIONALITY
@@ -134,6 +134,7 @@ distanceButton.addEventListener('click', () => {
         map.off('click', addLabel); // Remove the click event listener
         map.getCanvas().style.cursor = ''; // Reset cursor to default
         distanceButtonClicked = false;
+        distanceButton.classList.remove('active'); // Deactivate button
 
         // Calculate total distance and display at the bottom in bold
         const totalDistance = calculateTotalDistance();
@@ -144,6 +145,7 @@ distanceButton.addEventListener('click', () => {
     }
 
     distanceButtonClicked = true; // Mark the button as clicked
+    distanceButton.classList.add('active'); // Activate button
 
     // Change the cursor to crosshairs when the user can click to add labels
     map.getCanvas().style.cursor = 'crosshair';
@@ -178,6 +180,7 @@ clearButton.addEventListener('click', () => {
 
     // Reset the distance button flag to allow reactivating it in the future
     distanceButtonClicked = false;
+    distanceButton.classList.remove('active'); // Deactivate button
 
     // Reset the cursor to default after clearing the labels
     map.getCanvas().style.cursor = '';
