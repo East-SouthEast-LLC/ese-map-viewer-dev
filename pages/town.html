@@ -79,11 +79,15 @@
         // Define the function to load layer scripts
         function loadLayerScript(layerName) {
         const script = document.createElement('script');
-        let scriptName = layerName.replace(/ /g, '-');
+        let scriptName = layerName;
         if (layerName === "DEP wetland") {
             scriptName = "depwetland";
         } else if (layerName === "zone II") {
             scriptName = "zoneii";
+        } else if (layerName === "conservancy districts") {
+            scriptName = "conservancydistricts";
+        } else if (layerName === "endangered species") {
+            scriptName = "endangered-species";
         }
         script.src = `https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/${scriptName}.js?v=2`;
         document.head.appendChild(script);
