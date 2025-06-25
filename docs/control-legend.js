@@ -354,9 +354,11 @@ document.addEventListener("DOMContentLoaded", function () {
         legendVisibility = !legendVisibility;
         if (legendVisibility) {
             legendBox.style.display = 'block';
+            legendButton.classList.add('active');
             updateLegend();
         } else {
             legendBox.style.display = 'none';
+            legendButton.classList.remove('active');
         }
     });
 
