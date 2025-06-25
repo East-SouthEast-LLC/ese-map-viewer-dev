@@ -8,9 +8,9 @@
       "zoom": 12
     },
     "layers": [
+      "parcel highlight",
       "satellite",
       "parcels",
-      "parcel highlight",
       "lidar contours",
       "agis",
       "historic",
