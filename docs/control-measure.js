@@ -9,7 +9,8 @@ document.getElementById('distance-display').style.display = 'none';
 // Global array to store marker positions and labels
 let markerPositions = [];
 let markerCounter = 65; // Start with 'A'
-let distanceButtonClicked = false; // Flag to prevent multiple clicks
+// A state to track the measurement tool's status: 'inactive', 'measuring', 'finalized'
+let measurementState = 'inactive';
 let markers = []; // Array to keep track of marker instances
 
 function addLabel(event) {
@@ -129,29 +130,27 @@ const distanceButton = document.getElementById('distanceButton');
 const clearButton = document.getElementById('clearButton');
 
 distanceButton.addEventListener('click', () => {
-    if (distanceButtonClicked) {
-        // If the button is clicked again, stop adding markers and change the cursor back
-        map.off('click', addLabel); // Remove the click event listener
-        map.getCanvas().style.cursor = ''; // Reset cursor to default
-        distanceButtonClicked = false;
-        distanceButton.classList.remove('active'); // Deactivate button
+    // If inactive, start measuring
+    if (measurementState === 'inactive') {
+        measurementState = 'measuring';
+        distanceButton.classList.add('active');
+        map.getCanvas().style.cursor = 'crosshair';
+        map.on('click', addLabel);
+    } 
+    // If measuring, finalize the measurement
+    else if (measurementState === 'measuring') {
+        measurementState = 'finalized';
+        map.off('click', addLabel);
+        map.getCanvas().style.cursor = '';
 
-        // Calculate total distance and display at the bottom in bold
-        const totalDistance = calculateTotalDistance();
-        const distanceDiv = document.getElementById("distance-display");
-        distanceDiv.innerHTML += `<br><strong>Total Distance: ${totalDistance} feet</strong>`;
-
-        return; // Stop further execution
+        // Calculate and display total distance, if there's anything to measure
+        if (markerPositions.length > 1) {
+            const totalDistance = calculateTotalDistance();
+            const distanceDiv = document.getElementById("distance-display");
+            distanceDiv.innerHTML += `<br><strong>Total Distance: ${totalDistance} feet</strong>`;
+        }
     }
-
-    distanceButtonClicked = true; // Mark the button as clicked
-    distanceButton.classList.add('active'); // Activate button
-
-    // Change the cursor to crosshairs when the user can click to add labels
-    map.getCanvas().style.cursor = 'crosshair';
-
-    // Enable map clicks to add labels
-    map.on('click', addLabel);
+    // If finalized, do nothing until the user clears it
 });
 
 clearButton.addEventListener('click', () => {
@@ -161,10 +160,8 @@ clearButton.addEventListener('click', () => {
 
     // Remove all markers from the map
     markers.forEach(marker => {
-        marker.remove(); // Remove each marker from the map
+        marker.remove();
     });
-
-    // Clear the markers array
     markers = [];
 
     // Remove all dashed lines from the map
@@ -175,16 +172,13 @@ clearButton.addEventListener('click', () => {
     });
 
     // Hide the distance display
-    const distanceDiv = document.getElementById('distance-display');
-    distanceDiv.style.display = 'none';
+    document.getElementById('distance-display').style.display = 'none';
 
-    // Reset the distance button flag to allow reactivating it in the future
-    distanceButtonClicked = false;
-    distanceButton.classList.remove('active'); // Deactivate button
+    // Reset the state and button appearance
+    measurementState = 'inactive';
+    distanceButton.classList.remove('active');
 
-    // Reset the cursor to default after clearing the labels
+    // Reset the cursor and disable the map click event
     map.getCanvas().style.cursor = '';
-
-    // Disable the map click event after clearing
     map.off('click', addLabel);
 });
