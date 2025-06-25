@@ -112,9 +112,15 @@
                 loadLayerScript(layer);
                 });
 
-                // NOW that the layers are set, dynamically load the menu script
+                // Dynamically load the menu script
                 const menuScript = document.createElement('script');
                 menuScript.src = 'https://east-southeast-llc.github.io/ese-map-viewer/docs/toggleable-menu.js?v=2';
+                
+                // This is the crucial part: call the setup function only after the script has fully loaded
+                menuScript.onload = function () {
+                setupToggleableMenu();
+                };
+
                 document.body.appendChild(menuScript); 
             }
             })
