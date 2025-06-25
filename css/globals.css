@@ -107,6 +107,10 @@ GEOCODER CONTAINER (for control buttons and search bar)
   border-radius: 5px;
   padding: 10px;
   box-sizing: border-box;
+
+  /* Add scrolling behavior to the entire container */
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 /* Geocoder input box styling */
@@ -253,14 +257,6 @@ INFO DISPLAY PANELS (for distance and scale)
   box-sizing: border-box;
 }
 
-/* Enable scrolling on toolkit popups to prevent page overflow */
-#distance-display,
-#scale-box,
-#custom-print-box {
-  max-height: 45vh;
-  overflow-y: auto;
-}
-
 /* ==== LEGEND STYLES ==== */
 
 /* main container for the legend */
@@ -272,7 +268,7 @@ INFO DISPLAY PANELS (for distance and scale)
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   margin-top: 5px;
   max-width: 240px;
-  max-height: 45vh; /* Use viewport height for responsiveness */
+  /* max-height is now controlled by geocoder-container */
   overflow-y: auto; 
   width: 100%;
   box-sizing: border-box;
