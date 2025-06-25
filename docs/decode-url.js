@@ -1,5 +1,12 @@
+// docs/decode-url.js
+
 function applyUrlParams(map) {
     const urlParams = new URLSearchParams(window.location.search);
+    const hasParams = urlParams.has('zoom') || urlParams.has('lat') || urlParams.has('layers');
+
+    if (!hasParams) {
+        return; // Exit if no parameters are present
+    }
 
     // Get and set zoom level
     const zoom = parseFloat(urlParams.get('zoom'));
@@ -11,80 +18,58 @@ function applyUrlParams(map) {
     const lat = parseFloat(urlParams.get('lat'));
     const lng = parseFloat(urlParams.get('lng'));
     if (!isNaN(lat) && !isNaN(lng)) {
-        marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map); // Store the marker in the global variable
-        map.setCenter([lng, lat]); // Center the map on the marker
+        // Ensure control-button.js's marker logic is available
+        if (typeof dropPinAtCenter === 'function') {
+            window.marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
+            if(window.markerCoordinates) {
+                window.markerCoordinates.lat = lat;
+                window.markerCoordinates.lng = lng;
+            }
+        }
+        map.setCenter([lng, lat]);
     }
 
-    // Ensure the layers are loaded and then simulate the button click for each layer
-    let layers = urlParams.get('layers')?.split(',') || [];
-    map.on('styledata', function () {
-        layers.forEach(layerId => {
-            // Check if the layer exists in the map style
-            if (map.getLayer(layerId)) {
+    // Get the list of layers from the URL
+    const layers = urlParams.get('layers')?.split(',') || [];
+    
+    layers.forEach(layerId => {
+        const decodedLayerId = decodeURIComponent(layerId);
+        // Check if the layer exists on the map
+        if (map.getLayer(decodedLayerId)) {
+            map.setLayoutProperty(decodedLayerId, 'visibility', 'visible');
 
-                // Toggle layer visibility by changing the layout object's visibility property
-                let visibility = map.getLayoutProperty(layerId, 'visibility');
-                if (visibility === 'none') {
-                    map.setLayoutProperty(layerId, 'visibility', 'visible');
-                }
-
-                // ---------------------------------------------------------------
-                // handle floodplain layers -----------------------------------
-                if (layerId === 'floodplain') {
-                    // toggle the limwa visibility to the same as the floodplain visibility
-                    map.setLayoutProperty('LiMWA', 'visibility', 'visible');
-                    map.setLayoutProperty('floodplain-line', 'visibility', 'visible');
-                    map.setLayoutProperty('floodplain-labels', 'visibility', 'visible');
-                }
-
-                // handle dep wetland layers -----------------------------------
-                if (layerId === 'DEP wetland') {
-                    // toggle the dep line and labels visibility to the same as the dep wetland visibility
-                    map.setLayoutProperty('dep-wetland-line', 'visibility', 'visible');
-                    map.setLayoutProperty('dep-wetland-labels', 'visibility', 'visible');
-                }
-
-                // handle soils layers ----------------------------------------
-                if (layerId === 'soils') {
-                    // toggle the soils line and labels visibility to the same as the soils visibility
-                    map.setLayoutProperty('soils-labels', 'visibility', 'visible');
-                    map.setLayoutProperty('soils-outline', 'visibility', 'visible');
-                }
-
-                // handle zone II layers ----------------------------------------
-                if (layerId === 'zone II') {
-                    // toggle the zone II line and labels visibility to the same as the zone II visibility
-                    map.setLayoutProperty('zone-ii-outline', 'visibility', 'visible');
-                    map.setLayoutProperty('zone-ii-labels', 'visibility', 'visible');
-                }
-
-                // handle endangered species layers -----------------------
-                if (layerId === 'endangered species') {
-                    // toggle the endangered species labels visibility to the same as the endangered species visibility
-                    map.setLayoutProperty('endangered-species-labels', 'visibility', 'visible');
-                    map.setLayoutProperty('vernal-pools', 'visibility', 'visible');
-                    map.setLayoutProperty('vernal-pools-labels', 'visibility', 'visible');
-                }
-                // ------------------------------------------------------------
-
-                // Simulate button click for toggling button colors
-                let buttonList = document.querySelectorAll('a'); // Get all buttons
-                buttonList.forEach(button => {
-                    if (button.textContent.trim() === layerId.trim()) {
-                        // Ensure the button gets the active class for the "on" state
-                        button.classList.add('active');
-                    }
-                });
-            } else {
-                console.warn(`[URL] Layer "${layerId}" not found in the map style.`);
+            // Handle dependent layers
+            if (decodedLayerId === 'floodplain') {
+                map.setLayoutProperty('LiMWA', 'visibility', 'visible');
+                map.setLayoutProperty('floodplain-line', 'visibility', 'visible');
+                map.setLayoutProperty('floodplain-labels', 'visibility', 'visible');
+            } else if (decodedLayerId === 'DEP wetland') {
+                map.setLayoutProperty('dep-wetland-line', 'visibility', 'visible');
+                map.setLayoutProperty('dep-wetland-labels', 'visibility', 'visible');
+            } else if (decodedLayerId === 'soils') {
+                map.setLayoutProperty('soils-labels', 'visibility', 'visible');
+                map.setLayoutProperty('soils-outline', 'visibility', 'visible');
+            } else if (decodedLayerId === 'zone II') {
+                map.setLayoutProperty('zone-ii-outline', 'visibility', 'visible');
+                map.setLayoutProperty('zone-ii-labels', 'visibility', 'visible');
+            } else if (decodedLayerId === 'endangered species') {
+                map.setLayoutProperty('endangered-species-labels', 'visibility', 'visible');
+                map.setLayoutProperty('vernal-pools', 'visibility', 'visible');
+                map.setLayoutProperty('vernal-pools-labels', 'visibility', 'visible');
             }
-        });
 
-        // Nullify the layers array to ensure it's not processed again
-        layers = []; // Clear the array or set it to an empty array
-
-        // Clean the URL (remove parameters but keep the base page)
-        const cleanUrl = window.location.origin + window.location.pathname;
-        window.history.replaceState({}, document.title, cleanUrl);
+            // Update the corresponding button to be active
+            document.querySelectorAll('#menu a').forEach(button => {
+                if (button.textContent.trim() === decodedLayerId) {
+                    button.classList.add('active');
+                }
+            });
+        } else {
+            console.warn(`[URL] Layer "${decodedLayerId}" not found in the map style.`);
+        }
     });
+
+    // Clean the URL to avoid reprocessing on refresh
+    const cleanUrl = window.location.origin + window.location.pathname;
+    window.history.replaceState({}, document.title, cleanUrl);
 }
