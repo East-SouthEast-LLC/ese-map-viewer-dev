@@ -78,13 +78,13 @@ GEOCODER CONTAINER (for control buttons and search bar)
 #geocoder-container {
   display: none; /* Initially hidden */
   position: absolute;
-  top: 0; /* Changed from 10px */
-  left: 186px; /* Changed from 164px */
+  top: 0;
+  left: 186px;
   z-index: 1;
   flex-direction: column;
   gap: 5px;
+  width: 250px; /* Add this line */
   max-width: auto;
-  width: auto;
 }
 
 /* Geocoder input box styling */
