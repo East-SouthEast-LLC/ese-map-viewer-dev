@@ -32,19 +32,22 @@ SCALE CONTROL
 MENU (Layer toggle UI)
 =============================================================== */
 #menu {
-  background: transparent;
+  background: #f9f9f9; /* Changed from transparent */
   position: absolute;
   z-index: 1;
   top: 0;
   left: 20px;
   width: 144px;
-  border: none;
+  border: 1px solid rgba(0, 0, 0, 0.15); /* Added border */
+  border-radius: 5px; /* Added rounded corners */
+  padding: 10px; /* Added padding */
+  box-sizing: border-box; /* Ensures padding is included in width */
   font-family: 'Open Sans', sans-serif;
   
   /* Layout styles */
   display: flex;
   flex-direction: column;
-  gap: 3px; /* Reduced from 5px */
+  gap: 3px;
 }
 
 #menu a {
@@ -94,14 +97,20 @@ GEOCODER CONTAINER (for control buttons and search bar)
   z-index: 1;
   flex-direction: column;
   gap: 5px;
-  width: 250px; /* Add this line */
-  max-width: auto;
+  width: 250px;
+  
+  /* New container styles */
+  background: #f9f9f9; /* Changed from transparent */
+  border: 1px solid rgba(0, 0, 0, 0.15); /* Added border */
+  border-radius: 5px; /* Added rounded corners */
+  padding: 10px; /* Added padding */
+  box-sizing: border-box;
 }
 
 /* Geocoder input box styling */
 #geocoder {
   width: 100%; /* Make the geocoder width dynamic */
-  max-width: 250px; /* Limit to 280px for a maximum width */
+  /* max-width: 250px; -- This is no longer needed */
 }
 
 /* Row layout for grouped control buttons */
