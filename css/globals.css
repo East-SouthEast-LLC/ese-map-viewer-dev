@@ -99,7 +99,7 @@ GEOCODER CONTAINER (for control buttons and search bar)
   z-index: 1;
   flex-direction: column;
   gap: 5px;
-  width: 240px;
+  width: 260px;
   
   /* New container styles */
   background: #f9f9f9;
