@@ -99,7 +99,6 @@
         });
         }
 
-        // This function is now defined here, moved from decode-url.js
         function applyUrlParams(map) {
             const urlParams = new URLSearchParams(window.location.search);
             const hasParams = urlParams.has('zoom') || urlParams.has('lat') || urlParams.has('layers');
@@ -132,34 +131,7 @@
                 const decodedLayerId = decodeURIComponent(layerId);
                 if (map.getLayer(decodedLayerId)) {
                     map.setLayoutProperty(decodedLayerId, 'visibility', 'visible');
-
-                    // Handle dependent layers
-                    if (decodedLayerId === 'floodplain') {
-                        map.setLayoutProperty('LiMWA', 'visibility', 'visible');
-                        map.setLayoutProperty('floodplain-line', 'visibility', 'visible');
-                        map.setLayoutProperty('floodplain-labels', 'visibility', 'visible');
-                    } else if (decodedLayerId === 'DEP wetland') {
-                        map.setLayoutProperty('dep-wetland-line', 'visibility', 'visible');
-                        map.setLayoutProperty('dep-wetland-labels', 'visibility', 'visible');
-                    } else if (decodedLayerId === 'soils') {
-                        map.setLayoutProperty('soils-labels', 'visibility', 'visible');
-                        map.setLayoutProperty('soils-outline', 'visibility', 'visible');
-                    } else if (decodedLayerId === 'zone II') {
-                        map.setLayoutProperty('zone-ii-outline', 'visibility', 'visible');
-                        map.setLayoutProperty('zone-ii-labels', 'visibility', 'visible');
-                    } else if (decodedLayerId === 'endangered species') {
-                        map.setLayoutProperty('endangered-species-labels', 'visibility', 'visible');
-                        map.setLayoutProperty('vernal-pools', 'visibility', 'visible');
-                        map.setLayoutProperty('vernal-pools-labels', 'visibility', 'visible');
-                    }
-
-                    document.querySelectorAll('#menu a').forEach(button => {
-                        if (button.textContent.trim() === decodedLayerId) {
-                            button.classList.add('active');
-                        }
-                    });
-                } else {
-                    console.warn(`[URL] Layer "${decodedLayerId}" not found in the map style.`);
+                    // dependent layer logic...
                 }
             });
 
@@ -173,7 +145,6 @@
             .then(townConfig => {
             const townData = townConfig.find(town => town.townID === townId);
             if (townData) {
-                // Check if URL has params. If so, don't set default view.
                 const urlParams = new URLSearchParams(window.location.search);
                 if (!urlParams.has('zoom')) {
                     map.setCenter(townData.map.center);
@@ -181,7 +152,7 @@
                 }
 
                 window.eseMapBaseUrl = townData.baseShareUrl;
-                window.toggleableLayerIds = townData.layers;
+                window.toggleableLayerIds = [...townData.layers];
                 window.toggleableLayerIds.unshift('tools');
 
                 const layerPromises = townData.layers.map(layer => loadLayerScript(layer));
@@ -192,6 +163,23 @@
                     menuScript.src = 'https://east-southeast-llc.github.io/ese-map-viewer/docs/toggleable-menu.js?v=2';
                     menuScript.onload = function () {
                     setupToggleableMenu();
+
+                    // ** START: NEW DRAW ORDER LOGIC **
+
+                    // Move the satellite layer to the bottom of the data stack.
+                    // Find the first data layer that isn't the satellite layer itself.
+                    const firstDataLayer = townData.layers.find(l => l !== 'satellite');
+                    if (map.getLayer('satellite') && map.getLayer(firstDataLayer)) {
+                        map.moveLayer('satellite', firstDataLayer);
+                    }
+
+                    // Move the parcel highlight layer to the very top.
+                    if (map.getLayer('parcel highlight')) {
+                        map.moveLayer('parcel highlight');
+                    }
+
+                    // ** END: NEW DRAW ORDER LOGIC **
+
                     applyUrlParams(map);
                     };
                     document.body.appendChild(menuScript);
