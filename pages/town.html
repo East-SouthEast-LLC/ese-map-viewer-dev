@@ -79,22 +79,22 @@
         // Define the function to load layer scripts
         function loadLayerScript(layerName) {
         const script = document.createElement('script');
-        let scriptName = layerName;
-        if (layerName === "DEP wetland") {
-            scriptName = "depwetland";
-        } else if (layerName === "zone II") {
-            scriptName = "zoneii";
-        } else if (layerName === "conservancy districts") {
-            scriptName = "conservancydistricts";
-        } else if (layerName === "endangered species") {
-            scriptName = "endangered-species";
-        } else if (layerName === "parcel highlight") {
-            scriptName = "parcel-highlight";
-        } else if (layerName === "lidar contours") {
-            scriptName = "lidar-contours";
-        } else if (layerName === "sewer plans") {
-            scriptName = "sewer-plans";
-        }
+        let scriptName = layerName.replace(/ /g, '-');
+            if (layerName === "DEP wetland") {
+                scriptName = "depwetland";
+            } else if (layerName === "zone II") {
+                scriptName = "zoneii";
+            } else if (layerName === "conservancy districts") {
+                scriptName = "conservancydistricts";
+            } else if (layerName === "endangered species") {
+                scriptName = "endangered-species";
+            } else if (layerName === "parcel highlight") {
+                scriptName = "parcel-highlight";
+            } else if (layerName === "lidar contours") {
+                scriptName = "lidar-contours";
+            } else if (layerName === "sewer plans") {
+                scriptName = "sewer-plans";
+            }
         script.src = `https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/${scriptName}.js?v=2`;
         document.head.appendChild(script);
         }
@@ -117,7 +117,11 @@
 
                 window.eseMapBaseUrl = townData.baseShareUrl;
                 window.toggleableLayerIds = townData.layers;
+                
+                // This is the new line that adds 'tools' to the start of the array
+                window.toggleableLayerIds.unshift('tools');
 
+                // Load the actual data layer scripts (excluding 'tools')
                 townData.layers.forEach(layer => {
                 loadLayerScript(layer);
                 });
@@ -126,7 +130,6 @@
                 const menuScript = document.createElement('script');
                 menuScript.src = 'https://east-southeast-llc.github.io/ese-map-viewer/docs/toggleable-menu.js?v=2';
                 
-                // This is the crucial part: call the setup function only after the script has fully loaded
                 menuScript.onload = function () {
                 setupToggleableMenu();
                 };
