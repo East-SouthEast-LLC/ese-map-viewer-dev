@@ -10,14 +10,15 @@ body {
 MAP CONTAINER
 =============================================================== */
 #map { 
-  /* position: absolute;
-  top: 0; 
-  left: 0;  */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh; /* Make map full screen height */
   z-index: 0;
-  height: 80vh;
-  width: 95vw;
-  margin: 0 auto;
-  display: block;
+  padding-left: 164px; /* Default padding for the layer menu */
+  box-sizing: border-box; /* Ensures padding is included in width calculation */
+  transition: padding-left 0.4s ease; /* Smooth sliding transition */
 }
 
 /* ============================================================
@@ -100,6 +101,12 @@ GEOCODER CONTAINER (for control buttons and search bar)
   display: flex;
   flex-direction: row;
   gap: 5px;
+}
+
+/* This class is added to the body when the toolkit is open */
+body.geocoder-active #map {
+  /* 164px (menu) + 250px (geocoder max-width) + 20px gap */
+  padding-left: 434px; 
 }
 
 /* ============================================================

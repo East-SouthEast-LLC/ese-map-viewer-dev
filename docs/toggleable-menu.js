@@ -1,4 +1,5 @@
-// External js file for toggleable layers menu that appears on the left side of the map
+// toggleable-menu.js
+
 map.on('load', function() {
     // enumerate ids of the layers
     var toggleableLayerIds = ['tools', 'satellite', 'parcels', 'parcel highlight', 'contours', 'agis', 'historic', 'floodplain', 'acec', 'DEP wetland', 'endangered species', 'zone II', 'soils', 'conservancy districts', 'zoning', 'conservation', 'sewer', 'sewer plans', 'stories', 'intersection'];
@@ -24,10 +25,18 @@ map.on('load', function() {
                 if (getComputedStyle(geocoderContainer).display === "none") {
                     geocoderContainer.style.display = "flex";
                     this.className = 'active';
+                    document.body.classList.add('geocoder-active'); // Add class to body
                 } else {
                     geocoderContainer.style.display = "none";
                     this.className = '';
+                    document.body.classList.remove('geocoder-active'); // Remove class from body
                 }
+
+                // Use a timeout to ensure the map resizes after the CSS transition
+                setTimeout(function() {
+                    map.resize();
+                }, 400); // Duration should match the CSS transition duration
+
                 return;
             }
 
