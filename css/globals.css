@@ -99,7 +99,7 @@ GEOCODER CONTAINER (for control buttons and search bar)
   z-index: 1;
   flex-direction: column;
   gap: 5px;
-  width: 240px; /* Reduced to fit content perfectly */
+  width: 240px;
   
   /* New container styles */
   background: #f9f9f9;
@@ -111,7 +111,7 @@ GEOCODER CONTAINER (for control buttons and search bar)
   /* Add scrolling behavior to the entire container */
   max-height: 80vh;
   overflow-y: auto;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
+  overflow-x: hidden;
 }
 
 /* Geocoder input box styling */
@@ -124,6 +124,11 @@ GEOCODER CONTAINER (for control buttons and search bar)
   display: flex;
   flex-direction: row;
   gap: 5px;
+}
+
+/* Override Mapbox Geocoder's default min-width to fit our container */
+#geocoder-container .mapboxgl-ctrl-geocoder {
+  min-width: auto;
 }
 
 /* ============================================================
@@ -269,7 +274,6 @@ INFO DISPLAY PANELS (for distance and scale)
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   margin-top: 5px;
   max-width: 240px;
-  /* max-height is now controlled by geocoder-container */
   overflow-y: auto; 
   width: 100%;
   box-sizing: border-box;
