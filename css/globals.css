@@ -99,7 +99,7 @@ GEOCODER CONTAINER (for control buttons and search bar)
   z-index: 1;
   flex-direction: column;
   gap: 5px;
-  width: 250px;
+  width: 240px; /* Reduced to fit content perfectly */
   
   /* New container styles */
   background: #f9f9f9;
@@ -111,6 +111,7 @@ GEOCODER CONTAINER (for control buttons and search bar)
   /* Add scrolling behavior to the entire container */
   max-height: 80vh;
   overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 /* Geocoder input box styling */

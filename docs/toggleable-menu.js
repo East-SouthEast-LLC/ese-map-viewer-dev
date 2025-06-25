@@ -2,8 +2,8 @@
 
 map.on('load', function() {
     // Define the widths for the side menus based on new CSS
-    const menuOnlyWidth = 220; // Updated from 186
-    const fullToolkitWidth = 490; // Updated from 446
+    const menuOnlyWidth = 220;
+    const fullToolkitWidth = 480; // Updated from 490
 
     // Get the map's container element
     const mapContainer = document.getElementById('map');
