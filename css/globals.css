@@ -35,8 +35,8 @@ MENU (Layer toggle UI)
   background: #fff;
   position: absolute;
   z-index: 1;
-  top: 10px;
-  left: 10px;
+  top: 0; /* Changed from 10px */
+  left: 20px; /* Changed from 10px */
   border-radius: 3px;
   width: 144px;
   border: 1px solid rgba(0, 0, 0, 0.4);
@@ -78,8 +78,8 @@ GEOCODER CONTAINER (for control buttons and search bar)
 #geocoder-container {
   display: none; /* Initially hidden */
   position: absolute;
-  top: 10px;
-  left: 164px;
+  top: 0; /* Changed from 10px */
+  left: 186px; /* Changed from 164px */
   z-index: 1;
   flex-direction: column;
   gap: 5px;

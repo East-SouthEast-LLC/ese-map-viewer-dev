@@ -1,9 +1,9 @@
 // toggleable-menu.js
 
 map.on('load', function() {
-    // Define the widths for the side menus
-    const menuOnlyWidth = 164; // Width for just the layer menu
-    const fullToolkitWidth = 434; // Width for the layer menu + toolkit
+    // Define the widths for the side menus based on new CSS
+    const menuOnlyWidth = 186; // Updated from 164
+    const fullToolkitWidth = 456; // Updated from 434
 
     // Get the map's container element
     const mapContainer = document.getElementById('map');
