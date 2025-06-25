@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>ESE-LLC Map Viewer</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css' rel='stylesheet' />
+    <link href='/css/globals.css' rel='stylesheet' />
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" type="text/css">
+    <script src="https://npmcdn.com/ Turf@5.1.6/turf.min.js"></script>
+</head>
+<body>
+
+<div id='map'></div>
+<div id='toggleable-menu' class='toggleable-menu'></div>
+
+<!-- ESE Scripts -->
+<script src="/docs/decode-url.js"></script>
+<script src="/docs/layers/satellite.js"></script>
+<script src="/docs/layers/parcels.js"></script>
+<script src="/docs/layers/parcel-highlight.js"></script>
+<script src="/docs/layers/contours.js"></script>
+<script src="/docs/layers/lidar-contours.js"></script>
+<script src="/docs/layers/agis.js"></script>
+<script src="/docs/layers/historic.js"></script>
+<script src="/docs/layers/floodplain.js"></script>
+<script src="/docs/layers/acec.js"></script>
+<script src="/docs/layers/depwetland.js"></script>
+<script src="/docs/layers/endangered-species.js"></script>
+<script src="/docs/layers/zoneii.js"></script>
+<script src="/docs/layers/soils.js"></script>
+<script src="/docs/layers/conservancydistricts.js"></script>
+<script src="/docs/layers/zoning.js"></script>
+<script src="/docs/layers/conservation.js"></script>
+<script src="/docs/layers/sewer.js"></script>
+<script src="/docs/layers/sewer-plans.js"></script>
+<script src="/docs/layers/stories.js"></script>
+<script src="/docs/layers/intersection.js"></script>
+<script src="/docs/toggleable-menu.js"></script>
+<script src="/docs/control-button.js"></script>
+<script src="/docs/control-share.js"></script>
+<script src="/docs/control-legend.js"></script>
+<script src="/docs/control-print.js"></script>
+<script src="/docs/control-custom-print.js"></script>
+<script src="/docs/control-print-area.js"></script>
+<script src="/docs/control-measure.js"></script>
+<script src="/docs/control-scale.js"></script>
+
+<script>
+(async () => {
+    // ########################################################################
+    // ### IMPORTANT: SET THE UNIQUE ID FOR THE TOWN HERE ###
+    // ### This ID must match a key in the town-config.json file. ###
+    const townID = 'chatham'; // <-- CHANGE THIS FOR EACH TOWN
+    // ########################################################################
+
+    // --- 1. FETCH AND SET UP TOWN-SPECIFIC CONFIGURATION ---
+    const response = await fetch('/docs/town-config.json');
+    const allTownConfigs = await response.json();
+    const townConfig = allTownConfigs[townID];
+
+    if (!townConfig) {
+        console.error(`Configuration for town '${townID}' not found.`);
+        alert(`Error: Configuration for town '${townID}' not found.`);
+        return;
+    }
+
+    const { townName, baseShareUrl, map: mapConfig, layers: townLayers } = townConfig;
+    const urlState = decodeUrl();
+
+    // --- 2. INITIALIZE THE MAP ---
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZXNlLWxsYyIsImEiOiJjbDNrY2o3aXUwMDJjM2xwZzB4NjBqNmNjIn0.Blv2wQ5-6YxVB1sO7o32uQ';
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/ese-llc/cl4t323x8001z14mu15b36449',
+        center: urlState.center || mapConfig.center,
+        zoom: urlState.zoom || mapConfig.zoom,
+        hash: 'map'
+    });
+
+    // --- 3. ADD MAP CONTROLS ---
+    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    map.addControl(new mapboxgl.ScaleControl({ position: 'bottom-right' }));
+    map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
+    map.addControl(new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        mapboxgl: mapboxgl,
+        marker: false
+    }), 'top-right');
+
+    // --- 4. MAP LOAD EVENT ---
+    map.on('load', () => {
+        // Build the dynamic layer menu
+        toggleableMenu(map, townLayers);
+
+        // Add custom controls
+        addShareControl(map, { baseShareUrl, townName });
+        addLegendControl(map);
+        addPrintControl(map, {
+            northArrow: {
+                url: 'https://ese-llc.com/s/North-Arrow.png',
+                width: 138,
+                height: 138,
+            },
+            logo: {
+                url: 'https://images.squarespace-cdn.com/content/v1/5420337AE4B0AC4771A6B431/1582238426027-8D5C80G9NE92G6S2526C/ESE-V_BLK.png',
+                width: 461,
+                height: 193
+            }
+        });
+        addMeasureControl(map);
+    });
+
+})();
+</script>
+
+</body>
+</html>

@@ -26,16 +26,13 @@
       "sewer plans",
       "stories",
       "intersection"
-    ],
-    "features": {
-      "customPrint": true
-    }
+    ]
   },
   "barnstable": {
     "townName": "Barnstable",
     "baseShareUrl": "https://ese-llc.com/barnstable",
     "map": {
-      "center": [-70.36, 41.660],
+      "center": [-70.360, 41.660],
       "zoom": 12
     },
     "layers": [
@@ -57,9 +54,6 @@
       "sewer",
       "stories",
       "intersection"
-    ],
-    "features": {
-      "customPrint": false
-    }
+    ]
   }
 }
