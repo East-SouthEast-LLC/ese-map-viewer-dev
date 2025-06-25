@@ -66,18 +66,15 @@
 
   <!-- the following script should be set for each individual page -->
   <script>
+    // SET THE TOWN ID HERE
+    const townId = "chatham"; // Example: "chatham", "harwich", etc.    
+
+    // set json config data variable
+    let townConfig = [];
+
     // set the base url for the page
     window.eseMapBaseUrl = "https://ese-llc.com/toc";
 
-    // set the mapbox access token and initialize the map
-    mapboxgl.accessToken = 'pk.eyJ1IjoiZXNlLXRvaCIsImEiOiJja2Vhb24xNTEwMDgxMzFrYjVlaTVjOXkxIn0.IsPo5lOndNUc3lDLuBa1ZA';
-    var map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/ese-toh/ckh2ss32s06i119paer9mt67h',
-      zoom: 12,
-      center: [-69.991, 41.687]
-    });
-    let zoom = { z: 12 };
 
     // add geocoder control to the map
     const geocoder = new MapboxGeocoder({
@@ -85,6 +82,127 @@
       mapboxgl: mapboxgl
     });
     document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+
+
+    /* [
+  {
+    "townID": "chatham",
+    "townName": "Chatham",
+    "baseShareUrl": "https://ese-llc.com/toc",
+    "map": {
+      "center": [-69.991, 41.687],
+      "zoom": 12
+    },
+    "layers": [
+      "satellite",
+      "parcels",
+      "parcel highlight",
+      "lidar contours",
+      "agis",
+      "historic",
+      "floodplain",
+      "acec",
+      "DEP wetland",
+      "endangered species",
+      "zone II",
+      "soils",
+      "conservancy districts",
+      "zoning",
+      "conservation",
+      "sewer",
+      "sewer plans",
+      "stories",
+      "intersection"
+    ]
+  },
+  {
+    "townID": "barnstable",
+    "townName": "Barnstable",
+    "baseShareUrl": "https://ese-llc.com/barnstable",
+    "map": {
+      "center": [-70.360, 41.660],
+      "zoom": 12
+    },
+    "layers": [
+      "satellite",
+      "parcels",
+      "parcel highlight",
+      "contours",
+      "agis",
+      "historic",
+      "floodplain",
+      "acec",
+      "DEP wetland",
+      "endangered species",
+      "zone II",
+      "soils",
+      "conservancy districts",
+      "zoning",
+      "conservation",
+      "sewer",
+      "stories",
+      "intersection"
+    ]
+  }
+]
+    */
+    // Load the town config data
+    fetch('https://east-southeast-llc.github.io/ese-map-viewer/docs/town-config.json')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        townConfig = data;
+      })
+      .catch(error => {
+        console.error('Error fetching town config data:', error);
+        legendBox.innerHTML = "Could not load town config data.";
+      });
+
+
+    // set the mapbox access token
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZXNlLXRvaCIsImEiOiJja2Vhb24xNTEwMDgxMzFrYjVlaTVjOXkxIn0.IsPo5lOndNUc3lDLuBa1ZA';
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/ese-toh/ckh2ss32s06i119paer9mt67h',
+    });
+    
+    window.toggleableLayerIds = [];
+    // check which town is being loaded and set dynamic properties accordingly
+    townConfig.forEach(town => {
+      if (town.townID === townId) {
+        // set the map center and zoom level
+        map.setCenter(town.map.center);
+        map.setZoom(town.map.zoom);
+
+        // for each layer in the towns layers, add it to the toggleableLayers array and import the script for that layer
+        town.layers.forEach(layer => {
+            window.toggleableLayerIds.push(layer);
+            // dynamically import the layer script
+            const script = document.createElement('script');
+            if (layer === "parcel highlight") {
+                layer = "parcel-highlight"; // Adjust the layer name for consistency
+            }
+            else if (layer === "lidar contours") {
+                layer = "lidar-contours"; // Adjust the layer name for consistency
+            }
+            else if (layer === "DEP wetland") {
+                layer = "depwetland"; // Adjust the layer name for consistency
+            }
+            else if (layer === "endangered species") {
+                layer = "endangered-species"; // Adjust the layer name for consistency
+            }
+            else if (layer === "zone II") {
+                layer = "zoneii"; // Adjust the layer name for consistency
+            }
+            script.src = `https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/${layer}.js?v=2`;
+            document.head.appendChild(script);
+        });
+      }
+    });
   </script>
 
   <!-- import control button files -->
@@ -96,29 +214,6 @@
   <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/control-scale.js?v=2"></script>
   <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/control-measure.js?v=2"></script>
   <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/control-legend.js?v=2"></script>
-
-  <!-- import js files for layer menu -->
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/satellite.js?v=2"></script>
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/acec.js?v=2"></script>
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/agis.js?v=2"></script>
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/conservancydistricts.js?v=2"></script>
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/conservation.js?v=2"></script>
-  <!-- <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/contours.js?v=2"></script> -->
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/lidar-contours.js?v=2"></script> 
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/depwetland.js?v=2"></script>
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/endangered-species.js?v=2"></script>
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/floodplain.js?v=2"></script>
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/historic.js?v=2"></script>
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/intersection.js?v=2"></script>
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/parcels.js?v=2"></script>
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/sewer.js?v=2"></script>  
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/sewer-plans.js?v=2"></script>
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/soils.js?v=2"></script>
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/stories.js?v=2"></script>
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/towns.js?v=2"></script>
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/zoneii.js?v=2"></script>
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/zoning.js?v=2"></script>
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/parcel-highlight.js?v=2"></script>
 
   <!-- import file for layer menu -->
   <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/toggleable-menu.js?v=2"></script>

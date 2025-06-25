@@ -1,5 +1,6 @@
-{
-  "chatham": {
+[
+  {
+    "townID": "chatham",
     "townName": "Chatham",
     "baseShareUrl": "https://ese-llc.com/toc",
     "map": {
@@ -28,7 +29,8 @@
       "intersection"
     ]
   },
-  "barnstable": {
+  {
+    "townID": "barnstable",
     "townName": "Barnstable",
     "baseShareUrl": "https://ese-llc.com/barnstable",
     "map": {
@@ -56,4 +58,4 @@
       "intersection"
     ]
   }
-}
+]

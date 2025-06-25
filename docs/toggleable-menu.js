@@ -8,13 +8,9 @@ map.on('load', function() {
     // Get the map's container element
     const mapContainer = document.getElementById('map');
 
-    // enumerate ids of the layers
-    var toggleableLayerIds = ['tools', 'satellite', 'parcels', 'parcel highlight', 'contours', 'agis', 'historic', 'floodplain', 'acec', 'DEP wetland', 'endangered species', 'zone II', 'soils', 'conservancy districts', 'zoning', 'conservation', 'sewer', 'sewer plans', 'stories', 'intersection'];
-
     // set up the corresponding toggle button for each layer
-    for (var i = 0; i < toggleableLayerIds.length; i++) {
-        var id = toggleableLayerIds[i];
-        
+    for (var i = 0; i < window.toggleableLayerIds.length; i++) {
+        var id = window.toggleableLayerIds[i];
         var link = document.createElement('a');
         link.href = '#';
         link.className = '';
