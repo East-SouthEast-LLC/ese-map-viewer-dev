@@ -1,6 +1,13 @@
 // toggleable-menu.js
 
 map.on('load', function() {
+    // Define the widths for the side menus
+    const menuOnlyWidth = 164; // Width for just the layer menu
+    const fullToolkitWidth = 434; // Width for the layer menu + toolkit
+
+    // Get the map's container element
+    const mapContainer = document.getElementById('map');
+
     // enumerate ids of the layers
     var toggleableLayerIds = ['tools', 'satellite', 'parcels', 'parcel highlight', 'contours', 'agis', 'historic', 'floodplain', 'acec', 'DEP wetland', 'endangered species', 'zone II', 'soils', 'conservancy districts', 'zoning', 'conservation', 'sewer', 'sewer plans', 'stories', 'intersection'];
 
@@ -21,18 +28,26 @@ map.on('load', function() {
             // handling for tools/geocoder button and display
             if (clickedLayer === "tools") {
                 var geocoderContainer = document.getElementById("geocoder-container");
-                // Toggle display and set map padding accordingly
+                // Toggle display and set map position accordingly
                 if (getComputedStyle(geocoderContainer).display === "none") {
                     geocoderContainer.style.display = "flex";
                     this.className = 'active';
-                    // Set padding for menu + toolkit
-                    map.setPadding({ left: 434 });
+                    // Adjust map width and margin for the full toolkit
+                    mapContainer.style.width = `calc(95vw - ${fullToolkitWidth}px)`;
+                    mapContainer.style.marginLeft = `${fullToolkitWidth}px`;
                 } else {
                     geocoderContainer.style.display = "none";
                     this.className = '';
-                    // Set padding for menu only
-                    map.setPadding({ left: 164 });
+                    // Adjust map width and margin for the layer menu only
+                    mapContainer.style.width = `calc(95vw - ${menuOnlyWidth}px)`;
+                    mapContainer.style.marginLeft = `${menuOnlyWidth}px`;
                 }
+
+                // Use a timeout to resize the map after the CSS transition
+                setTimeout(function() {
+                    map.resize();
+                }, 400); // This should match the transition duration in the CSS
+
                 return;
             }
 
@@ -103,8 +118,11 @@ map.on('load', function() {
         layers.appendChild(link);
     }
     
-    // Set the initial padding to account for the layer menu on the left
-    map.setPadding({ left: 164 });
+    // Set the initial position of the map to account for the layer menu
+    mapContainer.style.width = `calc(95vw - ${menuOnlyWidth}px)`;
+    mapContainer.style.marginLeft = `${menuOnlyWidth}px`;
+    map.resize();
+
 
     map.addControl(new mapboxgl.ScaleControl({
         maxWidth: 200,
