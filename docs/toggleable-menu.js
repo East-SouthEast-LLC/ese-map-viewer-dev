@@ -21,22 +21,18 @@ map.on('load', function() {
             // handling for tools/geocoder button and display
             if (clickedLayer === "tools") {
                 var geocoderContainer = document.getElementById("geocoder-container");
-                // Toggle display
+                // Toggle display and set map padding accordingly
                 if (getComputedStyle(geocoderContainer).display === "none") {
                     geocoderContainer.style.display = "flex";
                     this.className = 'active';
-                    document.body.classList.add('geocoder-active'); // Add class to body
+                    // Set padding for menu + toolkit
+                    map.setPadding({ left: 434 });
                 } else {
                     geocoderContainer.style.display = "none";
                     this.className = '';
-                    document.body.classList.remove('geocoder-active'); // Remove class from body
+                    // Set padding for menu only
+                    map.setPadding({ left: 164 });
                 }
-
-                // Use a timeout to ensure the map resizes after the CSS transition
-                setTimeout(function() {
-                    map.resize();
-                }, 400); // Duration should match the CSS transition duration
-
                 return;
             }
 
@@ -53,7 +49,6 @@ map.on('load', function() {
 
             // handle floodplain layers -----------------------------------
             if (clickedLayer === 'floodplain') {
-                // toggle the limwa visibility to the same as the floodplain visibility
                 map.setLayoutProperty('LiMWA', 'visibility', newVisibility);
                 map.setLayoutProperty('floodplain-line', 'visibility', newVisibility);
                 map.setLayoutProperty('floodplain-labels', 'visibility', newVisibility);
@@ -61,28 +56,24 @@ map.on('load', function() {
 
             // handle dep wetland layers -----------------------------------
             if (clickedLayer === 'DEP wetland') {
-                // toggle the dep line and labels visibility to the same as the dep wetland visibility
                 map.setLayoutProperty('dep-wetland-line', 'visibility', newVisibility);
                 map.setLayoutProperty('dep-wetland-labels', 'visibility', newVisibility);
             }
 
             // handle soils layers ----------------------------------------
             if (clickedLayer === 'soils') {
-                // toggle the soils line and labels visibility to the same as the soils visibility
                 map.setLayoutProperty('soils-labels', 'visibility', newVisibility);
                 map.setLayoutProperty('soils-outline', 'visibility', newVisibility);
             }
 
             // handle zone II layers ----------------------------------------
             if (clickedLayer === 'zone II') {
-                // toggle the zone II line and labels visibility to the same as the zone II visibility
                 map.setLayoutProperty('zone-ii-outline', 'visibility', newVisibility);
                 map.setLayoutProperty('zone-ii-labels', 'visibility', newVisibility);
             }
 
             // handle endangered species layers -----------------------
             if (clickedLayer === 'endangered species') {
-                // toggle the endangered species labels visibility to the same as the endangered species visibility
                 map.setLayoutProperty('endangered-species-labels', 'visibility', newVisibility);
                 map.setLayoutProperty('vernal-pools', 'visibility', newVisibility);
                 map.setLayoutProperty('vernal-pools-labels', 'visibility', newVisibility);
@@ -90,7 +81,6 @@ map.on('load', function() {
 
             // handle sewer plans layers -----------------------------------
             if (clickedLayer === 'sewer plans') {
-                // toggle the sewer plans outline visibility to the same as the sewer plans visibility
                 map.setLayoutProperty('sewer-plans-outline', 'visibility', newVisibility);
             }
             // ------------------------------------------------------------
@@ -112,6 +102,9 @@ map.on('load', function() {
         var layers = document.getElementById('menu');
         layers.appendChild(link);
     }
+    
+    // Set the initial padding to account for the layer menu on the left
+    map.setPadding({ left: 164 });
 
     map.addControl(new mapboxgl.ScaleControl({
         maxWidth: 200,
