@@ -92,6 +92,8 @@
             scriptName = "parcel-highlight";
         } else if (layerName === "lidar contours") {
             scriptName = "lidar-contours";
+        } else if (layerName === "sewer plans") {
+            scriptName = "sewer-plans";
         }
         script.src = `https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/${scriptName}.js?v=2`;
         document.head.appendChild(script);
