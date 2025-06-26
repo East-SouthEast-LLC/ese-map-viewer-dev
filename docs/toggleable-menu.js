@@ -1,17 +1,15 @@
 // docs/toggleable-menu.js
 
 function setupToggleableMenu() {
-    // Define the widths for the ad and side menus, including margins
-    const adWidth = 130; // 120px for the ad + 10px left margin
-    const menuWidth = 180;
-    const toolkitWidth = 260;
-    
-    // Total width when only the menu is open (Ad + Menu + Margins)
-    const menuOnlyOffset = adWidth + menuWidth + 20; 
-    
-    // Total width when the full toolkit is open (Ad + Menu + Toolkit + Margins)
-    const fullToolkitOffset = adWidth + menuWidth + toolkitWidth + 30;
+    // These offsets are based on the final right-hand edge of the UI panels from globals.css
+    // We'll add a smaller, consistent gap (e.g., 10px) to that edge.
+    const menuRightEdge = 320; // 140px (left) + 180px (width)
+    const toolkitRightEdge = 590; // 330px (left) + 260px (width)
+    const desiredGap = 10; // The space between the UI and the map. You can adjust this value.
 
+    const menuOnlyOffset = menuRightEdge + desiredGap; // Total offset when only the menu is open
+    const fullToolkitOffset = toolkitRightEdge + desiredGap; // Total offset when the toolkit is open
+    
     const mapContainer = document.getElementById('map');
 
     if (window.toggleableLayerIds && window.toggleableLayerIds.length > 0) {
@@ -51,6 +49,7 @@ function setupToggleableMenu() {
                     return;
                 }
     
+                // ... (rest of the layer toggling logic is unchanged)
                 if (!map.getLayer(clickedLayer)) {
                     console.warn("Layer not found:", clickedLayer);
                     return;
@@ -58,10 +57,8 @@ function setupToggleableMenu() {
     
                 const isVisible = map.getLayoutProperty(clickedLayer, 'visibility') === 'visible';
                 const newVisibility = isVisible ? 'none' : 'visible';
-                
                 map.setLayoutProperty(clickedLayer, 'visibility', newVisibility);
-    
-                // Handle dependent layers
+
                 if (clickedLayer === 'floodplain') {
                     map.setLayoutProperty('LiMWA', 'visibility', newVisibility);
                     map.setLayoutProperty('floodplain-line', 'visibility', newVisibility);
