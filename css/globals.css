@@ -279,8 +279,10 @@ INFO DISPLAY PANELS (for distance and scale)
 .legend-item-row {
   display: flex;
   align-items: center;
-  font-size: 12px;
+  width: 100%;
+  margin-bottom: 2px;
 }
+
 
 .color-box {
   width: 15px;
