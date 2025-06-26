@@ -37,21 +37,23 @@ function addPrivatePropertiesUplandLayer() {
             <div style="margin-bottom: 10px;">
                 <label for="lowerLotSizeSlider"><strong>Minimum Lot Size:</strong></label>
             </div>
-            <div style="margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
-                <button id="lowerLotSizeDecrease" style="padding: 3px 8px; cursor: pointer; font-size: 12px; flex-shrink: 0;">&#9660;</button>
-                <input type="range" id="lowerLotSizeSlider" min="0" max="4000000" step="10000" value="80000" style="flex-grow: 1; margin: 0 8px;">
-                <button id="lowerLotSizeIncrease" style="padding: 3px 8px; cursor: pointer; font-size: 12px; flex-shrink: 0;">&#9650;</button>
+            <div class="parcel-slider-row">
+                <button id="lowerLotSizeDecrease">&#9660;</button>
+                <input type="range" id="lowerLotSizeSlider" min="0" max="4000000" step="10000" value="80000">
+                <button id="lowerLotSizeIncrease">&#9650;</button>
             </div>
             <div style="margin-bottom: 10px;" id="lowerParcelCount">Min Lot Size: 80,000 SF</div>
+            
             <div style="margin-bottom: 10px;">
                 <label for="upperLotSizeSlider"><strong>Maximum Lot Size:</strong></label>
             </div>
-            <div style="margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
-                <button id="upperLotSizeDecrease" style="padding: 3px 8px; cursor: pointer; font-size: 12px; flex-shrink: 0;">&#9660;</button>      
-                <input type="range" id="upperLotSizeSlider" min="0" max="4000000" step="10000" value="4000000" style="flex-grow: 1; margin: 0 8px;">
-                <button id="upperLotSizeIncrease" style="padding: 3px 8px; cursor: pointer; font-size: 12px; flex-shrink: 0;">&#9650;</button>
+            <div class="parcel-slider-row">
+                <button id="upperLotSizeDecrease">&#9660;</button>      
+                <input type="range" id="upperLotSizeSlider" min="0" max="4000000" step="10000" value="4000000">
+                <button id="upperLotSizeIncrease">&#9650;</button>
             </div>
             <div style="margin-bottom: 10px;" id="upperParcelCount">Max Lot Size: 4,000,000 SF</div>
+
             <div style="margin-bottom: 10px;">
                 <label style="font-weight: normal;"><input type="checkbox" id="cnsToggle" style="margin-right: 10px;"> Include CNS Parcels</label>
             </div>

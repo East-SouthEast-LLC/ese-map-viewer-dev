@@ -339,6 +339,29 @@ CUSTOM PRINT BOX STYLES
   min-height: 50px;
 }
 
+/* Styles for the container of the slider and its arrow buttons */
+#parcel-controls .parcel-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Adds a small space between the buttons and the slider */
+}
+
+/* Overrides the default button styles ONLY for the small arrow buttons */
+#parcel-controls .parcel-slider-row button {
+  width: auto; /* Allow button to size to its content */
+  height: auto;
+  padding: 4px 8px; /* Make the button smaller */
+  font-size: 10px;
+  line-height: 1;
+  margin-right: 0; /* Remove the default right margin */
+}
+
+/* Ensures the slider track fills the available space without overflowing */
+#parcel-controls .parcel-slider-row input[type="range"] {
+  width: 100%;
+  margin: 0;
+}
+
 /* ============================================================
 PRINT STYLES
 =============================================================== */
