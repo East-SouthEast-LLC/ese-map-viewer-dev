@@ -71,6 +71,27 @@
       "soils",
       "zoning"
     ]
+  },
+  {
+    "townID": "dennis",
+    "townName": "Dennis",
+    "baseShareUrl": "https://ese-llc.com/dennis",
+    "map": {
+      "center": [-70.153, 41.702],
+      "zoom": 11
+    },
+    "layers": [
+      "satellite",
+      "parcels",
+      "parcel highlight",
+      "contours",
+      "floodplain",
+      "DEP wetland",
+      "endangered species",
+      "zone II",
+      "soils",
+      "zoning"
+    ]
   }
 ]
 
