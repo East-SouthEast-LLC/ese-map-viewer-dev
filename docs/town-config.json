@@ -114,6 +114,28 @@
       "soils",
       "zoning"
     ]
+  },
+  {
+    "townID": "orleans",
+    "townName": "Orleans",
+    "baseShareUrl": "https://ese-llc.com/orleans",
+    "map": {
+      "center": [-69.971, 41.772],
+      "zoom": 12
+    },
+    "layers": [
+      "satellite",
+      "parcels",
+      "parcel highlight",
+      "lidar contours",
+      "floodplain",
+      "acec",
+      "DEP wetland",
+      "endangered species",
+      "zone II",
+      "soils",
+      "zoning"
+    ]
   }
 ]
 
