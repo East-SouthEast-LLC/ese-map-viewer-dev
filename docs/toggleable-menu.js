@@ -7,12 +7,15 @@ function setupToggleableMenu() {
     
     const mapContainer = document.getElementById('map');
     const geocoderContainer = document.getElementById("geocoder-container");
-    const toolsButton = document.querySelector('[data-layer-id="tools"]');
+    // The 'toolsButton' constant is removed from here, as it was defined too early.
 
     function openToolkit() {
         if (getComputedStyle(geocoderContainer).display === "none") {
             geocoderContainer.style.display = "flex";
+            // Find the button right when we need it.
+            const toolsButton = document.querySelector('[data-layer-id="tools"]');
             if(toolsButton) toolsButton.classList.add('active');
+            
             mapContainer.style.width = `calc(95vw - ${fullToolkitOffset}px)`;
             mapContainer.style.marginLeft = `${fullToolkitOffset}px`;
             setTimeout(() => map.resize(), 400);
@@ -36,7 +39,8 @@ function setupToggleableMenu() {
                         openToolkit();
                     } else {
                         geocoderContainer.style.display = "none";
-                        if(toolsButton) toolsButton.classList.remove('active');
+                        // 'this' refers to the button that was clicked, so we can use it directly.
+                        this.classList.remove('active');
                         mapContainer.style.width = `calc(95vw - ${menuOnlyOffset}px)`;
                         mapContainer.style.marginLeft = `${menuOnlyOffset}px`;
                         setTimeout(() => map.resize(), 400);
@@ -53,6 +57,7 @@ function setupToggleableMenu() {
                 map.setLayoutProperty(clickedLayer, 'visibility', newVisibility);
                 this.className = newVisibility === 'visible' ? 'active' : '';
 
+                // Handle dependent layers
                 if (clickedLayer === 'private properties upland') {
                     window.toggleUplandControls(newVisibility === 'visible');
                     if (newVisibility === 'visible') openToolkit();
@@ -71,8 +76,8 @@ function setupToggleableMenu() {
                     map.setLayoutProperty('zone-ii-labels', 'visibility', newVisibility);
                 } else if (clickedLayer === 'endangered species') {
                     map.setLayoutProperty('endangered-species-labels', 'visibility', newVisibility);
-                    map.setLayoutProperty('vernal-pools', 'visibility', newVisibility);
-                    map.setLayoutProperty('vernal-pools-labels', 'visibility', newVisibility);
+                    map.setLayoutProperty('vernal-pools', 'visibility', 'visible');
+                    map.setLayoutProperty('vernal-pools-labels', 'visibility', 'visible');
                 } else if (clickedLayer === 'sewer plans') {
                     map.setLayoutProperty('sewer-plans-outline', 'visibility', newVisibility);
                 } else if (clickedLayer === 'lidar contours') {
