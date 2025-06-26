@@ -43,7 +43,6 @@ function addPrivatePropertiesUplandLayer() {
                 <button id="lowerLotSizeIncrease">&#9650;</button>
             </div>
             <div style="margin-bottom: 10px;" id="lowerParcelCount">Min Lot Size: 80,000 SF</div>
-            
             <div style="margin-bottom: 10px;">
                 <label for="upperLotSizeSlider"><strong>Maximum Lot Size:</strong></label>
             </div>
@@ -53,7 +52,6 @@ function addPrivatePropertiesUplandLayer() {
                 <button id="upperLotSizeIncrease">&#9650;</button>
             </div>
             <div style="margin-bottom: 10px;" id="upperParcelCount">Max Lot Size: 4,000,000 SF</div>
-
             <div style="margin-bottom: 10px;">
                 <label style="font-weight: normal;"><input type="checkbox" id="cnsToggle" style="margin-right: 10px;"> Include CNS Parcels</label>
             </div>
@@ -61,6 +59,27 @@ function addPrivatePropertiesUplandLayer() {
                 <strong>Total Parcels:</strong> <span id="parcelCount">0</span>
             </div>
         `;
+    }
+
+    function updateParcelFilter() {
+        // This guard clause is important. If the parcel data isn't ready, do nothing.
+        if (!allParcels.length) return; 
+
+        const lowerLotSizeSlider = document.getElementById('lowerLotSizeSlider');
+        const upperLotSizeSlider = document.getElementById('upperLotSizeSlider');
+        const cnsToggle = document.getElementById('cnsToggle');
+        const parcelCountElement = document.getElementById('parcelCount');
+
+        const minLotSize = parseInt(lowerLotSizeSlider.value);
+        const maxLotSize = parseInt(upperLotSizeSlider.value);
+        const includeCNS = cnsToggle.checked;
+
+        const filteredParcels = allParcels.filter(f => f.properties._LOT_SIZE >= minLotSize && f.properties._LOT_SIZE <= maxLotSize && (includeCNS || f.properties._ZONING !== 'CNS'));
+        parcelCountElement.innerText = filteredParcels.length.toLocaleString();
+
+        let filter = ["all", [">=", ["get", "_LOT_SIZE"], minLotSize], ["<=", ["get", "_LOT_SIZE"], maxLotSize]];
+        if (!includeCNS) filter.push(["!=", ["get", "_ZONING"], "CNS"]);
+        map.setFilter('private properties upland', filter);
     }
 
     // This function sets up the event listeners for the dynamically created controls
@@ -74,18 +93,6 @@ function addPrivatePropertiesUplandLayer() {
         function updateMinLotSize() { lowerParcelCountElement.innerText = `Min Lot Size: ${parseInt(lowerLotSizeSlider.value).toLocaleString()} SF`; }
         function updateMaxLotSize() { upperParcelCountElement.innerText = `Max Lot Size: ${parseInt(upperLotSizeSlider.value).toLocaleString()} SF`; }
         
-        function updateParcelFilter() {
-            if (!allParcels.length) return;
-            const minLotSize = parseInt(lowerLotSizeSlider.value);
-            const maxLotSize = parseInt(upperLotSizeSlider.value);
-            const includeCNS = cnsToggle.checked;
-            const filteredParcels = allParcels.filter(f => f.properties._LOT_SIZE >= minLotSize && f.properties._LOT_SIZE <= maxLotSize && (includeCNS || f.properties._ZONING !== 'CNS'));
-            document.getElementById('parcelCount').innerText = filteredParcels.length.toLocaleString();
-            let filter = ["all", [">=", ["get", "_LOT_SIZE"], minLotSize], ["<=", ["get", "_LOT_SIZE"], maxLotSize]];
-            if (!includeCNS) filter.push(["!=", ["get", "_ZONING"], "CNS"]);
-            map.setFilter('private properties upland', filter);
-        }
-
         function adjustSlider(slider, adjustment, updateFunc) {
             slider.value = parseInt(slider.value) + adjustment;
             updateFunc();
@@ -107,7 +114,6 @@ function addPrivatePropertiesUplandLayer() {
     window.toggleUplandControls = function(show) {
         let controlsDiv = document.getElementById('parcel-controls');
         if (show) {
-            // If the controls don't exist, create them
             if (!controlsDiv) {
                 controlsDiv = document.createElement('div');
                 controlsDiv.id = 'parcel-controls';
@@ -115,12 +121,12 @@ function addPrivatePropertiesUplandLayer() {
                 geocoderContainer.appendChild(controlsDiv);
             }
             controlsDiv.style.display = 'block';
-            // If they haven't been set up yet, attach the event listeners
             if (!controlsInitialized) {
                 initializeControls();
             }
+            // **CHANGE 1: Immediately try to apply the filter when controls are shown.**
+            updateParcelFilter();
         } else {
-            // If the controls exist, just hide them
             if (controlsDiv) {
                 controlsDiv.style.display = 'none';
             }
@@ -131,6 +137,10 @@ function addPrivatePropertiesUplandLayer() {
     map.on('idle', () => {
         if (map.getSource('private properties upland')) {
             allParcels = map.querySourceFeatures('private properties upland', { sourceLayer: 'WELLFLEET_private_upland_2024-8zr5ug' });
+            // **CHANGE 2: If the panel is already open when the data loads, run the filter.**
+            if (document.getElementById('parcel-controls')?.style.display === 'block') {
+                updateParcelFilter();
+            }
         }
     });
 
