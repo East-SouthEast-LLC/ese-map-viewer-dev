@@ -1,8 +1,8 @@
 // docs/toggleable-menu.js
 
 function setupToggleableMenu() {
-    const menuRightEdge = 310;
-    const toolkitRightEdge = 580;
+    const menuRightEdge = 305;
+    const toolkitRightEdge = 575;
     const desiredGap = 10; // The space between the UI and the map. You can adjust this value.
 
     const menuOnlyOffset = menuRightEdge + desiredGap; // Total offset when only the menu is open
