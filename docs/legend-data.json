@@ -322,6 +322,20 @@
         ]
     },
     {
+        "displayName": "Contours",
+        "sources": [
+            { "id": "contours" }
+        ],
+        "items": [
+            {
+                "label": "Contour Line",
+                "color": "#26b24f",
+                "opacity": 1.0,
+                "isLine": true
+            }
+        ]
+    },
+    {
         "displayName": "LIDAR Contours",
         "sources": [
             { "id": "lidar contours", "propertyKey": "Elevation" }
