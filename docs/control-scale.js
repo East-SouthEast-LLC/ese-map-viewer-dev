@@ -1,4 +1,4 @@
-// SCALE CONTROL BUTTON SCRIPT
+// control-scale.js
 
 // ============================================================================
 // HELPER FUNCTIONS FOR SCALE FUNCTIONALITY
@@ -95,20 +95,16 @@ function getPrintScaleBarHTML(map) {
     return `
     <div>
       <svg width="2in" height="0.35in" viewBox="0 0 200 35">
-        <!-- Alternating rectangles -->
         <rect x="10" y="10" width="45" height="8" fill="black"/>
         <rect x="55" y="10" width="45" height="8" fill="white" stroke="black" stroke-width="1"/>
         <rect x="100" y="10" width="45" height="8" fill="black"/>
         <rect x="145" y="10" width="45" height="8" fill="white" stroke="black" stroke-width="1"/>
-        <!-- Main border -->
         <rect x="10" y="10" width="180" height="8" fill="none" stroke="black" stroke-width="1.5"/>
-        <!-- Tick marks -->
         <line x1="10" y1="7" x2="10" y2="22" stroke="black" stroke-width="2"/>
         <line x1="55" y1="11" x2="55" y2="22" stroke="black" stroke-width="1"/>
         <line x1="100" y1="7" x2="100" y2="22" stroke="black" stroke-width="2"/>
         <line x1="145" y1="11" x2="145" y2="22" stroke="black" stroke-width="1"/>
         <line x1="190" y1="7" x2="190" y2="22" stroke="black" stroke-width="2"/>
-        <!-- Labels -->
         <text x="10" y="32" font-size="9" text-anchor="start">0</text>
         <text x="55" y="32" font-size="9" text-anchor="middle">${quarterFeet}</text>
         <text x="100" y="32" font-size="9" text-anchor="middle">${halfFeet}</text>
@@ -186,8 +182,10 @@ document.addEventListener("DOMContentLoaded", function () {
         scaleVisibility = !scaleVisibility;
         if (scaleVisibility) {
             updateScaleBox();
+            scaleZoomButton.classList.add('active');
         } else {
             scaleBoxDiv.style.display = 'none';
+            scaleZoomButton.classList.remove('active');
         }
     });
 
@@ -199,4 +197,3 @@ document.addEventListener("DOMContentLoaded", function () {
         if (scaleVisibility) updateScaleBox();
     });
 });
-

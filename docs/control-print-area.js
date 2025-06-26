@@ -1,4 +1,4 @@
-// PRINT AREA CONTROL BUTTON SCRIPT
+// control-print-area.js
 
 // ============================================================================
 // HELPER FUNCTIONS FOR PRINT AREA FUNCTIONALITY
@@ -105,14 +105,16 @@ document.addEventListener("DOMContentLoaded", function () {
     scaleBoxDiv.style.display = 'none';
 
     pareaButton.addEventListener('click', () => {
+        boundingBoxVisible = !boundingBoxVisible; // Toggle state
         if (boundingBoxVisible) {
-            removeBoundingBox();
-            scaleBoxDiv.style.display = 'none'; // Hide scale box
-        } else {
             updateBoundingBox();
             scaleBoxDiv.style.display = 'block'; // Show scale box
+            pareaButton.classList.add('active'); // Add active class
+        } else {
+            removeBoundingBox();
+            scaleBoxDiv.style.display = 'none'; // Hide scale box
+            pareaButton.classList.remove('active'); // Remove active class
         }
-        boundingBoxVisible = !boundingBoxVisible; // Toggle state
     });
 
     map.on('moveend', () => {

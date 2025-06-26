@@ -10,14 +10,12 @@ body {
 MAP CONTAINER
 =============================================================== */
 #map { 
-  /* position: absolute;
-  top: 0; 
-  left: 0;  */
   z-index: 0;
   height: 80vh;
   width: 95vw;
   margin: 0 auto;
   display: block;
+  transition: width 0.4s ease, margin-left 0.4s ease;
 }
 
 /* ============================================================
@@ -34,40 +32,56 @@ SCALE CONTROL
 MENU (Layer toggle UI)
 =============================================================== */
 #menu {
-  background: #fff;
+  background: #f9f9f9;
   position: absolute;
   z-index: 1;
-  top: 10px;
-  left: 10px;
-  border-radius: 3px;
-  width: 144px;
-  border: 1px solid rgba(0, 0, 0, 0.4);
+  top: 0;
+  left: 20px;
+  width: 180px;
+  max-height: 80vh;
+  overflow-y: auto;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+  padding: 10px;
+  box-sizing: border-box;
   font-family: 'Open Sans', sans-serif;
+  
+  /* Layout styles */
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 
 #menu a {
-  font-size: 13px;
+  font-size: 12px;
   color: #404040;
   display: block;
   margin: 0;
-  padding: 1px;
+  padding: 4px;
   text-decoration: none;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
   text-align: center;
+
+  /* Bubble styles */
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 #menu a:last-child {
-  border: none;
+  border: none; 
 }
 
 #menu a:hover {
-  background-color: #f8f8f8;
+  background-color: #f0f0f0;
   color: #404040;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 #menu a.active {
   background-color: #3887be;
   color: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) inset;
 }
 
 #menu a.active:hover {
@@ -80,19 +94,29 @@ GEOCODER CONTAINER (for control buttons and search bar)
 #geocoder-container {
   display: none; /* Initially hidden */
   position: absolute;
-  top: 10px;
-  left: 164px;
+  top: 0;
+  left: 220px;
   z-index: 1;
   flex-direction: column;
   gap: 5px;
-  max-width: auto;
-  width: auto;
+  width: 260px;
+  
+  /* New container styles */
+  background: #f9f9f9;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+  padding: 10px;
+  box-sizing: border-box;
+
+  /* Add scrolling behavior to the entire container */
+  max-height: 80vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* Geocoder input box styling */
 #geocoder {
-  width: 100%; /* Make the geocoder width dynamic */
-  max-width: 250px; /* Limit to 280px for a maximum width */
+  width: 100%;
 }
 
 /* Row layout for grouped control buttons */
@@ -100,6 +124,12 @@ GEOCODER CONTAINER (for control buttons and search bar)
   display: flex;
   flex-direction: row;
   gap: 5px;
+}
+
+/* Override Mapbox Geocoder's default width to fit our container */
+#geocoder .mapboxgl-ctrl-geocoder {
+  width: 240px;
+  min-width: 220px;
 }
 
 /* ============================================================
@@ -126,13 +156,17 @@ CONTROL BUTTON STYLES
   background-color: #f0f0f0;
 }
 
+/* Style for active control buttons */
+#geocoder-container button.active {
+  box-shadow: 0 0 0 2px #007bff; /* Blue outline */
+}
+
 /* Individual icon images */
 .mapboxgl-ctrl-point         { background-image: url('https://www.ese-llc.com/s/marker-blue-random.svg'); }
 .mapboxgl-ctrl-print         { background-image: url('https://img.icons8.com/ios-glyphs/30/000000/print.png'); }
 .mapboxgl-ctrl-custom-print  { background-image: url('https://east-southeast-llc.github.io/ese-map-viewer/img/custom-print.png'); }
 .mapboxgl-ctrl-measure       { background-image: url('https://www.ese-llc.com/s/marker-blue-measure.svg'); }
 .mapboxgl-ctrl-legend        { background-image: url('https://east-southeast-llc.github.io/ese-map-viewer/img/legend.png'); }
-.mapboxgl-ctrl-zoom          { background-image: url('https://www.ese-llc.com/s/zoom.png'); }
 
 .mapboxgl-ctrl-point-center  { background-image: url('https://www.ese-llc.com/s/marker-blue-center.svg'); }
 .mapboxgl-ctrl-parea         { background-image: url('https://www.ese-llc.com/s/square-50.png'); }
@@ -146,7 +180,7 @@ CONTROL BUTTON STYLES
 SHARE BUTTON 
 =============================================================== */
 #geocoder-container button.mapboxgl-ctrl-share {
-  width: 240px;
+  width: 100%;
   height: 40px;
   background-color: white; 
   color: black;
@@ -157,6 +191,7 @@ SHARE BUTTON
   cursor: pointer;
   text-align: center;
   line-height: 40px;
+  margin-right: 0;
 }
 
 /* ============================================================
@@ -240,7 +275,6 @@ INFO DISPLAY PANELS (for distance and scale)
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   margin-top: 5px;
   max-width: 240px;
-  max-height: 400px;
   overflow-y: auto; 
   width: 100%;
   box-sizing: border-box;
@@ -290,6 +324,15 @@ CUSTOM PRINT BOX STYLES
   max-width: 240px;
   width: 100%;
   box-sizing: border-box;
+}
+
+/* Prevent toolkit popups from squashing in the flex container */
+#distance-display,
+#scale-box,
+#legend-box,
+#custom-print-box {
+  flex-shrink: 0;
+  min-height: 50px;
 }
 
 /* ============================================================
@@ -482,4 +525,15 @@ PRINT STYLES
     border: .5px solid #555;
     margin-right: 5px; /* Tighter margin */
     flex-shrink: 0;
+}
+.legend-item-not-present {
+    font-size: .09in;
+    font-style: italic;
+    color: #555555;
+    margin-top: 3px;
+    padding-left: .1in;
+    font-family: Verdana, sans-serif;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
