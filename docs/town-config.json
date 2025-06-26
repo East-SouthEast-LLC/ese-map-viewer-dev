@@ -7,10 +7,10 @@
       "center": [-69.991, 41.687],
       "zoom": 12
     },
-    "layers": [
-      "parcel highlight",
+    "layers": [ 
       "satellite",
       "parcels",
+      "parcel highlight",
       "lidar contours",
       "agis",
       "historic",
