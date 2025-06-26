@@ -323,6 +323,22 @@ CUSTOM PRINT BOX STYLES
   min-height: 50px;
 }
 
+/* styling for private property upland in wellfleet layer */
+#parcel-controls {
+  display: none; /* Initially hidden, controlled by JS */
+  background: white;
+  color: #333;
+  padding: 10px 15px;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  margin-top: 5px;
+  max-width: 240px; /* This ensures it matches the width of other controls */
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  min-height: 50px;
+}
+
 /* ============================================================
 PRINT STYLES
 =============================================================== */

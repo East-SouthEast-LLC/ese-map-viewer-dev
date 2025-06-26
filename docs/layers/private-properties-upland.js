@@ -1,5 +1,7 @@
+// docs/layers/private-properties-upland.js
+
 function addPrivatePropertiesUplandLayer() {
-    // --- Step 1: Add the Mapbox Layer ---
+    // --- Step 1: Add the Mapbox Layer and Source ---
     map.addSource('private properties upland', {
         type: 'vector',
         url: 'mapbox://ese-toh.7ouj2770'
@@ -24,12 +26,12 @@ function addPrivatePropertiesUplandLayer() {
         }
     });
 
-    // --- Step 2: Define UI creation and logic ---
+    // --- Step 2: Define UI creation and all related logic ---
     const geocoderContainer = document.getElementById('geocoder-container');
     let allParcels = [];
     let controlsInitialized = false;
 
-    // This function creates the HTML for the panel
+    // This function creates the inner HTML for the control panel
     function getControlsHTML() {
         return `
             <div style="margin-bottom: 10px;">
@@ -59,7 +61,7 @@ function addPrivatePropertiesUplandLayer() {
         `;
     }
 
-    // This function sets up the event listeners for the controls
+    // This function sets up the event listeners for the dynamically created controls
     function initializeControls() {
         const lowerLotSizeSlider = document.getElementById('lowerLotSizeSlider');
         const upperLotSizeSlider = document.getElementById('upperLotSizeSlider');
@@ -69,8 +71,9 @@ function addPrivatePropertiesUplandLayer() {
 
         function updateMinLotSize() { lowerParcelCountElement.innerText = `Min Lot Size: ${parseInt(lowerLotSizeSlider.value).toLocaleString()} SF`; }
         function updateMaxLotSize() { upperParcelCountElement.innerText = `Max Lot Size: ${parseInt(upperLotSizeSlider.value).toLocaleString()} SF`; }
+        
         function updateParcelFilter() {
-             if (!allParcels.length) return;
+            if (!allParcels.length) return;
             const minLotSize = parseInt(lowerLotSizeSlider.value);
             const maxLotSize = parseInt(upperLotSizeSlider.value);
             const includeCNS = cnsToggle.checked;
@@ -80,6 +83,7 @@ function addPrivatePropertiesUplandLayer() {
             if (!includeCNS) filter.push(["!=", ["get", "_ZONING"], "CNS"]);
             map.setFilter('private properties upland', filter);
         }
+
         function adjustSlider(slider, adjustment, updateFunc) {
             slider.value = parseInt(slider.value) + adjustment;
             updateFunc();
@@ -97,36 +101,49 @@ function addPrivatePropertiesUplandLayer() {
         controlsInitialized = true;
     }
 
-    // Function to show or hide the controls
+    // This global function is called by toggleable-menu.js to show or hide the controls
     window.toggleUplandControls = function(show) {
         let controlsDiv = document.getElementById('parcel-controls');
         if (show) {
+            // If the controls don't exist, create them
             if (!controlsDiv) {
                 controlsDiv = document.createElement('div');
                 controlsDiv.id = 'parcel-controls';
-                controlsDiv.style.backgroundColor = '#f9f9f9';
-                controlsDiv.style.padding = '15px';
-                controlsDiv.style.borderRadius = '10px';
-                controlsDiv.style.marginTop = '10px';
                 controlsDiv.innerHTML = getControlsHTML();
                 geocoderContainer.appendChild(controlsDiv);
             }
             controlsDiv.style.display = 'block';
+            // If they haven't been set up yet, attach the event listeners
             if (!controlsInitialized) {
                 initializeControls();
             }
         } else {
+            // If the controls exist, just hide them
             if (controlsDiv) {
                 controlsDiv.style.display = 'none';
             }
         }
     };
     
+    // --- Step 3: Map Event Listeners ---
     map.on('idle', () => {
         if (map.getSource('private properties upland')) {
             allParcels = map.querySourceFeatures('private properties upland', { sourceLayer: 'WELLFLEET_private_upland_2024-8zr5ug' });
         }
     });
+
+    map.on('click', 'private properties upland', function (e) {
+        let lotSize = e.features[0].properties["_LOT_SIZE"];
+        let formattedLotSize = parseInt(lotSize).toLocaleString();
+        new mapboxgl.Popup() 
+            .setLngLat(e.lngLat)
+            .setHTML(`Lot Size: <strong>${formattedLotSize} S.F.</strong><br>Owner (2024): <strong>${e.features[0].properties["_OWNER1"]}</strong>`)
+            .addTo(map);
+    });
+
+    map.on('mouseenter', 'private properties upland', () => map.getCanvas().style.cursor = 'pointer');
+    map.on('mouseleave', 'private properties upland', () => map.getCanvas().style.cursor = '');
 }
 
+// Call the main function to set everything up
 addPrivatePropertiesUplandLayer();
