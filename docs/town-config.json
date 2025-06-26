@@ -57,5 +57,35 @@
       "stories",
       "intersection"
     ]
+  },
+  {
+    "townID": "harwich",
+    "townName": "Harwich",
+    "baseShareUrl": "https://ese-llc.com/harwich",
+    "map": {
+      "center": [-70.06, 41.69],
+      "zoom": 11.75
+    },
+    "layers": [
+      "satellite",
+      "parcels",
+      "parcel highlight",
+      "lidar contours",
+      "agis",
+      "historic",
+      "floodplain",
+      "acec",
+      "DEP wetland",
+      "endangered species",
+      "zone II",
+      "soils",
+      "conservancy districts",
+      "zoning",
+      "conservation",
+      "sewer",
+      "stories",
+      "intersection"
+    ]
   }
 ]
+
