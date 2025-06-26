@@ -85,6 +85,17 @@ function setupToggleableMenu() {
                         map.setLayoutProperty('lidar-contour-labels', 'visibility', newVisibility);
                     }
                 }
+
+                if (typeof window.updateLegend === 'function') {
+                    // Use a flag to prevent queuing multiple updates if the user clicks rapidly
+                    if (!map._legendUpdateListenerAdded) {
+                        map._legendUpdateListenerAdded = true;
+                        map.once('idle', function() {
+                            window.updateLegend();
+                            map._legendUpdateListenerAdded = false; // Reset flag after execution
+                        });
+                    }
+                }
             };
     
             document.getElementById('menu').appendChild(link);
