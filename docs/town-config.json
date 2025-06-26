@@ -202,5 +202,26 @@
       "soils",
       "zoning"
     ]
+  },
+  {
+    "townID": "provincetown",
+    "townName": "Provincetown",
+    "baseShareUrl": "https://ese-llc.com/provincetown",
+    "map": {
+      "center": [-70.181, 42.052],
+      "zoom": 12
+    },
+    "layers": [
+      "satellite",
+      "parcels",
+      "parcel highlight",
+      "contours",
+      "floodplain",
+      "DEP wetland",
+      "endangered species",
+      "zone II",
+      "soils",
+      "zoning"
+    ]
   }
 ]
