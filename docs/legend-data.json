@@ -324,12 +324,12 @@
     {
         "displayName": "LIDAR Contours",
         "sources": [
-            { "id": "contours", "propertyKey": "Elevation" }
+            { "id": "lidar contours", "propertyKey": "Elevation" }
         ],
         "items": [
             {
             "code": "__default__",
-            "label": "Contour Line",
+            "label": "2\" Contour Line",
             "color": "#07C327",
             "opacity": 1.0,
             "isLine": true

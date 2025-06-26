@@ -79,6 +79,8 @@ function setupToggleableMenu() {
                     map.setLayoutProperty('vernal-pools-labels', 'visibility', newVisibility);
                 } else if (clickedLayer === 'sewer plans') {
                     map.setLayoutProperty('sewer-plans-outline', 'visibility', newVisibility);
+                } else if (clickedLayer === 'lidar contours') {
+                    map.setLayoutProperty('lidar-contour-labels', 'visibility', newVisibility);
                 }
     
                 // Always update button visual state based on new visibility
