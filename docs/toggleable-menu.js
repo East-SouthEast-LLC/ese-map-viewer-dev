@@ -1,10 +1,8 @@
 // docs/toggleable-menu.js
 
 function setupToggleableMenu() {
-    // These offsets are based on the final right-hand edge of the UI panels from globals.css
-    // We'll add a smaller, consistent gap (e.g., 10px) to that edge.
-    const menuRightEdge = 320; // 140px (left) + 180px (width)
-    const toolkitRightEdge = 590; // 330px (left) + 260px (width)
+    const menuRightEdge = 310;
+    const toolkitRightEdge = 580;
     const desiredGap = 10; // The space between the UI and the map. You can adjust this value.
 
     const menuOnlyOffset = menuRightEdge + desiredGap; // Total offset when only the menu is open
