@@ -38,7 +38,7 @@ function addPrivatePropertiesUplandLayer() {
             </div>
             <div class="parcel-slider-row">
                 <button id="lowerLotSizeDecrease">&#9660;</button>
-                <input type="range" id="lowerLotSizeSlider" min="0" max="4000000" step="10000" value="80000">
+                <input type="range" id="lowerLotSizeSlider" min="0" max="4000000" step="1000" value="80000">
                 <button id="lowerLotSizeIncrease">&#9650;</button>
             </div>
             <div style="margin-bottom: 10px;" id="lowerParcelCount">Min Lot Size: 80,000 SF</div>
