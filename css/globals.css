@@ -49,21 +49,21 @@ MENU (Layer toggle UI)
   /* Layout styles */
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px; /* UPDATED: Was 3px */
 }
 
 #menu a {
-  font-size: 12px;
+  font-size: 11px; /* UPDATED: Was 12px */
   color: #404040;
   display: block;
   margin: 0;
-  padding: 4px;
+  padding: 3px; /* UPDATED: Was 4px */
   text-decoration: none;
   text-align: center;
   font-family: 'Europa', sans-serif;
   text-transform: uppercase;
   font-weight: 400;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em; /* UPDATED: Was 0.06em */
 
   /* Bubble styles */
   background-color: white;
