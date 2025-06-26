@@ -1,0 +1,227 @@
+[
+  {
+    "townID": "chatham",
+    "townName": "Chatham",
+    "baseShareUrl": "https://ese-llc.com/toc",
+    "map": {
+      "center": [-69.991, 41.687],
+      "zoom": 12
+    },
+    "layers": [ 
+      "satellite",
+      "parcels",
+      "parcel highlight",
+      "lidar contours",
+      "agis",
+      "historic",
+      "floodplain",
+      "acec",
+      "DEP wetland",
+      "endangered species",
+      "zone II",
+      "soils",
+      "conservancy districts",
+      "zoning",
+      "conservation",
+      "sewer",
+      "sewer plans",
+      "stories",
+      "intersection"
+    ]
+  },
+  {
+    "townID": "barnstable",
+    "townName": "Barnstable",
+    "baseShareUrl": "https://ese-llc.com/barnstable",
+    "map": {
+      "center": [-70.360, 41.660],
+      "zoom": 12
+    },
+    "layers": [
+      "satellite",
+      "parcels",
+      "parcel highlight",
+      "contours",
+      "floodplain",
+      "acec",
+      "DEP wetland",
+      "endangered species",
+      "zone II",
+      "soils",
+      "zoning"
+    ]
+  },
+  {
+    "townID": "harwich",
+    "townName": "Harwich",
+    "baseShareUrl": "https://ese-llc.com/harwich",
+    "map": {
+      "center": [-70.06, 41.69],
+      "zoom": 11.75
+    },
+    "layers": [
+      "satellite",
+      "parcels",
+      "parcel highlight",
+      "lidar contours",
+      "floodplain",
+      "DEP wetland",
+      "endangered species",
+      "zone II",
+      "soils",
+      "zoning"
+    ]
+  },
+  {
+    "townID": "dennis",
+    "townName": "Dennis",
+    "baseShareUrl": "https://ese-llc.com/dennis",
+    "map": {
+      "center": [-70.153, 41.702],
+      "zoom": 11
+    },
+    "layers": [
+      "satellite",
+      "parcels",
+      "parcel highlight",
+      "contours",
+      "floodplain",
+      "DEP wetland",
+      "endangered species",
+      "zone II",
+      "soils",
+      "zoning"
+    ]
+  },
+  {
+    "townID": "brewster",
+    "townName": "Brewster",
+    "baseShareUrl": "https://ese-llc.com/brewster",
+    "map": {
+      "center": [-70.068, 41.746],
+      "zoom": 12
+    },
+    "layers": [
+      "satellite",
+      "parcels",
+      "parcel highlight",
+      "lidar contours",
+      "floodplain",
+      "acec",
+      "DEP wetland",
+      "endangered species",
+      "zone II",
+      "soils",
+      "zoning"
+    ]
+  },
+  {
+    "townID": "orleans",
+    "townName": "Orleans",
+    "baseShareUrl": "https://ese-llc.com/orleans",
+    "map": {
+      "center": [-69.971, 41.772],
+      "zoom": 12
+    },
+    "layers": [
+      "satellite",
+      "parcels",
+      "parcel highlight",
+      "lidar contours",
+      "floodplain",
+      "acec",
+      "DEP wetland",
+      "endangered species",
+      "zone II",
+      "soils",
+      "zoning"
+    ]
+  },
+  {
+    "townID": "eastham",
+    "townName": "Eastham",
+    "baseShareUrl": "https://ese-llc.com/eastham",
+    "map": {
+      "center": [-69.969, 41.837],
+      "zoom": 12
+    },
+    "layers": [
+      "satellite",
+      "parcels",
+      "parcel highlight",
+      "contours",
+      "floodplain",
+      "acec",
+      "DEP wetland",
+      "endangered species",
+      "zone II",
+      "soils",
+      "zoning"
+    ]
+  },
+  {
+    "townID": "wellfleet",
+    "townName": "Wellfleet",
+    "baseShareUrl": "https://ese-llc.com/wellfleet",
+    "map": {
+      "center": [-70.002, 41.922],
+      "zoom": 11.7
+    },
+    "layers": [
+      "satellite",
+      "parcels",
+      "parcel highlight",
+      "contours",
+      "floodplain",
+      "acec",
+      "DEP wetland",
+      "endangered species",
+      "zone II",
+      "soils",
+      "zoning"
+    ]
+  },
+  {
+    "townID": "truro",
+    "townName": "Truro",
+    "baseShareUrl": "https://ese-llc.com/truro",
+    "map": {
+      "center": [-70.063, 42.018],
+      "zoom": 11.5
+    },
+    "layers": [
+      "satellite",
+      "parcels",
+      "parcel highlight",
+      "contours",
+      "floodplain",
+      "acec",
+      "DEP wetland",
+      "endangered species",
+      "zone II",
+      "soils",
+      "zoning"
+    ]
+  },
+  {
+    "townID": "provincetown",
+    "townName": "Provincetown",
+    "baseShareUrl": "https://ese-llc.com/provincetown",
+    "map": {
+      "center": [-70.181, 42.052],
+      "zoom": 12
+    },
+    "layers": [
+      "satellite",
+      "parcels",
+      "parcel highlight",
+      "contours",
+      "floodplain",
+      "DEP wetland",
+      "endangered species",
+      "zone II",
+      "soils",
+      "zoning"
+    ]
+  }
+]

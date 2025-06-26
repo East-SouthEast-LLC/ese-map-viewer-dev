@@ -12,19 +12,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // ============================================================================
-    // PRESET CONFIGURATIONS
+    // PRESET CONFIGURATIONS -- UPDATED to use 'lidar contours'
     // ============================================================================
     const printPresets = {
         'Conservation': [
-            { page: 1, layers: ['parcel highlight', 'contours', 'floodplain'] },
+            { page: 1, layers: ['parcel highlight', 'lidar contours', 'floodplain'] },
             { page: 2, layers: ['parcel highlight', 'satellite', 'acec'] },
-            { page: 3, layers: ['parcel highlight', 'contours', 'DEP wetland'] },
+            { page: 3, layers: ['parcel highlight', 'lidar contours', 'DEP wetland'] },
             { page: 4, layers: ['parcel highlight', 'satellite', 'endangered species'] }
         ],
         'Test Hole': [
-            { page: 1, layers: ['parcel highlight', 'contours'] },
-            { page: 2, layers: ['parcel highlight', 'floodplain', 'contours'] },
-            { page: 3, layers: ['parcel highlight', 'DEP wetland', 'contours'] },
+            { page: 1, layers: ['parcel highlight', 'lidar contours'] },
+            { page: 2, layers: ['parcel highlight', 'floodplain', 'lidar contours'] },
+            { page: 3, layers: ['parcel highlight', 'DEP wetland', 'lidar contours'] },
             { page: 4, layers: ['parcel highlight', 'zone II',] },
             { page: 5, layers: ['parcel highlight', 'soils'] }
         ]
@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // HELPER FUNCTIONS FOR CUSTOM PRINT FUNCTIONALITY
     // ============================================================================
 
+    // UPDATED to handle 'lidar contours' correctly
     function setLayerVisibility(layerId, visibility) {
         if (map.getLayer(layerId)) {
             map.setLayoutProperty(layerId, 'visibility', visibility);
@@ -58,8 +59,8 @@ document.addEventListener("DOMContentLoaded", function () {
             map.setLayoutProperty('vernal-pools-labels', 'visibility', visibility);
         } else if (layerId === 'sewer plans') {
             map.setLayoutProperty('sewer-plans-outline', 'visibility', visibility);
-        } else if (layerId === 'contours') {
-            map.setLayoutProperty('contour-labels', 'visibility', visibility);
+        } else if (layerId === 'lidar contours') { // Corrected from 'contours'
+            map.setLayoutProperty('lidar-contour-labels', 'visibility', visibility);
         }
     }
 
@@ -87,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function getCustomPrintFormHTML() {
-        // Added a select dropdown for presets
+        // Form HTML remains the same
         return `
             <strong style="display:block; text-align:center; margin-bottom:8px;">Custom Print Details</strong>
             
@@ -153,7 +154,6 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // Get the selected page configuration from the presets object
         const selectedPresetName = document.getElementById('custom-print-preset').value;
         const pageConfigs = printPresets[selectedPresetName];
 
@@ -169,8 +169,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function getPageHTML(printData, mapImageSrc, pageNumber, expectedLayers) {
+        // HTML generation logic remains the same
         const currentDate = new Date().toLocaleDateString();
-        // The HTML structure remains the same, but the call to getLegendForPrint is now passing the expected layers
         return `
             <div class="frame">
                 <div class="top-frame">
@@ -210,11 +210,13 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
     }
 
+    // UPDATED to use the global window.toggleableLayerIds
     async function generateMultiPagePrintout(printData, pageConfigs) {
         console.log(`Generating multi-page printout with preset: ${document.getElementById('custom-print-preset').value}`);
         
         let fullHtml = '';
-        const allToggleableLayers = ['satellite', 'parcels', 'parcel highlight', 'contours', 'agis', 'historic', 'floodplain', 'acec', 'DEP wetland', 'endangered species', 'zone II', 'soils', 'conservancy districts', 'zoning', 'conservation', 'sewer', 'sewer plans', 'stories', 'intersection'];
+        // Use the globally defined layer list, but remove 'tools' for this operation
+        const allToggleableLayers = window.toggleableLayerIds.filter(id => id !== 'tools');
         const initiallyVisibleLayers = listVisibleLayers(map, allToggleableLayers);
         
         if (typeof setMapToScale === 'function') {
@@ -234,7 +236,6 @@ document.addEventListener("DOMContentLoaded", function () {
             await new Promise(resolve => map.once('idle', resolve));
             const mapCanvas = map.getCanvas();
             const mapImageSrc = mapCanvas.toDataURL();
-            // Pass the page-specific layers to getPageHTML
             fullHtml += getPageHTML(printData, mapImageSrc, config.page, config.layers);
             config.layers.forEach(layerId => setLayerVisibility(layerId, 'none'));
         }
@@ -262,19 +263,16 @@ document.addEventListener("DOMContentLoaded", function () {
     // ============================================================================
     
     function attachCustomPrintFormListeners() {
-        // Attach listener for submit button
         const submitButton = document.getElementById('custom-print-submit');
         if (submitButton) {
             submitButton.addEventListener('click', processCustomPrint);
         }
 
-        // Attach listener for save info checkbox
         const saveCheckbox = document.getElementById('save-info-checkbox');
         if (saveCheckbox) {
             saveCheckbox.addEventListener('change', handleCheckboxChange);
         }
 
-        // Attach listener for scale dropdown
         const scaleDropdown = document.getElementById('custom-scale-dropdown');
         const scaleInput = document.getElementById('custom-scale-input');
         if (scaleDropdown && scaleInput) {
@@ -285,7 +283,6 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
         
-        // Attach listener for enter key
         customPrintBox.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
                 event.preventDefault();
@@ -297,7 +294,6 @@ document.addEventListener("DOMContentLoaded", function () {
     function updateCustomPrintBox() {
         customPrintBox.innerHTML = getCustomPrintFormHTML();
 
-        // Dynamically populate the preset dropdown
         const presetDropdown = document.getElementById('custom-print-preset');
         if (presetDropdown) {
             for (const presetName in printPresets) {
