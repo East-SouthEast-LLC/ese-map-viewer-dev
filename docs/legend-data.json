@@ -385,10 +385,67 @@
         ],
         "items": [
             {
-                "label": "Lot Size (Light to Dark Blue)",
+                "label": "80k - 100k SF",
+                "color": "#81d4fa",
+                "opacity": 0.5,
+                "isLine": false,
+                "match": { "property": "_LOT_SIZE", "min": 80000, "max": 99999 }
+            },
+            {
+                "label": "100k - 150k SF",
+                "color": "#4fc3f7",
+                "opacity": 0.5,
+                "isLine": false,
+                "match": { "property": "_LOT_SIZE", "min": 100000, "max": 149999 }
+            },
+            {
+                "label": "150k - 200k SF",
+                "color": "#29b6f6",
+                "opacity": 0.5,
+                "isLine": false,
+                "match": { "property": "_LOT_SIZE", "min": 150000, "max": 199999 }
+            },
+            {
+                "label": "200k - 250k SF",
                 "color": "#03a9f4",
                 "opacity": 0.5,
-                "isLine": false
+                "isLine": false,
+                "match": { "property": "_LOT_SIZE", "min": 200000, "max": 249999 }
+            },
+            {
+                "label": "250k - 300k SF",
+                "color": "#039be5",
+                "opacity": 0.5,
+                "isLine": false,
+                "match": { "property": "_LOT_SIZE", "min": 250000, "max": 299999 }
+            },
+            {
+                "label": "300k - 350k SF",
+                "color": "#0288d1",
+                "opacity": 0.5,
+                "isLine": false,
+                "match": { "property": "_LOT_SIZE", "min": 300000, "max": 349999 }
+            },
+            {
+                "label": "350k - 400k SF",
+                "color": "#0277bd",
+                "opacity": 0.5,
+                "isLine": false,
+                "match": { "property": "_LOT_SIZE", "min": 350000, "max": 399999 }
+            },
+            {
+                "label": "400k - 500k SF",
+                "color": "#01579b",
+                "opacity": 0.5,
+                "isLine": false,
+                "match": { "property": "_LOT_SIZE", "min": 400000, "max": 499999 }
+            },
+            {
+                "label": "> 500k SF",
+                "color": "#003f7f",
+                "opacity": 0.5,
+                "isLine": false,
+                "match": { "property": "_LOT_SIZE", "min": 500000, "max": 99999999 }
             }
         ]
     }
