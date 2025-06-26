@@ -76,8 +76,8 @@ function setupToggleableMenu() {
                     map.setLayoutProperty('zone-ii-labels', 'visibility', newVisibility);
                 } else if (clickedLayer === 'endangered species') {
                     map.setLayoutProperty('endangered-species-labels', 'visibility', newVisibility);
-                    map.setLayoutProperty('vernal-pools', 'visibility', 'visible');
-                    map.setLayoutProperty('vernal-pools-labels', 'visibility', 'visible');
+                    map.setLayoutProperty('vernal-pools', 'visibility', newVisibility);
+                    map.setLayoutProperty('vernal-pools-labels', 'visibility', newVisibility);
                 } else if (clickedLayer === 'sewer plans') {
                     map.setLayoutProperty('sewer-plans-outline', 'visibility', newVisibility);
                 } else if (clickedLayer === 'lidar contours') {
