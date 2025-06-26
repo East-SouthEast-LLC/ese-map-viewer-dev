@@ -5,8 +5,8 @@
 // ============================================================================
 
 function obtainZoom() {
-    zoom.z = map.getZoom(); // Get the zoom level and store it
-    return zoom.z; // Return the zoom level
+    // Return the map's zoom level directly, removing the need for a global variable.
+    return map.getZoom();
 }
 
 function generateShareLink(map, zoomLevel, layerIds) {
@@ -88,12 +88,12 @@ document.getElementById('shareButton').addEventListener('click', function() {
     let zoomLevel = obtainZoom();  // Get the zoom level
 
     // Get visible layers dynamically using the listVisibleLayers function
-    let allLayerIds = ['satellite', 'parcels', 'parcel highlight', 'contours', 'agis', 'historic', 'floodplain', 'acec', 'DEP wetland', 'endangered species', 'zone II', 'soils', 'conservancy districts', 'zoning', 'conservation', 'sewer', 'stories', 'intersection', 'towns', 'placeholder', 'another placeholder']; // All available layers
+    let allLayerIds = window.toggleableLayerIds; // Use the globally defined layer list
     let visibleLayerIds = listVisibleLayers(map, allLayerIds); // Get only the visible layers
 
     // Generate the shareable link with the visible layers
     let shareLink = generateShareLink(map, zoomLevel, visibleLayerIds);
 
-    console.log("Share this link:", shareLink); // Output the link to console (or show it to the user)
+    console.log("Share this link:", shareLink); // Output the link to console
     showSharePopup(shareLink); // Show the share popup
 });

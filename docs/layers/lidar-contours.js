@@ -1,27 +1,24 @@
-map.on('load', function () {
-    map.addSource('contours', {
+function addLidarContoursLayer() {
+    map.addSource('lidar contours', {
         type: 'vector',
         url: 'mapbox://ese-toh.djcjlqsr'
     });
 
     map.addLayer({
-        id: 'contours',
+        id: 'lidar contours',
         type: 'line',
-        source: 'contours',
+        source: 'lidar contours',
         'source-layer': 'CONT-ELBOW-9gwgnx',
         layout: {
-            // make layer invisible by default
             visibility: 'none',
             'line-join': 'round',
             'line-cap': 'round'
-            // 'symbol-placement': 'line',
-            // 'text-field': ['concat', ['to-string', ['get', 'Elevation']], 'ft']
         },
         paint: {
             'line-color': [
                 'match',
                 ['get', 'Elevation'],
-                '-2', //
+                '-2',
                 '#08ADEF',
                 /* other */ '#07C327'
             ],
@@ -29,24 +26,25 @@ map.on('load', function () {
         }
     });
 
-    // Add the contour labels layer
     map.addLayer({
-        id: 'contour-labels',
+        id: 'lidar-contour-labels',
         type: 'symbol',
-        source: 'contours', // Ensure this source exists
-        'source-layer': 'CONT-ELBOW-9gwgnx', // Ensure this layer exists in the source
+        source: 'lidar contours',
+        'source-layer': 'CONT-ELBOW-9gwgnx',
         layout: {
-            'symbol-placement': 'line', // Align labels along the line
-            'symbol-spacing': 100, // Add more labels by reducing spacing (default is 250)
+            'symbol-placement': 'line',
+            'symbol-spacing': 100,
             'text-field': ['concat', ['to-string', ['get', 'Elevation']]],
-            'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'], // Font
-            'text-size': 10, // Text size
-            visibility: 'none', // Initially invisible
+            'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
+            'text-size': 10,
+            visibility: 'none',
         },
         paint: {
-            'text-color': '#07C327', // Label color
-            'text-halo-color': '#ffffff', // Halo for readability
+            'text-color': '#07C327',
+            'text-halo-color': '#ffffff',
             'text-halo-width': 1,
         }
     });
-});
+}
+
+addLidarContoursLayer();
