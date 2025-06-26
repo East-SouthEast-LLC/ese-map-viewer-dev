@@ -60,6 +60,10 @@ MENU (Layer toggle UI)
   padding: 4px;
   text-decoration: none;
   text-align: center;
+  font-family: 'Europa', sans-serif;
+  text-transform: uppercase;
+  font-weight: 400;
+  letter-spacing: 0.06em;
 
   /* Bubble styles */
   background-color: white;
