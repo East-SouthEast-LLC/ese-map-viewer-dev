@@ -92,6 +92,28 @@
       "soils",
       "zoning"
     ]
+  },
+  {
+    "townID": "brewster",
+    "townName": "Brewster",
+    "baseShareUrl": "https://ese-llc.com/brewster",
+    "map": {
+      "center": [-70.068, 41.746],
+      "zoom": 12
+    },
+    "layers": [
+      "satellite",
+      "parcels",
+      "parcel highlight",
+      "lidar contours",
+      "floodplain",
+      "acec",
+      "DEP wetland",
+      "endangered species",
+      "zone II",
+      "soils",
+      "zoning"
+    ]
   }
 ]
 
