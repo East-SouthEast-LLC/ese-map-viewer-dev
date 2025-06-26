@@ -1,5 +1,3 @@
-// docs/toggleable-menu.js
-
 function setupToggleableMenu() {
     const menuRightEdge = 305;
     const toolkitRightEdge = 575;
@@ -55,15 +53,33 @@ function setupToggleableMenu() {
                 map.setLayoutProperty(clickedLayer, 'visibility', newVisibility);
                 this.className = newVisibility === 'visible' ? 'active' : '';
 
-                // --- Special handler for our new layer ---
                 if (clickedLayer === 'private properties upland') {
                     window.toggleUplandControls(newVisibility === 'visible');
-                    if (newVisibility === 'visible') {
-                        openToolkit(); // Auto-open the toolkit
+                    if (newVisibility === 'visible') openToolkit();
+                } else if (clickedLayer === 'floodplain') {
+                    map.setLayoutProperty('LiMWA', 'visibility', newVisibility);
+                    map.setLayoutProperty('floodplain-line', 'visibility', newVisibility);
+                    map.setLayoutProperty('floodplain-labels', 'visibility', newVisibility);
+                } else if (clickedLayer === 'DEP wetland') {
+                    map.setLayoutProperty('dep-wetland-line', 'visibility', newVisibility);
+                    map.setLayoutProperty('dep-wetland-labels', 'visibility', newVisibility);
+                } else if (clickedLayer === 'soils') {
+                    map.setLayoutProperty('soils-labels', 'visibility', newVisibility);
+                    map.setLayoutProperty('soils-outline', 'visibility', newVisibility);
+                } else if (clickedLayer === 'zone II') {
+                    map.setLayoutProperty('zone-ii-outline', 'visibility', newVisibility);
+                    map.setLayoutProperty('zone-ii-labels', 'visibility', newVisibility);
+                } else if (clickedLayer === 'endangered species') {
+                    map.setLayoutProperty('endangered-species-labels', 'visibility', newVisibility);
+                    map.setLayoutProperty('vernal-pools', 'visibility', newVisibility);
+                    map.setLayoutProperty('vernal-pools-labels', 'visibility', newVisibility);
+                } else if (clickedLayer === 'sewer plans') {
+                    map.setLayoutProperty('sewer-plans-outline', 'visibility', newVisibility);
+                } else if (clickedLayer === 'lidar contours') {
+                    if (map.getLayer('lidar-contour-labels')) {
+                        map.setLayoutProperty('lidar-contour-labels', 'visibility', newVisibility);
                     }
                 }
-
-                // ... (rest of dependent layer logic)
             };
     
             document.getElementById('menu').appendChild(link);
