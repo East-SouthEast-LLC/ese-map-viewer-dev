@@ -31,6 +31,8 @@ function loadLayerScript(layerName) {
                 scriptName = "lidar-contours";
             } else if (layerName === "sewer plans") {
                 scriptName = "sewer-plans";
+            } else if (layerName === "private properties upland") {
+                scriptName = "private-properties-upland";
             }
         script.src = `https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/${scriptName}.js?v=2`;
         script.onload = () => resolve();

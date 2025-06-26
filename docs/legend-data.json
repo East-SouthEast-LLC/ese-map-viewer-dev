@@ -377,5 +377,19 @@
                 "isLine": false
             }
         ]
+    },
+    {
+        "displayName": "Private Properties (Upland)",
+        "sources": [
+            { "id": "private properties upland" }
+        ],
+        "items": [
+            {
+                "label": "Lot Size (Light to Dark Blue)",
+                "color": "#03a9f4",
+                "opacity": 0.5,
+                "isLine": false
+            }
+        ]
     }
 ]
