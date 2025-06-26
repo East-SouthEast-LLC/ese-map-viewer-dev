@@ -7,6 +7,16 @@ body {
 }
 
 /* ============================================================
+AD CONTAINER
+=============================================================== */
+#ad-container-vertical {
+  position: absolute;
+  left: 10px;
+  width: 120px;
+  z-index: 2;
+}
+
+/* ============================================================
 MAP CONTAINER
 =============================================================== */
 #map { 
@@ -19,16 +29,6 @@ MAP CONTAINER
 }
 
 /* ============================================================
-SCALE CONTROL 
-=============================================================== */
-#ScaleControl { 
-  position: relative; 
-  top: 0; 
-  left: 0; 
-  width: 80px; 
-}
-
-/* ============================================================
 MENU (Layer toggle UI)
 =============================================================== */
 #menu {
@@ -36,7 +36,7 @@ MENU (Layer toggle UI)
   position: absolute;
   z-index: 1;
   top: 0;
-  left: 20px;
+  left: 140px; /* Adjusted for ad container */
   width: 180px;
   max-height: 80vh;
   overflow-y: auto;
@@ -45,35 +45,27 @@ MENU (Layer toggle UI)
   padding: 10px;
   box-sizing: border-box;
   font-family: 'Open Sans', sans-serif;
-  
-  /* Layout styles */
   display: flex;
   flex-direction: column;
-  gap: 2px; /* UPDATED: Was 3px */
+  gap: 2px;
 }
 
 #menu a {
-  font-size: 11px; /* UPDATED: Was 12px */
+  font-size: 11px;
   color: #404040;
   display: block;
   margin: 0;
-  padding: 3px; /* UPDATED: Was 4px */
+  padding: 3px;
   text-decoration: none;
   text-align: center;
   font-family: 'Europa', sans-serif;
   text-transform: uppercase;
   font-weight: 400;
-  letter-spacing: 0.05em; /* UPDATED: Was 0.06em */
-
-  /* Bubble styles */
+  letter-spacing: 0.05em;
   background-color: white;
   border-radius: 5px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-#menu a:last-child {
-  border: none; 
 }
 
 #menu a:hover {
@@ -88,31 +80,23 @@ MENU (Layer toggle UI)
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) inset;
 }
 
-#menu a.active:hover {
-  background: #3074a4;
-}
-
 /* ============================================================
 GEOCODER CONTAINER (for control buttons and search bar)
 =============================================================== */
 #geocoder-container {
-  display: none; /* Initially hidden */
+  display: none;
   position: absolute;
   top: 0;
-  left: 220px;
+  left: 330px; /* Adjusted for ad container and new menu position */
   z-index: 1;
   flex-direction: column;
   gap: 5px;
   width: 260px;
-  
-  /* New container styles */
   background: #f9f9f9;
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 5px;
   padding: 10px;
   box-sizing: border-box;
-
-  /* Add scrolling behavior to the entire container */
   max-height: 80vh;
   overflow-y: auto;
   overflow-x: hidden;
