@@ -1,7 +1,5 @@
 // docs/main-app.js
 
-// This script will have access to the 'townId' constant defined in town.html
-
 mapboxgl.accessToken = 'pk.eyJ1IjoiZXNlLXRvaCIsImEiOiJja2Vhb24xNTEwMDgxMzFrYjVlaTVjOXkxIn0.IsPo5lOndNUc3lDLuBa1ZA';
 
 var map = new mapboxgl.Map({
@@ -82,45 +80,53 @@ function applyUrlParams(map) {
 }
 
 map.on('load', function () {
-    fetch('https://east-southeast-llc.github.io/ese-map-viewer/docs/town-config.json')
-        .then(response => response.json())
-        .then(townConfig => {
-        const townData = townConfig.find(town => town.townID === townId);
-        if (townData) {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (!urlParams.has('zoom')) {
-                map.setCenter(townData.map.center);
-                map.setZoom(townData.map.zoom);
-            }
+    // Always load the towns layer first
+    loadLayerScript('towns').then(() => {
+        console.log('Towns layer loaded');
+        // Now proceed with the rest of the setup
+        fetch('https://east-southeast-llc.github.io/ese-map-viewer/docs/town-config.json')
+            .then(response => response.json())
+            .then(townConfig => {
+                const townData = townConfig.find(town => town.townID === townId);
+                if (townData) {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    if (!urlParams.has('zoom')) {
+                        map.setCenter(townData.map.center);
+                        map.setZoom(townData.map.zoom);
+                    }
 
-            window.eseMapBaseUrl = townData.baseShareUrl;
-            window.toggleableLayerIds = [...townData.layers];
-            window.toggleableLayerIds.unshift('tools');
+                    window.eseMapBaseUrl = townData.baseShareUrl;
+                    
+                    // Set up the toggleable layers, EXCLUDING the towns layer
+                    window.toggleableLayerIds = townData.layers.filter(l => l !== 'towns');
+                    window.toggleableLayerIds.unshift('tools');
 
-            const layerPromises = townData.layers.map(layer => loadLayerScript(layer));
+                    // Load only the scripts for the toggleable layers
+                    const layerPromises = townData.layers
+                        .filter(l => l !== 'towns') // Ensure we don't load it twice
+                        .map(layer => loadLayerScript(layer));
 
-            Promise.all(layerPromises)
-            .then(() => {
-                const menuScript = document.createElement('script');
-                menuScript.src = 'https://east-southeast-llc.github.io/ese-map-viewer/docs/toggleable-menu.js?v=2';
-                menuScript.onload = function () {
-                setupToggleableMenu();
+                    Promise.all(layerPromises)
+                        .then(() => {
+                            const menuScript = document.createElement('script');
+                            menuScript.src = 'https://east-southeast-llc.github.io/ese-map-viewer/docs/toggleable-menu.js?v=2';
+                            menuScript.onload = function () {
+                                setupToggleableMenu();
 
-                const firstDataLayer = townData.layers.find(l => l !== 'satellite');
-                if (map.getLayer('satellite') && map.getLayer(firstDataLayer)) {
-                    map.moveLayer('satellite', firstDataLayer);
+                                const firstDataLayer = townData.layers.find(l => l !== 'satellite');
+                                if (map.getLayer('satellite') && map.getLayer(firstDataLayer)) {
+                                    map.moveLayer('satellite', firstDataLayer);
+                                }
+                                if (map.getLayer('parcel highlight')) {
+                                    map.moveLayer('parcel highlight');
+                                }
+                                applyUrlParams(map);
+                            };
+                            document.body.appendChild(menuScript);
+                        })
+                        .catch(error => console.error("Error loading layer scripts:", error));
                 }
-
-                if (map.getLayer('parcel highlight')) {
-                    map.moveLayer('parcel highlight');
-                }
-
-                applyUrlParams(map);
-                };
-                document.body.appendChild(menuScript);
             })
-            .catch(error => console.error("Error loading layer scripts:", error));
-        }
-        })
-        .catch(error => console.error('Error fetching town config data:', error));
+            .catch(error => console.error('Error fetching town config data:', error));
+    });
 });
