@@ -12,7 +12,6 @@ AD CONTAINER
 #ad-container-vertical {
   position: absolute;
   left: 10px;
-  top: 10px;
   width: 120px;
   z-index: 2;
 }
