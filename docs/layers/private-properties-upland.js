@@ -116,10 +116,10 @@ function addPrivatePropertiesUplandLayer() {
         lowerLotSizeSlider.addEventListener('input', () => { updateMinLotSize(); updateParcelFilter(); });
         upperLotSizeSlider.addEventListener('input', () => { updateMaxLotSize(); updateParcelFilter(); });
         cnsToggle.addEventListener('change', updateParcelFilter);
-        document.getElementById('lowerLotSizeIncrease').addEventListener('click', () => adjustSlider(lowerLotSizeSlider, 10000, updateMinLotSize));
-        document.getElementById('lowerLotSizeDecrease').addEventListener('click', () => adjustSlider(lowerLotSizeSlider, -10000, updateMinLotSize));
-        document.getElementById('upperLotSizeIncrease').addEventListener('click', () => adjustSlider(upperLotSizeSlider, 10000, updateMaxLotSize));
-        document.getElementById('upperLotSizeDecrease').addEventListener('click', () => adjustSlider(upperLotSizeSlider, -10000, updateMaxLotSize));
+        document.getElementById('lowerLotSizeIncrease').addEventListener('click', () => adjustSlider(lowerLotSizeSlider, 1000, updateMinLotSize));
+        document.getElementById('lowerLotSizeDecrease').addEventListener('click', () => adjustSlider(lowerLotSizeSlider, -1000, updateMinLotSize));
+        document.getElementById('upperLotSizeIncrease').addEventListener('click', () => adjustSlider(upperLotSizeSlider, 1000, updateMaxLotSize));
+        document.getElementById('upperLotSizeDecrease').addEventListener('click', () => adjustSlider(upperLotSizeSlider, -1000, updateMaxLotSize));
         
         controlsInitialized = true;
 
