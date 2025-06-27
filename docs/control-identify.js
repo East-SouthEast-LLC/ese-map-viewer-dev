@@ -6,52 +6,79 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let identifyMode = false;
 
-    // This function runs when the user clicks a point on the map in identify mode
     function handleIdentifyClick(e) {
-        // --- UPDATED: Query ALL available data layers, not just the visible ones ---
         const allQueryableLayers = window.toggleableLayerIds.filter(id => {
-            return id !== 'tools' && map.getLayer(id); // Check if the layer exists on the map
+            return id !== 'tools' && map.getLayer(id);
         });
 
-        // Query the map for features at the clicked point across all available data layers
         const features = map.queryRenderedFeatures(e.point, { layers: allQueryableLayers });
-
-        // --- UPDATED: Changed title from <h4> to a styled <strong> tag ---
         let html = '<div style="max-height: 200px; overflow-y: auto; padding-right: 5px;"><strong style="font-size: 14px;">Features at this Point</strong><hr style="margin: 2px 0 5px;">';
-        
         const foundInfo = new Set();
 
         if (features.length > 0) {
             features.forEach(feature => {
                 let info = '';
-                // The switch statement builds the info string based on the layer
+                const props = feature.properties;
+
+                // --- COMPLETED SWITCH STATEMENT ---
                 switch(feature.layer.id) {
-                    case 'zoning':
-                        info = `<strong>Zoning:</strong> ${feature.properties.TOWNCODE}`;
+                    case 'parcels':
+                        info = `<strong>Parcel Address:</strong> ${props.ADDRESS}`;
                         break;
                     case 'floodplain':
-                        info = `<strong>Flood Zone:</strong> ${feature.properties.FLD_ZONE}`;
-                        break;
-                    case 'historic':
-                        info = `<strong>Historic District:</strong> ${feature.properties.District}`;
-                        break;
-                    case 'acec':
-                        info = `<strong>ACEC:</strong> ${feature.properties.NAME}`;
+                        info = `<strong>Flood Zone:</strong> ${props.FLD_ZONE}`;
                         break;
                     case 'DEP wetland':
-                        info = `<strong>DEP Wetland:</strong> ${feature.properties.IT_VALDESC}`;
+                        info = `<strong>DEP Wetland:</strong> ${props.IT_VALDESC}`;
+                        break;
+                    case 'zoning':
+                        info = `<strong>Zoning:</strong> ${props.TOWNCODE}`;
+                        break;
+                    case 'sewer':
+                        info = `<strong>Sewer Service:</strong> Year ~${props.CONTRACT}`;
+                        break;
+                    case 'sewer plans':
+                        if (props.CONSERV === 'Y') {
+                            info = "<strong>Sewer Plan:</strong> Conservation Property";
+                        } else {
+                            info = `<strong>Sewer Plan:</strong> ID ${props.SHEET || 'N/A'}`;
+                        }
+                        break;
+                    case 'acec':
+                        info = `<strong>ACEC:</strong> ${props.NAME}`;
+                        break;
+                    case 'agis':
+                        info = `<strong>Historic Aerial:</strong> Photo from ${props.DATE}`;
+                        break;
+                    case 'conservancy districts':
+                        info = `<strong>Conservancy:</strong> ${props.CONS_DIST}`;
+                        break;
+                    case 'conservation':
+                        info = `<strong>Conservation:</strong> CCF Parcel`;
                         break;
                     case 'endangered species':
                         info = `<strong>NHESP Habitat:</strong> Priority & Estimated`;
                         break;
+                    case 'vernal pools':
+                        info = `<strong>Vernal Pool:</strong> ID ${props.cvp_num}`;
+                        break;
+                    case 'historic':
+                        info = `<strong>Historic District:</strong> ${props.District}`;
+                        break;
+                    case 'intersection':
+                        info = `<strong>Intersection Project:</strong> ${props.Int_Name}`;
+                        break;
+                    case 'stories':
+                        info = `<strong>Building:</strong> ${props.STORIES} Stories`;
+                        break;
+                    case 'zone II':
+                        info = `<strong>Zone II:</strong> Wellhead Protection Area`;
+                        break;
                     case 'soils':
-                        info = `<strong>Soil Unit:</strong> ${feature.properties.MUSYM}`;
+                        info = `<strong>Soil Unit:</strong> ${props.MUSYM}`;
                         break;
-                    case 'parcels':
-                        info = `<strong>Parcel Address:</strong> ${feature.properties.ADDRESS}`;
-                        break;
-                    // Add other layer cases here
                 }
+                
                 if (info && !foundInfo.has(info)) {
                     html += info + '<br>';
                     foundInfo.add(info);
