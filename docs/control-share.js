@@ -1,26 +1,25 @@
-// SHARE CONTROL BUTTON SCRIPT
-
-// ============================================================================
-// HELPER FUNCTIONS FOR SHARE FUNCTIONALITY
-// ============================================================================
+// docs/control-share.js
 
 function obtainZoom() {
-    // Return the map's zoom level directly, removing the need for a global variable.
     return map.getZoom();
 }
 
-function generateShareLink(map, zoomLevel, layerIds) {
+// UPDATED to accept a 'coords' object as a parameter
+function generateShareLink(map, zoomLevel, coords, layerIds) {
     const baseUrl = window.eseMapBaseUrl || (window.location.origin + window.location.pathname);
-    // Encode each layer name to avoid issues with special characters and spaces
     let encodedLayerIds = layerIds.map(layerId => encodeURIComponent(layerId));
-    // Construct the URL
-    let shareUrl = `${baseUrl}?zoom=${zoomLevel}&lat=${markerCoordinates.lat}&lng=${markerCoordinates.lng}&layers=${encodedLayerIds.join(',')}`;
     
+    // Check if coords exist before trying to use them
+    if (!coords) {
+        console.error("Coordinates are missing for generating share link.");
+        return `${baseUrl}?error=missing_coords`;
+    }
+    
+    let shareUrl = `${baseUrl}?zoom=${zoomLevel}&lat=${coords.lat}&lng=${coords.lng}&layers=${encodedLayerIds.join(',')}`;
     return shareUrl;
 }
 
 function showSharePopup(shareLink) {
-    // Create the modal container
     let modal = document.createElement("div");
     modal.style.position = "fixed";
     modal.style.top = "50%";
@@ -33,67 +32,52 @@ function showSharePopup(shareLink) {
     modal.style.textAlign = "center";
     modal.style.zIndex = "1000";
 
-    // Create the link display
     let linkDisplay = document.createElement("input");
     linkDisplay.type = "text";
     linkDisplay.value = shareLink;
+    linkDisplay.readOnly = true;
     linkDisplay.style.width = "100%";
     linkDisplay.style.marginBottom = "10px";
     linkDisplay.style.padding = "5px";
-    linkDisplay.style.textAlign = "center";
-    linkDisplay.readOnly = true;
 
-    // Create the copy button
     let copyButton = document.createElement("button");
     copyButton.innerText = "Copy Link";
     copyButton.style.marginRight = "10px";
     copyButton.onclick = function () {
-        navigator.clipboard.writeText(shareLink).then(() => {
-            //    alert("Link copied to clipboard!");
-        });
-        document.body.removeChild(modal); // Close popup
+        navigator.clipboard.writeText(shareLink);
+        document.body.removeChild(modal);
     };
 
-    // Create the close button
     let closeButton = document.createElement("button");
     closeButton.innerText = "Close";
     closeButton.onclick = function () {
-        document.body.removeChild(modal); // Close popup
+        document.body.removeChild(modal);
     };
+    
     if (marker) {
         marker.remove();
-        marker = null;  // Nullify the marker reference to ensure it's cleared
+        marker = null;
     }
-    // Add elements to modal
+
     modal.appendChild(linkDisplay);
     modal.appendChild(copyButton);
     modal.appendChild(closeButton);
-
-    // Add modal to document
     document.body.appendChild(modal);
 }
 
-// ============================================================================
-// MAIN SHARE FUNCTION (event listener)
-// ============================================================================
-
 document.getElementById('shareButton').addEventListener('click', function() {
-    // If a marker exists, center the map on it
     if (window.marker) {
         map.flyTo({ center: window.marker.getLngLat(), essential: true });
     }
 
-    // Drop a new pin at the center (overwriting the existing one)
-    let markerCoordinates = dropPinAtCenter();
-    let zoomLevel = obtainZoom();  // Get the zoom level
+    let currentMarkerCoordinates = dropPinAtCenter();
+    let zoomLevel = obtainZoom();
 
-    // Get visible layers dynamically using the listVisibleLayers function
-    let allLayerIds = window.toggleableLayerIds; // Use the globally defined layer list
-    let visibleLayerIds = listVisibleLayers(map, allLayerIds); // Get only the visible layers
+    let visibleLayerIds = listVisibleLayers(map, window.toggleableLayerIds.filter(id => id !== 'tools'));
+    
+    // UPDATED to pass the coordinates object to the function
+    let shareLink = generateShareLink(map, zoomLevel, currentMarkerCoordinates, visibleLayerIds);
 
-    // Generate the shareable link with the visible layers
-    let shareLink = generateShareLink(map, zoomLevel, visibleLayerIds);
-
-    console.log("Share this link:", shareLink); // Output the link to console
-    showSharePopup(shareLink); // Show the share popup
+    console.log("Share this link:", shareLink);
+    showSharePopup(shareLink);
 });
