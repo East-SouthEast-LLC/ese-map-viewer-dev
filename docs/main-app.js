@@ -61,18 +61,14 @@ function applyUrlParams(map) {
     const lat = parseFloat(urlParams.get('lat'));
     const lng = parseFloat(urlParams.get('lng'));
     if (!isNaN(lat) && !isNaN(lng)) {
-        // This check is fine, it just ensures the function from control-button.js is available
         if (typeof dropPinAtCenter === 'function') {
-            // --- THE FIX IS HERE ---
-            // Assign to the global 'marker' variable directly, not 'window.marker'
             marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
-            
-            // Also assign to markerCoordinates directly
             if(markerCoordinates) {
                 markerCoordinates.lat = lat;
                 markerCoordinates.lng = lng;
             }
         }
+        // Set the initial center. The flyTo at the end will correct it.
         map.setCenter([lng, lat]);
     }
 
@@ -85,10 +81,13 @@ function applyUrlParams(map) {
         }
     });
 
-    // This will now work because it's referencing the correct marker object
+    // --- THE FIX ---
+    // This now works because `marker` is the correct, globally-scoped object.
     if (marker) {
+        // This smoothly re-centers the map on the marker as the final step.
         map.flyTo({ center: marker.getLngLat(), essential: true });
     }
+    // --- END OF FIX ---
 
     const cleanUrl = window.location.origin + window.location.pathname;
     window.history.replaceState({}, document.title, cleanUrl);
@@ -122,7 +121,6 @@ map.on('load', function () {
                             menuScript.src = 'https://east-southeast-llc.github.io/ese-map-viewer/docs/toggleable-menu.js?v=2';
                             menuScript.onload = function () {
                                 setupToggleableMenu();
-
                                 const firstDataLayer = townData.layers.find(l => l !== 'satellite');
                                 if (map.getLayer('satellite') && map.getLayer(firstDataLayer)) {
                                     map.moveLayer('satellite', firstDataLayer);
