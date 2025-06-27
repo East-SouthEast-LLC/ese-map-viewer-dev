@@ -1,49 +1,72 @@
 document.addEventListener('DOMContentLoaded', () => {
     const identifyButton = document.getElementById('identifyButton');
-    const identifyBox = document.getElementById('identify-box'); // Get the new container
+    const identifyBox = document.getElementById('identify-box');
     if (!identifyButton || !identifyBox) return;
 
     let identifyMode = false;
 
     function handleIdentifyClick(e) {
+        // Get all possible data layers
         const allQueryableLayers = window.toggleableLayerIds.filter(id => id !== 'tools' && map.getLayer(id));
-        const features = map.queryRenderedFeatures(e.point, { layers: allQueryableLayers });
         
-        let html = '<strong style="font-size: 14px;">Features at this Point</strong><hr style="margin: 2px 0 5px;">';
-        const foundInfo = new Set();
+        // Store the original visibility of each layer so we can restore it later
+        const originalVisibilities = {};
+        allQueryableLayers.forEach(layerId => {
+            originalVisibilities[layerId] = map.getLayoutProperty(layerId, 'visibility') || 'none';
+        });
 
-        if (features.length > 0) {
-            features.forEach(feature => {
-                let info = '';
-                const props = feature.properties;
-                switch(feature.layer.id) {
-                    case 'zoning': info = `<strong>Zoning:</strong> ${props.TOWNCODE}`; break;
-                    case 'floodplain': info = `<strong>Flood Zone:</strong> ${props.FLD_ZONE}`; break;
-                    case 'historic': info = `<strong>Historic District:</strong> ${props.District}`; break;
-                    case 'acec': info = `<strong>ACEC:</strong> ${props.NAME}`; break;
-                    case 'DEP wetland': info = `<strong>DEP Wetland:</strong> ${props.IT_VALDESC}`; break;
-                    case 'endangered species': info = `<strong>NHESP Habitat:</strong> Priority & Estimated`; break;
-                    case 'soils': info = `<strong>Soil Unit:</strong> ${props.MUSYM}`; break;
-                    case 'parcels': info = `<strong>Parcel Address:</strong> ${props.ADDRESS}`; break;
-                    // Add more cases here
-                }
-                if (info && !foundInfo.has(info)) {
-                    html += info + '<br>';
-                    foundInfo.add(info);
-                }
-            });
-             if (foundInfo.size === 0) {
+        // Temporarily make all queryable layers visible so we can query them
+        allQueryableLayers.forEach(layerId => {
+            map.setLayoutProperty(layerId, 'visibility', 'visible');
+        });
+
+        // Wait for the map to finish re-rendering with the layers turned on
+        map.once('idle', () => {
+            // Now, perform the fast query on the rendered features
+            const features = map.queryRenderedFeatures(e.point, { layers: allQueryableLayers });
+            
+            // Build the HTML for the results panel
+            let html = '<strong style="font-size: 14px;">Features at this Point</strong><hr style="margin: 2px 0 5px;">';
+            const foundInfo = new Set();
+
+            if (features.length > 0) {
+                features.forEach(feature => {
+                    let info = '';
+                    const props = feature.properties;
+                    switch(feature.layer.id) {
+                        case 'zoning': info = `<strong>Zoning:</strong> ${props.TOWNCODE}`; break;
+                        case 'floodplain': info = `<strong>Flood Zone:</strong> ${props.FLD_ZONE}`; break;
+                        case 'historic': info = `<strong>Historic District:</strong> ${props.District}`; break;
+                        case 'acec': info = `<strong>ACEC:</strong> ${props.NAME}`; break;
+                        case 'DEP wetland': info = `<strong>DEP Wetland:</strong> ${props.IT_VALDESC}`; break;
+                        case 'endangered species': info = `<strong>NHESP Habitat:</strong> Priority & Estimated`; break;
+                        case 'soils': info = `<strong>Soil Unit:</strong> ${props.MUSYM}`; break;
+                        case 'parcels': info = `<strong>Parcel Address:</strong> ${props.ADDRESS}`; break;
+                        // Add more cases here as needed
+                    }
+                    if (info && !foundInfo.has(info)) {
+                        html += info + '<br>';
+                        foundInfo.add(info);
+                    }
+                });
+            }
+
+            if (foundInfo.size === 0) {
                 html += 'No features found at this location.';
             }
-        } else {
-            html += 'No features found at this location.';
-        }
-        
-        // --- UPDATED: Populate the panel instead of a popup ---
-        identifyBox.innerHTML = html;
-        identifyBox.style.display = 'block';
-        
-        exitIdentifyMode();
+            
+            // Populate our panel in the toolkit
+            identifyBox.innerHTML = html;
+            identifyBox.style.display = 'block';
+
+            // CRITICAL: Revert all layers back to their original visibility state
+            allQueryableLayers.forEach(layerId => {
+                map.setLayoutProperty(layerId, 'visibility', originalVisibilities[layerId]);
+            });
+
+            // Exit identify mode
+            exitIdentifyMode();
+        });
     }
     
     function enterIdentifyMode() {
@@ -58,16 +81,13 @@ document.addEventListener('DOMContentLoaded', () => {
         map.getCanvas().style.cursor = '';
         identifyButton.classList.remove('active');
         map.off('click', handleIdentifyClick);
-        // Do not hide the box here, let it stay visible until the tool is toggled off
     }
 
     identifyButton.addEventListener('click', () => {
         if (identifyMode) {
-            // If we are already in identify mode, clicking the button again will exit
             exitIdentifyMode();
-            identifyBox.style.display = 'none'; // Also hide the box
+            identifyBox.style.display = 'none'; // Hide the box if the tool is turned off
         } else {
-            // Otherwise, enter identify mode
             enterIdentifyMode();
         }
     });
