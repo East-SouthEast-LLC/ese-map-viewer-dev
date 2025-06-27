@@ -6,26 +6,39 @@ document.addEventListener('DOMContentLoaded', () => {
     let identifyMode = false;
 
     function handleIdentifyClick(e) {
-        // Get all possible data layers
+        // --- NEW MARKER LOGIC ---
+        const clickCoords = e.lngLat;
+
+        // First, clear any existing marker to ensure there's only one.
+        if (marker) {
+            marker.remove();
+        }
+
+        // Create a new marker at the clicked location and assign it to the global variable.
+        marker = new mapboxgl.Marker()
+            .setLngLat(clickCoords)
+            .addTo(map);
+        
+        // Also update the global coordinate object so other tools can use it.
+        if(markerCoordinates) {
+            markerCoordinates.lat = clickCoords.lat;
+            markerCoordinates.lng = clickCoords.lng;
+        }
+        // --- END OF NEW MARKER LOGIC ---
+
         const allQueryableLayers = window.toggleableLayerIds.filter(id => id !== 'tools' && map.getLayer(id));
         
-        // Store the original visibility of each layer so we can restore it later
         const originalVisibilities = {};
         allQueryableLayers.forEach(layerId => {
             originalVisibilities[layerId] = map.getLayoutProperty(layerId, 'visibility') || 'none';
         });
 
-        // Temporarily make all queryable layers visible so we can query them
         allQueryableLayers.forEach(layerId => {
             map.setLayoutProperty(layerId, 'visibility', 'visible');
         });
 
-        // Wait for the map to finish re-rendering with the layers turned on
         map.once('idle', () => {
-            // Now, perform the fast query on the rendered features
             const features = map.queryRenderedFeatures(e.point, { layers: allQueryableLayers });
-            
-            // Build the HTML for the results panel
             let html = '<strong style="font-size: 14px;">Features at this Point</strong><hr style="margin: 2px 0 5px;">';
             const foundInfo = new Set();
 
@@ -42,7 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         case 'endangered species': info = `<strong>NHESP Habitat:</strong> Priority & Estimated`; break;
                         case 'soils': info = `<strong>Soil Unit:</strong> ${props.MUSYM}`; break;
                         case 'parcels': info = `<strong>Parcel Address:</strong> ${props.ADDRESS}`; break;
-                        // Add more cases here as needed
                     }
                     if (info && !foundInfo.has(info)) {
                         html += info + '<br>';
@@ -55,16 +67,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 html += 'No features found at this location.';
             }
             
-            // Populate our panel in the toolkit
             identifyBox.innerHTML = html;
             identifyBox.style.display = 'block';
 
-            // CRITICAL: Revert all layers back to their original visibility state
             allQueryableLayers.forEach(layerId => {
                 map.setLayoutProperty(layerId, 'visibility', originalVisibilities[layerId]);
             });
 
-            // Exit identify mode
             exitIdentifyMode();
         });
     }
@@ -86,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
     identifyButton.addEventListener('click', () => {
         if (identifyMode) {
             exitIdentifyMode();
-            identifyBox.style.display = 'none'; // Hide the box if the tool is turned off
+            identifyBox.style.display = 'none';
         } else {
             enterIdentifyMode();
         }
