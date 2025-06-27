@@ -6,25 +6,15 @@ document.addEventListener('DOMContentLoaded', () => {
     let identifyMode = false;
 
     function handleIdentifyClick(e) {
-        // --- NEW MARKER LOGIC ---
         const clickCoords = e.lngLat;
-
-        // First, clear any existing marker to ensure there's only one.
         if (marker) {
             marker.remove();
         }
-
-        // Create a new marker at the clicked location and assign it to the global variable.
-        marker = new mapboxgl.Marker()
-            .setLngLat(clickCoords)
-            .addTo(map);
-        
-        // Also update the global coordinate object so other tools can use it.
+        marker = new mapboxgl.Marker().setLngLat(clickCoords).addTo(map);
         if(markerCoordinates) {
             markerCoordinates.lat = clickCoords.lat;
             markerCoordinates.lng = clickCoords.lng;
         }
-        // --- END OF NEW MARKER LOGIC ---
 
         const allQueryableLayers = window.toggleableLayerIds.filter(id => id !== 'tools' && map.getLayer(id));
         
@@ -46,16 +36,65 @@ document.addEventListener('DOMContentLoaded', () => {
                 features.forEach(feature => {
                     let info = '';
                     const props = feature.properties;
+                    
+                    // --- COMPLETED SWITCH STATEMENT ---
                     switch(feature.layer.id) {
-                        case 'zoning': info = `<strong>Zoning:</strong> ${props.TOWNCODE}`; break;
-                        case 'floodplain': info = `<strong>Flood Zone:</strong> ${props.FLD_ZONE}`; break;
-                        case 'historic': info = `<strong>Historic District:</strong> ${props.District}`; break;
-                        case 'acec': info = `<strong>ACEC:</strong> ${props.NAME}`; break;
-                        case 'DEP wetland': info = `<strong>DEP Wetland:</strong> ${props.IT_VALDESC}`; break;
-                        case 'endangered species': info = `<strong>NHESP Habitat:</strong> Priority & Estimated`; break;
-                        case 'soils': info = `<strong>Soil Unit:</strong> ${props.MUSYM}`; break;
-                        case 'parcels': info = `<strong>Parcel Address:</strong> ${props.ADDRESS}`; break;
+                        case 'parcels':
+                            info = `<strong>Parcel Address:</strong> ${props.ADDRESS}`;
+                            break;
+                        case 'zoning':
+                            info = `<strong>Zoning:</strong> ${props.TOWNCODE}`;
+                            break;
+                        case 'floodplain':
+                            info = `<strong>Flood Zone:</strong> ${props.FLD_ZONE}`;
+                            break;
+                        case 'soils':
+                            info = `<strong>Soil Unit:</strong> ${props.MUSYM}`;
+                            break;
+                        case 'DEP wetland':
+                            info = `<strong>DEP Wetland:</strong> ${props.IT_VALDESC}`;
+                            break;
+                        case 'endangered species':
+                            info = `<strong>NHESP Habitat:</strong> Priority & Estimated`;
+                            break;
+                        case 'vernal pools':
+                             info = `<strong>Vernal Pool:</strong> ID ${props.cvp_num}`;
+                             break;
+                        case 'acec':
+                            info = `<strong>ACEC:</strong> ${props.NAME}`;
+                            break;
+                        case 'historic':
+                            info = `<strong>Historic District:</strong> ${props.District}`;
+                            break;
+                        case 'zone II':
+                            info = `<strong>Zone II:</strong> Wellhead Protection Area`;
+                            break;
+                        case 'conservancy districts':
+                            info = `<strong>Conservancy:</strong> ${props.CONS_DIST}`;
+                            break;
+                        case 'conservation':
+                            info = `<strong>Conservation:</strong> CCF Parcel`;
+                            break;
+                        case 'sewer':
+                            info = `<strong>Sewer Service:</strong> Year ~${props.CONTRACT}`;
+                            break;
+                        case 'sewer plans':
+                            info = `<strong>Sewer Plan:</strong> ID ${props.SHEET || 'N/A'}`;
+                            break;
+                        case 'stories':
+                            info = `<strong>Building:</strong> ${props.STORIES} Stories`;
+                            break;
+                        case 'intersection':
+                            info = `<strong>Intersection Project:</strong> ${props.Int_Name}`;
+                            break;
+                        case 'agis':
+                            info = `<strong>Historic Aerial:</strong> Photo from ${props.DATE}`;
+                            break;
+                        case 'private properties upland':
+                            info = `<strong>Upland Parcel:</strong> Lot Size ${props._LOT_SIZE.toLocaleString()} SF`;
+                            break;
                     }
+
                     if (info && !foundInfo.has(info)) {
                         html += info + '<br>';
                         foundInfo.add(info);
@@ -64,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (foundInfo.size === 0) {
-                html += 'No features found at this location.';
+                html += 'No data features found at this location.';
             }
             
             identifyBox.innerHTML = html;
