@@ -1,30 +1,30 @@
+// docs/control-identify.js
+
 document.addEventListener('DOMContentLoaded', () => {
     const identifyButton = document.getElementById('identifyButton');
     if (!identifyButton) return;
 
     let identifyMode = false;
 
+    // This function runs when the user clicks a point on the map in identify mode
     function handleIdentifyClick(e) {
-        const visibleLayers = window.toggleableLayerIds.filter(id => {
-            return id !== 'tools' && map.getLayer(id) && map.getLayoutProperty(id, 'visibility') === 'visible';
+        // --- UPDATED: Query ALL available data layers, not just the visible ones ---
+        const allQueryableLayers = window.toggleableLayerIds.filter(id => {
+            return id !== 'tools' && map.getLayer(id); // Check if the layer exists on the map
         });
 
-        if (visibleLayers.length === 0) {
-            new mapboxgl.Popup()
-                .setLngLat(e.lngLat)
-                .setHTML("<strong>No data layers are active.</strong>")
-                .addTo(map);
-            exitIdentifyMode();
-            return;
-        }
+        // Query the map for features at the clicked point across all available data layers
+        const features = map.queryRenderedFeatures(e.point, { layers: allQueryableLayers });
 
-        const features = map.queryRenderedFeatures(e.point, { layers: visibleLayers });
-        let html = '<div style="max-height: 200px; overflow-y: auto; padding-right: 5px;"><h4>Features at this Point</h4>';
+        // --- UPDATED: Changed title from <h4> to a styled <strong> tag ---
+        let html = '<div style="max-height: 200px; overflow-y: auto; padding-right: 5px;"><strong style="font-size: 14px;">Features at this Point</strong><hr style="margin: 2px 0 5px;">';
+        
         const foundInfo = new Set();
 
         if (features.length > 0) {
             features.forEach(feature => {
                 let info = '';
+                // The switch statement builds the info string based on the layer
                 switch(feature.layer.id) {
                     case 'zoning':
                         info = `<strong>Zoning:</strong> ${feature.properties.TOWNCODE}`;
