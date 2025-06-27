@@ -1,8 +1,7 @@
 // control-button.js
 
-let placingPoint = false;
-let marker = null;
-const markerCoordinates = { lat: null, lng: null };
+// The marker and markerCoordinates variables are now defined in main-app.js,
+// so they are removed from this file to avoid conflicts.
 
 function setPinPosition(lat, lng) {
     markerCoordinates.lat = lat;
@@ -12,19 +11,16 @@ function setPinPosition(lat, lng) {
 
 function dropPinAtCenter() {
     if (marker) {
-        // A marker exists, center the map on it
         let { lng, lat } = marker.getLngLat();
-        markerCoordinates.lng = lng;  // update the coordinate values
+        markerCoordinates.lng = lng;
         markerCoordinates.lat = lat;
         map.flyTo({ center: markerCoordinates, essential: true });
     } else {
-        // No marker exists, create one at the map's center
         let center = map.getCenter();
         marker = new mapboxgl.Marker().setLngLat(center).addTo(map);
         markerCoordinates.lng = center.lng;
         markerCoordinates.lat = center.lat;
     }
-
     console.log(`Marker Coordinates: ${markerCoordinates.lng}, ${markerCoordinates.lat}`);
     return markerCoordinates;
 }
@@ -32,7 +28,7 @@ function dropPinAtCenter() {
 // Point button: activate placement mode
 document.getElementById('pointButton').addEventListener('click', function () {
     placingPoint = true;
-    this.classList.add('active'); // Add active class
+    this.classList.add('active');
     map.getCanvas().style.cursor = 'crosshair';
     console.log("Click on the map to drop a point.");
 });
@@ -47,7 +43,7 @@ map.on('click', function (event) {
     marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
 
     placingPoint = false;
-    document.getElementById('pointButton').classList.remove('active'); // Remove active class
+    document.getElementById('pointButton').classList.remove('active');
     map.getCanvas().style.cursor = '';
 });
 
@@ -63,26 +59,23 @@ document.getElementById('pointOffButton').addEventListener('click', function () 
         marker.remove();
         marker = null;
     }
-    document.getElementById('pointButton').classList.remove('active'); // Ensure active class is removed
+    document.getElementById('pointButton').classList.remove('active');
     markerCoordinates.lat = null;
     markerCoordinates.lng = null;
     console.log("Marker removed.");
 });
 
-// List Visible Layers - the major Label IDs
 function listVisibleLayers(map, layerIds) {
   if (!Array.isArray(layerIds)) {
     console.error("layerIds must be an array.");
     return [];
   }
-
   const visibleLayers = [];
   layerIds.forEach(layerId => {
-    // Check if the layer exists in the map style
     if (map.getLayer(layerId)) {
       const visibility = map.getLayoutProperty(layerId, 'visibility');
       if (visibility === 'visible') {
-        visibleLayers.push(layerId);  // Add visible layers to the array
+        visibleLayers.push(layerId);
       }
     } else {
       console.warn(`Layer "${layerId}" not found in the current map style.`);
@@ -91,37 +84,24 @@ function listVisibleLayers(map, layerIds) {
   return visibleLayers;
 }
 
-
-// ============================================================================
-// TOOLTIP FUNCTIONALITY
-// ============================================================================
+// Tooltip functionality remains the same
 document.addEventListener('DOMContentLoaded', () => {
-    // Create a single tooltip element and add it to the page body.
     const tooltipElement = document.createElement('div');
     tooltipElement.id = 'custom-tooltip';
     document.body.appendChild(tooltipElement);
-
-    // Select all elements that have a 'data-tooltip' attribute.
     const elementsWithTooltip = document.querySelectorAll('[data-tooltip]');
-
     elementsWithTooltip.forEach(element => {
-        // Show the tooltip on mouse enter
         element.addEventListener('mouseenter', (e) => {
             const tooltipText = element.getAttribute('data-tooltip');
             tooltipElement.textContent = tooltipText;
             tooltipElement.style.opacity = '1';
         });
-
-        // Hide the tooltip on mouse leave
         element.addEventListener('mouseleave', () => {
             tooltipElement.style.opacity = '0';
         });
-
-        // Move the tooltip with the mouse
         element.addEventListener('mousemove', (e) => {
-            // Position the tooltip slightly below and centered with the cursor.
             tooltipElement.style.left = e.pageX + 'px';
-            tooltipElement.style.top = (e.pageY + 20) + 'px'; // 20px below cursor
+            tooltipElement.style.top = (e.pageY + 20) + 'px';
         });
     });
 });

@@ -1,5 +1,8 @@
 // docs/main-app.js
 
+let marker = null;
+const markerCoordinates = { lat: null, lng: null };
+
 mapboxgl.accessToken = 'pk.eyJ1IjoiZXNlLXRvaCIsImEiOiJja2Vhb24xNTEwMDgxMzFrYjVlaTVjOXkxIn0.IsPo5lOndNUc3lDLuBa1ZA';
 
 var map = new mapboxgl.Map({
