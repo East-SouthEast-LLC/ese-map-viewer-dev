@@ -46,33 +46,6 @@ function addSewerPlansLayer() {
         }
     });
 
-    function createSewerPopupHTML(props) {
-        if (!props) return "No feature information available.";
-        if (props.CONSERV === 'Y') return "Conservation Property<br>Disclaimer: Information may be inaccurate.";
-
-        let html = `Year of plan: <strong>${props.DATE || 'N/A'}</strong><br>
-                    Plan ID: <strong>${props.SHEET || 'N/A'}</strong><br>`;
-
-        if (props.ADDED === 'Y') {
-            html += `Website: ${props.URL ? `<a href="${props.URL}" target="_blank"><b><u>Link to page</u></b></a>` : 'N/A'}<br>`;
-            html += "On sewer but not included in original plans<br>";
-        } else {
-            html += `Link to plan: ${props.URL ? `<a href="${props.URL}" target="_blank"><b><u>Link to plan</u></b></a>` : 'N/A'}<br>`;
-        }
-        html += "Disclaimer: Information may be inaccurate.";
-        return html;
-    }
-
-    map.on('click', 'sewer plans', function(e) {
-        const properties = e.features && e.features.length > 0 ? e.features[0].properties : null;
-        const popupHTML = createSewerPopupHTML(properties);
-
-        new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML(popupHTML)
-            .addTo(map);
-    });
-
     map.on('mouseenter', 'sewer plans', function() {
         map.getCanvas().style.cursor = 'pointer';
     });

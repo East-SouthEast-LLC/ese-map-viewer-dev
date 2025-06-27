@@ -26,13 +26,6 @@ function addStoriesLayer() {
         }
     });
 
-    map.on('click', 'stories', function (e) {
-        new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML("Number of Stories: " + '<strong>' + e.features[0].properties.STORIES + '</strong><br>' + "Building Description: " + '<strong>' + e.features[0].properties.BLD_DESC + '</strong><br>' + "Zoning: " + '<strong>' + e.features[0].properties.ZONING + '</strong><br>')
-            .addTo(map);
-    });
-
     map.on('mouseenter', 'stories', function () {
         map.getCanvas().style.cursor = 'pointer';
     });

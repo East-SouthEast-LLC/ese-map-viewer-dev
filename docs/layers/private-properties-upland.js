@@ -149,15 +149,6 @@ function addPrivatePropertiesUplandLayer() {
         }
     };
     
-    // Click and mouse event listeners (Unchanged)
-    map.on('click', 'private properties upland', function (e) {
-        let lotSize = e.features[0].properties["_LOT_SIZE"];
-        let formattedLotSize = parseInt(lotSize).toLocaleString();
-        new mapboxgl.Popup() 
-            .setLngLat(e.lngLat)
-            .setHTML(`Lot Size: <strong>${formattedLotSize} S.F.</strong><br>Owner (2024): <strong>${e.features[0].properties["_OWNER1"]}</strong>`)
-            .addTo(map);
-    });
     map.on('mouseenter', 'private properties upland', () => map.getCanvas().style.cursor = 'pointer');
     map.on('mouseleave', 'private properties upland', () => map.getCanvas().style.cursor = '');
 }

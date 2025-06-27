@@ -54,15 +54,6 @@ function addZoneIILayer() {
         }
     });
 
-    map.on('click', 'zone II', function(e) {
-        new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML("Zone II number: " + '<strong>' + e.features[0].properties.ZII_NUM + '</strong><br>' + 
-                     "Water Supplier: " + '<strong>' + e.features[0].properties.SUPPLIER + '</strong><br>' + 
-                     "Town: " + '<strong>' + e.features[0].properties.TOWN + '</strong><br>')
-            .addTo(map);
-    });
-
     map.on('mouseenter', 'zone II', function() {
         map.getCanvas().style.cursor = 'pointer';
     });

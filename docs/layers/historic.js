@@ -23,14 +23,6 @@ function addHistoricLayer() {
         }
     });
 
-    map.on('click', 'historic', function (e) {
-        new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML("Historic District: " + e.features[0].properties.District + '<br>' + "Status / Reference: " + '<strong>' + e.features[0].properties.Status + '</strong><br>' +
-                "Documentation: " + '<a href=\"' + e.features[0].properties.URL + '\" target="_blank"><b><u>Link to Document</u></b></a>')
-            .addTo(map);
-    });
-
     map.on('mouseenter', 'historic', function () {
         map.getCanvas().style.cursor = 'pointer';
     });

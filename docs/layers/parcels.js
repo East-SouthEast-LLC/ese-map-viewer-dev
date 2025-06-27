@@ -17,6 +17,14 @@ function addParcelsLayer() {
             'fill-outline-color': '#000001'
         },
     });
+
+    map.on('mouseenter', 'parcels', function () {
+        map.getCanvas().style.cursor = 'pointer';
+    });
+
+    map.on('mouseleave', 'parcels', function () {
+        map.getCanvas().style.cursor = '';
+    });
 }
 
 addParcelsLayer();
