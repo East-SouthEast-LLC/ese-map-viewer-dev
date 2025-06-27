@@ -634,3 +634,17 @@ BOOKMARK GEOCODER BUTTON STYLES
   font-weight: bold;
   padding: 0 5px;
 }
+
+#identify-box {
+  display: none; /* Initially hidden */
+  background: white;
+  color: #333;
+  padding: 10px 15px;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  margin-top: 5px;
+  max-width: 240px;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 12px;
+}
