@@ -1,6 +1,5 @@
 // control-button.js
 
-// This global variable is used by main-app.js to know if we are in point placement mode
 let placingPoint = false; 
 
 function setPinPosition(lat, lng) {
@@ -23,19 +22,16 @@ function dropPinAtCenter() {
     return markerCoordinates;
 }
 
-// Point button just activates the mode. The main click handler does the work.
 document.getElementById('pointButton').addEventListener('click', function () {
     placingPoint = true;
     this.classList.add('active');
     map.getCanvas().style.cursor = 'crosshair';
 });
 
-// The map.on('click') handler has been MOVED to main-app.js
+// The old map.on('click') handler has been removed from this file.
 
-// Center point button
 document.getElementById('pointCButton').addEventListener('click', () => dropPinAtCenter());
 
-// Point off button
 document.getElementById('pointOffButton').addEventListener('click', () => {
     if (marker) {
         marker.remove();
@@ -51,7 +47,6 @@ function listVisibleLayers(map, layerIds) {
     return layerIds.filter(id => map.getLayer(id) && map.getLayoutProperty(id, 'visibility') === 'visible');
 }
 
-// Tooltip functionality remains the same
 document.addEventListener('DOMContentLoaded', () => {
     // ... (tooltip code is unchanged)
 });

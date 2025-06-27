@@ -17,7 +17,6 @@ const geocoder = new MapboxGeocoder({
 });
 document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 
-// --- (loadLayerScript and applyUrlParams functions are unchanged) ---
 function loadLayerScript(layerName) {
     return new Promise((resolve, reject) => {
         const script = document.createElement('script');
@@ -72,41 +71,61 @@ function applyUrlParams(map) {
     window.history.replaceState({}, document.title, cleanUrl);
 }
 
-
 map.on('load', function () {
-    // --- (The existing map.on('load') logic is mostly unchanged) ---
+    // --- RESTORED: Main application setup logic ---
     loadLayerScript('towns').then(() => {
         fetch('https://east-southeast-llc.github.io/ese-map-viewer/docs/town-config.json')
             .then(response => response.json())
             .then(townConfig => {
-                // ... (existing config handling)
+                const townData = townConfig.find(town => town.townID === townId);
+                if (townData) {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    if (!urlParams.has('zoom')) {
+                        map.setCenter(townData.map.center);
+                        map.setZoom(townData.map.zoom);
+                    }
+                    window.eseMapBaseUrl = townData.baseShareUrl;
+                    window.toggleableLayerIds = townData.layers.filter(l => l !== 'towns');
+                    window.toggleableLayerIds.unshift('tools');
+                    const layerPromises = townData.layers.filter(l => l !== 'towns').map(layer => loadLayerScript(layer));
+                    Promise.all(layerPromises)
+                        .then(() => {
+                            const menuScript = document.createElement('script');
+                            menuScript.src = 'https://east-southeast-llc.github.io/ese-map-viewer/docs/toggleable-menu.js?v=2';
+                            menuScript.onload = function () {
+                                setupToggleableMenu();
+                                const firstDataLayer = townData.layers.find(l => l !== 'satellite');
+                                if (map.getLayer('satellite') && map.getLayer(firstDataLayer)) {
+                                    map.moveLayer('satellite', firstDataLayer);
+                                }
+                                if (map.getLayer('parcel highlight')) {
+                                    map.moveLayer('parcel highlight');
+                                }
+                                applyUrlParams(map);
+                            };
+                            document.body.appendChild(menuScript);
+                        })
+                        .catch(error => console.error("Error loading layer scripts:", error));
+                }
             })
+            .catch(error => console.error('Error fetching town config data:', error));
     });
 
     // --- NEW: Centralized Map Click Handler ---
     map.on('click', (e) => {
-        // First, check if point placement mode is active
         if (placingPoint) {
             handleMarkerPlacement(e.lngLat);
-            return; // Stop further processing
+            return;
         }
-
-        // Get all visible data layers
         const visibleLayers = window.toggleableLayerIds.filter(id => 
             id !== 'tools' && map.getLayer(id) && map.getLayoutProperty(id, 'visibility') === 'visible'
         );
-
-        // Query for features at the clicked point
         const features = map.queryRenderedFeatures(e.point, { layers: visibleLayers });
-        if (!features.length) {
-            return; // No features clicked, do nothing
-        }
+        if (!features.length) return;
         
-        // The first feature in the array is the top-most one
         const topFeature = features[0];
         let popupHTML = '';
 
-        // Generate popup HTML based on the layer of the top-most feature
         switch (topFeature.layer.id) {
             case 'parcels':
                 popupHTML = `Address: <strong>${topFeature.properties.ADDRESS}</strong><br>Webpage: <a href="${topFeature.properties.URL}" target="_blank"><b><u>Link to Page</u></b></a>`;
@@ -117,18 +136,15 @@ map.on('load', function () {
             case 'DEP wetland':
                  popupHTML = `Wetland Identifier: <strong>${topFeature.properties.IT_VALDESC}</strong><br>Wetland Code: <strong>${topFeature.properties.IT_VALC}</strong>`;
                 break;
+            // Add other cases here as you remove them from layer files
         }
 
         if (popupHTML) {
-            new mapboxgl.Popup()
-                .setLngLat(e.lngLat)
-                .setHTML(popupHTML)
-                .addTo(map);
+            new mapboxgl.Popup().setLngLat(e.lngLat).setHTML(popupHTML).addTo(map);
         }
     });
 });
 
-// Helper function to handle marker placement, moved from control-button.js
 function handleMarkerPlacement(lngLat) {
     const { lat, lng } = lngLat;
     setPinPosition(lat, lng);
