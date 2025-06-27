@@ -7,15 +7,16 @@ function setupToggleableMenu() {
     
     const mapContainer = document.getElementById('map');
     const geocoderContainer = document.getElementById("geocoder-container");
-    // The 'toolsButton' constant is removed from here, as it was defined too early.
 
     function openToolkit() {
         if (getComputedStyle(geocoderContainer).display === "none") {
             geocoderContainer.style.display = "flex";
-            // Find the button right when we need it.
             const toolsButton = document.querySelector('[data-layer-id="tools"]');
             if(toolsButton) toolsButton.classList.add('active');
             
+            document.getElementById('bookmark-box').style.display = 'none';
+            document.getElementById('bookmarkButton').classList.remove('active');
+
             mapContainer.style.width = `calc(95vw - ${fullToolkitOffset}px)`;
             mapContainer.style.marginLeft = `${fullToolkitOffset}px`;
             setTimeout(() => map.resize(), 400);
@@ -39,8 +40,12 @@ function setupToggleableMenu() {
                         openToolkit();
                     } else {
                         geocoderContainer.style.display = "none";
-                        // 'this' refers to the button that was clicked, so we can use it directly.
                         this.classList.remove('active');
+                        
+                        // Also hide the bookmark box when closing the main toolkit
+                        document.getElementById('bookmark-box').style.display = 'none';
+                        document.getElementById('bookmarkButton').classList.remove('active');
+
                         mapContainer.style.width = `calc(95vw - ${menuOnlyOffset}px)`;
                         mapContainer.style.marginLeft = `${menuOnlyOffset}px`;
                         setTimeout(() => map.resize(), 400);
@@ -76,8 +81,8 @@ function setupToggleableMenu() {
                     map.setLayoutProperty('zone-ii-labels', 'visibility', newVisibility);
                 } else if (clickedLayer === 'endangered species') {
                     map.setLayoutProperty('endangered-species-labels', 'visibility', newVisibility);
-                    map.setLayoutProperty('vernal-pools', 'visibility', newVisibility);
-                    map.setLayoutProperty('vernal-pools-labels', 'visibility', newVisibility);
+                    map.setLayoutProperty('vernal-pools', 'visibility', 'visible');
+                    map.setLayoutProperty('vernal-pools-labels', 'visibility', 'visible');
                 } else if (clickedLayer === 'sewer plans') {
                     map.setLayoutProperty('sewer-plans-outline', 'visibility', newVisibility);
                 } else if (clickedLayer === 'lidar contours') {
@@ -85,14 +90,13 @@ function setupToggleableMenu() {
                         map.setLayoutProperty('lidar-contour-labels', 'visibility', newVisibility);
                     }
                 }
-
+                
                 if (typeof window.updateLegend === 'function') {
-                    // Use a flag to prevent queuing multiple updates if the user clicks rapidly
                     if (!map._legendUpdateListenerAdded) {
                         map._legendUpdateListenerAdded = true;
                         map.once('idle', function() {
                             window.updateLegend();
-                            map._legendUpdateListenerAdded = false; // Reset flag after execution
+                            map._legendUpdateListenerAdded = false; 
                         });
                     }
                 }
