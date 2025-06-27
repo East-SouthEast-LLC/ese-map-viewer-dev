@@ -91,26 +91,6 @@ function addFloodplainLayer() {
             'text-halo-blur': 0.4
         }
     });
-
-    map.on('click', 'floodplain', function (e) {
-        new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML(
-                "Flood Zone: <strong>" + e.features[0].properties.FLD_ZONE + "</strong><br>" +
-                "Zone Subtype: <strong>" + e.features[0].properties.ZONE_SUBTY + "</strong><br>" +
-                "Elevation: <strong>" + e.features[0].properties.STATIC_BFE + "</strong><br><br>" +
-                "<span style='color:red;'>The thick red line is the LiMWA.</span>"
-            )
-            .addTo(map);
-    });
-
-    map.on('mouseenter', 'floodplain', function () {
-        map.getCanvas().style.cursor = 'pointer';
-    });
-    
-    map.on('mouseleave', 'floodplain', function () {
-        map.getCanvas().style.cursor = '';
-    });
 }
 
 addFloodplainLayer();
