@@ -34,14 +34,6 @@ function addSewerLayer() {
         },
     });
 
-    map.on('click', 'sewer', function (e) {
-        new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML("Approximate year constructed: " + e.features[0].properties.CONTRACT + '<br>' + "Address: " + '<strong>' + e.features[0].properties.ADDRESS + '</strong><br>' +
-                "Webpage: " + '<a href=\"' + e.features[0].properties.URL + '\" target="_blank"><b><u>Link to Page</u></b></a>')
-            .addTo(map);
-    });
-
     map.on('mouseenter', 'sewer', function () {
         map.getCanvas().style.cursor = 'pointer';
     });

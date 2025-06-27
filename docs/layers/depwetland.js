@@ -86,15 +86,7 @@ function addDepWetlandLayer() {
             'line-width': { 'base': 2.0, 'stops': [[12, 2], [22, 5]] }
         }
     });
-
-    map.on('click', 'DEP wetland', function(e) {
-        new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML("Wetland Identifier: " + '<strong>' + e.features[0].properties.IT_VALDESC + '</strong><br>' +
-                    "Wetland Code: " + '<strong>' + e.features[0].properties.IT_VALC + '</strong><br>')
-            .addTo(map);
-    });
-
+    
     map.on('mouseenter', 'DEP wetland', function() {
         map.getCanvas().style.cursor = 'pointer';
     });

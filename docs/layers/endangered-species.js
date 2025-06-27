@@ -104,34 +104,12 @@ function addEndangeredSpeciesLayer() {
         'filter': ['!=', ['get', 'cvp_num'], null]
     });
 
-    // == ON CLICK AND MOUSE EVENTS FOR ENDANGERED SPECIES =====================
-    map.on('click', 'endangered species', function(e) {   
-        new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML(
-                "Estimated Habitat ID: " + '<strong>' + e.features[0].properties.ESTHAB_ID + '</strong><br>' +
-                "Priority Habitat ID: " + '<strong>' + e.features[0].properties.PRIHAB_ID + '</strong><br>'
-            )
-            .addTo(map);
-    });
-
     map.on('mouseenter', 'endangered species', function() {
         map.getCanvas().style.cursor = 'pointer';
     });
 
     map.on('mouseleave', 'endangered species', function() {
         map.getCanvas().style.cursor = '';
-    });
-
-    map.on('click', 'vernal-pools', function(e) {  
-        new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML(
-                "Vernal Pool ID: " + '<strong>' + e.features[0].properties.cvp_num + '</strong><br>' +
-                "Certified: " + '<strong>' + e.features[0].properties.certified + '</strong><br>' +
-                "Criteria: " + '<strong>' + e.features[0].properties.criteria + '</strong><br>'
-            )
-            .addTo(map);
     });
 
     map.on('mouseenter', 'vernal-pools', function() {

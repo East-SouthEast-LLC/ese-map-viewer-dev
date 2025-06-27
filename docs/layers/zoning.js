@@ -147,14 +147,6 @@ function addZoningLayer() {
         }
     });
 
-    map.on('click', 'zoning', function (e) {
-      new mapboxgl.Popup()
-        .setLngLat(e.lngLat)
-        .setHTML("Zoning District: " + '<strong>'+e.features[0].properties.TOWNCODE + '</strong><br>' +
-'<br>' + "Check with the Town Clerk or Planning Department." + '<br>' + '<strong>' + "This layer is from 2004" + '</strong>')
-        .addTo(map);
-    });
-
     // Change the cursor to a pointer when the mouse is over the states layer.
     map.on('mouseenter', 'zoning', function () {
         map.getCanvas().style.cursor = 'pointer';

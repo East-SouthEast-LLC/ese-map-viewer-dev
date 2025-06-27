@@ -18,13 +18,6 @@ function addIntersectionLayer() {
         }
     });
 
-    map.on('click', 'intersection', function (e) {
-        new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML("Insection: " + '<strong>' + e.features[0].properties.Int_Name + '</strong><br>' + "Webpage: " + '<a href=\"' + e.features[0].properties.Link + '\" target="_blank"><b><u>Link to Page</u></b></a>')
-            .addTo(map);
-    });
-
     map.on('mouseenter', 'intersection', function () {
         map.getCanvas().style.cursor = 'pointer';
     });

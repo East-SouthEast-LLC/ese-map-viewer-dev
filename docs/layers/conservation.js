@@ -23,14 +23,6 @@ function addConservationLayer() {
         },
     });
 
-    map.on('click', 'conservation', function (e) {
-        new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML("CCF Parcel: " + '<strong>' + e.features[0].properties.CCF_ID + '</strong><br>' +
-                '<br>' + "The light green parcels are approximate, the dark green parcels are more accurate.")
-            .addTo(map);
-    });
-
     map.on('mouseenter', 'conservation', function () {
         map.getCanvas().style.cursor = 'pointer';
     });
