@@ -16,6 +16,8 @@ function setupToggleableMenu() {
             
             document.getElementById('bookmark-box').style.display = 'none';
             document.getElementById('bookmarkButton').classList.remove('active');
+            document.getElementById('identify-box').style.display = 'none'; // This is the new line
+            document.getElementById('identifyButton').classList.remove('active');
 
             mapContainer.style.width = `calc(95vw - ${fullToolkitOffset}px)`;
             mapContainer.style.marginLeft = `${fullToolkitOffset}px`;
