@@ -73,9 +73,14 @@ function applyUrlParams(map) {
         const decodedLayerId = decodeURIComponent(layerId);
         if (map.getLayer(decodedLayerId)) {
             map.setLayoutProperty(decodedLayerId, 'visibility', 'visible');
-            // dependent layer logic...
+            // This is where dependent layer toggling on load would go if needed
         }
     });
+
+    // After all other parameters are set, do a final "flyTo" to ensure the marker is centered.
+    if (window.marker) {
+        map.flyTo({ center: window.marker.getLngLat(), essential: true });
+    }
 
     const cleanUrl = window.location.origin + window.location.pathname;
     window.history.replaceState({}, document.title, cleanUrl);
@@ -84,8 +89,6 @@ function applyUrlParams(map) {
 map.on('load', function () {
     // Always load the towns layer first
     loadLayerScript('towns').then(() => {
-        console.log('Towns layer loaded');
-        // Now proceed with the rest of the setup
         fetch('https://east-southeast-llc.github.io/ese-map-viewer/docs/town-config.json')
             .then(response => response.json())
             .then(townConfig => {
@@ -99,13 +102,11 @@ map.on('load', function () {
 
                     window.eseMapBaseUrl = townData.baseShareUrl;
                     
-                    // Set up the toggleable layers, EXCLUDING the towns layer
                     window.toggleableLayerIds = townData.layers.filter(l => l !== 'towns');
                     window.toggleableLayerIds.unshift('tools');
 
-                    // Load only the scripts for the toggleable layers
                     const layerPromises = townData.layers
-                        .filter(l => l !== 'towns') // Ensure we don't load it twice
+                        .filter(l => l !== 'towns')
                         .map(layer => loadLayerScript(layer));
 
                     Promise.all(layerPromises)
