@@ -156,7 +156,7 @@ CONTROL BUTTON STYLES
 .mapboxgl-ctrl-measure       { background-image: url('https://www.ese-llc.com/s/marker-blue-measure.svg'); }
 .mapboxgl-ctrl-legend        { background-image: url('https://east-southeast-llc.github.io/ese-map-viewer/img/legend.png'); }
 .mapboxgl-ctrl-bookmark      { background-image: url('https://img.icons8.com/ios-glyphs/30/bookmark-ribbon.png'); }
-
+.mapboxgl-ctrl-identify      { background-image: url('https://img.icons8.com/ios-filled/50/info.png'); }
 
 .mapboxgl-ctrl-point-center  { background-image: url('https://www.ese-llc.com/s/marker-blue-center.svg'); }
 .mapboxgl-ctrl-parea         { background-image: url('https://www.ese-llc.com/s/square-50.png'); }
