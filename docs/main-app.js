@@ -1,5 +1,6 @@
 // docs/main-app.js
 
+// The single source of truth for the marker and its coordinates
 let marker = null;
 const markerCoordinates = { lat: null, lng: null };
 
@@ -60,11 +61,16 @@ function applyUrlParams(map) {
     const lat = parseFloat(urlParams.get('lat'));
     const lng = parseFloat(urlParams.get('lng'));
     if (!isNaN(lat) && !isNaN(lng)) {
+        // This check is fine, it just ensures the function from control-button.js is available
         if (typeof dropPinAtCenter === 'function') {
-            window.marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
-            if(window.markerCoordinates) {
-                window.markerCoordinates.lat = lat;
-                window.markerCoordinates.lng = lng;
+            // --- THE FIX IS HERE ---
+            // Assign to the global 'marker' variable directly, not 'window.marker'
+            marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
+            
+            // Also assign to markerCoordinates directly
+            if(markerCoordinates) {
+                markerCoordinates.lat = lat;
+                markerCoordinates.lng = lng;
             }
         }
         map.setCenter([lng, lat]);
@@ -76,13 +82,12 @@ function applyUrlParams(map) {
         const decodedLayerId = decodeURIComponent(layerId);
         if (map.getLayer(decodedLayerId)) {
             map.setLayoutProperty(decodedLayerId, 'visibility', 'visible');
-            // This is where dependent layer toggling on load would go if needed
         }
     });
 
-    // After all other parameters are set, do a final "flyTo" to ensure the marker is centered.
-    if (window.marker) {
-        map.flyTo({ center: window.marker.getLngLat(), essential: true });
+    // This will now work because it's referencing the correct marker object
+    if (marker) {
+        map.flyTo({ center: marker.getLngLat(), essential: true });
     }
 
     const cleanUrl = window.location.origin + window.location.pathname;
@@ -90,7 +95,6 @@ function applyUrlParams(map) {
 }
 
 map.on('load', function () {
-    // Always load the towns layer first
     loadLayerScript('towns').then(() => {
         fetch('https://east-southeast-llc.github.io/ese-map-viewer/docs/town-config.json')
             .then(response => response.json())
