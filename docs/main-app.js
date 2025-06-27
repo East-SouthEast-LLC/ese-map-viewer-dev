@@ -169,7 +169,7 @@ map.on('load', function () {
             case 'endangered species':
                 popupHTML = `Estimated Habitat ID: <strong>${topFeature.properties.ESTHAB_ID}</strong><br>Priority Habitat ID: <strong>${topFeature.properties.PRIHAB_ID}</strong>`;
                 break;
-            case 'vernal pools': // Added case for vernal pools, which are part of the endangered species group
+            case 'vernal pools': 
                 popupHTML = `Vernal Pool ID: <strong>${topFeature.properties.cvp_num}</strong><br>Certified: <strong>${topFeature.properties.certified}</strong><br>Criteria: <strong>${topFeature.properties.criteria}</strong>`;
                 break;
             case 'historic':
@@ -183,6 +183,9 @@ map.on('load', function () {
                 break;
             case 'zone II':
                 popupHTML = `Zone II number: <strong>${topFeature.properties.ZII_NUM}</strong><br>Water Supplier: <strong>${topFeature.properties.SUPPLIER}</strong><br>Town: <strong>${topFeature.properties.TOWN}</strong>`;
+                break;
+            case 'soils':
+                popupHTML = `Numeric State Legend: <strong>${topFeature.properties.MUSYM}</strong><br>Published Map Unit: <strong>${topFeature.properties.MUS_TXT}</strong><br><strong>${topFeature.properties.MUS_DESC}</strong>`;
                 break;
         }
 

@@ -87,6 +87,15 @@ function addSoilsLayer() {
 		}
 	});
 
+	map.on('click', 'soils', function(e) {
+		new mapboxgl.Popup()
+			.setLngLat(e.lngLat)
+			.setHTML("Numeric State Legend: " + '<strong>' + e.features[0].properties.MUSYM + '</strong><br>' + 
+					"Published Map Unit: " + '<strong>' + e.features[0].properties.MUS_TXT + '</strong><br>' + 
+					'<strong>' + e.features[0].properties.MUS_DESC + '</strong><br>')
+			.addTo(map);
+	});
+
 	map.on('mouseenter', 'soils', function() {
 		map.getCanvas().style.cursor = 'pointer';
 	});
