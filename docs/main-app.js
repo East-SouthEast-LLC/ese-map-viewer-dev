@@ -1,5 +1,9 @@
 // docs/main-app.js
 
+// The single source of truth for the marker and its coordinates
+let marker = null;
+const markerCoordinates = { lat: null, lng: null };
+
 mapboxgl.accessToken = 'pk.eyJ1IjoiZXNlLXRvaCIsImEiOiJja2Vhb24xNTEwMDgxMzFrYjVlaTVjOXkxIn0.IsPo5lOndNUc3lDLuBa1ZA';
 
 var map = new mapboxgl.Map({
@@ -58,12 +62,13 @@ function applyUrlParams(map) {
     const lng = parseFloat(urlParams.get('lng'));
     if (!isNaN(lat) && !isNaN(lng)) {
         if (typeof dropPinAtCenter === 'function') {
-            window.marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
-            if(window.markerCoordinates) {
-                window.markerCoordinates.lat = lat;
-                window.markerCoordinates.lng = lng;
+            marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
+            if(markerCoordinates) {
+                markerCoordinates.lat = lat;
+                markerCoordinates.lng = lng;
             }
         }
+        // Set the initial center. The flyTo at the end will correct it.
         map.setCenter([lng, lat]);
     }
 
@@ -73,19 +78,23 @@ function applyUrlParams(map) {
         const decodedLayerId = decodeURIComponent(layerId);
         if (map.getLayer(decodedLayerId)) {
             map.setLayoutProperty(decodedLayerId, 'visibility', 'visible');
-            // dependent layer logic...
         }
     });
+
+    // --- THE FIX ---
+    // This now works because `marker` is the correct, globally-scoped object.
+    if (marker) {
+        // This smoothly re-centers the map on the marker as the final step.
+        map.flyTo({ center: marker.getLngLat(), essential: true });
+    }
+    // --- END OF FIX ---
 
     const cleanUrl = window.location.origin + window.location.pathname;
     window.history.replaceState({}, document.title, cleanUrl);
 }
 
 map.on('load', function () {
-    // Always load the towns layer first
     loadLayerScript('towns').then(() => {
-        console.log('Towns layer loaded');
-        // Now proceed with the rest of the setup
         fetch('https://east-southeast-llc.github.io/ese-map-viewer/docs/town-config.json')
             .then(response => response.json())
             .then(townConfig => {
@@ -99,13 +108,11 @@ map.on('load', function () {
 
                     window.eseMapBaseUrl = townData.baseShareUrl;
                     
-                    // Set up the toggleable layers, EXCLUDING the towns layer
                     window.toggleableLayerIds = townData.layers.filter(l => l !== 'towns');
                     window.toggleableLayerIds.unshift('tools');
 
-                    // Load only the scripts for the toggleable layers
                     const layerPromises = townData.layers
-                        .filter(l => l !== 'towns') // Ensure we don't load it twice
+                        .filter(l => l !== 'towns')
                         .map(layer => loadLayerScript(layer));
 
                     Promise.all(layerPromises)
@@ -114,7 +121,6 @@ map.on('load', function () {
                             menuScript.src = 'https://east-southeast-llc.github.io/ese-map-viewer/docs/toggleable-menu.js?v=2';
                             menuScript.onload = function () {
                                 setupToggleableMenu();
-
                                 const firstDataLayer = townData.layers.find(l => l !== 'satellite');
                                 if (map.getLayer('satellite') && map.getLayer(firstDataLayer)) {
                                     map.moveLayer('satellite', firstDataLayer);

@@ -155,6 +155,8 @@ CONTROL BUTTON STYLES
 .mapboxgl-ctrl-custom-print  { background-image: url('https://east-southeast-llc.github.io/ese-map-viewer/img/custom-print.png'); }
 .mapboxgl-ctrl-measure       { background-image: url('https://www.ese-llc.com/s/marker-blue-measure.svg'); }
 .mapboxgl-ctrl-legend        { background-image: url('https://east-southeast-llc.github.io/ese-map-viewer/img/legend.png'); }
+.mapboxgl-ctrl-bookmark      { background-image: url('https://img.icons8.com/ios-glyphs/30/bookmark-ribbon.png'); }
+
 
 .mapboxgl-ctrl-point-center  { background-image: url('https://www.ese-llc.com/s/marker-blue-center.svg'); }
 .mapboxgl-ctrl-parea         { background-image: url('https://www.ese-llc.com/s/square-50.png'); }
@@ -563,4 +565,72 @@ PRINT STYLES
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* ============================================================
+BOOKMARK GEOCODER BUTTON STYLES 
+=============================================================== */
+#bookmark-box {
+  display: none; /* Initially hidden */
+  background: white;
+  color: #333;
+  padding: 10px 15px;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  margin-top: 5px;
+  max-width: 240px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#bookmark-box input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+#bookmark-box button {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  background-color: #3887be;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+#bookmark-box button:hover {
+  background-color: #3074a4;
+}
+
+#bookmark-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+#bookmark-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+#bookmark-list li a {
+  text-decoration: none;
+  color: #3887be;
+}
+
+#bookmark-list .delete-bookmark {
+  color: #cc0000;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 0 5px;
 }
