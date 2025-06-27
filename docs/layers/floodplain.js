@@ -91,6 +91,14 @@ function addFloodplainLayer() {
             'text-halo-blur': 0.4
         }
     });
+    
+    map.on('mouseenter', 'floodplain', function () {
+        map.getCanvas().style.cursor = 'pointer';
+    });
+    
+    map.on('mouseleave', 'floodplain', function () {
+        map.getCanvas().style.cursor = '';
+    });
 }
 
 addFloodplainLayer();

@@ -86,6 +86,14 @@ function addDepWetlandLayer() {
             'line-width': { 'base': 2.0, 'stops': [[12, 2], [22, 5]] }
         }
     });
+    
+    map.on('mouseenter', 'DEP wetland', function() {
+        map.getCanvas().style.cursor = 'pointer';
+    });
+
+    map.on('mouseleave', 'DEP wetland', function() {
+        map.getCanvas().style.cursor = '';
+    });
 }
 
 addDepWetlandLayer();

@@ -16,14 +16,7 @@ function addAcecLayer() {
             'fill-opacity': 0.4
         }
     });
-
-    map.on('click', 'acec', function (e) {
-        new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML("Area of Critical Environmental Concern: " + '<strong>' + e.features[0].properties.NAME + '</strong><br>' + "DEP ACEC Designation: " + '<a href=\"' + e.features[0].properties.LINK + '\" target="_blank"><b><u>Link to Document</u></b></a>')
-            .addTo(map);
-    });
-
+    
     map.on('mouseenter', 'acec', function () {
         map.getCanvas().style.cursor = 'pointer';
     });

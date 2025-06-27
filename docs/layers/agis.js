@@ -23,13 +23,6 @@ function addAgisLayer() {
         },
     });
 
-    map.on('click', 'agis', function (e) {
-        new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML("Address " + '<strong>' + e.features[0].properties.ADDRESS + '</strong><br>' + "Date of photography: " + '<strong>' + e.features[0].properties.DATE + '</strong><br>' + "Link to Page: " + '<a href=\"' + e.features[0].properties.URL + '\" target="_blank"><b><u>Link to Page</u></b></a>')
-            .addTo(map);
-    });
-
     map.on('mouseenter', 'agis', function () {
         map.getCanvas().style.cursor = 'pointer';
     });
