@@ -111,8 +111,11 @@ function getLegendForPrint(expectedLayerIds = []) {
 
                 if (item.match) { 
                     const rule = item.match;
-                    if ((rule.property === "DATE" && (Number(props.DATE) >= rule.min && Number(props.DATE) <= rule.max)) || 
-                        (props[rule.property] === rule.value)) {
+                    if (props[rule.property] === rule.value) { // Handles single value matches
+                        itemsToShow.add(item.label);
+                    } else if (rule.property === "DATE" && (Number(props.DATE) >= rule.min && Number(props.DATE) <= rule.max)) { // Handles DATE ranges
+                        itemsToShow.add(item.label);
+                    } else if (rule.property === "_LOT_SIZE" && (Number(props._LOT_SIZE) >= rule.min && Number(props._LOT_SIZE) <= rule.max)) { // Handles LOT SIZE ranges
                         itemsToShow.add(item.label);
                     }
                 } else if (item.code && item.code !== "__default__") {
@@ -303,10 +306,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     
                     if (item.match) {
                         const rule = item.match;
-                        if ((rule.property === "DATE" && (Number(props.DATE) >= rule.min && Number(props.DATE) <= rule.max)) || 
-                            (props[rule.property] === rule.value)) {
+                        if (props[rule.property] === rule.value) { // Handles single value matches
                             itemsToShow.add(item.label);
-                        }
+                        } else if (rule.property === "DATE" && (Number(props.DATE) >= rule.min && Number(props.DATE) <= rule.max)) { // Handles DATE ranges
+                            itemsToShow.add(item.label);
+                        } else if (rule.property === "_LOT_SIZE" && (Number(props._LOT_SIZE) >= rule.min && Number(props._LOT_SIZE) <= rule.max)) { // Handles LOT SIZE ranges
+                            itemsToShow.add(item.label);
+                        } 
+
                     } else if (item.code && item.code !== "__default__") {
                         const source = layerInfo.sources.find(s => s.id === feature.layer.id);
                         if (source && String(props[source.propertyKey]) === String(item.code)) {
