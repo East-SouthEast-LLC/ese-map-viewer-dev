@@ -1,22 +1,17 @@
-// This is an async function because reading the remote GeoTIFF is an asynchronous operation
+// This async function will be called by main-app.js
 async function addUsgsQuadLayer() {
     
-    // --- Configuration ---
-    const layerId = 'usgs quad'; // A unique ID for this layer
+    const layerId = 'usgs quad';
     const googleDriveFileId = '1ZUA-IF3CTE3mPRAVosVlgGHWK0H0I7_U';
     const geoTiffUrl = `https://drive.google.com/uc?export=download&id=${googleDriveFileId}`;
 
     try {
-        // Step 1: Fetch the GeoTIFF file from the URL
         const response = await fetch(geoTiffUrl);
         const arrayBuffer = await response.arrayBuffer();
-
-        // Step 2: Parse the GeoTIFF file to get the image and its bounding box
         const tiff = await GeoTIFF.fromArrayBuffer(arrayBuffer);
         const image = await tiff.getImage();
-        const bbox = await image.getBoundingBox(); // [minX, minY, maxX, maxY]
+        const bbox = await image.getBoundingBox();
 
-        // The coordinates of the four corners of the image
         const coordinates = [
             [bbox[0], bbox[3]], // Top-left
             [bbox[2], bbox[3]], // Top-right
@@ -24,23 +19,21 @@ async function addUsgsQuadLayer() {
             [bbox[0], bbox[1]]  // Bottom-left
         ];
 
-        // Step 3: Add the image as a Mapbox 'image' source
         map.addSource(layerId, {
             type: 'image',
-            url: await image.toDataURL(), // We convert the image data to a URL Mapbox can use
+            url: await image.toDataURL(),
             coordinates: coordinates
         });
 
-        // Step 4: Add a 'raster' layer to display the image source on the map
         map.addLayer({
             'id': layerId,
             'type': 'raster',
             'source': layerId,
             'layout': {
-                'visibility': 'none' // Initially hidden, to be toggled by the menu
+                'visibility': 'none'
             },
             'paint': {
-                'raster-opacity': 0.85, // You can adjust the transparency
+                'raster-opacity': 0.85,
                 'raster-fade-duration': 0
             }
         });
@@ -52,5 +45,4 @@ async function addUsgsQuadLayer() {
     }
 }
 
-// Call the main async function to start the process
-addUsgsQuadLayer();
+// NOTE: The automatic call to addUsgsQuadLayer() at the end of the file has been removed.
