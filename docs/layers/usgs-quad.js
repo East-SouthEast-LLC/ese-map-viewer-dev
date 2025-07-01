@@ -2,7 +2,7 @@ async function addUsgsQuadLayer() {
     
     const layerId = 'usgs quad';
     // Make sure this is the correct path to your re-projected test file in your GitHub repo
-    const geoTiffUrl = 'https://east-southeast-llc.github.io/ese-map-viewer/data/USGS-test.tif'; 
+    const geoTiffUrl = 'https://east-southeast-llc.github.io/ese-map-viewer/data/USGS-test2.tif'; 
 
     try {
         console.log(`[${layerId}] Starting to fetch GeoTIFF from: ${geoTiffUrl}`);
