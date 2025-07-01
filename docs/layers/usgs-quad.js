@@ -12,34 +12,33 @@ async function addUsgsQuadLayer() {
         
         const width = image.getWidth();
         const height = image.getHeight();
-
-        // --- NEW: More robust coordinate calculation ---
-        const origin = image.getOrigin();   // [longitude, latitude] of the top-left corner
-        const resolution = image.getResolution(); // [xResolution, yResolution] in degrees per pixel
-
+        
+        // Use the more robust manual calculation for coordinates
+        const origin = image.getOrigin();
+        const resolution = image.getResolution();
         const minLng = origin[0];
         const maxLat = origin[1];
         const maxLng = minLng + width * resolution[0];
-        const minLat = maxLat - height * resolution[1]; // Subtract because Y resolution is typically negative
+        const minLat = maxLat - height * resolution[1];
 
         const coordinates = [
-            [minLng, maxLat], // Top-left
-            [maxLng, maxLat], // Top-right
-            [maxLng, minLat], // Bottom-right
-            [minLng, minLat]  // Bottom-left
+            [minLng, maxLat],
+            [maxLng, maxLat],
+            [maxLng, minLat],
+            [minLng, minLat]
         ];
-        console.log(`[${layerId}] Manually Calculated Coordinates:`, coordinates);
-        // --- END OF NEW LOGIC ---
 
         const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         const imageData = ctx.createImageData(width, height);
+
         const rasters = await image.readRasters();
         const photometricInterpretation = image.fileDirectory.PhotometricInterpretation;
 
-        if (photometricInterpretation === 3) {
+        // This block correctly handles both Paletted and RGB images
+        if (photometricInterpretation === 3) { // Paletted
             const colorMap = image.fileDirectory.ColorMap;
             const paletteData = rasters[0];
             let j = 0;
@@ -50,7 +49,7 @@ async function addUsgsQuadLayer() {
                 imageData.data[j++] = (colorMap[index][2] / 65535) * 255;
                 imageData.data[j++] = 255;
             }
-        } else if (photometricInterpretation === 2) {
+        } else if (photometricInterpretation === 2) { // RGB
             const [R, G, B] = rasters;
             let j = 0;
             for (let i = 0; i < R.length; i++) {
