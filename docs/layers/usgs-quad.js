@@ -1,7 +1,6 @@
 async function addUsgsQuadLayer() {
     
     const layerId = 'usgs quad';
-    // Make sure this is the correct path to your re-projected test file in your GitHub repo
     const geoTiffUrl = 'https://east-southeast-llc.github.io/ese-map-viewer/data/USGS-test2.tif'; 
 
     try {
@@ -18,10 +17,8 @@ async function addUsgsQuadLayer() {
         const width = image.getWidth();
         const height = image.getHeight();
 
-        // --- ADDED: Detailed console logs for debugging ---
         console.log(`[${layerId}] Image Dimensions: ${width}w x ${height}h`);
         console.log(`[${layerId}] Raw Bounding Box: [${bbox.join(', ')}]`);
-        // ---
 
         const rgbData = await image.readRasters({ interleave: true });
         const canvas = document.createElement('canvas');
@@ -44,16 +41,17 @@ async function addUsgsQuadLayer() {
         ctx.putImageData(imageData, 0, 0);
         const dataUrl = canvas.toDataURL();
 
+        // --- CORRECTED COORDINATE ORDER ---
+        const [minLng, minLat, maxLng, maxLat] = bbox;
         const coordinates = [
-            [bbox[0], bbox[3]],
-            [bbox[2], bbox[3]],
-            [bbox[2], bbox[1]],
-            [bbox[0], bbox[1]]
+            [minLng, maxLat], // Top-left
+            [maxLng, maxLat], // Top-right
+            [maxLng, minLat], // Bottom-right
+            [minLng, minLat]  // Bottom-left
         ];
+        // --- END OF CORRECTION ---
         
-        // --- ADDED: Log the coordinates being sent to Mapbox ---
         console.log(`[${layerId}] Calculated Corner Coordinates:`, coordinates);
-        // ---
 
         map.addSource(layerId, {
             type: 'image',
