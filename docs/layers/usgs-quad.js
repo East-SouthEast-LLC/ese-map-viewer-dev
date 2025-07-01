@@ -41,13 +41,14 @@ async function addUsgsQuadLayer() {
         ctx.putImageData(imageData, 0, 0);
         const dataUrl = canvas.toDataURL();
 
-        // --- CORRECTED COORDINATE ORDER ---
+        // --- CORRECTED COORDINATE MAPPING ---
+        // Explicitly define the corners from the bounding box values
         const [minLng, minLat, maxLng, maxLat] = bbox;
         const coordinates = [
-            [minLng, maxLat], // Top-left
-            [maxLng, maxLat], // Top-right
-            [maxLng, minLat], // Bottom-right
-            [minLng, minLat]  // Bottom-left
+            [minLng, maxLat], // Top-left corner [West, North]
+            [maxLng, maxLat], // Top-right corner [East, North]
+            [maxLng, minLat], // Bottom-right corner [East, South]
+            [minLng, minLat]  // Bottom-left corner [West, South]
         ];
         // --- END OF CORRECTION ---
         
