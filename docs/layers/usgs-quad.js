@@ -12,11 +12,9 @@ async function addUsgsQuadLayer() {
         const arrayBuffer = await response.arrayBuffer();
         const tiff = await GeoTIFF.fromArrayBuffer(arrayBuffer);
         const image = await tiff.getImage();
-        const bbox = image.getBoundingBox();
         const width = image.getWidth();
         const height = image.getHeight();
 
-        // --- NEW: Read pixel data and draw to a canvas ---
         const rgbData = await image.readRasters({ interleave: true });
         const canvas = document.createElement('canvas');
         canvas.width = width;
@@ -24,34 +22,38 @@ async function addUsgsQuadLayer() {
         const ctx = canvas.getContext('2d');
         const imageData = ctx.createImageData(width, height);
         
-        // The TIFF data might have an alpha channel, so we need to handle it
         if (rgbData.length === width * height * 4) { // RGBA
-            for (let i = 0; i < rgbData.length; i++) {
-                imageData.data[i] = rgbData[i];
-            }
+            for (let i = 0; i < rgbData.length; i++) imageData.data[i] = rgbData[i];
         } else if (rgbData.length === width * height * 3) { // RGB
             let j = 0;
             for (let i = 0; i < rgbData.length; i += 3) {
                 imageData.data[j++] = rgbData[i];
                 imageData.data[j++] = rgbData[i + 1];
                 imageData.data[j++] = rgbData[i + 2];
-                imageData.data[j++] = 255; // Full alpha
+                imageData.data[j++] = 255;
             }
         }
         ctx.putImageData(imageData, 0, 0);
         const dataUrl = canvas.toDataURL();
-        // --- END OF NEW LOGIC ---
+
+        // --- UPDATED: Using your hard-coded coordinates for this test ---
+        // Note: Longitude in the US is negative.
+        const north = 36.52073069150;
+        const west = -72.6414789222202; // E/W are longitudes
+        const south = 36.51592566498;
+        const east = -72.62119592406;
 
         const coordinates = [
-            [bbox[0], bbox[3]],
-            [bbox[2], bbox[3]],
-            [bbox[2], bbox[1]],
-            [bbox[0], bbox[1]]
+            [west, north],    // Top-left
+            [east, north],    // Top-right
+            [east, south],    // Bottom-right
+            [west, south]     // Bottom-left
         ];
+        // --- END OF UPDATE ---
 
         map.addSource(layerId, {
             type: 'image',
-            url: dataUrl, // Use the Data URL from our canvas
+            url: dataUrl,
             coordinates: coordinates
         });
 
@@ -66,7 +68,7 @@ async function addUsgsQuadLayer() {
             }
         });
 
-        console.log(`Successfully added GeoTIFF layer: ${layerId}`);
+        console.log(`Successfully added GeoTIFF layer with hard-coded coordinates: ${layerId}`);
 
     } catch (error) {
         console.error(`Failed to load GeoTIFF layer: ${layerId}`, error);
