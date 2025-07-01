@@ -112,6 +112,9 @@ map.on('load', function () {
                                 if (map.getLayer('satellite') && map.getLayer(firstDataLayer)) {
                                     map.moveLayer('satellite', firstDataLayer);
                                 }
+                                if (map.getLayer('usgs quad')) {
+                                    map.moveLayer('usgs quad');
+                                }
                                 if (map.getLayer('parcel highlight')) {
                                     map.moveLayer('parcel highlight');
                                 }
