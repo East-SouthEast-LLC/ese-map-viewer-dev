@@ -2,15 +2,22 @@
 async function addUsgsQuadLayer() {
     
     const layerId = 'usgs quad';
-    const googleDriveFileId = '1ZUA-IF3CTE3mPRAVosVlgGHWK0H0I7_U';
-    const geoTiffUrl = `https://drive.google.com/uc?export=download&id=${googleDriveFileId}`;
+
+    // --- UPDATED: Point to the GeoTIFF file in your GitHub repository ---
+    const geoTiffUrl = 'https://east-southeast-llc.github.io/ese-map-viewer/data/USGS-test.tif';
 
     try {
+        // Fetch the GeoTIFF file from the new URL
         const response = await fetch(geoTiffUrl);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const arrayBuffer = await response.arrayBuffer();
+
+        // Parse the GeoTIFF to get the image and its bounding box
         const tiff = await GeoTIFF.fromArrayBuffer(arrayBuffer);
         const image = await tiff.getImage();
-        const bbox = await image.getBoundingBox();
+        const bbox = image.getBoundingBox();
 
         const coordinates = [
             [bbox[0], bbox[3]], // Top-left
@@ -19,6 +26,7 @@ async function addUsgsQuadLayer() {
             [bbox[0], bbox[1]]  // Bottom-left
         ];
 
+        // Add the image and raster layers to the map
         map.addSource(layerId, {
             type: 'image',
             url: await image.toDataURL(),
@@ -44,5 +52,4 @@ async function addUsgsQuadLayer() {
         console.error(`Failed to load GeoTIFF layer: ${layerId}`, error);
     }
 }
-
-// NOTE: The automatic call to addUsgsQuadLayer() at the end of the file has been removed.
+// NOTE: The automatic call is removed, as it's handled by main-app.js
