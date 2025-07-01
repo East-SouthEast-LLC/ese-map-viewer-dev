@@ -3,6 +3,8 @@ async function addUsgsQuadLayer() {
     const geoTiffUrl = 'https://east-southeast-llc.github.io/ese-map-viewer/data/USGS-test2.tif'; 
 
     try {
+        console.log(`--- Starting GeoTIFF Debug ---`);
+        
         const response = await fetch(geoTiffUrl);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         
@@ -10,65 +12,24 @@ async function addUsgsQuadLayer() {
         const tiff = await GeoTIFF.fromArrayBuffer(arrayBuffer);
         const image = await tiff.getImage();
         
-        const width = image.getWidth();
-        const height = image.getHeight();
-        const bbox = image.getBoundingBox();
+        // --- LOGGING THE DATA WE NEED TO INSPECT ---
 
-        const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        const imageData = ctx.createImageData(width, height);
+        // Log the entire file directory to see all metadata
+        console.log("1. Full Image File Directory:", image.fileDirectory);
 
-        const rasters = await image.readRasters();
-        const photometricInterpretation = image.fileDirectory.PhotometricInterpretation;
-
-        if (photometricInterpretation === 3) { // 3 means Paletted
-            console.log(`[${layerId}] Detected Paletted Image. Using Color Map.`);
-            const colorMap = image.fileDirectory.ColorMap;
-            // --- CORRECTED LOGIC ---
-            const paletteData = rasters[0];
-            let j = 0;
-            for (let i = 0; i < paletteData.length; i++) {
-                const index = paletteData[i];
-                // Scale color values from 0-65535 range to 0-255 range
-                imageData.data[j++] = (colorMap[index][0] / 65535) * 255; // Red
-                imageData.data[j++] = (colorMap[index][1] / 65535) * 255; // Green
-                imageData.data[j++] = (colorMap[index][2] / 65535) * 255; // Blue
-                imageData.data[j++] = 255; // Alpha (fully opaque)
-            }
-        } 
-        else if (photometricInterpretation === 2) { // 2 means RGB
-            console.log(`[${layerId}] Detected RGB Image.`);
-            const [R, G, B] = rasters;
-            let j = 0;
-            for (let i = 0; i < R.length; i++) {
-                imageData.data[j++] = R[i];
-                imageData.data[j++] = G[i];
-                imageData.data[j++] = B[i];
-                imageData.data[j++] = 255;
-            }
-        } else {
-             throw new Error(`Unsupported photometric interpretation: ${photometricInterpretation}`);
-        }
-
-        ctx.putImageData(imageData, 0, 0);
-        const dataUrl = canvas.toDataURL();
-
-        const [minLng, minLat, maxLng, maxLat] = bbox;
-        const coordinates = [[minLng, maxLat], [maxLng, maxLat], [maxLng, minLat], [minLng, minLat]];
+        // Log the color map (palette) specifically
+        console.log("2. Color Map (Palette) Data:", image.fileDirectory.ColorMap);
         
-        map.addSource(layerId, { type: 'image', url: dataUrl, coordinates: coordinates });
-        map.addLayer({
-            'id': layerId,
-            'type': 'raster',
-            'source': layerId,
-            'layout': { 'visibility': 'none' },
-            'paint': { 'raster-opacity': 0.85, 'raster-fade-duration': 0 }
-        });
-        console.log(`%c[${layerId}] Successfully added GeoTIFF layer to map.`, 'color: green; font-weight: bold;');
+        // Log the raw raster data
+        const rasters = await image.readRasters();
+        console.log("3. Raw Raster Data:", rasters);
+
+        console.log(`--- End of GeoTIFF Debug ---`);
 
     } catch (error) {
-        console.error(`Failed to load GeoTIFF layer: ${layerId}`, error);
+        console.error(`Failed during GeoTIFF debugging:`, error);
     }
 }
+
+// We still call the function to trigger the logging.
+addUsgsQuadLayer();
