@@ -200,20 +200,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     async function generateMultiPagePrintout(printData, pageConfigs) {
-        console.log(`--- Custom Print Started ---`);
         const usgsLayerIsActive = document.querySelector('[data-layer-id="usgs quad"].active');
         
-        if (usgsLayerIsActive && typeof hideAllUsgsTiles === 'function') {
-            console.log("Hiding USGS tiles for printing.");
-            hideAllUsgsTiles();
+        // --- UPDATED: Deinitialize the tile manager before printing ---
+        if (usgsLayerIsActive && typeof deinitializeUsgsTileManager === 'function') {
+            deinitializeUsgsTileManager();
         }
 
         let fullHtml = '';
         const allToggleableLayers = window.toggleableLayerIds.filter(id => id !== 'tools' && id !== 'usgs quad');
-        
-        console.log("Layers to manage for printing:", allToggleableLayers);
         const initiallyVisibleLayers = listVisibleLayers(map, allToggleableLayers);
-        console.log("Initially visible layers:", initiallyVisibleLayers);
         
         if (typeof setMapToScale === 'function') {
             setMapToScale(Number(printData.scale));
@@ -225,30 +221,23 @@ document.addEventListener("DOMContentLoaded", function () {
             map.setCenter(marker.getLngLat());
         }
         
-        console.log("Hiding all toggleable layers.");
         allToggleableLayers.forEach(layerId => setLayerVisibility(layerId, 'none'));
 
         for (const config of pageConfigs) {
-            console.log(`Processing print page ${config.page} with layers:`, config.layers);
             config.layers.forEach(layerId => setLayerVisibility(layerId, 'visible'));
-            
             await new Promise(resolve => map.once('idle', resolve));
-            
             const mapCanvas = map.getCanvas();
             const mapImageSrc = mapCanvas.toDataURL();
             fullHtml += getPageHTML(printData, mapImageSrc, config.page, config.layers);
-            
             config.layers.forEach(layerId => setLayerVisibility(layerId, 'none'));
         }
 
-        console.log("Restoring initially visible layers.");
         initiallyVisibleLayers.forEach(layerId => setLayerVisibility(layerId, 'visible'));
 
-        if (usgsLayerIsActive && typeof showAllUsgsTiles === 'function') {
-            console.log("Restoring USGS tiles.");
-            showAllUsgsTiles();
+        // --- UPDATED: Re-initialize the tile manager after printing ---
+        if (usgsLayerIsActive && typeof initializeUsgsTileManager === 'function') {
+            initializeUsgsTileManager();
         }
-
 
         const win = window.open('', '_blank');
         if (win) {
