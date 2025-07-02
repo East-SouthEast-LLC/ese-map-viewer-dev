@@ -52,15 +52,15 @@ function setupToggleableMenu() {
                     return;
                 }
 
-                // --- CORRECTED LOGIC ---
                 // First, handle the special case for our tile manager
                 if (clickedLayer === 'usgs quad') {
                     const isActive = this.classList.toggle('active');
                     if (isActive) {
-                        initializeUsgsTileManager(); // Fetch data and show initial tiles
-                        showAllUsgsTiles();        // Make sure any loaded tiles are visible
+                        // This handles fetching data, adding listeners, and showing initial tiles.
+                        initializeUsgsTileManager(); 
                     } else {
-                        hideAllUsgsTiles();        // Hide all visible tiles
+                        // This removes tiles AND removes the event listeners.
+                        deinitializeUsgsTileManager(); 
                     }
                     return; // Stop here for the USGS button
                 }

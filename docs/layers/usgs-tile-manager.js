@@ -163,3 +163,6 @@ function deinitializeUsgsTileManager() {
     usgsTilesInitialized = false;
     console.log("USGS Tile Manager Deinitialized.");
 }
+
+window.initializeUsgsTileManager = initializeUsgsTileManager;
+window.deinitializeUsgsTileManager = deinitializeUsgsTileManager;
