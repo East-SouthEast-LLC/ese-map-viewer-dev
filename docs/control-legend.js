@@ -222,9 +222,13 @@ document.addEventListener("DOMContentLoaded", function () {
         let legendHTML = '';
 
         legendData.forEach(layerInfo => {
-            // --- UPDATED LOGIC FOR USGS LEGEND ---
+            // --- DEBUGGING STATEMENTS ADDED ---
             if (layerInfo.id === 'usgs-quad-legend') {
-                // Check if the tile manager is on and the zoom level is correct
+                console.log("--- Checking USGS Legend ---");
+                console.log("Is Initialized?", window.usgsTilesInitialized);
+                console.log("Current Zoom:", map.getZoom());
+                console.log("Is Zoom >= 12?", map.getZoom() >= 12);
+                
                 if (window.usgsTilesInitialized && map.getZoom() >= 12) {
                     legendHTML += `<div class="legend-title">${layerInfo.displayName}</div>`;
                     const item = layerInfo.items[0];
@@ -237,8 +241,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                     `;
                 }
-                return; // Go to the next legend item
+                return; 
             }
+            // --- END OF DEBUGGING STATEMENTS ---
 
             // (The rest of the logic for other layers remains the same)
             const availableSourceIds = (layerInfo.sources || []).map(s => s.id).filter(id => map.getLayer(id));
