@@ -19,34 +19,30 @@ async function addUsgsQuadLayer() {
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         const imageData = ctx.createImageData(width, height);
-        
-        // This is the simpler image processing logic that was working previously
+
+        // --- NEW, CORRECTED IMAGE PROCESSING LOGIC ---
+
+        // readRasters with interleave: true gives us a single array [R1, G1, B1, R2, G2, B2, ...]
         const rgbData = await image.readRasters({ interleave: true });
-        if (rgbData.length === width * height * 4) { // RGBA
-            for (let i = 0; i < rgbData.length; i++) {
-                imageData.data[i] = rgbData[i];
-            }
-        } else if (rgbData.length === width * height * 3) { // RGB
-            let j = 0;
-            for (let i = 0; i < rgbData.length; i += 3) {
-                imageData.data[j++] = rgbData[i];
-                imageData.data[j++] = rgbData[i + 1];
-                imageData.data[j++] = rgbData[i + 2];
-                imageData.data[j++] = 255;
-            }
+        const photometricInterpretation = image.fileDirectory.PhotometricInterpretation;
+
+        console.log(`[${layerId}] Photometric Interpretation: ${photometricInterpretation}`);
+
+        // This single block of logic can now handle both RGB and RGBA interleaved data.
+        let j = 0;
+        for (let i = 0; i < rgbData.length; i += 3) {
+            imageData.data[j++] = rgbData[i];     // Red
+            imageData.data[j++] = rgbData[i+1];   // Green
+            imageData.data[j++] = rgbData[i+2];   // Blue
+            imageData.data[j++] = 255;            // Alpha (fully opaque)
         }
         
         ctx.putImageData(imageData, 0, 0);
         const dataUrl = canvas.toDataURL();
+        // --- END OF NEW LOGIC ---
 
-        // This is the coordinate logic from when the image was visible but scaled incorrectly
         const [minLng, minLat, maxLng, maxLat] = bbox;
-        const coordinates = [
-            [minLng, maxLat],
-            [maxLng, maxLat],
-            [maxLng, minLat],
-            [minLng, minLat]
-        ];
+        const coordinates = [[minLng, maxLat], [maxLng, maxLat], [maxLng, minLat], [minLng, minLat]];
         
         map.addSource(layerId, { type: 'image', url: dataUrl, coordinates: coordinates });
         map.addLayer({
