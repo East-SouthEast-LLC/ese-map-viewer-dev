@@ -3,43 +3,29 @@
 // define the legendData globally
 let legendData = [];
 
-// helper function to get printing frame coordinates for an 8x8 inch area
 function getPrintBoundingBox() {
-    if (!map) return; // Ensure map is ready
-
-    const center = map.getCenter(); // Get the map's center point (lng, lat)
-    const bounds = map.getBounds(); // Get the map's bounds
-
-    const northLat = bounds.getNorth(); // North bound of map
-    const centerLat = center.lat; // Latitude of the map center
-
-    // Calculate the distance from center to the top of the visible map in meters
-    const halfHeightMeters = turf.distance(
-        [center.lng, center.lat], // Center point
-        [center.lng, northLat], // North point
-        { units: 'meters' }
-    );
-
+    if (!map) return;
+    const center = map.getCenter();
+    const bounds = map.getBounds();
+    const northLat = bounds.getNorth();
+    const centerLat = center.lat;
+    const halfHeightMeters = turf.distance([center.lng, center.lat], [center.lng, northLat], { units: 'meters' });
     const halfWidthMeters = halfHeightMeters;
-
-    // Convert distances back into lat/lng
-    const north = centerLat + (halfHeightMeters / 111320); // Convert meters to lat
-    const south = centerLat - (halfHeightMeters / 111320); // Convert meters to lat
-
-    // Convert width (meters) to longitude difference
+    const north = centerLat + (halfHeightMeters / 111320);
+    const south = centerLat - (halfHeightMeters / 111320);
     const lngDiff = halfWidthMeters / (111320 * Math.cos(centerLat * (Math.PI / 180)));
-
     const east = center.lng + lngDiff;
     const west = center.lng - lngDiff;
-    
     return [[west, north], [east, north], [east, south], [west, south], [west, north]];
 }
 
-
-// helper function for print output
 function getLegendForPrint(expectedLayerIds = []) {
+    console.log("--- Generating Print Legend ---"); // DEBUG
     const geoJsonBounds = getPrintBoundingBox();
-    if (!geoJsonBounds) return '<div class="legend-item">Error calculating print area.</div>';
+    if (!geoJsonBounds) {
+        console.error("DEBUG: getPrintBoundingBox returned nothing.");
+        return '<div class="legend-item">Error calculating print area.</div>';
+    }
     
     const topLeftGeo = geoJsonBounds[0];
     const bottomRightGeo = geoJsonBounds[2];
@@ -50,7 +36,6 @@ function getLegendForPrint(expectedLayerIds = []) {
     const allItemsToRender = []; 
     const renderedLegendSections = new Set();
     
-    // Check if any regular vector layers are visible to query
     const allQueryableLayers = legendData.flatMap(l => l.sources ? l.sources.map(s => s.id) : [])
                                          .filter(id => map.getLayer(id) && map.getLayoutProperty(id, 'visibility') === 'visible');
                                          
@@ -63,9 +48,10 @@ function getLegendForPrint(expectedLayerIds = []) {
         return acc;
     }, {});
 
-
     legendData.forEach(layerInfo => {
-        // --- NEW: Special handling for USGS layer in print legend ---
+        // --- ADDED DEBUG LOG ---
+        console.log(`Processing legend entry: ${layerInfo.displayName || layerInfo.id}`);
+
         if (layerInfo.id === 'usgs-quad-legend') {
             if (window.usgsTilesInitialized && window.loadedUsgsTiles.size > 0) {
                 allItemsToRender.push(`<div class="legend-section">${layerInfo.displayName}</div>`);
@@ -83,7 +69,13 @@ function getLegendForPrint(expectedLayerIds = []) {
             return;
         }
 
-        const sourceLayerIds = (layerInfo.sources || []).map(s => s.id);
+        // --- ADDED CHECK TO PREVENT ERROR ---
+        if (!layerInfo.sources) {
+            console.warn(`Legend entry "${layerInfo.displayName}" has no sources property. Skipping.`);
+            return;
+        }
+        
+        const sourceLayerIds = layerInfo.sources.map(s => s.id);
         const visibleFeaturesForLayer = sourceLayerIds.flatMap(id => featuresByLayer[id] || []);
 
         if (visibleFeaturesForLayer.length === 0) {
