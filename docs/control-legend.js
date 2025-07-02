@@ -49,15 +49,26 @@ function getLegendForPrint(expectedLayerIds = []) {
 
 
     legendData.forEach(layerInfo => {
+        // --- RESTORED: Special handling for Satellite Imagery ---
         if (layerInfo.displayName === "Satellite Imagery") {
-            // ... (Satellite logic is unchanged)
+            if (map.getLayer('satellite') && map.getLayoutProperty('satellite', 'visibility') === 'visible') {
+                allItemsToRender.push(`<div class="legend-section">${layerInfo.displayName}</div>`);
+                const item = layerInfo.items[0];
+                const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
+                const swatchClass = 'color-box';
+                allItemsToRender.push(
+                    `<div class="legend-item">
+                        <span class="${swatchClass}" style="${style}"></span>
+                        <span>${item.label}</span>
+                    </div>`
+                );
+                renderedLegendSections.add(layerInfo.displayName);
+            }
             return;
         }
 
-        // --- UPDATED: Check the initialization flag for the print legend ---
         if (layerInfo.id === 'usgs-quad-legend') {
-            // This now checks the actual state of the manager, not the button's class
-            if (window.usgsTilesInitialized && map.getZoom() >= 12) {
+            if (document.querySelector('[data-layer-id="usgs quad"].active')) {
                 allItemsToRender.push(`<div class="legend-section">${layerInfo.displayName}</div>`);
                 const item = layerInfo.items[0];
                 const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
