@@ -28,6 +28,22 @@ function getTileBounds(tile) {
 function updateVisibleUsgsTiles() {
     if (!usgsTilesInitialized) return;
 
+    // --- NEW: ZOOM LEVEL CHECK ---
+    // Get the current zoom level of the map.
+    const currentZoom = map.getZoom();
+
+    // If the user is zoomed out further than level 12, remove all tiles and stop.
+    if (currentZoom < 12) {
+        // Loop through all loaded tiles and remove them from the map.
+        loadedUsgsTiles.forEach(tileName => {
+            removeTileFromMap(`usgs-tile-source-${tileName}`);
+        });
+        // Clear the Set that tracks loaded tiles.
+        loadedUsgsTiles.clear();
+        return; // Exit the function to prevent loading new tiles.
+    }
+    // --- END OF NEW LOGIC ---
+
     const mapBounds = map.getBounds();
 
     // Loop through all tiles in our index
@@ -35,8 +51,6 @@ function updateVisibleUsgsTiles() {
         const tileBounds = tile.bounds;
         const sourceId = `usgs-tile-source-${tile.name}`;
 
-        // --- CORRECTED INTERSECTION LOGIC ---
-        // Manually check if the tile's bounding box overlaps with the map's viewport.
         const isVisible =
             mapBounds.getWest() < tileBounds.east &&
             mapBounds.getEast() > tileBounds.west &&
@@ -159,6 +173,11 @@ function hideAllUsgsTiles() {
  */
 function showAllUsgsTiles() {
     if (!usgsTilesInitialized) return;
+    // Check zoom level first before showing tiles
+    if (map.getZoom() < 12) {
+        hideAllUsgsTiles();
+        return;
+    }
     loadedUsgsTiles.forEach(tileName => {
         const layerId = `usgs-tile-source-${tileName}`;
         if (map.getLayer(layerId)) {
