@@ -13,7 +13,7 @@ async function addUsgsQuadLayer() {
         const width = image.getWidth();
         const height = image.getHeight();
 
-        // Use the .tfw data to calculate the corner coordinates
+        // --- RESTORED: Correct coordinate calculation using .tfw data ---
         const pixelWidth = 0.00001800587499404;
         const pixelHeight = -0.00001800587499403;
         const originLng = -69.9959633755972;
@@ -28,8 +28,8 @@ async function addUsgsQuadLayer() {
             [minLng, maxLat], [maxLng, maxLat],
             [maxLng, minLat], [minLng, minLat]
         ];
+        // --- END OF RESTORED LOGIC ---
 
-        // --- Corrected logic to handle paletted color ---
         const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
@@ -37,39 +37,35 @@ async function addUsgsQuadLayer() {
         const imageData = ctx.createImageData(width, height);
         
         const rasters = await image.readRasters();
-        const colorMap = image.fileDirectory.ColorMap;
+        const photometricInterpretation = image.fileDirectory.PhotometricInterpretation;
 
-        // Check if a color map exists
-        if (colorMap) {
-            console.log(`[${layerId}] Detected Paletted Image. Applying Color Map.`);
-            const paletteData = rasters[0]; // The pixel data is an array of indices
+        if (photometricInterpretation === 3) { // Paletted
+            const colorMap = image.fileDirectory.ColorMap;
+            const paletteData = rasters[0];
             let j = 0;
             for (let i = 0; i < paletteData.length; i++) {
                 const index = paletteData[i];
-                // The color map values are in a 0-65535 range, so we scale them to 0-255
-                imageData.data[j++] = (colorMap[index][0] / 65535) * 255; // Red
-                imageData.data[j++] = (colorMap[index][1] / 65535) * 255; // Green
-                imageData.data[j++] = (colorMap[index][2] / 65535) * 255; // Blue
-                imageData.data[j++] = 255;   // Alpha
-            }
-        } else {
-            // Fallback for standard grayscale images (like our previous version)
-            console.log(`[${layerId}] No color map found. Rendering as grayscale.`);
-            const singleBandData = rasters[0];
-            let j = 0;
-            for (let i = 0; i < singleBandData.length; i++) {
-                const value = singleBandData[i];
-                imageData.data[j++] = value;
-                imageData.data[j++] = value;
-                imageData.data[j++] = value;
+                imageData.data[j++] = (colorMap[index][0] / 65535) * 255;
+                imageData.data[j++] = (colorMap[index][1] / 65535) * 255;
+                imageData.data[j++] = (colorMap[index][2] / 65535) * 255;
                 imageData.data[j++] = 255;
             }
+        } else if (photometricInterpretation === 2) { // RGB
+            const [R, G, B] = rasters;
+            let j = 0;
+            for (let i = 0; i < R.length; i++) {
+                imageData.data[j++] = R[i];
+                imageData.data[j++] = G[i];
+                imageData.data[j++] = B[i];
+                imageData.data[j++] = 255;
+            }
+        } else {
+             throw new Error(`Unsupported photometric interpretation: ${photometricInterpretation}`);
         }
         
         ctx.putImageData(imageData, 0, 0);
         const dataUrl = canvas.toDataURL();
         
-        // --- Add the source and layer to the map ---
         map.addSource(layerId, { type: 'image', url: dataUrl, coordinates: coordinates });
         map.addLayer({
             'id': layerId,
