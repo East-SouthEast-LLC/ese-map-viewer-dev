@@ -49,7 +49,9 @@ function getLegendForPrint(expectedLayerIds = []) {
 
 
     legendData.forEach(layerInfo => {
-        // --- RESTORED: Special handling for Satellite Imagery ---
+        // --- CORRECTED LOGIC FOR ALL SPECIAL CASES ---
+
+        // 1. Handle Satellite Imagery
         if (layerInfo.displayName === "Satellite Imagery") {
             if (map.getLayer('satellite') && map.getLayoutProperty('satellite', 'visibility') === 'visible') {
                 allItemsToRender.push(`<div class="legend-section">${layerInfo.displayName}</div>`);
@@ -64,11 +66,14 @@ function getLegendForPrint(expectedLayerIds = []) {
                 );
                 renderedLegendSections.add(layerInfo.displayName);
             }
-            return;
+            return; // Done with this item, move to the next
         }
 
+        // 2. Handle USGS Quads
         if (layerInfo.id === 'usgs-quad-legend') {
-            if (document.querySelector('[data-layer-id="usgs quad"].active')) {
+            // The `deinitialize` function in the print script ensures this is false during printing.
+            // This logic correctly prevents it from appearing.
+            if (window.usgsTilesInitialized && map.getZoom() >= 12) {
                 allItemsToRender.push(`<div class="legend-section">${layerInfo.displayName}</div>`);
                 const item = layerInfo.items[0];
                 const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
@@ -81,9 +86,10 @@ function getLegendForPrint(expectedLayerIds = []) {
                 );
                 renderedLegendSections.add(layerInfo.displayName);
             }
-            return; 
+            return; // Done with this item, move to the next
         }
         
+        // 3. Handle all other vector layers
         if (!layerInfo.sources) {
             return;
         }
