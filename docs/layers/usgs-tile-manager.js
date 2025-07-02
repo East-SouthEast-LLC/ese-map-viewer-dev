@@ -3,30 +3,22 @@
 // Global state to hold all tile metadata and track loaded tiles
 let allUsgsTiles = [];
 const loadedUsgsTiles = new Set();
-let usgsTilesInitialized = false;
+window.usgsTilesInitialized = false;
 
-/**
- * Calculates the geographic bounding box for a single tile.
- * @param {object} tile - A tile object from our usgs_tiles.json index.
- * @returns {object} A bounding box object with { south, west, north, east }.
- */
 function getTileBounds(tile) {
     const [pixelWidth, , , pixelHeight, originLng, originLat] = tile.jgw;
     const { width, height } = tile;
 
     const minLng = originLng - (pixelWidth / 2);
-    const maxLat = originLat - (pixelHeight / 2); // pixelHeight is negative
+    const maxLat = originLat - (pixelHeight / 2);
     const maxLng = minLng + (width * pixelWidth);
     const minLat = maxLat + (height * pixelHeight);
 
     return { west: minLng, south: minLat, east: maxLng, north: maxLat };
 }
 
-/**
- * Checks the map's current viewport and loads/unloads tiles as needed.
- */
 function updateVisibleUsgsTiles() {
-    if (!usgsTilesInitialized) return;
+    if (!window.usgsTilesInitialized) return;
 
     const currentZoom = map.getZoom();
 
@@ -64,11 +56,6 @@ function updateVisibleUsgsTiles() {
     });
 }
 
-/**
- * Adds a single tile image and its source to the map.
- * @param {object} tile - The tile object to add.
- * @param {string} sourceId - The unique ID to use for the map source and layer.
- */
 function addTileToMap(tile, sourceId) {
     const imageUrl = `https://www.ese-llc.com/s/${tile.name}.jpg`;
     
@@ -93,10 +80,6 @@ function addTileToMap(tile, sourceId) {
     }, 'satellite');
 }
 
-/**
- * Removes a tile's layer and source from the map.
- * @param {string} sourceId - The unique ID of the source and layer to remove.
- */
 function removeTileFromMap(sourceId) {
     if (map.getLayer(sourceId)) {
         map.removeLayer(sourceId);
@@ -106,12 +89,8 @@ function removeTileFromMap(sourceId) {
     }
 }
 
-
-/**
- * Main function to start the tile manager. Fetches the index and sets up events.
- */
 function initializeUsgsTileManager() {
-    if (usgsTilesInitialized) {
+    if (window.usgsTilesInitialized) {
         updateVisibleUsgsTiles();
         return;
     }
@@ -129,7 +108,7 @@ function initializeUsgsTileManager() {
                 tile.bounds = getTileBounds(tile);
             });
 
-            usgsTilesInitialized = true;
+            window.usgsTilesInitialized = true;
             console.log("USGS Tile Manager Initialized.");
             
             updateVisibleUsgsTiles();
@@ -142,25 +121,18 @@ function initializeUsgsTileManager() {
         });
 }
 
-// --- UPDATED deinitialize function ---
-/**
- * Removes all loaded tiles and detaches the map event listeners.
- */
 function deinitializeUsgsTileManager() {
-    if (!usgsTilesInitialized) return;
+    if (!window.usgsTilesInitialized) return;
 
-    // Remove all loaded tiles from the map
     loadedUsgsTiles.forEach(tileName => {
         removeTileFromMap(`usgs-tile-source-${tileName}`);
     });
     loadedUsgsTiles.clear();
     
-    // Remove the event listeners to stop future updates
     map.off('moveend', updateVisibleUsgsTiles);
     map.off('zoomend', updateVisibleUsgsTiles);
 
-    // Reset the initialization flag
-    usgsTilesInitialized = false;
+    window.usgsTilesInitialized = false;
     console.log("USGS Tile Manager Deinitialized.");
 }
 
