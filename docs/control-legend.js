@@ -159,12 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     fetch('https://east-southeast-llc.github.io/ese-map-viewer/docs/legend-data.json')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
             legendData = data;
         })
@@ -179,8 +174,25 @@ document.addEventListener("DOMContentLoaded", function () {
         let legendHTML = '';
 
         legendData.forEach(layerInfo => {
-            // --- CORRECTED LOGIC HERE ---
-            // Only check if the layer exists on the map, don't check against the main toggleable list.
+            // --- NEW: Special handling for the USGS legend entry ---
+            if (layerInfo.id === 'usgs-quad-legend') {
+                // Check if the tile manager is active and has loaded any tiles
+                if (window.usgsTilesInitialized && window.loadedUsgsTiles.size > 0) {
+                    legendHTML += `<div class="legend-title">${layerInfo.displayName}</div>`;
+                    const item = layerInfo.items[0];
+                    const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
+                    const swatchClass = 'color-box';
+                    legendHTML += `
+                        <div class="legend-item-row">
+                            <span class="${swatchClass}" style="${style}"></span>
+                            <span>${item.label}</span>
+                        </div>
+                    `;
+                }
+                return; // Continue to the next legend item
+            }
+
+            // (The rest of the logic for other layers remains the same)
             const availableSourceIds = layerInfo.sources
                 .map(s => s.id)
                 .filter(id => map.getLayer(id));
