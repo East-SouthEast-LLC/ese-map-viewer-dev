@@ -38,7 +38,7 @@ function loadLayerScript(layerName) {
             } else if (layerName === "private properties upland") {
                 scriptName = "private-properties-upland";
             } else if (layerName === "usgs quad") {
-                scriptName = "usgs-quad";
+                scriptName = "usgs-tile-manager";
             }
         
         script.src = `https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/${scriptName}.js?v=2`;

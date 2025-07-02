@@ -87,6 +87,13 @@ function setupToggleableMenu() {
                     map.setLayoutProperty('vernal-pools-labels', 'visibility', newVisibility);
                 } else if (clickedLayer === 'sewer plans') {
                     map.setLayoutProperty('sewer-plans-outline', 'visibility', newVisibility);
+                } else if (clickedLayer === 'usgs quad') { // Handle USGS layer separately
+                    if (newVisibility === 'visible') {
+                        initializeUsgsTileManager(); // Fetch data and show initial tiles
+                        showAllUsgsTiles(); // Make sure any loaded tiles are visible
+                    } else {
+                        hideAllUsgsTiles(); // Hide all visible tiles
+                    }
                 } else if (clickedLayer === 'lidar contours') {
                     if (map.getLayer('lidar-contour-labels')) {
                         map.setLayoutProperty('lidar-contour-labels', 'visibility', newVisibility);
