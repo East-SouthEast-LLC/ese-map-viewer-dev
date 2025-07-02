@@ -37,9 +37,24 @@ function loadLayerScript(layerName) {
                 scriptName = "sewer-plans";
             } else if (layerName === "private properties upland") {
                 scriptName = "private-properties-upland";
+            } else if (layerName === "usgs quad") { // Added condition for our new layer
+                scriptName = "usgs-quad";
             }
+        
         script.src = `https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/${scriptName}.js?v=2`;
-        script.onload = () => resolve();
+        
+        // This is the updated logic
+        script.onload = () => {
+            // Special handling for our async layer
+            if (layerName === 'usgs quad') {
+                // Call the async function and wait for it to complete before resolving the promise
+                addUsgsQuadLayer().then(resolve);
+            } else {
+                // For all other synchronous scripts, resolve immediately
+                resolve();
+            }
+        };
+
         script.onerror = () => reject(new Error(`Script load error for ${layerName}`));
         document.head.appendChild(script);
     });
@@ -96,6 +111,9 @@ map.on('load', function () {
                                 const firstDataLayer = townData.layers.find(l => l !== 'satellite');
                                 if (map.getLayer('satellite') && map.getLayer(firstDataLayer)) {
                                     map.moveLayer('satellite', firstDataLayer);
+                                }
+                                if (map.getLayer('usgs quad')) {
+                                    map.moveLayer('usgs quad');
                                 }
                                 if (map.getLayer('parcel highlight')) {
                                     map.moveLayer('parcel highlight');
