@@ -1,10 +1,14 @@
 async function addUsgsQuadLayer() {
     const layerId = 'usgs quad';
+    
+    // URL for the large image file on Squarespace
     const geoTiffUrl = 'https://www.ese-llc.com/s/USGS-test2.tif';
-    const worldFileUrl = geoTiffUrl.replace('.tif', '.tfw'); // Create the .tfw URL
+    
+    // --- UPDATED: URL for the tiny world file on GitHub ---
+    const worldFileUrl = 'https://east-southeast-llc.github.io/ese-map-viewer/data/USGS-test2.tfw';
 
     try {
-        // --- NEW: Fetch and parse the .tfw world file ---
+        // Fetch and parse the .tfw world file from GitHub
         const tfwResponse = await fetch(worldFileUrl);
         if (!tfwResponse.ok) throw new Error(`Failed to fetch TFW file: ${tfwResponse.status}`);
         const tfwText = await tfwResponse.text();
@@ -12,7 +16,7 @@ async function addUsgsQuadLayer() {
 
         const [pixelWidth, , , pixelHeight, originLng, originLat] = tfwValues;
 
-        // Fetch the GeoTIFF image itself
+        // Fetch the GeoTIFF image itself from Squarespace
         const response = await fetch(geoTiffUrl);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         
@@ -23,10 +27,9 @@ async function addUsgsQuadLayer() {
         const width = image.getWidth();
         const height = image.getHeight();
 
-        // --- UPDATED: Calculate coordinates using dynamic values from .tfw ---
-        // The TFW provides the center of the top-left pixel, so we adjust to get the corner.
+        // Calculate coordinates using dynamic values from .tfw
         const minLng = originLng - (pixelWidth / 2);
-        const maxLat = originLat - (pixelHeight / 2); // pixelHeight is negative
+        const maxLat = originLat - (pixelHeight / 2); 
         const maxLng = minLng + (width * pixelWidth);
         const minLat = maxLat + (height * pixelHeight);
 
@@ -35,7 +38,7 @@ async function addUsgsQuadLayer() {
             [maxLng, minLat], [minLng, minLat]
         ];
 
-        // --- The rest of the function remains the same ---
+        // The rest of the function remains the same
         const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
@@ -75,14 +78,21 @@ async function addUsgsQuadLayer() {
         ctx.putImageData(imageData, 0, 0);
         const dataUrl = canvas.toDataURL();
         
-        map.addSource(layerId, { type: 'image', url: dataUrl, coordinates: coordinates });
-        map.addLayer({
-            'id': layerId,
-            'type': 'raster',
-            'source': layerId,
-            'layout': { 'visibility': 'none' },
-            'paint': { 'raster-opacity': 0.85, 'raster-fade-duration': 0 }
-        });
+        if (map.getSource(layerId)) {
+            map.getSource(layerId).updateImage({ url: dataUrl, coordinates: coordinates });
+        } else {
+            map.addSource(layerId, { type: 'image', url: dataUrl, coordinates: coordinates });
+        }
+
+        if (!map.getLayer(layerId)) {
+            map.addLayer({
+                'id': layerId,
+                'type': 'raster',
+                'source': layerId,
+                'layout': { 'visibility': 'none' },
+                'paint': { 'raster-opacity': 0.85, 'raster-fade-duration': 0 }
+            });
+        }
         console.log(`%c[${layerId}] Successfully added GeoTIFF layer from dynamic TFW data.`, 'color: green; font-weight: bold;');
 
     } catch (error) {
