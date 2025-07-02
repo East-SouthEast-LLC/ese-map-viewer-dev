@@ -37,30 +37,50 @@ async function addUsgsQuadLayer() {
         const imageData = ctx.createImageData(width, height);
         
         const rasters = await image.readRasters();
-        const photometricInterpretation = image.fileDirectory.PhotometricInterpretation;
+        const colorMap = image.fileDirectory.ColorMap;
 
-        if (photometricInterpretation === 3) { // Paletted
-            const colorMap = image.fileDirectory.ColorMap;
+        if (colorMap) {
+            console.log(`[${layerId}] Paletted image detected. Processing with Color Map.`);
+            
             const paletteData = rasters[0];
+
+            // --- NEW DEBUGGING LOGS ---
+            console.log(`[${layerId}] Color Map has ${colorMap.length} entries.`);
+            console.log(`[${layerId}] Sample of first 10 palette indices from raster:`, paletteData.slice(0, 10));
+            console.log(`[${layerId}] Sample of first 3 colors from Color Map:`, colorMap.slice(0, 3));
+            // ---
+
             let j = 0;
             for (let i = 0; i < paletteData.length; i++) {
                 const index = paletteData[i];
-                imageData.data[j++] = (colorMap[index][0] / 65535) * 255;
-                imageData.data[j++] = (colorMap[index][1] / 65535) * 255;
-                imageData.data[j++] = (colorMap[index][2] / 65535) * 255;
-                imageData.data[j++] = 255;
+                if (colorMap[index]) {
+                    // The color map values are in a 0-65535 range. We must scale them to 0-255.
+                    imageData.data[j++] = (colorMap[index][0] / 65535) * 255;
+                    imageData.data[j++] = (colorMap[index][1] / 65535) * 255;
+                    imageData.data[j++] = (colorMap[index][2] / 65535) * 255;
+                    imageData.data[j++] = 255;
+                } else {
+                    // If an index is out of bounds, default to black
+                    imageData.data[j++] = 0;
+                    imageData.data[j++] = 0;
+                    imageData.data[j++] = 0;
+                    imageData.data[j++] = 255;
+                }
             }
-        } else if (photometricInterpretation === 2) { // RGB
-            const [R, G, B] = rasters;
-            let j = 0;
-            for (let i = 0; i < R.length; i++) {
-                imageData.data[j++] = R[i];
-                imageData.data[j++] = G[i];
-                imageData.data[j++] = B[i];
-                imageData.data[j++] = 255;
-            }
+            console.log(`[${layerId}] Sample of first 12 values in final RGBA array:`, imageData.data.slice(0, 12));
+
         } else {
-             throw new Error(`Unsupported photometric interpretation: ${photometricInterpretation}`);
+            // Fallback for non-paletted images
+            console.warn(`[${layerId}] No color map found. Rendering as grayscale.`);
+            const singleBandData = rasters[0];
+            let j = 0;
+            for (let i = 0; i < singleBandData.length; i++) {
+                const value = singleBandData[i];
+                imageData.data[j++] = value;
+                imageData.data[j++] = value;
+                imageData.data[j++] = value;
+                imageData.data[j++] = 255;
+            }
         }
         
         ctx.putImageData(imageData, 0, 0);
