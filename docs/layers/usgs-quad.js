@@ -1,8 +1,18 @@
 async function addUsgsQuadLayer() {
     const layerId = 'usgs quad';
     const geoTiffUrl = 'https://www.ese-llc.com/s/USGS-test2.tif';
+    const worldFileUrl = geoTiffUrl.replace('.tif', '.tfw'); // Create the .tfw URL
 
     try {
+        // --- NEW: Fetch and parse the .tfw world file ---
+        const tfwResponse = await fetch(worldFileUrl);
+        if (!tfwResponse.ok) throw new Error(`Failed to fetch TFW file: ${tfwResponse.status}`);
+        const tfwText = await tfwResponse.text();
+        const tfwValues = tfwText.split('\n').map(parseFloat);
+
+        const [pixelWidth, , , pixelHeight, originLng, originLat] = tfwValues;
+
+        // Fetch the GeoTIFF image itself
         const response = await fetch(geoTiffUrl);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         
@@ -13,21 +23,19 @@ async function addUsgsQuadLayer() {
         const width = image.getWidth();
         const height = image.getHeight();
 
-        const pixelWidth = 0.00001800587499404;
-        const pixelHeight = -0.00001800587499403;
-        const originLng = -69.9959633755972;
-        const originLat = 41.6920999234434;
-
-        const minLng = originLng;
-        const maxLat = originLat;
-        const maxLng = originLng + (width * pixelWidth);
-        const minLat = originLat + (height * pixelHeight);
+        // --- UPDATED: Calculate coordinates using dynamic values from .tfw ---
+        // The TFW provides the center of the top-left pixel, so we adjust to get the corner.
+        const minLng = originLng - (pixelWidth / 2);
+        const maxLat = originLat - (pixelHeight / 2); // pixelHeight is negative
+        const maxLng = minLng + (width * pixelWidth);
+        const minLat = maxLat + (height * pixelHeight);
 
         const coordinates = [
             [minLng, maxLat], [maxLng, maxLat],
             [maxLng, minLat], [minLng, minLat]
         ];
 
+        // --- The rest of the function remains the same ---
         const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
@@ -75,7 +83,7 @@ async function addUsgsQuadLayer() {
             'layout': { 'visibility': 'none' },
             'paint': { 'raster-opacity': 0.85, 'raster-fade-duration': 0 }
         });
-        console.log(`%c[${layerId}] Successfully added GeoTIFF layer to map.`, 'color: green; font-weight: bold;');
+        console.log(`%c[${layerId}] Successfully added GeoTIFF layer from dynamic TFW data.`, 'color: green; font-weight: bold;');
 
     } catch (error) {
         console.error(`Failed to load GeoTIFF layer: ${layerId}`, error);
