@@ -19,6 +19,7 @@ function getPrintBoundingBox() {
     return [[west, north], [east, north], [east, south], [west, south], [west, north]];
 }
 
+
 function getLegendForPrint(expectedLayerIds = []) {
     const geoJsonBounds = getPrintBoundingBox();
     if (!geoJsonBounds) {
@@ -34,7 +35,6 @@ function getLegendForPrint(expectedLayerIds = []) {
     const allItemsToRender = []; 
     const renderedLegendSections = new Set();
     
-    // Check if any regular vector layers are visible to query
     const allQueryableLayers = legendData.flatMap(l => l.sources ? l.sources.map(s => s.id) : [])
                                          .filter(id => map.getLayer(id) && map.getLayoutProperty(id, 'visibility') === 'visible');
                                          
@@ -48,9 +48,25 @@ function getLegendForPrint(expectedLayerIds = []) {
     }, {});
 
     legendData.forEach(layerInfo => {
-        // --- CORRECTED LOGIC: Special handling for the USGS layer ---
+        // --- NEW: Special handling for Satellite Imagery ---
+        if (layerInfo.displayName === "Satellite Imagery") {
+            if (map.getLayer('satellite') && map.getLayoutProperty('satellite', 'visibility') === 'visible') {
+                allItemsToRender.push(`<div class="legend-section">${layerInfo.displayName}</div>`);
+                const item = layerInfo.items[0];
+                const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
+                const swatchClass = 'color-box';
+                allItemsToRender.push(
+                    `<div class="legend-item">
+                        <span class="${swatchClass}" style="${style}"></span>
+                        <span>${item.label}</span>
+                    </div>`
+                );
+                renderedLegendSections.add(layerInfo.displayName);
+            }
+            return;
+        }
+
         if (layerInfo.id === 'usgs-quad-legend') {
-            // Check if the USGS layer was active before printing began
             if (document.querySelector('[data-layer-id="usgs quad"].active')) {
                 allItemsToRender.push(`<div class="legend-section">${layerInfo.displayName}</div>`);
                 const item = layerInfo.items[0];
@@ -64,10 +80,9 @@ function getLegendForPrint(expectedLayerIds = []) {
                 );
                 renderedLegendSections.add(layerInfo.displayName);
             }
-            return; // Skip the rest of the logic for this special item
+            return; 
         }
         
-        // This check is now safe because the USGS entry (which has no sources) is handled above
         if (!layerInfo.sources) {
             return;
         }
