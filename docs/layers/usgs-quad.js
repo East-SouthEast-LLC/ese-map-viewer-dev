@@ -13,7 +13,6 @@ async function addUsgsQuadLayer() {
         const width = image.getWidth();
         const height = image.getHeight();
 
-        // --- RESTORED: Correct coordinate calculation using .tfw data ---
         const pixelWidth = 0.00001800587499404;
         const pixelHeight = -0.00001800587499403;
         const originLng = -69.9959633755972;
@@ -28,7 +27,6 @@ async function addUsgsQuadLayer() {
             [minLng, maxLat], [maxLng, maxLat],
             [maxLng, minLat], [minLng, minLat]
         ];
-        // --- END OF RESTORED LOGIC ---
 
         const canvas = document.createElement('canvas');
         canvas.width = width;
@@ -38,49 +36,38 @@ async function addUsgsQuadLayer() {
         
         const rasters = await image.readRasters();
         const colorMap = image.fileDirectory.ColorMap;
-
-        if (colorMap) {
-            console.log(`[${layerId}] Paletted image detected. Processing with Color Map.`);
-            
+        const photometricInterpretation = image.fileDirectory.PhotometricInterpretation;
+        
+        // --- FINAL CORRECTED LOGIC FOR PALETTED IMAGES ---
+        if (photometricInterpretation === 3 && colorMap) {
+            console.log(`[${layerId}] Processing paletted image with color map.`);
             const paletteData = rasters[0];
-
-            // --- NEW DEBUGGING LOGS ---
-            console.log(`[${layerId}] Color Map has ${colorMap.length} entries.`);
-            console.log(`[${layerId}] Sample of first 10 palette indices from raster:`, paletteData.slice(0, 10));
-            console.log(`[${layerId}] Sample of first 3 colors from Color Map:`, colorMap.slice(0, 3));
-            // ---
-
+            const numColors = colorMap.length / 3;
+            
             let j = 0;
             for (let i = 0; i < paletteData.length; i++) {
                 const index = paletteData[i];
-                if (colorMap[index]) {
-                    // The color map values are in a 0-65535 range. We must scale them to 0-255.
-                    imageData.data[j++] = (colorMap[index][0] / 65535) * 255;
-                    imageData.data[j++] = (colorMap[index][1] / 65535) * 255;
-                    imageData.data[j++] = (colorMap[index][2] / 65535) * 255;
-                    imageData.data[j++] = 255;
-                } else {
-                    // If an index is out of bounds, default to black
-                    imageData.data[j++] = 0;
-                    imageData.data[j++] = 0;
-                    imageData.data[j++] = 0;
-                    imageData.data[j++] = 255;
-                }
+                // The colorMap is a single flat array: [R1, R2, ..., G1, G2, ..., B1, B2, ...]
+                // The Red value for a given index is at colorMap[index]
+                // The Green value is at colorMap[index + numColors]
+                // The Blue value is at colorMap[index + numColors * 2]
+                imageData.data[j++] = (colorMap[index] / 65535) * 255;
+                imageData.data[j++] = (colorMap[index + numColors] / 65535) * 255;
+                imageData.data[j++] = (colorMap[index + numColors * 2] / 65535) * 255;
+                imageData.data[j++] = 255;
             }
-            console.log(`[${layerId}] Sample of first 12 values in final RGBA array:`, imageData.data.slice(0, 12));
-
         } else {
-            // Fallback for non-paletted images
-            console.warn(`[${layerId}] No color map found. Rendering as grayscale.`);
-            const singleBandData = rasters[0];
-            let j = 0;
-            for (let i = 0; i < singleBandData.length; i++) {
+             // Fallback for non-paletted images
+             console.warn(`[${layerId}] No supported color map found. Rendering as grayscale.`);
+             const singleBandData = rasters[0];
+             let j = 0;
+             for (let i = 0; i < singleBandData.length; i++) {
                 const value = singleBandData[i];
                 imageData.data[j++] = value;
                 imageData.data[j++] = value;
                 imageData.data[j++] = value;
                 imageData.data[j++] = 255;
-            }
+             }
         }
         
         ctx.putImageData(imageData, 0, 0);
