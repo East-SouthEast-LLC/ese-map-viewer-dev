@@ -126,6 +126,8 @@ map.on('load', function () {
                                     'agis',
                                     'historic',
                                     'usgs quad',
+                                    'towns',
+                                    'private properties upland',
                                     'contours',
                                     'lidar contours', 'lidar-contour-labels',
                                     'parcel highlight'
