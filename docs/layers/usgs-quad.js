@@ -1,6 +1,6 @@
 async function addUsgsQuadLayer() {
     const layerId = 'usgs quad';
-    const geoTiffUrl = 'https://east-southeast-llc.github.io/ese-map-viewer/data/USGS-test2.tif'; 
+    const geoTiffUrl = 'https://www.ese-llc.com/s/USGS-test2.tif';
 
     try {
         const response = await fetch(geoTiffUrl);
@@ -38,7 +38,6 @@ async function addUsgsQuadLayer() {
         const colorMap = image.fileDirectory.ColorMap;
         const photometricInterpretation = image.fileDirectory.PhotometricInterpretation;
         
-        // --- FINAL CORRECTED LOGIC FOR PALETTED IMAGES ---
         if (photometricInterpretation === 3 && colorMap) {
             console.log(`[${layerId}] Processing paletted image with color map.`);
             const paletteData = rasters[0];
@@ -47,17 +46,12 @@ async function addUsgsQuadLayer() {
             let j = 0;
             for (let i = 0; i < paletteData.length; i++) {
                 const index = paletteData[i];
-                // The colorMap is a single flat array: [R1, R2, ..., G1, G2, ..., B1, B2, ...]
-                // The Red value for a given index is at colorMap[index]
-                // The Green value is at colorMap[index + numColors]
-                // The Blue value is at colorMap[index + numColors * 2]
                 imageData.data[j++] = (colorMap[index] / 65535) * 255;
                 imageData.data[j++] = (colorMap[index + numColors] / 65535) * 255;
                 imageData.data[j++] = (colorMap[index + numColors * 2] / 65535) * 255;
                 imageData.data[j++] = 255;
             }
         } else {
-             // Fallback for non-paletted images
              console.warn(`[${layerId}] No supported color map found. Rendering as grayscale.`);
              const singleBandData = rasters[0];
              let j = 0;
