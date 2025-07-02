@@ -43,7 +43,6 @@ function loadLayerScript(layerName) {
         
         script.src = `https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/${scriptName}.js?v=2`;
         
-        // CORRECTED: The onload event now simply resolves for all scripts.
         script.onload = () => {
             resolve();
         };
@@ -102,6 +101,7 @@ map.on('load', function () {
                             menuScript.onload = function () {
                                 setupToggleableMenu();
 
+                                // --- CORRECTED drawOrder ARRAY ---
                                 const drawOrder = [
                                     'satellite', 'parcels', 'zoning', 'conservancy districts',
                                     'conservation', 'sewer', 'sewer plans', 'sewer-plans-outline',
@@ -110,7 +110,7 @@ map.on('load', function () {
                                     'DEP wetland', 'dep-wetland-line', 'dep-wetland-labels',
                                     'endangered species', 'endangered-species-labels', 'vernal-pools', 'vernal-pools-labels',
                                     'acec', 'floodplain', 'LiMWA', 'floodplain-line', 'floodplain-labels',
-                                    'agis', 'historic', 'usgs quad', 'towns', 'private properties upland',
+                                    'agis', 'historic', 'towns', 'private properties upland',
                                     'contours', 'lidar contours', 'lidar-contour-labels', 'parcel highlight'
                                 ];
 
