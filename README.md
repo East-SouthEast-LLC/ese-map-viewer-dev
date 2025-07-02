@@ -4,68 +4,94 @@
 
 The East-South-East (ESE) Map Viewer is a professional-grade, interactive web mapping application designed to provide clients and staff with clear, visual access to a rich set of GIS data for various towns, with a primary focus on Chatham and Barnstable, MA.
 
-The application is built with a dynamic, modular architecture designed to be embedded within a Squarespace website. Its core assets (JavaScript, CSS, and data files) are hosted on a GitHub repository and served via GitHub Pages. Its primary goal is to centralize crucial property and environmental data, offering powerful interactive tools and generating professional, multi-page printouts for reports and analysis.
+The application is built with a dynamic, modular architecture designed to be embedded within a Squarespace website. Its core assets (JavaScript, CSS, and data files) are hosted on a GitHub repository and served via GitHub Pages. This hybrid hosting model allows for easy updates to the application's functionality by simply pushing changes to the GitHub repository, while leveraging Squarespace's content management system for page creation and hosting of large file assets.
+
+Its primary goal is to centralize crucial property and environmental data, offering powerful interactive tools (such as dynamic layer toggling, an address search, measurement tools, and bookmarking) and generating professional, multi-page printouts for reports and analysis.
+
+---
 
 ## 2. Key Technologies
 
-* **Mapping Library:** [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/api/)
+* **Mapping Library:** Mapbox GL JS
 * **Hosting:**
     * **Frontend Page:** Squarespace (via embedded code blocks).
-    * **Asset Hosting:** GitHub Pages.
+    * **Asset Hosting:** GitHub Pages for scripts and configuration; Squarespace for large file assets (e.g., JPG map tiles).
 * **Core Languages:** HTML, CSS, JavaScript
 * **Key Libraries:**
-    * [Turf.js](https://turfjs.org/) for geospatial calculations.
-    * [Mapbox GL Geocoder](https://github.com/mapbox/mapbox-gl-geocoder) for address search functionality.
+    * **Turf.js:** Used for geospatial calculations, such as determining the map scale for printing.
+    * **Mapbox GL Geocoder:** Powers the address search functionality.
 
-## 3. Architecture and File Structure
+---
 
-The project has been refactored into a highly modular and dynamic system that is configured by a central JSON file. This allows for easy management and scalability to include new towns and layers.
+## 3. System Architecture
 
-* **`pages/town.html`**: This is the universal HTML template. The content of this file is intended to be pasted into a Squarespace "Code Block". Its only role is to define the basic page structure and load the main application script. The only line edited within Squarespace is `const townId = "..."`, which tells the application which town's configuration to load.
+The project's architecture is designed for scalability and ease of maintenance, separating the core application logic from the town-specific data configurations.
 
-* **`docs/main-app.js`**: This new file is the core controller of the application. It is responsible for:
-    * Initializing the Mapbox map.
-    * Fetching the `town-config.json` file.
-    * Based on the `townId` from `town.html`, finding the correct configuration for the current town.
-    * Dynamically loading all necessary layer scripts and control scripts in the correct order using Promises to manage asynchronous operations.
-    * Orchestrating the setup of the UI, including the toggleable menu and draw order of the layers.
+### 3.1. High-Level Flow
 
-* **`docs/town-config.json`**: This is the single source of truth for town-specific configurations. For each town, it defines:
-    * `townID`: A unique identifier (e.g., "chatham").
-    * `townName`: The display name (e.g., "Chatham").
-    * `map`: The initial center coordinates and zoom level.
-    * `layers`: An array of layer IDs that should be available for that specific town.
+1.  A user navigates to a town-specific page on the `ese-llc.com` Squarespace site.
+2.  The Squarespace page contains a **Code Block** with the contents of `pages/town.html`.
+3.  A `townId` variable within that HTML file tells the main application which town to display.
+4.  The `docs/main-app.js` script, hosted on GitHub Pages, is loaded.
+5.  `main-app.js` fetches the `docs/town-config.json` file to get the specific configuration for the requested `townId`.
+6.  It then dynamically loads all the necessary JavaScript files for the layers and controls specified in the town's configuration.
+7.  Once all scripts are loaded, the map is initialized, layers are added in the correct draw order, and the UI (menus and toolkits) is rendered.
 
-* **`docs/layers/*.js`**: Each file in this directory is responsible for adding a single data source and its corresponding layer(s) to the map. Following the refactor, each file now follows a "wrap and call" pattern: the `map.addLayer` logic is wrapped in a function which is immediately called within the script. This allows the layers to be loaded dynamically by `main-app.js` after the map is ready.
+### 3.2. File Structure Breakdown
 
-* **`docs/control-*.js`**: These files contain the logic for the interactive UI components (e.g., legend, custom print, measuring tools). They are loaded by `town.html` and interact with the globally available `map` object.
+* **`/pages/town.html`**: The universal HTML template. This is the only file that needs to be manually placed into Squarespace. Its primary responsibility is to load the core application scripts.
 
-* **`css/globals.css`**: The single, comprehensive stylesheet that controls the entire visual presentation of the application, including print-specific styles.
+* **`/docs/main-app.js`**: The central controller of the application. It orchestrates the entire map initialization process, including fetching configurations and loading all other necessary scripts.
 
-* **`archive/`**: This directory contains the old, static HTML pages for each town, which are kept for historical reference.
+* **`/docs/town-config.json`**: This file is the "brain" of the application, defining which layers and map settings are used for each town.
 
-## 4. Squarespace Integration
+* **`/docs/layers/`**: This directory contains individual JavaScript files for each map layer. This modular approach allows for easy addition or modification of layers without affecting the rest of the application.
+    * **`usgs-tile-manager.js`**: A specialized script that manages the dynamic loading of hundreds of USGS map tiles. It only loads the images that are currently within the user's viewport to ensure high performance.
 
-The application is designed to be seamlessly embedded into Squarespace.
-1.  On the desired Squarespace page, add a **Code Block**.
-2.  Copy the entire contents of the `pages/town.html` file and paste it into the Code Block.
-3.  In the pasted code, find the line `const townId = "chatham";` and change `"chatham"` to the ID of the town you want to display on that page (e.g., `"barnstable"`). The ID must match an entry in `town-config.json`.
-4.  Save the changes. The `main-app.js` script will handle the rest, loading the correct configuration, layers, and map view.
+* **`/docs/control-*.js`**: Each file in this directory contains the logic for a specific UI component in the map's toolkit, such as:
+    * `control-legend.js`: Manages the on-screen and print legends.
+    * `control-custom-print.js`: Handles the multi-page PDF printing feature.
+    * `control-measure.js`: Powers the distance measurement tool.
+    * `control-bookmarks.js`: Manages saving and loading map views.
 
-## 5. How to Add a New Town
+* **`/docs/legend-data.json`**: A central JSON file that defines the symbology, colors, and labels for every layer. This separates the legend's content from its rendering logic.
 
-The new dynamic architecture makes adding new towns incredibly simple:
+* **`/css/globals.css`**: The single, comprehensive stylesheet for the entire application, including print-specific styles for generating professional reports.
 
-1.  **Add Configuration**: Open `docs/town-config.json` and add a new JSON object for the new town. Copy the structure from an existing town and update the `townID`, `townName`, `map` settings, and the list of `layers` that should be available.
-2.  **Create Page in Squarespace**: Create a new page on your Squarespace site.
-3.  **Embed Code**: Add a Code Block to the new page, paste in the content from `pages/town.html`, and set the `townId` variable to match the `townID` you created in the config file.
+---
 
-## 6. How to Add a New Layer
+## 4. Special Features
 
-1.  **Prepare Data**: Upload your new geospatial data to your Mapbox account and create a new vector tileset. Copy the **Tileset ID**.
+### Dynamic USGS Tile Loader
+
+The "USGS Quad" layer is not a single data source but a collection of 225 individual JPG tiles. The `usgs-tile-manager.js` script provides a high-performance solution for displaying this large dataset.
+1.  **Index Fetch**: On first activation, the manager fetches a central index file (`usgs_tiles.json`) which contains the georeferencing data for every tile.
+2.  **Viewport Culling**: It listens for map `moveend` and `zoomend` events. On each event, it calculates the map's current bounding box and determines which map tiles intersect with the user's view.
+3.  **Dynamic Loading/Unloading**: It dynamically adds only the necessary tile sources and layers to the map. Tiles that move out of view are removed to conserve browser memory.
+4.  **Zoom Restriction**: The entire feature is automatically disabled at zoom levels less than 12 to prevent performance degradation when viewing a large area.
+
+### Custom Multi-Page Printing
+
+The "Custom Print" feature allows users to generate professional, multi-page PDF reports based on pre-defined layer combinations.
+* **Presets**: The `control-custom-print.js` file contains a `printPresets` object where different report types (e.g., "Conservation", "Test Hole") are defined with specific layer groupings for each page.
+* **Dynamic Legend**: The legend on each printed page is generated by `getLegendForPrint` to only show items that are actually visible within that specific map's print area. It contains special logic to correctly handle raster layers like Satellite and the dynamic USGS tiles.
+* **State Management**: The print function carefully de-initializes and re-initializes the USGS tile manager to ensure its background processes do not interfere with the print job.
+
+---
+
+## 5. Developer Workflows
+
+### How to Add a New Town
+
+1.  **Add Configuration**: Open `docs/town-config.json` and add a new JSON object. Copy the structure from an existing town and update the `townID`, `townName`, `map` settings, and the list of `layers`.
+2.  **Create Squarespace Page**: Create a new page on your Squarespace site.
+3.  **Embed Code**: Add a Code Block, paste in the content from `pages/town.html`, and set the `townId` variable to match the new `townID`.
+
+### How to Add a New Vector Layer
+
+1.  **Prepare Data**: Upload your new geospatial data to Mapbox and create a new vector tileset. Copy the **Tileset ID**.
 2.  **Create Layer File**: In the `/docs/layers/` directory, create a new file (e.g., `new-layer.js`).
-3.  **Add Mapbox Code**: In this new file, wrap your Mapbox logic in a function and call it at the end of the script. This is critical for the dynamic loading to work.
-
+3.  **Add Mapbox Code**: Use the standard function wrapper to add your Mapbox source and layer(s). Ensure the `id` is unique.
     ```javascript
     // Example: docs/layers/new-layer.js
     function addNewLayer() {
@@ -81,10 +107,8 @@ The new dynamic architecture makes adding new towns incredibly simple:
         'layout': { 'visibility': 'none' },
         'paint': { /* Your styles here */ }
       });
-      // Add map.on('click', ...) events if desired
     }
-    
-    addNewLayer(); // Call the function immediately
+    addNewLayer();
     ```
-4.  **Update Legend**: If the layer needs a legend entry, add a new object for it in `docs/legend-data.json`.
-5.  **Add to Town Config**: Open `docs/town-config.json` and add the new layer's ID (e.g., `"new-layer-id"`) to the `layers` array for any towns that should have access to it.
+4.  **Update Legend**: If the layer should have a legend, add a new entry for it in `docs/legend-data.json`.
+5.  **Add to Town Config**: Open `docs/town-config.json` and add the new layer's ID to the `layers` array for any towns that should have access to it.
