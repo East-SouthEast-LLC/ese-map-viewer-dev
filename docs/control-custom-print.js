@@ -11,9 +11,6 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    // ============================================================================
-    // PRESET CONFIGURATIONS -- UPDATED to use 'lidar contours'
-    // ============================================================================
     const printPresets = {
         'Conservation': [
             { page: 1, layers: ['parcel highlight', 'lidar contours', 'floodplain'] },
@@ -30,37 +27,29 @@ document.addEventListener("DOMContentLoaded", function () {
         ]
     };
     
-    // ============================================================================
-    // HELPER FUNCTIONS FOR CUSTOM PRINT FUNCTIONALITY
-    // ============================================================================
-
-    // UPDATED to handle 'lidar contours' correctly
+    // --- CAREFULLY CORRECTED FUNCTION ---
     function setLayerVisibility(layerId, visibility) {
         if (map.getLayer(layerId)) {
             map.setLayoutProperty(layerId, 'visibility', visibility);
         }
-        // Dependent layer logic...
-        if (layerId === 'floodplain') {
-            map.setLayoutProperty('LiMWA', 'visibility', visibility);
-            map.setLayoutProperty('floodplain-line', 'visibility', visibility);
-            map.setLayoutProperty('floodplain-labels', 'visibility', visibility);
-        } else if (layerId === 'DEP wetland') {
-            map.setLayoutProperty('dep-wetland-line', 'visibility', visibility);
-            map.setLayoutProperty('dep-wetland-labels', 'visibility', visibility);
-        } else if (layerId === 'soils') {
-            map.setLayoutProperty('soils-labels', 'visibility', visibility);
-            map.setLayoutProperty('soils-outline', 'visibility', visibility);
-        } else if (layerId === 'zone II') {
-            map.setLayoutProperty('zone-ii-outline', 'visibility', visibility);
-            map.setLayoutProperty('zone-ii-labels', 'visibility', visibility);
-        } else if (layerId === 'endangered species') {
-            map.setLayoutProperty('endangered-species-labels', 'visibility', visibility);
-            map.setLayoutProperty('vernal-pools', 'visibility', visibility);
-            map.setLayoutProperty('vernal-pools-labels', 'visibility', visibility);
-        } else if (layerId === 'sewer plans') {
-            map.setLayoutProperty('sewer-plans-outline', 'visibility', visibility);
-        } else if (layerId === 'lidar contours') { // Corrected from 'contours'
-            map.setLayoutProperty('lidar-contour-labels', 'visibility', visibility);
+    
+        // Dependent layer logic with checks to prevent errors
+        const dependentLayers = {
+            'floodplain': ['LiMWA', 'floodplain-line', 'floodplain-labels'],
+            'DEP wetland': ['dep-wetland-line', 'dep-wetland-labels'],
+            'soils': ['soils-labels', 'soils-outline'],
+            'zone II': ['zone-ii-outline', 'zone-ii-labels'],
+            'endangered species': ['endangered-species-labels', 'vernal-pools', 'vernal-pools-labels'],
+            'sewer plans': ['sewer-plans-outline'],
+            'lidar contours': ['lidar-contour-labels']
+        };
+    
+        if (dependentLayers[layerId]) {
+            dependentLayers[layerId].forEach(depId => {
+                if (map.getLayer(depId)) { // Check if the dependent layer exists before changing it
+                    map.setLayoutProperty(depId, 'visibility', visibility);
+                }
+            });
         }
     }
 
@@ -213,14 +202,13 @@ document.addEventListener("DOMContentLoaded", function () {
     async function generateMultiPagePrintout(printData, pageConfigs) {
         console.log(`Generating multi-page printout with preset: ${document.getElementById('custom-print-preset').value}`);
         
-        // --- NEW: Check if USGS layer is active before printing ---
         const usgsLayerIsActive = document.querySelector('[data-layer-id="usgs quad"].active');
         if (usgsLayerIsActive && typeof hideAllUsgsTiles === 'function') {
             hideAllUsgsTiles();
         }
 
         let fullHtml = '';
-        const allToggleableLayers = window.toggleableLayerIds.filter(id => id !== 'tools');
+        const allToggleableLayers = window.toggleableLayerIds.filter(id => id !== 'tools' && id !== 'usgs quad');
         const initiallyVisibleLayers = listVisibleLayers(map, allToggleableLayers);
         
         if (typeof setMapToScale === 'function') {
@@ -246,7 +234,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         initiallyVisibleLayers.forEach(layerId => setLayerVisibility(layerId, 'visible'));
 
-        // --- NEW: Restore USGS tiles if they were active ---
         if (usgsLayerIsActive && typeof showAllUsgsTiles === 'function') {
             showAllUsgsTiles();
         }

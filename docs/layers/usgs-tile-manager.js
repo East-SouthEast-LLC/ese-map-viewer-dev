@@ -136,6 +136,31 @@ function deinitializeUsgsTileManager() {
     console.log("USGS Tile Manager Deinitialized.");
 }
 
+function hideAllUsgsTiles() {
+    if (!window.usgsTilesInitialized) return;
+    loadedUsgsTiles.forEach(tileName => {
+        const layerId = `usgs-tile-source-${tileName}`;
+        if (map.getLayer(layerId)) {
+            map.setLayoutProperty(layerId, 'visibility', 'none');
+        }
+    });
+}
+
+function showAllUsgsTiles() {
+    if (!window.usgsTilesInitialized) return;
+    if (map.getZoom() < 12) {
+        hideAllUsgsTiles();
+        return;
+    }
+    loadedUsgsTiles.forEach(tileName => {
+        const layerId = `usgs-tile-source-${tileName}`;
+        if (map.getLayer(layerId)) {
+            map.setLayoutProperty(layerId, 'visibility', 'visible');
+        }
+    });
+}
+
+// Make functions globally available
 window.initializeUsgsTileManager = initializeUsgsTileManager;
 window.deinitializeUsgsTileManager = deinitializeUsgsTileManager;
 window.hideAllUsgsTiles = hideAllUsgsTiles;
