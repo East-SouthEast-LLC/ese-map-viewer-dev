@@ -104,29 +104,40 @@ map.on('load', function () {
                             menuScript.src = 'https://east-southeast-llc.github.io/ese-map-viewer/docs/toggleable-menu.js?v=2';
                             menuScript.onload = function () {
                                 setupToggleableMenu();
-                                // First, move satellite to the top. It will become the bottom-most data layer.
-                                if (map.getLayer('satellite')) {
-                                    map.moveLayer('satellite');
-                                }
 
-                                // Loop through all layers defined in the config and move them.
-                                // This creates the desired stacking order.
-                                townData.layers.forEach(layerId => {
-                                    if (layerId !== 'satellite' && map.getLayer(layerId)) {
+                                // Define the complete, desired draw order from bottom to top.
+                                // This includes all parent layers and their dependent layers.
+                                const drawOrder = [
+                                    'satellite',
+                                    'parcels',
+                                    'zoning',
+                                    'conservancy districts',
+                                    'conservation',
+                                    'sewer',
+                                    'sewer plans', 'sewer-plans-outline',
+                                    'stories',
+                                    'intersection',
+                                    'soils', 'soils-outline', 'soils-labels',
+                                    'zone II', 'zone-ii-outline', 'zone-ii-labels',
+                                    'DEP wetland', 'dep-wetland-line', 'dep-wetland-labels',
+                                    'endangered species', 'endangered-species-labels', 'vernal-pools', 'vernal-pools-labels',
+                                    'acec',
+                                    'floodplain', 'LiMWA', 'floodplain-line', 'floodplain-labels',
+                                    'agis',
+                                    'historic',
+                                    'usgs quad',
+                                    'contours',
+                                    'lidar contours', 'lidar-contour-labels',
+                                    'parcel highlight'
+                                ];
+
+                                // Loop through the defined order and move each layer to the top.
+                                // The last layer in the array will end up on top of all others.
+                                drawOrder.forEach(layerId => {
+                                    if (map.getLayer(layerId)) {
                                         map.moveLayer(layerId);
                                     }
                                 });
-
-                                if (map.getLayer('lidar contours')) {
-                                    map.moveLayer('lidar contours');
-                                }
-                                if (map.getLayer('contours')) {
-                                    map.moveLayer('contours');
-                                }
-                                if (map.getLayer('parcel highlight')) {
-                                    map.moveLayer('parcel highlight');
-                                }
-
                                 applyUrlParams(map);
                             };
                             document.body.appendChild(menuScript);
