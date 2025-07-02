@@ -20,10 +20,8 @@ function getPrintBoundingBox() {
 }
 
 function getLegendForPrint(expectedLayerIds = []) {
-    console.log("--- Generating Print Legend ---"); // DEBUG
     const geoJsonBounds = getPrintBoundingBox();
     if (!geoJsonBounds) {
-        console.error("DEBUG: getPrintBoundingBox returned nothing.");
         return '<div class="legend-item">Error calculating print area.</div>';
     }
     
@@ -36,6 +34,7 @@ function getLegendForPrint(expectedLayerIds = []) {
     const allItemsToRender = []; 
     const renderedLegendSections = new Set();
     
+    // Check if any regular vector layers are visible to query
     const allQueryableLayers = legendData.flatMap(l => l.sources ? l.sources.map(s => s.id) : [])
                                          .filter(id => map.getLayer(id) && map.getLayoutProperty(id, 'visibility') === 'visible');
                                          
@@ -49,11 +48,10 @@ function getLegendForPrint(expectedLayerIds = []) {
     }, {});
 
     legendData.forEach(layerInfo => {
-        // --- ADDED DEBUG LOG ---
-        console.log(`Processing legend entry: ${layerInfo.displayName || layerInfo.id}`);
-
+        // --- CORRECTED LOGIC: Special handling for the USGS layer ---
         if (layerInfo.id === 'usgs-quad-legend') {
-            if (window.usgsTilesInitialized && window.loadedUsgsTiles.size > 0) {
+            // Check if the USGS layer was active before printing began
+            if (document.querySelector('[data-layer-id="usgs quad"].active')) {
                 allItemsToRender.push(`<div class="legend-section">${layerInfo.displayName}</div>`);
                 const item = layerInfo.items[0];
                 const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
@@ -66,15 +64,14 @@ function getLegendForPrint(expectedLayerIds = []) {
                 );
                 renderedLegendSections.add(layerInfo.displayName);
             }
+            return; // Skip the rest of the logic for this special item
+        }
+        
+        // This check is now safe because the USGS entry (which has no sources) is handled above
+        if (!layerInfo.sources) {
             return;
         }
 
-        // --- ADDED CHECK TO PREVENT ERROR ---
-        if (!layerInfo.sources) {
-            console.warn(`Legend entry "${layerInfo.displayName}" has no sources property. Skipping.`);
-            return;
-        }
-        
         const sourceLayerIds = layerInfo.sources.map(s => s.id);
         const visibleFeaturesForLayer = sourceLayerIds.flatMap(id => featuresByLayer[id] || []);
 
