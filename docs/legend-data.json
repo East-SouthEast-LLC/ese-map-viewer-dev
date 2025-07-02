@@ -1,5 +1,16 @@
 [
     {
+        "id": "usgs-quad-legend",
+        "displayName": "USGS Quads",
+        "items": [
+            {
+                "label": "USGS Maps",
+                "color": "#e3e1cc",
+                "opacity": 0.85
+            }
+        ]
+    },
+    {
         "id": "sewer plans",
         "displayName": "Sewer Plans",
         "sources": [
