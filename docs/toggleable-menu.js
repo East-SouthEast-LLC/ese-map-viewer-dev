@@ -16,7 +16,7 @@ function setupToggleableMenu() {
             
             document.getElementById('bookmark-box').style.display = 'none';
             document.getElementById('bookmarkButton').classList.remove('active');
-            document.getElementById('identify-box').style.display = 'none'; // This is the new line
+            document.getElementById('identify-box').style.display = 'none';
             document.getElementById('identifyButton').classList.remove('active');
 
             mapContainer.style.width = `calc(95vw - ${fullToolkitOffset}px)`;
@@ -43,11 +43,8 @@ function setupToggleableMenu() {
                     } else {
                         geocoderContainer.style.display = "none";
                         this.classList.remove('active');
-                        
-                        // Also hide the bookmark box when closing the main toolkit
                         document.getElementById('bookmark-box').style.display = 'none';
                         document.getElementById('bookmarkButton').classList.remove('active');
-
                         mapContainer.style.width = `calc(95vw - ${menuOnlyOffset}px)`;
                         mapContainer.style.marginLeft = `${menuOnlyOffset}px`;
                         setTimeout(() => map.resize(), 400);
@@ -55,6 +52,20 @@ function setupToggleableMenu() {
                     return;
                 }
 
+                // --- CORRECTED LOGIC ---
+                // First, handle the special case for our tile manager
+                if (clickedLayer === 'usgs quad') {
+                    const isActive = this.classList.toggle('active');
+                    if (isActive) {
+                        initializeUsgsTileManager(); // Fetch data and show initial tiles
+                        showAllUsgsTiles();        // Make sure any loaded tiles are visible
+                    } else {
+                        hideAllUsgsTiles();        // Hide all visible tiles
+                    }
+                    return; // Stop here for the USGS button
+                }
+
+                // If it's not the USGS button, proceed with the standard logic
                 if (!map.getLayer(clickedLayer)) {
                     return console.warn("Layer not found:", clickedLayer);
                 }
@@ -87,13 +98,6 @@ function setupToggleableMenu() {
                     map.setLayoutProperty('vernal-pools-labels', 'visibility', newVisibility);
                 } else if (clickedLayer === 'sewer plans') {
                     map.setLayoutProperty('sewer-plans-outline', 'visibility', newVisibility);
-                } else if (clickedLayer === 'usgs quad') { // Handle USGS layer separately
-                    if (newVisibility === 'visible') {
-                        initializeUsgsTileManager(); // Fetch data and show initial tiles
-                        showAllUsgsTiles(); // Make sure any loaded tiles are visible
-                    } else {
-                        hideAllUsgsTiles(); // Hide all visible tiles
-                    }
                 } else if (clickedLayer === 'lidar contours') {
                     if (map.getLayer('lidar-contour-labels')) {
                         map.setLayoutProperty('lidar-contour-labels', 'visibility', newVisibility);
