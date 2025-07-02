@@ -43,12 +43,9 @@ function loadLayerScript(layerName) {
         
         script.src = `https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/${scriptName}.js?v=2`;
         
+        // CORRECTED: The onload event now simply resolves for all scripts.
         script.onload = () => {
-            if (layerName === 'usgs quad') {
-                addUsgsQuadLayer().then(resolve);
-            } else {
-                resolve();
-            }
+            resolve();
         };
 
         script.onerror = () => reject(new Error(`Script load error for ${layerName}`));
@@ -105,36 +102,18 @@ map.on('load', function () {
                             menuScript.onload = function () {
                                 setupToggleableMenu();
 
-                                // Define the complete, desired draw order from bottom to top.
-                                // This includes all parent layers and their dependent layers.
                                 const drawOrder = [
-                                    'satellite',
-                                    'parcels',
-                                    'zoning',
-                                    'conservancy districts',
-                                    'conservation',
-                                    'sewer',
-                                    'sewer plans', 'sewer-plans-outline',
-                                    'stories',
-                                    'intersection',
-                                    'soils', 'soils-outline', 'soils-labels',
+                                    'satellite', 'parcels', 'zoning', 'conservancy districts',
+                                    'conservation', 'sewer', 'sewer plans', 'sewer-plans-outline',
+                                    'stories', 'intersection', 'soils', 'soils-outline', 'soils-labels',
                                     'zone II', 'zone-ii-outline', 'zone-ii-labels',
                                     'DEP wetland', 'dep-wetland-line', 'dep-wetland-labels',
                                     'endangered species', 'endangered-species-labels', 'vernal-pools', 'vernal-pools-labels',
-                                    'acec',
-                                    'floodplain', 'LiMWA', 'floodplain-line', 'floodplain-labels',
-                                    'agis',
-                                    'historic',
-                                    'usgs quad',
-                                    'towns',
-                                    'private properties upland',
-                                    'contours',
-                                    'lidar contours', 'lidar-contour-labels',
-                                    'parcel highlight'
+                                    'acec', 'floodplain', 'LiMWA', 'floodplain-line', 'floodplain-labels',
+                                    'agis', 'historic', 'usgs quad', 'towns', 'private properties upland',
+                                    'contours', 'lidar contours', 'lidar-contour-labels', 'parcel highlight'
                                 ];
 
-                                // Loop through the defined order and move each layer to the top.
-                                // The last layer in the array will end up on top of all others.
                                 drawOrder.forEach(layerId => {
                                     if (map.getLayer(layerId)) {
                                         map.moveLayer(layerId);
