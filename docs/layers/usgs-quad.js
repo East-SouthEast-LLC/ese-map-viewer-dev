@@ -13,7 +13,7 @@ async function addUsgsQuadLayer() {
         const width = image.getWidth();
         const height = image.getHeight();
 
-        // --- Use the robust .tfw data to calculate the corner coordinates ---
+        // Use the .tfw data to calculate the corner coordinates
         const pixelWidth = 0.00001800587499404;
         const pixelHeight = -0.00001800587499403;
         const originLng = -69.9959633755972;
@@ -29,7 +29,7 @@ async function addUsgsQuadLayer() {
             [maxLng, minLat], [minLng, minLat]
         ];
 
-        // --- Correctly process the single-band raster data ---
+        // --- Corrected logic to handle paletted color ---
         const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
@@ -37,16 +37,33 @@ async function addUsgsQuadLayer() {
         const imageData = ctx.createImageData(width, height);
         
         const rasters = await image.readRasters();
-        const singleBandData = rasters[0]; // Get the data from the first (and only) band
+        const colorMap = image.fileDirectory.ColorMap;
 
-        // Loop through the data and map each pixel's value to RGBA grayscale
-        let j = 0;
-        for (let i = 0; i < singleBandData.length; i++) {
-            const value = singleBandData[i];
-            imageData.data[j++] = value; // Red
-            imageData.data[j++] = value; // Green
-            imageData.data[j++] = value; // Blue
-            imageData.data[j++] = 255;   // Alpha
+        // Check if a color map exists
+        if (colorMap) {
+            console.log(`[${layerId}] Detected Paletted Image. Applying Color Map.`);
+            const paletteData = rasters[0]; // The pixel data is an array of indices
+            let j = 0;
+            for (let i = 0; i < paletteData.length; i++) {
+                const index = paletteData[i];
+                // The color map values are in a 0-65535 range, so we scale them to 0-255
+                imageData.data[j++] = (colorMap[index][0] / 65535) * 255; // Red
+                imageData.data[j++] = (colorMap[index][1] / 65535) * 255; // Green
+                imageData.data[j++] = (colorMap[index][2] / 65535) * 255; // Blue
+                imageData.data[j++] = 255;   // Alpha
+            }
+        } else {
+            // Fallback for standard grayscale images (like our previous version)
+            console.log(`[${layerId}] No color map found. Rendering as grayscale.`);
+            const singleBandData = rasters[0];
+            let j = 0;
+            for (let i = 0; i < singleBandData.length; i++) {
+                const value = singleBandData[i];
+                imageData.data[j++] = value;
+                imageData.data[j++] = value;
+                imageData.data[j++] = value;
+                imageData.data[j++] = 255;
+            }
         }
         
         ctx.putImageData(imageData, 0, 0);
