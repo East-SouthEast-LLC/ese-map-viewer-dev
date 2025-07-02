@@ -138,3 +138,5 @@ function deinitializeUsgsTileManager() {
 
 window.initializeUsgsTileManager = initializeUsgsTileManager;
 window.deinitializeUsgsTileManager = deinitializeUsgsTileManager;
+window.hideAllUsgsTiles = hideAllUsgsTiles;
+window.showAllUsgsTiles = showAllUsgsTiles;

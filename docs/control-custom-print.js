@@ -210,12 +210,16 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
     }
 
-    // UPDATED to use the global window.toggleableLayerIds
     async function generateMultiPagePrintout(printData, pageConfigs) {
         console.log(`Generating multi-page printout with preset: ${document.getElementById('custom-print-preset').value}`);
         
+        // --- NEW: Check if USGS layer is active before printing ---
+        const usgsLayerIsActive = document.querySelector('[data-layer-id="usgs quad"].active');
+        if (usgsLayerIsActive && typeof hideAllUsgsTiles === 'function') {
+            hideAllUsgsTiles();
+        }
+
         let fullHtml = '';
-        // Use the globally defined layer list, but remove 'tools' for this operation
         const allToggleableLayers = window.toggleableLayerIds.filter(id => id !== 'tools');
         const initiallyVisibleLayers = listVisibleLayers(map, allToggleableLayers);
         
@@ -241,6 +245,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         initiallyVisibleLayers.forEach(layerId => setLayerVisibility(layerId, 'visible'));
+
+        // --- NEW: Restore USGS tiles if they were active ---
+        if (usgsLayerIsActive && typeof showAllUsgsTiles === 'function') {
+            showAllUsgsTiles();
+        }
 
         const win = window.open('', '_blank');
         if (win) {
