@@ -3,7 +3,6 @@
 // define the legendData globally
 let legendData = [];
 
-// --- FUNCTION RESTORED ---
 // helper function to get printing frame coordinates for an 8x8 inch area
 function getPrintBoundingBox() {
     if (!map) return; // Ensure map is ready
@@ -223,10 +222,10 @@ document.addEventListener("DOMContentLoaded", function () {
         let legendHTML = '';
 
         legendData.forEach(layerInfo => {
-            // --- NEW: Special handling for the USGS legend entry ---
+            // --- UPDATED LOGIC FOR USGS LEGEND ---
             if (layerInfo.id === 'usgs-quad-legend') {
-                // Check if the tile manager is active and has loaded any tiles
-                if (window.usgsTilesInitialized && window.loadedUsgsTiles.size > 0) {
+                // Check if the tile manager is on and the zoom level is correct
+                if (window.usgsTilesInitialized && map.getZoom() >= 12) {
                     legendHTML += `<div class="legend-title">${layerInfo.displayName}</div>`;
                     const item = layerInfo.items[0];
                     const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
@@ -238,17 +237,14 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                     `;
                 }
-                return; // Continue to the next legend item
+                return; // Go to the next legend item
             }
 
             // (The rest of the logic for other layers remains the same)
-            const availableSourceIds = layerInfo.sources
-                .map(s => s.id)
-                .filter(id => map.getLayer(id));
+            const availableSourceIds = (layerInfo.sources || []).map(s => s.id).filter(id => map.getLayer(id));
             
             if (availableSourceIds.length === 0) {
                 if (layerInfo.displayName === "Satellite Imagery" && map.getLayer('satellite') && map.getLayoutProperty('satellite', 'visibility') === 'visible') {
-                    // This logic remains the same.
                 } else {
                     return;
                 }
@@ -274,9 +270,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const featuresByLayer = allVisibleFeatures.reduce((acc, feature) => {
                 const layerId = feature.layer.id;
-                if (!acc[layerId]) {
-                    acc[layerId] = [];
-                }
+                if (!acc[layerId]) { acc[layerId] = []; }
                 acc[layerId].push(feature);
                 return acc;
             }, {});
@@ -294,22 +288,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 for (const feature of allVisibleFeatures) {
-                    if (matchedFeatureIds.has(feature.id)) {
-                        continue;
-                    }
+                    if (matchedFeatureIds.has(feature.id)) { continue; }
                     
                     const props = feature.properties;
                     
                     if (item.match) {
                         const rule = item.match;
-                        if (props[rule.property] === rule.value) {
-                            itemsToShow.add(item.label);
-                        } else if (rule.property === "DATE" && (Number(props.DATE) >= rule.min && Number(props.DATE) <= rule.max)) {
-                            itemsToShow.add(item.label);
-                        } else if (rule.property === "_LOT_SIZE" && (Number(props._LOT_SIZE) >= rule.min && Number(props._LOT_SIZE) <= rule.max)) {
-                            itemsToShow.add(item.label);
-                        } 
-
+                        if (props[rule.property] === rule.value) { itemsToShow.add(item.label); } 
+                        else if (rule.property === "DATE" && (Number(props.DATE) >= rule.min && Number(props.DATE) <= rule.max)) { itemsToShow.add(item.label); } 
+                        else if (rule.property === "_LOT_SIZE" && (Number(props._LOT_SIZE) >= rule.min && Number(props._LOT_SIZE) <= rule.max)) { itemsToShow.add(item.label); } 
                     } else if (item.code && item.code !== "__default__") {
                         const source = layerInfo.sources.find(s => s.id === feature.layer.id);
                         if (source && String(props[source.propertyKey]) === String(item.code)) {
