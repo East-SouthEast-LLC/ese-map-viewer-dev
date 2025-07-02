@@ -147,11 +147,17 @@ function hideAllUsgsTiles() {
 }
 
 function showAllUsgsTiles() {
-    if (!window.usgsTilesInitialized) return;
+    console.log("--- showAllUsgsTiles called ---"); // DEBUG
+    if (!window.usgsTilesInitialized) {
+        console.log("Not initialized, returning."); // DEBUG
+        return;
+    }
     if (map.getZoom() < 12) {
+        console.log("Zoom too low, hiding instead."); // DEBUG
         hideAllUsgsTiles();
         return;
     }
+    console.log(`Showing ${loadedUsgsTiles.size} loaded tiles.`); // DEBUG
     loadedUsgsTiles.forEach(tileName => {
         const layerId = `usgs-tile-source-${tileName}`;
         if (map.getLayer(layerId)) {
