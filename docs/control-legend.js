@@ -35,6 +35,7 @@ function getPrintBoundingBox() {
     return [[west, north], [east, north], [east, south], [west, south], [west, north]];
 }
 
+
 // helper function for print output
 function getLegendForPrint(expectedLayerIds = []) {
     const geoJsonBounds = getPrintBoundingBox();
@@ -46,28 +47,25 @@ function getLegendForPrint(expectedLayerIds = []) {
     const bottomRightPixel = map.project(bottomRightGeo);
     const printPixelBoundingBox = [ [topLeftPixel.x, topLeftPixel.y], [bottomRightPixel.x, bottomRightPixel.y] ];
 
+    const allItemsToRender = []; 
+    const renderedLegendSections = new Set();
+    
+    // Check if any regular vector layers are visible to query
     const allQueryableLayers = legendData.flatMap(l => l.sources ? l.sources.map(s => s.id) : [])
                                          .filter(id => map.getLayer(id) && map.getLayoutProperty(id, 'visibility') === 'visible');
-
-    if (allQueryableLayers.length === 0 && !window.usgsTilesInitialized) {
-        return '<div class="legend-grid"></div>';
-    }
-
+                                         
     const allVisibleFeatures = allQueryableLayers.length > 0 ? map.queryRenderedFeatures(printPixelBoundingBox, { layers: allQueryableLayers }) : [];
 
     const featuresByLayer = allVisibleFeatures.reduce((acc, feature) => {
         const layerId = feature.layer.id;
-        if (!acc[layerId]) {
-            acc[layerId] = [];
-        }
+        if (!acc[layerId]) { acc[layerId] = []; }
         acc[layerId].push(feature);
         return acc;
     }, {});
 
-    const allItemsToRender = []; 
-    const renderedLegendSections = new Set();
 
     legendData.forEach(layerInfo => {
+        // --- NEW: Special handling for USGS layer in print legend ---
         if (layerInfo.id === 'usgs-quad-legend') {
             if (window.usgsTilesInitialized && window.loadedUsgsTiles.size > 0) {
                 allItemsToRender.push(`<div class="legend-section">${layerInfo.displayName}</div>`);
@@ -80,6 +78,7 @@ function getLegendForPrint(expectedLayerIds = []) {
                         <span>${item.label}</span>
                     </div>`
                 );
+                renderedLegendSections.add(layerInfo.displayName);
             }
             return;
         }
@@ -112,13 +111,9 @@ function getLegendForPrint(expectedLayerIds = []) {
 
                 if (item.match) { 
                     const rule = item.match;
-                    if (props[rule.property] === rule.value) {
-                        itemsToShow.add(item.label);
-                    } else if (rule.property === "DATE" && (Number(props.DATE) >= rule.min && Number(props.DATE) <= rule.max)) {
-                        itemsToShow.add(item.label);
-                    } else if (rule.property === "_LOT_SIZE" && (Number(props._LOT_SIZE) >= rule.min && Number(props._LOT_SIZE) <= rule.max)) {
-                        itemsToShow.add(item.label);
-                    }
+                    if (props[rule.property] === rule.value) { itemsToShow.add(item.label); } 
+                    else if (rule.property === "DATE" && (Number(props.DATE) >= rule.min && Number(props.DATE) <= rule.max)) { itemsToShow.add(item.label); } 
+                    else if (rule.property === "_LOT_SIZE" && (Number(props._LOT_SIZE) >= rule.min && Number(props._LOT_SIZE) <= rule.max)) { itemsToShow.add(item.label); }
                 } else if (item.code && item.code !== "__default__") {
                     const source = layerInfo.sources.find(s => s.id === feature.layer.id);
                     if (source && String(props[source.propertyKey]) === String(item.code)) {
