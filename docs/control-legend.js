@@ -222,20 +222,21 @@ document.addEventListener("DOMContentLoaded", function () {
         let legendHTML = '';
 
         legendData.forEach(layerInfo => {
-            if (window.usgsTilesInitialized && map.getZoom() >= 12) {
-                legendHTML += `<div class="legend-title">${layerInfo.displayName}</div>`;
-                const item = layerInfo.items[0];
-                const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
-                const swatchClass = 'color-box';
-                legendHTML += `
-                    <div class="legend-item-row">
-                        <span class="${swatchClass}" style="${style}"></span>
-                        <span>${item.label}</span>
-                    </div>
-                `;
+            if (layerInfo.id === 'usgs-quad-legend') {
+                if (window.usgsTilesInitialized && map.getZoom() >= 12) {
+                    legendHTML += `<div class="legend-title">${layerInfo.displayName}</div>`;
+                    const item = layerInfo.items[0];
+                    const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
+                    const swatchClass = 'color-box';
+                    legendHTML += `
+                        <div class="legend-item-row">
+                            <span class="${swatchClass}" style="${style}"></span>
+                            <span>${item.label}</span>
+                        </div>
+                    `;
+                }
+                return; 
             }
-            return; 
-
 
             // (The rest of the logic for other layers remains the same)
             const availableSourceIds = (layerInfo.sources || []).map(s => s.id).filter(id => map.getLayer(id));
