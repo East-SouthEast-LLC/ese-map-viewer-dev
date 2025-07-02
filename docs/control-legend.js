@@ -3,6 +3,39 @@
 // define the legendData globally
 let legendData = [];
 
+// --- FUNCTION RESTORED ---
+// helper function to get printing frame coordinates for an 8x8 inch area
+function getPrintBoundingBox() {
+    if (!map) return; // Ensure map is ready
+
+    const center = map.getCenter(); // Get the map's center point (lng, lat)
+    const bounds = map.getBounds(); // Get the map's bounds
+
+    const northLat = bounds.getNorth(); // North bound of map
+    const centerLat = center.lat; // Latitude of the map center
+
+    // Calculate the distance from center to the top of the visible map in meters
+    const halfHeightMeters = turf.distance(
+        [center.lng, center.lat], // Center point
+        [center.lng, northLat], // North point
+        { units: 'meters' }
+    );
+
+    const halfWidthMeters = halfHeightMeters;
+
+    // Convert distances back into lat/lng
+    const north = centerLat + (halfHeightMeters / 111320); // Convert meters to lat
+    const south = centerLat - (halfHeightMeters / 111320); // Convert meters to lat
+
+    // Convert width (meters) to longitude difference
+    const lngDiff = halfWidthMeters / (111320 * Math.cos(centerLat * (Math.PI / 180)));
+
+    const east = center.lng + lngDiff;
+    const west = center.lng - lngDiff;
+    
+    return [[west, north], [east, north], [east, south], [west, south], [west, north]];
+}
+
 // helper function for print output
 function getLegendForPrint(expectedLayerIds = []) {
     const geoJsonBounds = getPrintBoundingBox();
@@ -14,14 +47,14 @@ function getLegendForPrint(expectedLayerIds = []) {
     const bottomRightPixel = map.project(bottomRightGeo);
     const printPixelBoundingBox = [ [topLeftPixel.x, topLeftPixel.y], [bottomRightPixel.x, bottomRightPixel.y] ];
 
-    const allQueryableLayers = legendData.flatMap(l => l.sources.map(s => s.id))
+    const allQueryableLayers = legendData.flatMap(l => l.sources ? l.sources.map(s => s.id) : [])
                                          .filter(id => map.getLayer(id) && map.getLayoutProperty(id, 'visibility') === 'visible');
 
-    if (allQueryableLayers.length === 0) {
+    if (allQueryableLayers.length === 0 && !window.usgsTilesInitialized) {
         return '<div class="legend-grid"></div>';
     }
 
-    const allVisibleFeatures = map.queryRenderedFeatures(printPixelBoundingBox, { layers: allQueryableLayers });
+    const allVisibleFeatures = allQueryableLayers.length > 0 ? map.queryRenderedFeatures(printPixelBoundingBox, { layers: allQueryableLayers }) : [];
 
     const featuresByLayer = allVisibleFeatures.reduce((acc, feature) => {
         const layerId = feature.layer.id;
@@ -36,7 +69,23 @@ function getLegendForPrint(expectedLayerIds = []) {
     const renderedLegendSections = new Set();
 
     legendData.forEach(layerInfo => {
-        const sourceLayerIds = layerInfo.sources.map(s => s.id);
+        if (layerInfo.id === 'usgs-quad-legend') {
+            if (window.usgsTilesInitialized && window.loadedUsgsTiles.size > 0) {
+                allItemsToRender.push(`<div class="legend-section">${layerInfo.displayName}</div>`);
+                const item = layerInfo.items[0];
+                const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
+                const swatchClass = 'color-box';
+                allItemsToRender.push(
+                    `<div class="legend-item">
+                        <span class="${swatchClass}" style="${style}"></span>
+                        <span>${item.label}</span>
+                    </div>`
+                );
+            }
+            return;
+        }
+
+        const sourceLayerIds = (layerInfo.sources || []).map(s => s.id);
         const visibleFeaturesForLayer = sourceLayerIds.flatMap(id => featuresByLayer[id] || []);
 
         if (visibleFeaturesForLayer.length === 0) {
@@ -111,7 +160,7 @@ function getLegendForPrint(expectedLayerIds = []) {
         const expectedDisplayNames = new Set();
         expectedLayerIds.forEach(expectedId => {
             const layerInfo = legendData.find(info => 
-                info.sources.some(s => s.id === expectedId) || info.items.some(i => i.id === expectedId)
+                (info.sources && info.sources.some(s => s.id === expectedId)) || (info.items && info.items.some(i => i.id === expectedId))
             );
             if (layerInfo) {
                 expectedDisplayNames.add(layerInfo.displayName);
