@@ -4,7 +4,7 @@
         "displayName": "USGS Quads",
         "items": [
             {
-                "label": "Topographic Quad",
+                "label": "USGS Maps",
                 "color": "#e3e1cc",
                 "opacity": 0.85
             }
