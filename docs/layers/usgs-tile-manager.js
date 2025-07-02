@@ -28,25 +28,18 @@ function getTileBounds(tile) {
 function updateVisibleUsgsTiles() {
     if (!usgsTilesInitialized) return;
 
-    // --- NEW: ZOOM LEVEL CHECK ---
-    // Get the current zoom level of the map.
     const currentZoom = map.getZoom();
 
-    // If the user is zoomed out further than level 12, remove all tiles and stop.
     if (currentZoom < 12) {
-        // Loop through all loaded tiles and remove them from the map.
         loadedUsgsTiles.forEach(tileName => {
             removeTileFromMap(`usgs-tile-source-${tileName}`);
         });
-        // Clear the Set that tracks loaded tiles.
         loadedUsgsTiles.clear();
-        return; // Exit the function to prevent loading new tiles.
+        return;
     }
-    // --- END OF NEW LOGIC ---
 
     const mapBounds = map.getBounds();
 
-    // Loop through all tiles in our index
     allUsgsTiles.forEach(tile => {
         const tileBounds = tile.bounds;
         const sourceId = `usgs-tile-source-${tile.name}`;
@@ -58,13 +51,11 @@ function updateVisibleUsgsTiles() {
             mapBounds.getNorth() > tileBounds.south;
 
         if (isVisible) {
-            // If the tile is visible and not already loaded, add it to the map
             if (!loadedUsgsTiles.has(tile.name)) {
                 addTileToMap(tile, sourceId);
                 loadedUsgsTiles.add(tile.name);
             }
         } else {
-            // If the tile is not visible but is currently loaded, remove it
             if (loadedUsgsTiles.has(tile.name)) {
                 removeTileFromMap(sourceId);
                 loadedUsgsTiles.delete(tile.name);
@@ -81,7 +72,7 @@ function updateVisibleUsgsTiles() {
 function addTileToMap(tile, sourceId) {
     const imageUrl = `https://www.ese-llc.com/s/${tile.name}.jpg`;
     
-    if (map.getSource(sourceId)) return; // Already exists, do nothing
+    if (map.getSource(sourceId)) return;
 
     map.addSource(sourceId, {
         type: 'image',
@@ -95,11 +86,11 @@ function addTileToMap(tile, sourceId) {
     });
 
     map.addLayer({
-        id: sourceId, // Layer ID is same as source ID
+        id: sourceId,
         type: 'raster',
         source: sourceId,
         paint: { 'raster-opacity': 0.85, 'raster-fade-duration': 0 }
-    }, 'satellite'); // Add the tile below the satellite layer for proper ordering
+    }, 'satellite');
 }
 
 /**
@@ -120,7 +111,6 @@ function removeTileFromMap(sourceId) {
  * Main function to start the tile manager. Fetches the index and sets up events.
  */
 function initializeUsgsTileManager() {
-    // Only run the initialization once
     if (usgsTilesInitialized) {
         updateVisibleUsgsTiles();
         return;
@@ -135,18 +125,15 @@ function initializeUsgsTileManager() {
         })
         .then(data => {
             allUsgsTiles = data;
-            // Pre-calculate and store the bounds for each tile for efficiency
             allUsgsTiles.forEach(tile => {
                 tile.bounds = getTileBounds(tile);
             });
 
             usgsTilesInitialized = true;
             console.log("USGS Tile Manager Initialized.");
-
-            // Perform the first check to load initial tiles
+            
             updateVisibleUsgsTiles();
 
-            // Add event listeners to update tiles on map move/zoom
             map.on('moveend', updateVisibleUsgsTiles);
             map.on('zoomend', updateVisibleUsgsTiles);
         })
@@ -155,33 +142,24 @@ function initializeUsgsTileManager() {
         });
 }
 
+// --- UPDATED deinitialize function ---
 /**
- * Hides all currently loaded USGS tiles without removing them from memory.
+ * Removes all loaded tiles and detaches the map event listeners.
  */
-function hideAllUsgsTiles() {
+function deinitializeUsgsTileManager() {
     if (!usgsTilesInitialized) return;
-    loadedUsgsTiles.forEach(tileName => {
-        const layerId = `usgs-tile-source-${tileName}`;
-        if (map.getLayer(layerId)) {
-            map.setLayoutProperty(layerId, 'visibility', 'none');
-        }
-    });
-}
 
-/**
- * Shows all currently loaded USGS tiles.
- */
-function showAllUsgsTiles() {
-    if (!usgsTilesInitialized) return;
-    // Check zoom level first before showing tiles
-    if (map.getZoom() < 12) {
-        hideAllUsgsTiles();
-        return;
-    }
+    // Remove all loaded tiles from the map
     loadedUsgsTiles.forEach(tileName => {
-        const layerId = `usgs-tile-source-${tileName}`;
-        if (map.getLayer(layerId)) {
-            map.setLayoutProperty(layerId, 'visibility', 'visible');
-        }
+        removeTileFromMap(`usgs-tile-source-${tileName}`);
     });
+    loadedUsgsTiles.clear();
+    
+    // Remove the event listeners to stop future updates
+    map.off('moveend', updateVisibleUsgsTiles);
+    map.off('zoomend', updateVisibleUsgsTiles);
+
+    // Reset the initialization flag
+    usgsTilesInitialized = false;
+    console.log("USGS Tile Manager Deinitialized.");
 }
