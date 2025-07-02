@@ -35,11 +35,13 @@ function updateVisibleUsgsTiles() {
         const tileBounds = tile.bounds;
         const sourceId = `usgs-tile-source-${tile.name}`;
 
-        // Check if the tile's bounds intersect with the map's current view
-        const isVisible = mapBounds.intersects([
-            [tileBounds.west, tileBounds.south],
-            [tileBounds.east, tileBounds.north]
-        ]);
+        // --- CORRECTED INTERSECTION LOGIC ---
+        // Manually check if the tile's bounding box overlaps with the map's viewport.
+        const isVisible =
+            mapBounds.getWest() < tileBounds.east &&
+            mapBounds.getEast() > tileBounds.west &&
+            mapBounds.getSouth() < tileBounds.north &&
+            mapBounds.getNorth() > tileBounds.south;
 
         if (isVisible) {
             // If the tile is visible and not already loaded, add it to the map
@@ -102,12 +104,10 @@ function removeTileFromMap(sourceId) {
 
 /**
  * Main function to start the tile manager. Fetches the index and sets up events.
- * This function should be called when the 'USGS QUAD' button is toggled ON.
  */
 function initializeUsgsTileManager() {
     // Only run the initialization once
     if (usgsTilesInitialized) {
-        // If already initialized, just make sure all visible tiles are shown
         updateVisibleUsgsTiles();
         return;
     }
