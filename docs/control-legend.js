@@ -14,7 +14,6 @@ function getLegendForPrint(expectedLayerIds = []) {
     const bottomRightPixel = map.project(bottomRightGeo);
     const printPixelBoundingBox = [ [topLeftPixel.x, topLeftPixel.y], [bottomRightPixel.x, bottomRightPixel.y] ];
 
-    // --- FIX: Filter layers to query only those that exist and are visible ---
     const allQueryableLayers = legendData.flatMap(l => l.sources.map(s => s.id))
                                          .filter(id => map.getLayer(id) && map.getLayoutProperty(id, 'visibility') === 'visible');
 
@@ -148,32 +147,6 @@ function getLegendForPrint(expectedLayerIds = []) {
     return `<div class="legend-grid">${finalItemsHTML}</div>`;
 }
 
-/**
- * Queries the map to find which unique categories for a layer are currently visible.
- */
-function getVisibleLegendItems(layerId, propertyKey) {
-    try {
-        if (!map.getLayer(layerId) || map.getLayoutProperty(layerId, 'visibility') === 'none') {
-            return [];
-        }
-    } catch (e) {
-        return [];
-    }
-
-    const features = map.queryRenderedFeatures({ layers: [layerId] });
-    const uniqueItems = new Set();
-
-    features.forEach(feature => {
-        if (feature.properties && typeof feature.properties[propertyKey] !== 'undefined') {
-            uniqueItems.add(feature.properties[propertyKey]);
-        }
-    });
-
-    return Array.from(uniqueItems);
-}
-
-window.getVisibleLegendItems = getVisibleLegendItems;
-
 document.addEventListener("DOMContentLoaded", function () {
     const legendButton = document.getElementById("legendButton");
     const legendBox = document.getElementById("legend-box");
@@ -206,14 +179,13 @@ document.addEventListener("DOMContentLoaded", function () {
         let legendHTML = '';
 
         legendData.forEach(layerInfo => {
-            // --- FIX: Filter to only check for layers that exist on the current map ---
+            // --- CORRECTED LOGIC HERE ---
+            // Only check if the layer exists on the map, don't check against the main toggleable list.
             const availableSourceIds = layerInfo.sources
                 .map(s => s.id)
-                .filter(id => window.toggleableLayerIds.includes(id) && map.getLayer(id));
+                .filter(id => map.getLayer(id));
             
-            // If none of the layers for this legend entry are available, skip it.
             if (availableSourceIds.length === 0) {
-                // Special case for Satellite, which doesn't have features but should be checked.
                 if (layerInfo.displayName === "Satellite Imagery" && map.getLayer('satellite') && map.getLayoutProperty('satellite', 'visibility') === 'visible') {
                     // This logic remains the same.
                 } else {
@@ -221,11 +193,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
             
-            // This now queries only the layers that actually exist.
             const allVisibleFeatures = map.queryRenderedFeatures({ layers: availableSourceIds });
 
             if (allVisibleFeatures.length === 0) {
-                 // Handle Satellite imagery which has no features to query
                 if (layerInfo.displayName === "Satellite Imagery" && map.getLayer('satellite') && map.getLayoutProperty('satellite', 'visibility') === 'visible') {
                     legendHTML += `<div class="legend-title">${layerInfo.displayName}</div>`;
                     const item = layerInfo.items[0];
