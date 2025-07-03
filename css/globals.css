@@ -702,8 +702,8 @@ DISCLAIMER POPUP STYLES
     display: inline-block;
     padding: 8px 12px;
     background-color: #3887be;
-    /* --- CHANGE: Set link text color to white --- */
-    color: #ffffff; 
+    /* --- CHANGE: Forcing the text color to white --- */
+    color: #ffffff !important; 
     text-decoration: none;
     border-radius: 5px;
     font-size: 0.9rem;
@@ -712,6 +712,8 @@ DISCLAIMER POPUP STYLES
 
 .disclaimer-link:hover {
     background-color: #3074a4;
+    /* Ensure the text color stays white on hover */
+    color: #ffffff !important;
 }
 
 .disclaimer-close-btn {
