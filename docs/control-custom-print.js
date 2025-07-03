@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <hr style="width:100%; border:.5px solid black; margin:5px 0;">
                     </div>
                     <div class="image-container">
-                        <img src="https://east-southeast-llc.github.io/ese-map-viewer/img/ese-print-logo.jpg" alt="Company Logo" />
+                        <img src="https://east-southeast-llc.github.io/ese-map-viewer/img/ese-print-logo.png" alt="Company Logo" />
                     </div>
                     <div class="legend-frame">
                         <div class="legend-print-title">Legend & Layers</div>
