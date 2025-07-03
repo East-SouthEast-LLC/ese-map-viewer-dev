@@ -170,6 +170,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function getPageHTML(printData, mapImageSrc, pageNumber, expectedLayers, currentDate) {
         const formattedPhone = formatPhoneNumber(printData.phone);
+        const bankGothicStyle = "font-family: 'BankGothicMd', sans-serif;";
 
         return `
             <div class="frame">
@@ -180,13 +181,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
                 <div class="bottom-frame">
                     <div class="custom-info-frame" style="width: 2in;">
-                        <span class="custom-info-text"><strong>Client:</strong> ${printData.clientName}</span><br>
-                        <span class="custom-info-text"><strong>Property:</strong> ${printData.propertyAddress}</span>
+                        <span style="${bankGothicStyle}"><strong>Client:</strong> ${printData.clientName}</span><br>
+                        <span style="${bankGothicStyle}"><strong>Property:</strong> ${printData.propertyAddress}</span>
                         <hr style="width:100%; border:.5px solid black; margin:5px 0;">
-                        <span class="custom-info-text"><strong>${printData.companyName}</strong></span><br>
-                        <span class="custom-info-text">${printData.address}</span><br>
-                        <span class="custom-info-text">${printData.website}</span><br>
-                        <span class="custom-info-text">${formattedPhone}</span><br>
+                        <span style="${bankGothicStyle}"><strong>${printData.companyName}</strong></span><br>
+                        <span style="${bankGothicStyle}">${printData.address}</span><br>
+                        <span style="${bankGothicStyle}">${printData.website}</span><br>
+                        <span style="${bankGothicStyle}">${formattedPhone}</span><br>
                         <hr style="width:100%; border:.5px solid black; margin:5px 0;">
                     </div>
                     <div class="image-container">
