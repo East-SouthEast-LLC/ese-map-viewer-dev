@@ -167,6 +167,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function getPageHTML(printData, mapImageSrc, pageNumber, expectedLayers, currentDate) {
+        const formattedPhone = formatPhoneNumber(printData.phone);
+
         return `
             <div class="frame">
                 <div class="top-frame">
