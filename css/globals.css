@@ -436,7 +436,7 @@ PRINT STYLES
     height: 100%;
     display: flex;
     justify-content: center;
-    align-items: flex-end;
+    align-items: flex-end; /* Allign image to the bottom of the container */
     overflow: hidden;
 }
 .image-container img {
