@@ -698,7 +698,7 @@ DISCLAIMER POPUP STYLES
 /* Container for the buttons */
 .disclaimer-actions {
     display: flex;
-    justify-content: flex-end; /* Aligns buttons to the right */
+    justify-content: center; 
     align-items: center;
     gap: 10px; /* Creates space between buttons */
 }
