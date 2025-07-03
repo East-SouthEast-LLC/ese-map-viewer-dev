@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
             { page: 2, layers: ['parcel highlight', 'satellite', 'acec'] },
             { page: 3, layers: ['parcel highlight', 'lidar contours', 'DEP wetland'] },
             { page: 4, layers: ['parcel highlight', 'satellite', 'endangered species'] },
-            { page: 5, layers: ['usgs quad'] } // Added 5th page for USGS
+            { page: 5, layers: ['usgs quad'] }
         ],
         'Test Hole': [
             { page: 1, layers: ['parcel highlight', 'lidar contours'] },
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
             { page: 3, layers: ['parcel highlight', 'DEP wetland', 'lidar contours'] },
             { page: 4, layers: ['parcel highlight', 'zone II',] },
             { page: 5, layers: ['parcel highlight', 'soils'] },
-            { page: 5, layers: ['usgs quad'] } // Added 5th page for USGS
+            { page: 5, layers: ['usgs quad'] }
         ]
     };
     
@@ -222,28 +222,23 @@ document.addEventListener("DOMContentLoaded", function () {
         
         allToggleableLayers.forEach(layerId => setLayerVisibility(layerId, 'none'));
 
-        // --- UPDATED LOOP LOGIC ---
         for (const config of pageConfigs) {
             const isUsgsPage = config.layers.includes('usgs quad');
 
             if (isUsgsPage) {
-                // If it's the USGS page, initialize the tile manager
                 if (typeof initializeUsgsTileManager === 'function') {
                     initializeUsgsTileManager();
                 }
             } else {
-                // Otherwise, handle regular vector layers
                 config.layers.forEach(layerId => setLayerVisibility(layerId, 'visible'));
             }
 
-            // Wait for the map to be fully rendered (essential for async tiles)
             await new Promise(resolve => map.once('idle', resolve));
             
             const mapCanvas = map.getCanvas();
             const mapImageSrc = mapCanvas.toDataURL();
             fullHtml += getPageHTML(printData, mapImageSrc, config.page, config.layers);
 
-            // Clean up the layers for the next page
             if (isUsgsPage) {
                 if (typeof deinitializeUsgsTileManager === 'function') {
                     deinitializeUsgsTileManager();
@@ -261,8 +256,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const win = window.open('', '_blank');
         if (win) {
+            // --- NEW: DYNAMIC DOCUMENT TITLE LOGIC ---
+            let documentTitle = "Custom Map Printout"; // Fallback title
+            if (printData.clientName && printData.propertyAddress) {
+                documentTitle = `${printData.clientName} | ${printData.propertyAddress}`;
+            }
+            
             win.document.write(`
-                <!DOCTYPE html><html><head><title>Custom Map Printout</title>
+                <!DOCTYPE html><html><head><title>${documentTitle}</title>
                 <link rel="stylesheet" href="https://east-southeast-llc.github.io/ese-map-viewer/css/globals.css?v=2" type="text/css" />
                 </head><body class="print-body">${fullHtml}</body></html>`);
             win.document.close();
