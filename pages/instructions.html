@@ -1,0 +1,223 @@
+<div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+    <header class="text-center mb-12">
+        <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">ESE Map Viewer</h1>
+        <p class="mt-4 text-xl text-gray-600">Complete User Guide</p>
+    </header>
+
+    <div class="flex flex-col lg:flex-row gap-12">
+        <aside class="lg:w-1/4 sticky top-12 self-start">
+            <nav class="flex flex-col space-y-2">
+                <h3 class="px-3 text-sm font-semibold text-gray-500 uppercase tracking-wider">Guide Sections</h3>
+                <a href="#introduction" class="sidebar-link text-gray-600 hover:bg-gray-100 px-3 py-2 rounded-md text-sm font-medium transition-colors">Introduction</a>
+                <a href="#part1" class="sidebar-link text-gray-600 hover:bg-gray-100 px-3 py-2 rounded-md text-sm font-medium transition-colors">1. Basic Interaction</a>
+                <a href="#part2" class="sidebar-link text-gray-600 hover:bg-gray-100 px-3 py-2 rounded-md text-sm font-medium transition-colors">2. The Layer Menu</a>
+                <a href="#part3" class="sidebar-link text-gray-600 hover:bg-gray-100 px-3 py-2 rounded-md text-sm font-medium transition-colors">3. The Toolkit</a>
+                <a href="#markers" class="sidebar-link text-gray-500 hover:bg-gray-100 pl-8 pr-3 py-2 rounded-md text-sm font-medium transition-colors">Markers</a>
+                <a href="#measure" class="sidebar-link text-gray-500 hover:bg-gray-100 pl-8 pr-3 py-2 rounded-md text-sm font-medium transition-colors">Measure Tool</a>
+                <a href="#identify" class="sidebar-link text-gray-500 hover:bg-gray-100 pl-8 pr-3 py-2 rounded-md text-sm font-medium transition-colors">Identify Tool</a>
+                <a href="#print-area" class="sidebar-link text-gray-500 hover:bg-gray-100 pl-8 pr-3 py-2 rounded-md text-sm font-medium transition-colors">Print Area</a>
+                <a href="#legend" class="sidebar-link text-gray-500 hover:bg-gray-100 pl-8 pr-3 py-2 rounded-md text-sm font-medium transition-colors">Legend</a>
+                <a href="#bookmarks" class="sidebar-link text-gray-500 hover:bg-gray-100 pl-8 pr-3 py-2 rounded-md text-sm font-medium transition-colors">Bookmarks</a>
+                <a href="#scale" class="sidebar-link text-gray-500 hover:bg-gray-100 pl-8 pr-3 py-2 rounded-md text-sm font-medium transition-colors">Scale Tool</a>
+                <a href="#share" class="sidebar-link text-gray-500 hover:bg-gray-100 pl-8 pr-3 py-2 rounded-md text-sm font-medium transition-colors">Share Map</a>
+                <a href="#standard-print" class="sidebar-link text-gray-500 hover:bg-gray-100 pl-8 pr-3 py-2 rounded-md text-sm font-medium transition-colors">Standard Print</a>
+                <a href="#custom-print" class="sidebar-link text-gray-500 hover:bg-gray-100 pl-8 pr-3 py-2 rounded-md text-sm font-medium transition-colors">Custom Print</a>
+            </nav>
+        </aside>
+
+        <main class="lg:w-3/4">
+            <div class="prose prose-lg max-w-none bg-white p-8 sm:p-12 rounded-xl shadow-sm">
+                
+                <section id="introduction">
+                    <h2>Introduction</h2>
+                    <p>Welcome to the East-South-East Interactive Map Viewer! This powerful tool gives you access to a rich collection of property and environmental data. This guide will walk you through every feature, from basic navigation to creating professional, multi-page printouts.</p>
+                </section>
+
+                <hr class="my-10">
+
+                <section id="part1">
+                    <h2>Part 1: Basic Map Interaction</h2>
+                    <h3>Navigating the Map</h3>
+                    <ul>
+                        <li><strong>Pan (Move):</strong> Click and drag your mouse to move the map in any direction.</li>
+                        <li><strong>Zoom:</strong> Use your mouse's scroll wheel to zoom in and out. You can also use the <strong>+</strong> and <strong>-</strong> buttons in the top-right corner of the map.</li>
+                    </ul>
+                    <h3>Searching for an Address</h3>
+                    <p>The search bar at the top of the toolkit allows you to quickly jump to a specific location.</p>
+                    <ul>
+                        <li><strong>Action:</strong> Type a property address into the search bar and press <code>Enter</code>.</li>
+                        <li><strong>Result:</strong> The map will automatically center on that address and drop a pin.</li>
+                    </ul>
+                </section>
+
+                <hr class="my-10">
+                
+                <section id="part2">
+                    <h2>Part 2: The Layer Menu</h2>
+                    <p>The menu on the left side of the screen lists all the available data layers you can view on the map.</p>
+                    <h3>Toggling Layers</h3>
+                    <ul>
+                        <li><strong>Action:</strong> Simply click on a layer name in the menu to turn it on or off.</li>
+                        <li><strong>Result:</strong> When a layer is active, its button will be highlighted in blue, and the data will appear on the map. Click it again to hide it.</li>
+                    </ul>
+                    <h3>Understanding the Layers</h3>
+                    <p>Each button corresponds to a different set of data:</p>
+                    <ul>
+                        <li><strong>Satellite:</strong> Toggles a high-resolution satellite image of the area.</li>
+                        <li><strong>Parcels:</strong> Shows property boundary lines.</li>
+                        <li><strong>LIDAR Contours:</strong> Displays detailed 2-foot elevation lines.</li>
+                        <li><strong>AGIS:</strong> Shows the coverage areas of historic aerial photographs.</li>
+                        <li><strong>Historic:</strong> Outlines designated historic districts.</li>
+                        <li><strong>Floodplain:</strong> Shows FEMA flood zones (e.g., AE, VE, X).</li>
+                        <li><strong>ACEC:</strong> Displays Areas of Critical Environmental Concern.</li>
+                        <li><strong>DEP Wetland:</strong> Shows state-delineated wetland areas.</li>
+                        <li><strong>Endangered Species:</strong> Outlines habitats for rare and endangered species.</li>
+                        <li><strong>Zone II:</strong> Shows Wellhead Protection Areas.</li>
+                        <li><strong>Soils:</strong> Displays different soil types as classified by the NRCS.</li>
+                    </ul>
+                </section>
+
+                <hr class="my-10">
+
+                <section id="part3">
+                    <h2>Part 3: The Toolkit</h2>
+                    <p>The toolkit on the right contains a suite of powerful tools for interacting with the map data.</p>
+                    
+                    <div id="markers" class="pt-6">
+                        <h3>1. Markers: Pinpointing a Location</h3>
+                        <p>Markers allow you to set a specific point of interest on the map.</p>
+                        <ul>
+                            <li><strong>Drop a Pin:</strong> Click the <strong>Point</strong> button (map pin icon), then click anywhere on the map.</li>
+                            <li><strong>Center on Pin:</strong> If you've panned away, click the <strong>Center Point</strong> button (pin with a target) to immediately re-center the map on your pin.</li>
+                            <li><strong>Remove Pin:</strong> Click the <strong>Point Off</strong> button (pin with an 'X') to remove the marker from the map.</li>
+                        </ul>
+                    </div>
+
+                    <div id="measure" class="pt-6">
+                        <h3>2. Measure Tool: Calculating Distances</h3>
+                        <p>This tool lets you measure distances between multiple points.</p>
+                        <ul>
+                            <li><strong>Activate:</strong> Click the <strong>Measure</strong> button (ruler icon). Your cursor will become a crosshair.</li>
+                            <li><strong>Measure:</strong> Click on the map to drop points (A, B, C, etc.). The distance between each point will be displayed in the <strong>Distance Display</strong> box.</li>
+                            <li><strong>Finalize:</strong> Click the <strong>Measure</strong> button again to complete the measurement. The total distance will be calculated and displayed.</li>
+                            <li><strong>Clear:</strong> Click the <strong>Clear</strong> button (ruler with a cancel icon) to remove all measurements.</li>
+                        </ul>
+                    </div>
+
+                    <div id="identify" class="pt-6">
+                        <h3>3. Identify Tool: Getting Feature Information</h3>
+                        <p>The Identify tool provides a summary of all active data layers at a single point.</p>
+                        <ul>
+                            <li><strong>Activate:</strong> Click the <strong>Identify</strong> button (info 'i' icon). Your cursor will turn into a question mark.</li>
+                            <li><strong>Click:</strong> Click on any point on the map.</li>
+                            <li><strong>Result:</strong> A box will appear listing all the features from your visible layers at that exact spot (e.g., Parcel ID, Flood Zone, Soil Type).</li>
+                        </ul>
+                    </div>
+
+                    <div id="print-area" class="pt-6">
+                        <h3>4. Print Area Overlay</h3>
+                        <p>This tool helps you visualize the exact area that will be captured in a printout.</p>
+                        <ul>
+                            <li><strong>Action:</strong> Click the <strong>Print Area</strong> button (square icon).</li>
+                            <li><strong>Result:</strong> A dashed red box will appear on the map, representing an 8x8 inch print area at the current scale. The scale is automatically calculated and displayed in the <strong>Scale Box</strong>. This is a great way to frame your map before printing.</li>
+                        </ul>
+                    </div>
+
+                    <div id="legend" class="pt-6">
+                        <h3>5. Legend</h3>
+                        <p>The legend helps you understand the symbols and colors on the map.</p>
+                        <ul>
+                            <li><strong>Action:</strong> Click the <strong>Legend</strong> button.</li>
+                            <li><strong>Result:</strong> A dynamic legend will appear. It intelligently updates to show you only the symbols for the layers that are currently visible on your screen.</li>
+                        </ul>
+                    </div>
+
+                    <div id="bookmarks" class="pt-6">
+                        <h3>6. Bookmarks: Saving and Loading Map Views</h3>
+                        <p>You can save your current map view—including the center point, zoom level, and active layers—to use later.</p>
+                        <ul>
+                            <li><strong>Open Menu:</strong> Click the <strong>Bookmark</strong> button (ribbon icon).</li>
+                            <li><strong>Save a View:</strong> Type a name for your view in the input box and click "Save Current View."</li>
+                            <li><strong>Load a View:</strong> Simply click on the name of a previously saved bookmark to instantly return to that view.</li>
+                        </ul>
+                    </div>
+
+                    <div id="scale" class="pt-6">
+                        <h3>7. Scale Tool</h3>
+                        <p>This tool allows you to view and set a precise engineering scale for your map.</p>
+                        <ul>
+                            <li><strong>Activate:</strong> Click the <strong>Zoom to Scale</strong> button.</li>
+                            <li><strong>Result:</strong> A new panel will appear showing the current map scale (e.g., 1" = 257 feet).</li>
+                            <li><strong>Set a Scale:</strong> You can type a number (like 100) into the input box and click <strong>Submit</strong> to have the map automatically zoom to that scale (e.g., 1" = 100'). You can also choose a preset from the dropdown menu.</li>
+                        </ul>
+                    </div>
+
+                    <div id="share" class="pt-6">
+                        <h3>8. Share Map</h3>
+                        <p>This feature generates a unique URL that you can send to others to share your exact map view.</p>
+                        <ul>
+                            <li><strong>Action:</strong> Click the <strong>Share Map</strong> button.</li>
+                            <li><strong>Result:</strong> A popup will appear with a link. This link saves the current zoom, center, and all visible layers. Anyone who opens it will see exactly what you see.</li>
+                        </ul>
+                    </div>
+
+                    <div id="standard-print" class="pt-6">
+                        <h3>9. Standard Print</h3>
+                        <p>This creates a quick, single-page printout of your current map view.</p>
+                        <ul>
+                            <li><strong>Action:</strong> Click the <strong>Print</strong> button (printer icon).</li>
+                            <li><strong>Result:</strong> A new tab will open with a formatted print-ready page, including the map, legend, and scale bar.</li>
+                        </ul>
+                    </div>
+
+                    <div id="custom-print" class="pt-6">
+                        <h3>10. Custom Print</h3>
+                        <p>This is the most powerful printing tool, designed for creating professional, multi-page reports.</p>
+                        <ol>
+                            <li><strong>Set Your Map's Center Point:</strong> First, use the <strong>Point</strong> tool to drop a pin on your area of interest. This will be the center for all pages.</li>
+                            <li><strong>Open the Menu:</strong> Click the <strong>Custom Print</strong> button (multi-page document icon).</li>
+                            <li><strong>Fill Out the Form:</strong>
+                                <ul>
+                                    <li><strong>Company Information:</strong> Enter your details. Check the "Save" box to have your browser remember them.</li>
+                                    <li><strong>Client Information:</strong> Enter the client name and property address for the project.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Configure Map Settings:</strong>
+                                <ul>
+                                    <li><strong>Print Preset:</strong> Choose a map set. "Conservation" is for environmental reviews, and "Test Hole" is for site work and soil analysis.</li>
+                                    <li><strong>Map Scale:</strong> Enter a scale (e.g., 100 for 1"=100') or choose a preset from the dropdown.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Generate Your Printout:</strong> Click <strong>Submit</strong>. A new tab will open, generating a professional, multi-page PDF with your branding, a dynamic legend for each page, and consistent scaling.</li>
+                        </ol>
+                    </div>
+
+                </section>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sections = document.querySelectorAll('section, div[id]');
+        const navLinks = document.querySelectorAll('.sidebar-link');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href').substring(1) === entry.target.id) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, { rootMargin: "-30% 0px -70% 0px" });
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    });
+</script>

@@ -55,25 +55,36 @@ function loadLayerScript(layerName) {
 function applyUrlParams(map) {
     const urlParams = new URLSearchParams(window.location.search);
     const hasParams = urlParams.has('zoom') || urlParams.has('lat') || urlParams.has('layers');
-    if (!hasParams) return;
-    const zoom = parseFloat(urlParams.get('zoom'));
-    if (!isNaN(zoom)) map.setZoom(zoom);
-    const lat = parseFloat(urlParams.get('lat'));
-    const lng = parseFloat(urlParams.get('lng'));
-    if (!isNaN(lat) && !isNaN(lng)) {
-        marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
-        if(markerCoordinates) {
-            markerCoordinates.lat = lat;
-            markerCoordinates.lng = lng;
-        }
-        map.setCenter([lng, lat]);
+    const hasHash = window.location.hash; // Check if a hash exists
+
+    // If there are no parameters to apply AND no hash to clean, we can exit early.
+    if (!hasParams && !hasHash) {
+        return;
     }
-    const layers = urlParams.get('layers')?.split(',') || [];
-    layers.forEach(layerId => {
-        const decodedLayerId = decodeURIComponent(layerId);
-        if (map.getLayer(decodedLayerId)) map.setLayoutProperty(decodedLayerId, 'visibility', 'visible');
-    });
-    if (marker) map.flyTo({ center: marker.getLngLat(), essential: true });
+
+    // Apply parameters if they exist
+    if (hasParams) {
+        const zoom = parseFloat(urlParams.get('zoom'));
+        if (!isNaN(zoom)) map.setZoom(zoom);
+        const lat = parseFloat(urlParams.get('lat'));
+        const lng = parseFloat(urlParams.get('lng'));
+        if (!isNaN(lat) && !isNaN(lng)) {
+            marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
+            if(markerCoordinates) {
+                markerCoordinates.lat = lat;
+                markerCoordinates.lng = lng;
+            }
+            map.setCenter([lng, lat]);
+        }
+        const layers = urlParams.get('layers')?.split(',') || [];
+        layers.forEach(layerId => {
+            const decodedLayerId = decodeURIComponent(layerId);
+            if (map.getLayer(decodedLayerId)) map.setLayoutProperty(decodedLayerId, 'visibility', 'visible');
+        });
+        if (marker) map.flyTo({ center: marker.getLngLat(), essential: true });
+    }
+
+    // Always clean the URL if there were params or a hash
     const cleanUrl = window.location.origin + window.location.pathname;
     window.history.replaceState({}, document.title, cleanUrl);
 }
