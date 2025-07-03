@@ -157,6 +157,15 @@ document.addEventListener("DOMContentLoaded", function () {
         generateMultiPagePrintout(printData, pageConfigs);
     }
 
+    function formatPhoneNumber(phoneNumberString) {
+        var cleaned = ('' + phoneNumberString).replace(/\D/g, '');
+        var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+        if (match) {
+            return '(' + match[1] + ') ' + match[2] + '-' + match[3];
+        }
+        return null; // Return null if the number doesn't match the format
+    }
+
     function getPageHTML(printData, mapImageSrc, pageNumber, expectedLayers, currentDate) {
         return `
             <div class="frame">
@@ -172,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <hr style="width:100%; border:.5px solid black; margin:5px 0;">
                         <span><strong>${printData.companyName}</strong></span>
                         <span>${printData.address}</span><br>
-                        <span>${printData.website} | ${printData.phone}</span><br>
+                        <span>${printData.website} | ${formattedPhone}</span><br>
                         <hr style="width:100%; border:.5px solid black; margin:5px 0;">
                     </div>
                     <div class="image-container">
