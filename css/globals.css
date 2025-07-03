@@ -457,12 +457,10 @@ PRINT STYLES
     left: 10px;
     top: 10px;
     width: 2in;
-    font-family: 'BankGothicMd', sans-serif;
     font-size: 14px;
     text-align: left;
 }
-/* FIX: This new rule specifically targets the span elements */
-.custom-info-frame span {
+.custom-info-text {
     font-family: 'BankGothicMd', sans-serif;
 }
 .inner-frame {

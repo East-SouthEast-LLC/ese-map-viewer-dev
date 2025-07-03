@@ -1,3 +1,5 @@
+// docs/control-custom-print.js
+
 // CUSTOM PRINT CONTROL BUTTON SCRIPT
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -178,13 +180,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
                 <div class="bottom-frame">
                     <div class="custom-info-frame" style="width: 2in;">
-                        <span><strong>Client:</strong> ${printData.clientName}</span><br>
-                        <span><strong>Property:</strong> ${printData.propertyAddress}</span>
+                        <span class="custom-info-text"><strong>Client:</strong> ${printData.clientName}</span><br>
+                        <span class="custom-info-text"><strong>Property:</strong> ${printData.propertyAddress}</span>
                         <hr style="width:100%; border:.5px solid black; margin:5px 0;">
-                        <span><strong>${printData.companyName}</strong></span><br>
-                        <span>${printData.address}</span><br>
-                        <span>${printData.website}</span><br>
-                        <span>${formattedPhone}</span><br>
+                        <span class="custom-info-text"><strong>${printData.companyName}</strong></span><br>
+                        <span class="custom-info-text">${printData.address}</span><br>
+                        <span class="custom-info-text">${printData.website}</span><br>
+                        <span class="custom-info-text">${formattedPhone}</span><br>
                         <hr style="width:100%; border:.5px solid black; margin:5px 0;">
                     </div>
                     <div class="image-container">
