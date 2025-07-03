@@ -170,7 +170,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function getPageHTML(printData, mapImageSrc, pageNumber, expectedLayers, currentDate) {
         const formattedPhone = formatPhoneNumber(printData.phone);
-        const bankGothicStyle = "font-family: 'BankGothicMd', sans-serif;";
 
         return `
             <div class="frame">
@@ -181,13 +180,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
                 <div class="bottom-frame">
                     <div class="custom-info-frame" style="width: 2in;">
-                        <span style="${bankGothicStyle}"><strong>Client:</strong> ${printData.clientName}</span><br>
-                        <span style="${bankGothicStyle}"><strong>Property:</strong> ${printData.propertyAddress}</span>
+                        <span><strong>Client:</strong> ${printData.clientName}</span><br>
+                        <span><strong>Property:</strong> ${printData.propertyAddress}</span>
                         <hr style="width:100%; border:.5px solid black; margin:5px 0;">
-                        <span style="${bankGothicStyle}"><strong>${printData.companyName}</strong></span><br>
-                        <span style="${bankGothicStyle}">${printData.address}</span><br>
-                        <span style="${bankGothicStyle}">${printData.website}</span><br>
-                        <span style="${bankGothicStyle}">${formattedPhone}</span><br>
+                        <span><strong>${printData.companyName}</strong></span><br>
+                        <span>${printData.address}</span><br>
+                        <span>${printData.website}</span><br>
+                        <span>${formattedPhone}</span><br>
                         <hr style="width:100%; border:.5px solid black; margin:5px 0;">
                     </div>
                     <div class="image-container">
@@ -276,13 +275,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 documentTitle = `${printData.clientName} | ${printData.propertyAddress} | ${currentDate}`;
             }
             
-            // --- CORRECTED: Added the <link> tag to load the stylesheet ---
             win.document.write(`
                 <!DOCTYPE html>
                 <html>
                 <head>
                     <title>${documentTitle}</title>
                     <link rel="stylesheet" href="https://east-southeast-llc.github.io/ese-map-viewer/css/globals.css?v=3" type="text/css" />
+                    <style>
+                        @font-face {
+                            font-family: 'BankGothicMd';
+                            src: url('https://static1.squarespace.com/static/536cf42ee4b0465238027de5/t/53724803e4b0356615b60e42/1400000515944/BankGothic-Medium.woff') format('woff');
+                        }
+                        .custom-info-frame {
+                            font-family: 'BankGothicMd', sans-serif !important;
+                        }
+                    </style>
                 </head>
                 <body class="print-body">${fullHtml}</body>
                 </html>`);
