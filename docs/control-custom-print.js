@@ -198,9 +198,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     async function generateMultiPagePrintout(printData, pageConfigs) {
-        // --- FIX: Define currentDate here so it's available for the title ---
         const currentDate = new Date().toLocaleDateString();
-
         const usgsLayerIsActive = document.querySelector('[data-layer-id="usgs quad"].active');
         
         if (usgsLayerIsActive && typeof deinitializeUsgsTileManager === 'function') {
@@ -238,7 +236,6 @@ document.addEventListener("DOMContentLoaded", function () {
             
             const mapCanvas = map.getCanvas();
             const mapImageSrc = mapCanvas.toDataURL();
-            // Pass currentDate to getPageHTML
             fullHtml += getPageHTML(printData, mapImageSrc, config.page, config.layers, currentDate);
 
             if (isUsgsPage) {
@@ -260,14 +257,19 @@ document.addEventListener("DOMContentLoaded", function () {
         if (win) {
             let documentTitle = "Custom Map Printout";
             if (printData.clientName && printData.propertyAddress) {
-                // Now currentDate is accessible here
-                documentTitle = `${printData.clientName} ${printData.propertyAddress} ${currentDate}`;
+                documentTitle = `${printData.clientName} | ${printData.propertyAddress} | ${currentDate}`;
             }
             
+            // --- CORRECTED: Added the <link> tag to load the stylesheet ---
             win.document.write(`
-                <!DOCTYPE html><html><head><title>${documentTitle}</title>
-                <link rel="stylesheet" href="https://east-southeast-llc.github.io/ese-map-viewer/css/globals.css?v=2" type="text/css" />
-                </head><body class="print-body">${fullHtml}</body></html>`);
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>${documentTitle}</title>
+                    <link rel="stylesheet" href="https://east-southeast-llc.github.io/ese-map-viewer/css/globals.css?v=3" type="text/css" />
+                </head>
+                <body class="print-body">${fullHtml}</body>
+                </html>`);
             win.document.close();
             win.onload = () => {
                 win.print();
