@@ -461,6 +461,10 @@ PRINT STYLES
     font-size: 14px;
     text-align: left;
 }
+/* FIX: This new rule specifically targets the span elements */
+.custom-info-frame span {
+    font-family: 'BankGothicMd', sans-serif;
+}
 .inner-frame {
     width: 2.5in;
     height: 2.5in;
