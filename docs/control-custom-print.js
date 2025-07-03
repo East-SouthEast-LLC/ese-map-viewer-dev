@@ -24,7 +24,8 @@ document.addEventListener("DOMContentLoaded", function () {
             { page: 2, layers: ['parcel highlight', 'floodplain', 'lidar contours'] },
             { page: 3, layers: ['parcel highlight', 'DEP wetland', 'lidar contours'] },
             { page: 4, layers: ['parcel highlight', 'zone II',] },
-            { page: 5, layers: ['parcel highlight', 'soils'] }
+            { page: 5, layers: ['parcel highlight', 'soils'] },
+            { page: 5, layers: ['usgs quad'] } // Added 5th page for USGS
         ]
     };
     
