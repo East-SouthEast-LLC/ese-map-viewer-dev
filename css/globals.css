@@ -452,8 +452,8 @@ PRINT STYLES
     left: 10px;
     top: 10px;
     width: 2in;
-    font-family: Arial, sans-serif;
-    font-size: 10px;
+    font-family: 'BankGothicMd', sans-serif;
+    font-size: 14px;
     text-align: left;
 }
 .inner-frame {
