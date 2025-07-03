@@ -437,7 +437,7 @@ PRINT STYLES
     display: flex;
     justify-content: center;
     align-items: flex-end; /* This correctly aligns the item to the bottom */
-    padding-bottom: .25in;
+    padding-bottom: .125in;
     overflow: hidden;
     box-sizing: border-box;
 }
