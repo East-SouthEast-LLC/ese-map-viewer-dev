@@ -436,13 +436,14 @@ PRINT STYLES
     height: 100%;
     display: flex;
     justify-content: center;
-    align-items: flex-end; /* Allign image to the bottom of the container */
+    align-items: flex-end; /* This correctly aligns the item to the bottom */
     overflow: hidden;
 }
 .image-container img {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    display: block;
 }
 .custom-info-frame {
     position: absolute;
