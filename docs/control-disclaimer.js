@@ -3,27 +3,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const disclaimerPopup = document.getElementById('disclaimer-popup');
     const closeButton = document.getElementById('close-disclaimer-btn');
 
-    // First, check if the required HTML elements for the popup exist on the page.
     if (!disclaimerPopup || !closeButton) {
-        // If they don't, stop the script to avoid errors.
         return;
     }
 
     /**
-     * Hides the disclaimer popup and sets a flag in sessionStorage
-     * to keep it hidden for the duration of the user's session.
+     * Hides the disclaimer popup by removing the 'show' class
+     * and sets a flag in sessionStorage.
      */
     const closeDisclaimer = () => {
-        disclaimerPopup.style.display = 'none';
+        disclaimerPopup.classList.remove('show');
         sessionStorage.setItem('eseDisclaimerClosed', 'true');
     };
 
-    // Attach an event listener to the close button to hide the popup when clicked.
+    // Attach an event listener to the close button.
     closeButton.addEventListener('click', closeDisclaimer);
 
-    // When the page loads, check if the user has already closed the disclaimer in this session.
-    if (sessionStorage.getItem('eseDisclaimerClosed') === 'true') {
-        // If they have, keep the popup hidden.
-        disclaimerPopup.style.display = 'none';
+    /**
+     * REVISED LOGIC:
+     * Check if the popup has been closed during the current session.
+     * If it has NOT been closed, add the 'show' class to make it visible.
+     */
+    if (sessionStorage.getItem('eseDisclaimerClosed') !== 'true') {
+        // We use a short timeout to let the main map interface load first,
+        // then we fade in the popup for a smoother user experience.
+        setTimeout(() => {
+            disclaimerPopup.classList.add('show');
+        }, 500); // 0.5-second delay before showing
     }
 });

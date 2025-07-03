@@ -669,9 +669,19 @@ DISCLAIMER POPUP STYLES
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     padding: 20px;
-    z-index: 1001; /* Ensures it appears above other map controls */
+    z-index: 1001;
     font-family: 'Europa', sans-serif;
-    display: block; /* The popup is visible by default */
+    
+    /* --- CHANGES FOR FLICKER FIX & ANIMATION --- */
+    visibility: hidden; /* Hidden by default */
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out, visibility 0.4s;
+}
+
+/* New class to control when the popup is shown */
+.disclaimer-popup-container.show {
+    visibility: visible;
+    opacity: 1;
 }
 
 .disclaimer-popup-container h2 {
@@ -692,7 +702,8 @@ DISCLAIMER POPUP STYLES
     display: inline-block;
     padding: 8px 12px;
     background-color: #3887be;
-    color: #fff;
+    /* --- CHANGE: Set link text color to white --- */
+    color: #ffffff; 
     text-decoration: none;
     border-radius: 5px;
     font-size: 0.9rem;
@@ -714,4 +725,8 @@ DISCLAIMER POPUP STYLES
     cursor: pointer;
     padding: 0;
     line-height: 1;
+}
+
+.disclaimer-close-btn:hover {
+    color: #333;
 }
