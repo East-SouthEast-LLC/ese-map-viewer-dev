@@ -284,13 +284,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     
                     <link rel="preconnect" href="https://fonts.googleapis.com">
                     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-                    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+                    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 
                     <style>
                         /* Apply the new font to all relevant elements */
                         .custom-info-frame, .gis-map, .legend-print-title {
-                            font-family: 'Bebas Neue', sans-serif !important;
-                            letter-spacing: .5px; /* Optional: adds a little space */
+                            font-family: 'Montserrat', sans-serif !important;
                         }
                     </style>
                 </head>
@@ -305,6 +304,7 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("Popup blocked! Please allow popups for this site.");
         }
     }
+
     // ============================================================================
     // MAIN EVENT LISTENERS
     // ============================================================================
