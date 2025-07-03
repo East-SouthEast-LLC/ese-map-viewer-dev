@@ -708,14 +708,14 @@ DISCLAIMER POPUP STYLES
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    
-    /* --- CHANGES: Explicitly set height and adjust padding --- */
-    height: 38px;          /* Sets a fixed height for both buttons */
-    padding: 0 16px;       /* Adjust padding to be horizontal only */
+    height: 38px;
+    padding: 0 16px;
     min-width: 165px;
     box-sizing: border-box;
 
-    font-size: 0.9rem;
+    /* --- CHANGE: Reduce font size to prevent wrapping --- */
+    font-size: 0.85rem;
+
     font-family: 'Europa', sans-serif;
     color: #ffffff !important;
     text-decoration: none;
