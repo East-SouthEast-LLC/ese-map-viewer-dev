@@ -175,7 +175,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <span>${printData.website} | ${printData.phone}</span><br>
                     </div>
                     <div class="image-container">
-                        <img src="https://static1.squarespace.com/static/536cf42ee4b0465238027de5/t/67a783e42bb54b7b434b79f1/1739031525647/ESE-GIS.jpg" alt="Company Logo" />
+                        <img src="https://www.ese-llc.com/s/ese-print-logo.jpg" alt="Company Logo" />
                     </div>
                     <div class="legend-frame">
                         <div class="legend-print-title">Legend & Layers</div>
