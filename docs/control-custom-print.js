@@ -173,6 +173,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <span><strong>${printData.companyName}</strong></span>
                         <span>${printData.address}</span><br>
                         <span>${printData.website} | ${printData.phone}</span><br>
+                        <hr style="width:100%; border:.5px solid black; margin:5px 0;">
                     </div>
                     <div class="image-container">
                         <img src="https://www.ese-llc.com/s/ese-print-logo.jpg" alt="Company Logo" />
