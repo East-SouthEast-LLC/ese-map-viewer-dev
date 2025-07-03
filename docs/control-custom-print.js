@@ -259,7 +259,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // --- NEW: DYNAMIC DOCUMENT TITLE LOGIC ---
             let documentTitle = "Custom Map Printout"; // Fallback title
             if (printData.clientName && printData.propertyAddress) {
-                documentTitle = `${printData.clientName} | ${printData.propertyAddress}`;
+                documentTitle = `${printData.clientName} ${printData.propertyAddress} ${currentDate}`;
             }
             
             win.document.write(`
