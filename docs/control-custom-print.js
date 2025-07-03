@@ -287,7 +287,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap" rel="stylesheet">
 
                     <style>
-                        .custom-info-frame, .gis-map, .legend-print-title {
+                        /* THIS IS THE FIX: Target the spans inside the frame directly */
+                        .custom-info-frame span, .gis-map, .legend-print-title {
                             font-family: 'Oswald', sans-serif !important;
                         }
                     </style>
