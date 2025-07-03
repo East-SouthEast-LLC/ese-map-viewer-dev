@@ -705,10 +705,15 @@ DISCLAIMER POPUP STYLES
 
 /* A new shared class for both buttons */
 .disclaimer-btn {
-    display: inline-flex;  /* Use inline-flex for alignment */
-    align-items: center;   /* Vertically center text */
-    justify-content: center; /* Horizontally center text */
-    padding: 8px 16px;     /* Unified padding */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    
+    /* --- CHANGE: Set a minimum width to make buttons the same size --- */
+    min-width: 165px;
+    box-sizing: border-box; /* Ensures padding is included correctly */
+
     font-size: 0.9rem;
     font-family: 'Europa', sans-serif;
     color: #ffffff !important;
