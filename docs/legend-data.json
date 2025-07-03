@@ -354,7 +354,7 @@
         "items": [
             {
             "code": "__default__",
-            "label": "2\" Contour Line",
+            "label": "2' Contour Line",
             "color": "#07C327",
             "opacity": 1.0,
             "isLine": true

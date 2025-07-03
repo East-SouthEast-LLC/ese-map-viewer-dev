@@ -16,24 +16,24 @@ document.addEventListener("DOMContentLoaded", function () {
             { page: 1, layers: ['parcel highlight', 'lidar contours', 'floodplain'] },
             { page: 2, layers: ['parcel highlight', 'satellite', 'acec'] },
             { page: 3, layers: ['parcel highlight', 'lidar contours', 'DEP wetland'] },
-            { page: 4, layers: ['parcel highlight', 'satellite', 'endangered species'] }
+            { page: 4, layers: ['parcel highlight', 'satellite', 'endangered species'] },
+            { page: 5, layers: ['usgs quad'] } // Added 5th page for USGS
         ],
         'Test Hole': [
             { page: 1, layers: ['parcel highlight', 'lidar contours'] },
             { page: 2, layers: ['parcel highlight', 'floodplain', 'lidar contours'] },
             { page: 3, layers: ['parcel highlight', 'DEP wetland', 'lidar contours'] },
             { page: 4, layers: ['parcel highlight', 'zone II',] },
-            { page: 5, layers: ['parcel highlight', 'soils'] }
+            { page: 5, layers: ['parcel highlight', 'soils'] },
+            { page: 5, layers: ['usgs quad'] } // Added 5th page for USGS
         ]
     };
     
-    // --- CAREFULLY CORRECTED FUNCTION ---
     function setLayerVisibility(layerId, visibility) {
         if (map.getLayer(layerId)) {
             map.setLayoutProperty(layerId, 'visibility', visibility);
         }
     
-        // Dependent layer logic with checks to prevent errors
         const dependentLayers = {
             'floodplain': ['LiMWA', 'floodplain-line', 'floodplain-labels'],
             'DEP wetland': ['dep-wetland-line', 'dep-wetland-labels'],
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
     
         if (dependentLayers[layerId]) {
             dependentLayers[layerId].forEach(depId => {
-                if (map.getLayer(depId)) { // Check if the dependent layer exists before changing it
+                if (map.getLayer(depId)) {
                     map.setLayoutProperty(depId, 'visibility', visibility);
                 }
             });
@@ -202,7 +202,6 @@ document.addEventListener("DOMContentLoaded", function () {
     async function generateMultiPagePrintout(printData, pageConfigs) {
         const usgsLayerIsActive = document.querySelector('[data-layer-id="usgs quad"].active');
         
-        // --- UPDATED: Deinitialize the tile manager before printing ---
         if (usgsLayerIsActive && typeof deinitializeUsgsTileManager === 'function') {
             deinitializeUsgsTileManager();
         }
@@ -223,18 +222,39 @@ document.addEventListener("DOMContentLoaded", function () {
         
         allToggleableLayers.forEach(layerId => setLayerVisibility(layerId, 'none'));
 
+        // --- UPDATED LOOP LOGIC ---
         for (const config of pageConfigs) {
-            config.layers.forEach(layerId => setLayerVisibility(layerId, 'visible'));
+            const isUsgsPage = config.layers.includes('usgs quad');
+
+            if (isUsgsPage) {
+                // If it's the USGS page, initialize the tile manager
+                if (typeof initializeUsgsTileManager === 'function') {
+                    initializeUsgsTileManager();
+                }
+            } else {
+                // Otherwise, handle regular vector layers
+                config.layers.forEach(layerId => setLayerVisibility(layerId, 'visible'));
+            }
+
+            // Wait for the map to be fully rendered (essential for async tiles)
             await new Promise(resolve => map.once('idle', resolve));
+            
             const mapCanvas = map.getCanvas();
             const mapImageSrc = mapCanvas.toDataURL();
             fullHtml += getPageHTML(printData, mapImageSrc, config.page, config.layers);
-            config.layers.forEach(layerId => setLayerVisibility(layerId, 'none'));
+
+            // Clean up the layers for the next page
+            if (isUsgsPage) {
+                if (typeof deinitializeUsgsTileManager === 'function') {
+                    deinitializeUsgsTileManager();
+                }
+            } else {
+                config.layers.forEach(layerId => setLayerVisibility(layerId, 'none'));
+            }
         }
 
         initiallyVisibleLayers.forEach(layerId => setLayerVisibility(layerId, 'visible'));
 
-        // --- UPDATED: Re-initialize the tile manager after printing ---
         if (usgsLayerIsActive && typeof initializeUsgsTileManager === 'function') {
             initializeUsgsTileManager();
         }

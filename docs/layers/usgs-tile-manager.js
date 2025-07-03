@@ -136,38 +136,6 @@ function deinitializeUsgsTileManager() {
     console.log("USGS Tile Manager Deinitialized.");
 }
 
-function hideAllUsgsTiles() {
-    if (!window.usgsTilesInitialized) return;
-    loadedUsgsTiles.forEach(tileName => {
-        const layerId = `usgs-tile-source-${tileName}`;
-        if (map.getLayer(layerId)) {
-            map.setLayoutProperty(layerId, 'visibility', 'none');
-        }
-    });
-}
-
-function showAllUsgsTiles() {
-    console.log("--- showAllUsgsTiles called ---"); // DEBUG
-    if (!window.usgsTilesInitialized) {
-        console.log("Not initialized, returning."); // DEBUG
-        return;
-    }
-    if (map.getZoom() < 12) {
-        console.log("Zoom too low, hiding instead."); // DEBUG
-        hideAllUsgsTiles();
-        return;
-    }
-    console.log(`Showing ${loadedUsgsTiles.size} loaded tiles.`); // DEBUG
-    loadedUsgsTiles.forEach(tileName => {
-        const layerId = `usgs-tile-source-${tileName}`;
-        if (map.getLayer(layerId)) {
-            map.setLayoutProperty(layerId, 'visibility', 'visible');
-        }
-    });
-}
-
 // Make functions globally available
 window.initializeUsgsTileManager = initializeUsgsTileManager;
 window.deinitializeUsgsTileManager = deinitializeUsgsTileManager;
-window.hideAllUsgsTiles = hideAllUsgsTiles;
-window.showAllUsgsTiles = showAllUsgsTiles;
