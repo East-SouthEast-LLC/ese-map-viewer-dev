@@ -1,3 +1,5 @@
+// docs/control-custom-print.js
+
 // CUSTOM PRINT CONTROL BUTTON SCRIPT
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -17,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
             { page: 2, layers: ['parcel highlight', 'satellite', 'acec'] },
             { page: 3, layers: ['parcel highlight', 'lidar contours', 'DEP wetland'] },
             { page: 4, layers: ['parcel highlight', 'satellite', 'endangered species'] },
-            { page: 5, layers: ['usgs quad'] } // Added 5th page for USGS
+            { page: 5, layers: ['usgs quad'] }
         ],
         'Test Hole': [
             { page: 1, layers: ['parcel highlight', 'lidar contours'] },
@@ -25,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
             { page: 3, layers: ['parcel highlight', 'DEP wetland', 'lidar contours'] },
             { page: 4, layers: ['parcel highlight', 'zone II',] },
             { page: 5, layers: ['parcel highlight', 'soils'] },
-            { page: 5, layers: ['usgs quad'] } // Added 5th page for USGS
+            { page: 5, layers: ['usgs quad'] }
         ]
     };
     
@@ -157,9 +159,18 @@ document.addEventListener("DOMContentLoaded", function () {
         generateMultiPagePrintout(printData, pageConfigs);
     }
 
-    function getPageHTML(printData, mapImageSrc, pageNumber, expectedLayers) {
-        // HTML generation logic remains the same
-        const currentDate = new Date().toLocaleDateString();
+    function formatPhoneNumber(phoneNumberString) {
+        var cleaned = ('' + phoneNumberString).replace(/\D/g, '');
+        var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+        if (match) {
+            return '(' + match[1] + ') ' + match[2] + '-' + match[3];
+        }
+        return null; // Return null if the number doesn't match the format
+    }
+
+    function getPageHTML(printData, mapImageSrc, pageNumber, expectedLayers, currentDate) {
+        const formattedPhone = formatPhoneNumber(printData.phone);
+
         return `
             <div class="frame">
                 <div class="top-frame">
@@ -172,12 +183,14 @@ document.addEventListener("DOMContentLoaded", function () {
                         <span><strong>Client:</strong> ${printData.clientName}</span><br>
                         <span><strong>Property:</strong> ${printData.propertyAddress}</span>
                         <hr style="width:100%; border:.5px solid black; margin:5px 0;">
-                        <span><strong>${printData.companyName}</strong></span>
+                        <span><strong>${printData.companyName}</strong></span><br>
                         <span>${printData.address}</span><br>
-                        <span>${printData.website} | ${printData.phone}</span><br>
+                        <span>${printData.website}</span><br>
+                        <span>${formattedPhone}</span><br>
+                        <hr style="width:100%; border:.5px solid black; margin:5px 0;">
                     </div>
                     <div class="image-container">
-                        <img src="https://static1.squarespace.com/static/536cf42ee4b0465238027de5/t/67a783e42bb54b7b434b79f1/1739031525647/ESE-GIS.jpg" alt="Company Logo" />
+                        <img src="https://east-southeast-llc.github.io/ese-map-viewer/img/ese-print-logo.png" alt="Company Logo" />
                     </div>
                     <div class="legend-frame">
                         <div class="legend-print-title">Legend & Layers</div>
@@ -200,6 +213,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     async function generateMultiPagePrintout(printData, pageConfigs) {
+        const currentDate = new Date().toLocaleDateString();
         const usgsLayerIsActive = document.querySelector('[data-layer-id="usgs quad"].active');
         
         if (usgsLayerIsActive && typeof deinitializeUsgsTileManager === 'function') {
@@ -222,28 +236,23 @@ document.addEventListener("DOMContentLoaded", function () {
         
         allToggleableLayers.forEach(layerId => setLayerVisibility(layerId, 'none'));
 
-        // --- UPDATED LOOP LOGIC ---
         for (const config of pageConfigs) {
             const isUsgsPage = config.layers.includes('usgs quad');
 
             if (isUsgsPage) {
-                // If it's the USGS page, initialize the tile manager
                 if (typeof initializeUsgsTileManager === 'function') {
                     initializeUsgsTileManager();
                 }
             } else {
-                // Otherwise, handle regular vector layers
                 config.layers.forEach(layerId => setLayerVisibility(layerId, 'visible'));
             }
 
-            // Wait for the map to be fully rendered (essential for async tiles)
             await new Promise(resolve => map.once('idle', resolve));
             
             const mapCanvas = map.getCanvas();
             const mapImageSrc = mapCanvas.toDataURL();
-            fullHtml += getPageHTML(printData, mapImageSrc, config.page, config.layers);
+            fullHtml += getPageHTML(printData, mapImageSrc, config.page, config.layers, currentDate);
 
-            // Clean up the layers for the next page
             if (isUsgsPage) {
                 if (typeof deinitializeUsgsTileManager === 'function') {
                     deinitializeUsgsTileManager();
@@ -261,10 +270,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const win = window.open('', '_blank');
         if (win) {
+            let documentTitle = "Custom Map Printout";
+            if (printData.clientName && printData.propertyAddress) {
+                documentTitle = `${printData.clientName} | ${printData.propertyAddress} | ${currentDate}`;
+            }
+            
             win.document.write(`
-                <!DOCTYPE html><html><head><title>Custom Map Printout</title>
-                <link rel="stylesheet" href="https://east-southeast-llc.github.io/ese-map-viewer/css/globals.css?v=2" type="text/css" />
-                </head><body class="print-body">${fullHtml}</body></html>`);
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>${documentTitle}</title>
+                    <link rel="stylesheet" href="https://east-southeast-llc.github.io/ese-map-viewer/css/globals.css?v=3" type="text/css" />
+                    
+                    <link rel="preconnect" href="https://fonts.googleapis.com">
+                    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+                    <style>
+                        /* Apply the new font to all relevant elements */
+                        .custom-info-frame, .gis-map, .legend-print-title {
+                            font-family: 'Montserrat', sans-serif !important;
+                        }
+                    </style>
+                </head>
+                <body class="print-body">${fullHtml}</body>
+                </html>`);
             win.document.close();
             win.onload = () => {
                 win.print();
