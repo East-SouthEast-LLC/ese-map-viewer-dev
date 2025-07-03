@@ -281,13 +281,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 <head>
                     <title>${documentTitle}</title>
                     <link rel="stylesheet" href="https://east-southeast-llc.github.io/ese-map-viewer/css/globals.css?v=3" type="text/css" />
+                    
+                    <link rel="preconnect" href="https://fonts.googleapis.com">
+                    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+
                     <style>
-                        @font-face {
-                            font-family: 'BankGothicMd';
-                            src: url('https://static1.squarespace.com/static/536cf42ee4b0465238027de5/t/53724803e4b0356615b60e42/1400000515944/BankGothic-Medium.woff') format('woff');
-                        }
-                        .custom-info-frame {
-                            font-family: 'BankGothicMd', sans-serif !important;
+                        .custom-info-frame, .gis-map, .legend-print-title {
+                            font-family: 'Oswald', sans-serif !important;
                         }
                     </style>
                 </head>
