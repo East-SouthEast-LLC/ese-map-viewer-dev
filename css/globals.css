@@ -695,7 +695,7 @@ DISCLAIMER POPUP STYLES
     margin-bottom: 15px;
 }
 
-/* New container for the buttons */
+/* Container for the buttons */
 .disclaimer-actions {
     display: flex;
     justify-content: flex-end; /* Aligns buttons to the right */
@@ -703,35 +703,36 @@ DISCLAIMER POPUP STYLES
     gap: 10px; /* Creates space between buttons */
 }
 
-.disclaimer-link {
-    display: inline-block;
-    padding: 8px 12px;
-    background-color: #3887be;
-    color: #ffffff !important; 
-    text-decoration: none;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    transition: background-color 0.2s ease;
-}
-
-.disclaimer-link:hover {
-    background-color: #3074a4;
-    color: #ffffff !important;
-}
-
-/* Style for the new red button */
-.disclaimer-button-red {
-    padding: 8px 12px;
-    background-color: #d9534f; /* A shade of red */
-    color: #ffffff;
-    border: none;
-    border-radius: 5px;
+/* A new shared class for both buttons */
+.disclaimer-btn {
+    display: inline-flex;  /* Use inline-flex for alignment */
+    align-items: center;   /* Vertically center text */
+    justify-content: center; /* Horizontally center text */
+    padding: 8px 16px;     /* Unified padding */
     font-size: 0.9rem;
     font-family: 'Europa', sans-serif;
+    color: #ffffff !important;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
 
-.disclaimer-button-red:hover {
-    background-color: #c9302c; /* Darker red on hover */
+/* Specific color for the "Instructions" link */
+.disclaimer-link.disclaimer-btn {
+    background-color: #3887be;
+}
+
+.disclaimer-link.disclaimer-btn:hover {
+    background-color: #3074a4;
+}
+
+/* Specific color for the "Acknowledge" button */
+.disclaimer-button-red.disclaimer-btn {
+    background-color: #d9534f;
+}
+
+.disclaimer-button-red.disclaimer-btn:hover {
+    background-color: #c9302c;
 }
