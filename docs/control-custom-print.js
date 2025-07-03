@@ -16,7 +16,8 @@ document.addEventListener("DOMContentLoaded", function () {
             { page: 1, layers: ['parcel highlight', 'lidar contours', 'floodplain'] },
             { page: 2, layers: ['parcel highlight', 'satellite', 'acec'] },
             { page: 3, layers: ['parcel highlight', 'lidar contours', 'DEP wetland'] },
-            { page: 4, layers: ['parcel highlight', 'satellite', 'endangered species'] }
+            { page: 4, layers: ['parcel highlight', 'satellite', 'endangered species'] },
+            { page: 5, layers: ['usgs quad'] }
         ],
         'Test Hole': [
             { page: 1, layers: ['parcel highlight', 'lidar contours'] },
@@ -234,7 +235,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         initiallyVisibleLayers.forEach(layerId => setLayerVisibility(layerId, 'visible'));
 
-        // --- UPDATED: Re-initialize the tile manager after printing ---
         if (usgsLayerIsActive && typeof initializeUsgsTileManager === 'function') {
             initializeUsgsTileManager();
         }
