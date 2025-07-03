@@ -157,9 +157,7 @@ document.addEventListener("DOMContentLoaded", function () {
         generateMultiPagePrintout(printData, pageConfigs);
     }
 
-    function getPageHTML(printData, mapImageSrc, pageNumber, expectedLayers) {
-        // HTML generation logic remains the same
-        const currentDate = new Date().toLocaleDateString();
+    function getPageHTML(printData, mapImageSrc, pageNumber, expectedLayers, currentDate) {
         return `
             <div class="frame">
                 <div class="top-frame">
@@ -200,6 +198,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     async function generateMultiPagePrintout(printData, pageConfigs) {
+        // --- FIX: Define currentDate here so it's available for the title ---
+        const currentDate = new Date().toLocaleDateString();
+
         const usgsLayerIsActive = document.querySelector('[data-layer-id="usgs quad"].active');
         
         if (usgsLayerIsActive && typeof deinitializeUsgsTileManager === 'function') {
@@ -237,7 +238,8 @@ document.addEventListener("DOMContentLoaded", function () {
             
             const mapCanvas = map.getCanvas();
             const mapImageSrc = mapCanvas.toDataURL();
-            fullHtml += getPageHTML(printData, mapImageSrc, config.page, config.layers);
+            // Pass currentDate to getPageHTML
+            fullHtml += getPageHTML(printData, mapImageSrc, config.page, config.layers, currentDate);
 
             if (isUsgsPage) {
                 if (typeof deinitializeUsgsTileManager === 'function') {
@@ -256,9 +258,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const win = window.open('', '_blank');
         if (win) {
-            // --- NEW: DYNAMIC DOCUMENT TITLE LOGIC ---
-            let documentTitle = "Custom Map Printout"; // Fallback title
+            let documentTitle = "Custom Map Printout";
             if (printData.clientName && printData.propertyAddress) {
+                // Now currentDate is accessible here
                 documentTitle = `${printData.clientName} ${printData.propertyAddress} ${currentDate}`;
             }
             
