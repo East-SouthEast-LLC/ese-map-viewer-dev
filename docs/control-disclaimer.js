@@ -1,9 +1,11 @@
-// docs/control-disclaimer.js
+// In docs/control-disclaimer.js
+
 document.addEventListener('DOMContentLoaded', () => {
     const disclaimerPopup = document.getElementById('disclaimer-popup');
-    const closeButton = document.getElementById('close-disclaimer-btn');
+    // Update the script to find the new button by its ID
+    const acknowledgeButton = document.getElementById('acknowledge-disclaimer-btn');
 
-    if (!disclaimerPopup || !closeButton) {
+    if (!disclaimerPopup || !acknowledgeButton) {
         return;
     }
 
@@ -16,8 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
         sessionStorage.setItem('eseDisclaimerClosed', 'true');
     };
 
-    // Attach an event listener to the close button.
-    closeButton.addEventListener('click', closeDisclaimer);
+    // Attach the event listener to the new "Acknowledge" button
+    acknowledgeButton.addEventListener('click', closeDisclaimer);
 
     /**
      * REVISED LOGIC:

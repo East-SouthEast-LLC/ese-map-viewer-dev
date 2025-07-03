@@ -671,14 +671,11 @@ DISCLAIMER POPUP STYLES
     padding: 20px;
     z-index: 1001;
     font-family: 'Europa', sans-serif;
-    
-    /* --- CHANGES FOR FLICKER FIX & ANIMATION --- */
     visibility: hidden; /* Hidden by default */
     opacity: 0;
     transition: opacity 0.4s ease-in-out, visibility 0.4s;
 }
 
-/* New class to control when the popup is shown */
 .disclaimer-popup-container.show {
     visibility: visible;
     opacity: 1;
@@ -698,11 +695,18 @@ DISCLAIMER POPUP STYLES
     margin-bottom: 15px;
 }
 
+/* New container for the buttons */
+.disclaimer-actions {
+    display: flex;
+    justify-content: flex-end; /* Aligns buttons to the right */
+    align-items: center;
+    gap: 10px; /* Creates space between buttons */
+}
+
 .disclaimer-link {
     display: inline-block;
     padding: 8px 12px;
     background-color: #3887be;
-    /* --- CHANGE: Forcing the text color to white --- */
     color: #ffffff !important; 
     text-decoration: none;
     border-radius: 5px;
@@ -712,23 +716,22 @@ DISCLAIMER POPUP STYLES
 
 .disclaimer-link:hover {
     background-color: #3074a4;
-    /* Ensure the text color stays white on hover */
     color: #ffffff !important;
 }
 
-.disclaimer-close-btn {
-    position: absolute;
-    top: 5px;
-    right: 10px;
-    font-size: 1.5rem;
-    color: #aaa;
-    background: none;
+/* Style for the new red button */
+.disclaimer-button-red {
+    padding: 8px 12px;
+    background-color: #d9534f; /* A shade of red */
+    color: #ffffff;
     border: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    font-family: 'Europa', sans-serif;
     cursor: pointer;
-    padding: 0;
-    line-height: 1;
+    transition: background-color 0.2s ease;
 }
 
-.disclaimer-close-btn:hover {
-    color: #333;
+.disclaimer-button-red:hover {
+    background-color: #c9302c; /* Darker red on hover */
 }
