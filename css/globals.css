@@ -655,3 +655,63 @@ BOOKMARK GEOCODER BUTTON STYLES
   box-sizing: border-box;
   font-size: 12px;
 }
+
+/* ============================================================
+DISCLAIMER POPUP STYLES
+=============================================================== */
+.disclaimer-popup-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 350px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 20px;
+    z-index: 1001; /* Ensures it appears above other map controls */
+    font-family: 'Europa', sans-serif;
+    display: block; /* The popup is visible by default */
+}
+
+.disclaimer-popup-container h2 {
+    margin-top: 0;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.disclaimer-text {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.disclaimer-link {
+    display: inline-block;
+    padding: 8px 12px;
+    background-color: #3887be;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+}
+
+.disclaimer-link:hover {
+    background-color: #3074a4;
+}
+
+.disclaimer-close-btn {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 1.5rem;
+    color: #aaa;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
