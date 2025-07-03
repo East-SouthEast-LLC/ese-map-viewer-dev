@@ -166,27 +166,21 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                 </div>
                 <div class="bottom-frame">
-                    {/* --- NEW: Wrapper for the three bottom columns --- */}
-                    <div class="bottom-flex-container">
-                        <div class="custom-info-frame">
-                            <span><strong>Client:</strong> ${printData.clientName}</span><br>
-                            <span><strong>Property:</strong> ${printData.propertyAddress}</span>
-                            <hr>
-                            <span><strong>${printData.companyName}</strong></span>
-                            <span>${printData.address}</span><br>
-                            <span>${printData.website} | ${printData.phone}</span><br>
-                        </div>
-
-                        <div class="legend-frame">
-                            <div class="legend-print-title">Legend & Layers</div>
-                            ${getLegendForPrint(expectedLayers)} 
-                        </div>
-
-                        <div class="image-container">
-                            <img src="https://www.ese-llc.com/s/ese-print-logo.jpg" alt="Company Logo" />
-                        </div>
+                    <div class="custom-info-frame" style="width: 2in;">
+                        <span><strong>Client:</strong> ${printData.clientName}</span><br>
+                        <span><strong>Property:</strong> ${printData.propertyAddress}</span>
+                        <hr style="width:100%; border:.5px solid black; margin:5px 0;">
+                        <span><strong>${printData.companyName}</strong></span>
+                        <span>${printData.address}</span><br>
+                        <span>${printData.website} | ${printData.phone}</span><br>
                     </div>
-                    
+                    <div class="image-container">
+                        <img src="https://www.ese-llc.com/s/ese-print-logo.jpg" alt="Company Logo" />
+                    </div>
+                    <div class="legend-frame">
+                        <div class="legend-print-title">Legend & Layers</div>
+                        ${getLegendForPrint(expectedLayers)} 
+                    </div>
                     <div class="inner-frame">
                         <span class="gis-map">GIS Map</span>
                         <span class="disclaimer">This map is for illustrative purposes only and is not adequate for legal boundary determination or regulatory interpretation.</span>
