@@ -1,4 +1,4 @@
-// town.html
+// docs/decode-url.js
 
 function applyUrlParams(map) {
     const urlParams = new URLSearchParams(window.location.search);
@@ -28,32 +28,36 @@ function applyUrlParams(map) {
 
     const layers = urlParams.get('layers')?.split(',') || [];
     
+    // this function will handle the visibility of dependent layers
+    function setDependentLayersVisibility(layerId, visibility) {
+        const dependentLayers = {
+            'floodplain': ['LiMWA', 'floodplain-line', 'floodplain-labels'],
+            'DEP wetland': ['dep-wetland-line', 'dep-wetland-labels'],
+            'soils': ['soils-labels', 'soils-outline'],
+            'zone II': ['zone-ii-outline', 'zone-ii-labels'],
+            'endangered species': ['endangered-species-labels', 'vernal-pools', 'vernal-pools-labels'],
+            'sewer plans': ['sewer-plans-outline'],
+            'lidar contours': ['lidar-contour-labels']
+        };
+
+        if (dependentLayers[layerId]) {
+            dependentLayers[layerId].forEach(depId => {
+                if (map.getLayer(depId)) {
+                    map.setLayoutProperty(depId, 'visibility', visibility);
+                }
+            });
+        }
+    }
+
     layers.forEach(layerId => {
         const decodedLayerId = decodeURIComponent(layerId);
         if (map.getLayer(decodedLayerId)) {
             map.setLayoutProperty(decodedLayerId, 'visibility', 'visible');
 
-            // Handle dependent layers
-            if (decodedLayerId === 'floodplain') {
-                map.setLayoutProperty('LiMWA', 'visibility', 'visible');
-                map.setLayoutProperty('floodplain-line', 'visibility', 'visible');
-                map.setLayoutProperty('floodplain-labels', 'visibility', 'visible');
-            } else if (decodedLayerId === 'DEP wetland') {
-                map.setLayoutProperty('dep-wetland-line', 'visibility', 'visible');
-                map.setLayoutProperty('dep-wetland-labels', 'visibility', 'visible');
-            } else if (decodedLayerId === 'soils') {
-                map.setLayoutProperty('soils-labels', 'visibility', 'visible');
-                map.setLayoutProperty('soils-outline', 'visibility', 'visible');
-            } else if (decodedLayerId === 'zone II') {
-                map.setLayoutProperty('zone-ii-outline', 'visibility', 'visible');
-                map.setLayoutProperty('zone-ii-labels', 'visibility', 'visible');
-            } else if (decodedLayerId === 'endangered species') {
-                map.setLayoutProperty('endangered-species-labels', 'visibility', 'visible');
-                map.setLayoutProperty('vernal-pools', 'visibility', 'visible');
-                map.setLayoutProperty('vernal-pools-labels', 'visibility', 'visible');
-            }
+            // set the dependent layers to visible as well
+            setDependentLayersVisibility(decodedLayerId, 'visible');
 
-            // Update button to be active by checking its data-layer-id
+            // update the button to be active by checking its data-layer-id
             document.querySelectorAll('#menu a').forEach(button => {
                 if (button.dataset.layerId === decodedLayerId) {
                     button.classList.add('active');
