@@ -12,7 +12,7 @@ function adjustLayout() {
   if (!header || !mapContainer || !menuContainer) return;
 
   const headerHeight = header.offsetHeight;
-  const buffer = 120; // a 120px buffer to make the map shorter
+  const buffer = 100; // a 100px buffer to make the map shorter
 
   // calculate the available height for the map
   const availableHeight = window.innerHeight - headerHeight - buffer;
@@ -36,7 +36,6 @@ function setupLayoutAdjustments() {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
             adjustLayout();
-            map.resize(); // also explicitly tell the map to resize itself
         }, 100); // 100ms delay
     });
 }
@@ -55,6 +54,14 @@ var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/ese-toh/ckh2ss32s06i119paer9mt67h',
 });
+
+// restore the resize observer to handle dynamic resizing
+const mapContainer = map.getContainer();
+const resizeObserver = new ResizeObserver(() => {
+  map.resize();
+});
+resizeObserver.observe(mapContainer);
+
 
 const geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
