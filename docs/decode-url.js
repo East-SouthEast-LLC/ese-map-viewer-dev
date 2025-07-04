@@ -1,12 +1,12 @@
 // docs/decode-url.js
 
 function applyUrlParams(map) {
-    console.log("Decoding URL parameters..."); // log: start decoding
+    console.log("Decoding URL parameters...");
     const urlParams = new URLSearchParams(window.location.search);
     const hasParams = urlParams.has('zoom') || urlParams.has('lat') || urlParams.has('layers');
 
     if (!hasParams) {
-        console.log("No URL parameters found to apply."); // log: no params
+        console.log("No URL parameters found to apply.");
         return; 
     }
 
@@ -29,7 +29,7 @@ function applyUrlParams(map) {
     }
 
     const layers = urlParams.get('layers')?.split(',') || [];
-    console.log("Layers found in URL:", layers); // log: found layers
+    console.log("Layers found in URL:", layers);
     
     function setDependentLayersVisibility(layerId, visibility) {
         const dependentLayers = {
@@ -43,12 +43,12 @@ function applyUrlParams(map) {
         };
 
         if (dependentLayers[layerId]) {
-            console.log(`Setting dependent layers for "${layerId}" to ${visibility}`); // log: setting dependencies
+            console.log(`Setting dependent layers for "${layerId}" to ${visibility}`);
             dependentLayers[layerId].forEach(depId => {
                 if (map.getLayer(depId)) {
                     map.setLayoutProperty(depId, 'visibility', visibility);
                 } else {
-                    console.warn(`Dependent layer "${depId}" not found.`); // log: dependency not found
+                    console.warn(`Dependent layer "${depId}" not found.`);
                 }
             });
         }
@@ -56,16 +56,31 @@ function applyUrlParams(map) {
 
     layers.forEach(layerId => {
         const decodedLayerId = decodeURIComponent(layerId);
+        
+        // special case for usgs quad layer
+        if (decodedLayerId === 'usgs quad') {
+            console.log("Initializing USGS tile manager from URL.");
+            if (typeof initializeUsgsTileManager === 'function') {
+                initializeUsgsTileManager();
+                // also activate the button
+                const usgsButton = document.querySelector('[data-layer-id="usgs quad"]');
+                if (usgsButton) {
+                    usgsButton.classList.add('active');
+                }
+            } else {
+                console.warn("initializeUsgsTileManager function not found.");
+            }
+            return; // continue to the next layer
+        }
+
         if (map.getLayer(decodedLayerId)) {
-            console.log(`Setting layer "${decodedLayerId}" to visible.`); // log: setting layer
+            console.log(`Setting layer "${decodedLayerId}" to visible.`);
             map.setLayoutProperty(decodedLayerId, 'visibility', 'visible');
-
             setDependentLayersVisibility(decodedLayerId, 'visible');
-
             document.querySelectorAll('#menu a').forEach(button => {
                 if (button.dataset.layerId === decodedLayerId) {
                     button.classList.add('active');
-                    console.log(`Set button for "${decodedLayerId}" to active.`); // log: updating button
+                    console.log(`Set button for "${decodedLayerId}" to active.`);
                 }
             });
         } else {
