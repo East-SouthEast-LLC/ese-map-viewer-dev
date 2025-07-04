@@ -1,5 +1,50 @@
 // docs/main-app.js
 
+/**
+ * dynamically adjusts map and menu height to fit the viewport below the site header.
+ */
+function adjustLayout() {
+  const header = document.querySelector('#header'); // gets the squarespace header element
+  const mapContainer = document.getElementById('map');
+  const menuContainer = document.getElementById('menu');
+  const geocoderContainer = document.getElementById('geocoder-container');
+
+  if (!header || !mapContainer || !menuContainer) return;
+
+  const headerHeight = header.offsetHeight;
+  const buffer = 20; // a 20px buffer for margin below the header
+
+  // calculate the available height for the map
+  const availableHeight = window.innerHeight - headerHeight - buffer;
+
+  // apply the new height to the map and menus
+  mapContainer.style.height = `${availableHeight}px`;
+  menuContainer.style.maxHeight = `${availableHeight}px`;
+  if (geocoderContainer) {
+    geocoderContainer.style.maxHeight = `${availableHeight}px`;
+  }
+}
+
+// sets up event listeners to run the layout adjustment
+function setupLayoutAdjustments() {
+    // run on initial load
+    adjustLayout();
+    
+    // re-run on window resize, with a debounce to prevent excessive calls
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            adjustLayout();
+            map.resize(); // also explicitly tell the map to resize itself
+        }, 100); // 100ms delay
+    });
+}
+
+// run the setup
+setupLayoutAdjustments();
+
+
 // the single source of truth for the marker and its coordinates
 let marker = null;
 const markerCoordinates = { lat: null, lng: null };
