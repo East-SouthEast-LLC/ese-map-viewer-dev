@@ -1,10 +1,12 @@
 // docs/decode-url.js
 
 function applyUrlParams(map) {
+    console.log("Decoding URL parameters..."); // log: start decoding
     const urlParams = new URLSearchParams(window.location.search);
     const hasParams = urlParams.has('zoom') || urlParams.has('lat') || urlParams.has('layers');
 
     if (!hasParams) {
+        console.log("No URL parameters found to apply."); // log: no params
         return; 
     }
 
@@ -27,8 +29,8 @@ function applyUrlParams(map) {
     }
 
     const layers = urlParams.get('layers')?.split(',') || [];
+    console.log("Layers found in URL:", layers); // log: found layers
     
-    // this function will handle the visibility of dependent layers
     function setDependentLayersVisibility(layerId, visibility) {
         const dependentLayers = {
             'floodplain': ['LiMWA', 'floodplain-line', 'floodplain-labels'],
@@ -41,9 +43,12 @@ function applyUrlParams(map) {
         };
 
         if (dependentLayers[layerId]) {
+            console.log(`Setting dependent layers for "${layerId}" to ${visibility}`); // log: setting dependencies
             dependentLayers[layerId].forEach(depId => {
                 if (map.getLayer(depId)) {
                     map.setLayoutProperty(depId, 'visibility', visibility);
+                } else {
+                    console.warn(`Dependent layer "${depId}" not found.`); // log: dependency not found
                 }
             });
         }
@@ -52,15 +57,15 @@ function applyUrlParams(map) {
     layers.forEach(layerId => {
         const decodedLayerId = decodeURIComponent(layerId);
         if (map.getLayer(decodedLayerId)) {
+            console.log(`Setting layer "${decodedLayerId}" to visible.`); // log: setting layer
             map.setLayoutProperty(decodedLayerId, 'visibility', 'visible');
 
-            // set the dependent layers to visible as well
             setDependentLayersVisibility(decodedLayerId, 'visible');
 
-            // update the button to be active by checking its data-layer-id
             document.querySelectorAll('#menu a').forEach(button => {
                 if (button.dataset.layerId === decodedLayerId) {
                     button.classList.add('active');
+                    console.log(`Set button for "${decodedLayerId}" to active.`); // log: updating button
                 }
             });
         } else {
