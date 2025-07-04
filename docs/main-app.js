@@ -12,7 +12,7 @@ function adjustLayout() {
   if (!header || !mapContainer || !menuContainer) return;
 
   const headerHeight = header.offsetHeight;
-  const buffer = 100; // a 100px buffer to make the map shorter
+  const buffer = 70; // a 70px buffer to make the map shorter
 
   // calculate the available height for the map
   const availableHeight = window.innerHeight - headerHeight - buffer;
