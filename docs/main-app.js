@@ -11,6 +11,13 @@ var map = new mapboxgl.Map({
     style: 'mapbox://styles/ese-toh/ckh2ss32s06i119paer9mt67h',
 });
 
+// add this resize observer to automatically handle resizing
+const mapContainer = map.getContainer();
+const resizeObserver = new ResizeObserver(() => {
+  map.resize();
+});
+resizeObserver.observe(mapContainer);
+
 const geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
     mapboxgl: mapboxgl
