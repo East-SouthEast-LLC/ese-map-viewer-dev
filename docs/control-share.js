@@ -4,12 +4,21 @@ function obtainZoom() {
     return map.getZoom();
 }
 
-// UPDATED to accept a 'coords' object as a parameter
+// updated to accept a 'coords' object as a parameter
 function generateShareLink(map, zoomLevel, coords, layerIds) {
     const baseUrl = window.eseMapBaseUrl || (window.location.origin + window.location.pathname);
+    
+    // check if the usgs quad layer is active and add it to the list
+    const usgsButton = document.querySelector('[data-layer-id="usgs quad"]');
+    if (usgsButton && usgsButton.classList.contains('active')) {
+        if (!layerIds.includes('usgs quad')) {
+            layerIds.push('usgs quad');
+        }
+    }
+    
     let encodedLayerIds = layerIds.map(layerId => encodeURIComponent(layerId));
     
-    // Check if coords exist before trying to use them
+    // check if coords exist before trying to use them
     if (!coords) {
         console.error("Coordinates are missing for generating share link.");
         return `${baseUrl}?error=missing_coords`;
@@ -75,7 +84,7 @@ document.getElementById('shareButton').addEventListener('click', function() {
 
     let visibleLayerIds = listVisibleLayers(map, window.toggleableLayerIds.filter(id => id !== 'tools'));
     
-    // UPDATED to pass the coordinates object to the function
+    // updated to pass the coordinates object to the function
     let shareLink = generateShareLink(map, zoomLevel, currentMarkerCoordinates, visibleLayerIds);
 
     console.log("Share this link:", shareLink);
