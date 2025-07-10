@@ -1,0 +1,44 @@
+<style>
+    /* basic styles to make the viewer fill the page */
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+    #panorama {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+
+<div id="panorama"></div>
+
+<script>
+    // this script runs as soon as the page loads
+    document.addEventListener("DOMContentLoaded", function() {
+        // get the image filename from the page's url
+        const urlParams = new URLSearchParams(window.location.search);
+        const panoFile = urlParams.get('pano');
+
+        if (panoFile) {
+            // construct the full url to the image in your squarespace assets
+            const imageUrl = `https://www.ese-llc.com/s/${panoFile}`;
+
+            // initialize the pannellum viewer
+            pannellum.viewer('panorama', {
+                "type": "equirectangular",
+                "panorama": imageUrl,
+                "autoLoad": true,
+                "showControls": false // controls are hidden as the user can drag
+            });
+        } else {
+            // display a message if no image is specified in the url
+            document.getElementById('panorama').innerText = 'Panorama file not specified.';
+        }
+    });
+</script>

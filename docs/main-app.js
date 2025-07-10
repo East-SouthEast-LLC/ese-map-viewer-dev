@@ -166,8 +166,7 @@ map.on('load', function () {
     });
 
     function openPanoModal(filename) {
-        // a simple change from a relative path to the full, absolute url
-        const panoViewerUrl = `https://east-southeast-llc.github.io/ese-map-viewer/docs/pano-viewer/index.html?pano=${filename}`;
+        const panoViewerUrl = `https://www.ese-llc.com/pano-viewer?pano=${filename}`;
 
         // create the modal overlay
         const modal = document.createElement('div');
