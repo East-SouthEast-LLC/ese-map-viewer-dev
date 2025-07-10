@@ -1,16 +1,6 @@
 <style>
-    /* basic styles to make the viewer fill the page */
-    html, body {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-    }
-    #panorama {
-        width: 100%;
-        height: 100%;
-    }
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
+    #panorama { width: 100%; height: 100%; font-family: sans-serif; text-align: center; padding-top: 50px; }
 </style>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
@@ -19,26 +9,44 @@
 <div id="panorama"></div>
 
 <script>
-    // this script runs as soon as the page loads
-    document.addEventListener("DOMContentLoaded", function() {
-        // get the image filename from the page's url
+    document.addEventListener("DOMContentLoaded", async function() {
+        console.log("Pano Viewer Iframe: Script loaded.");
+
         const urlParams = new URLSearchParams(window.location.search);
         const panoFile = urlParams.get('pano');
+        console.log("Pano Viewer Iframe: Found filename in URL:", panoFile);
 
-        if (panoFile) {
-            // construct the full url to the image in your squarespace assets
+        if (!panoFile) {
+            document.getElementById('panorama').innerText = 'Panorama file not specified.';
+            return;
+        }
+
+        // url for the correction data on github
+        const correctionDataUrl = "https://east-southeast-llc.github.io/ese-map-viewer/data/correction-data.json";
+        console.log("Pano Viewer Iframe: Attempting to fetch correction data from:", correctionDataUrl);
+
+        try {
+            const response = await fetch(correctionDataUrl);
+            console.log("Pano Viewer Iframe: Fetch response received.");
+
+            if (!response.ok) {
+                throw new Error(`http error! status: ${response.status}`);
+            }
+
+            const panoData = await response.json();
+            console.log("Pano Viewer Iframe: Correction data loaded successfully.");
+            
             const imageUrl = `https://www.ese-llc.com/s/${panoFile}`;
-
-            // initialize the pannellum viewer
             pannellum.viewer('panorama', {
                 "type": "equirectangular",
                 "panorama": imageUrl,
                 "autoLoad": true,
-                "showControls": false // controls are hidden as the user can drag
+                "showControls": false
             });
-        } else {
-            // display a message if no image is specified in the url
-            document.getElementById('panorama').innerText = 'Panorama file not specified.';
+
+        } catch (error) {
+            console.error("Pano Viewer Iframe: A critical error occurred:", error);
+            document.getElementById('panorama').innerText = `Error loading panorama data: ${error.message}`;
         }
     });
 </script>
