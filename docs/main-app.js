@@ -166,10 +166,10 @@ map.on('load', function () {
     });
 
     function openPanoModal(filename) {
-        // Construct the URL to point to the new location within the same project
-        const panoViewerUrl = `pano-viewer/index.html?pano=${filename}`;
-    
-        // Create the modal overlay
+        // a simple change from a relative path to the full, absolute url
+        const panoViewerUrl = `https://east-southeast-llc.github.io/ese-map-viewer/docs/pano-viewer/index.html?pano=${filename}`;
+
+        // create the modal overlay
         const modal = document.createElement('div');
         modal.id = 'pano-modal';
         modal.style.cssText = `
@@ -178,16 +178,16 @@ map.on('load', function () {
             justify-content: center; align-items: center;
         `;
         
-        // Create the iframe container
+        // create the iframe container
         const iframeContainer = document.createElement('div');
         iframeContainer.style.cssText = 'position: relative; width: 90%; height: 90%; background: #000;';
-    
-        // Create the iframe
+
+        // create the iframe
         const iframe = document.createElement('iframe');
         iframe.src = panoViewerUrl;
         iframe.style.cssText = 'width: 100%; height: 100%; border: none;';
-    
-        // Create the close button
+
+        // create the close button
         const closeBtn = document.createElement('button');
         closeBtn.innerText = 'X';
         closeBtn.style.cssText = `
@@ -199,7 +199,7 @@ map.on('load', function () {
         closeBtn.onclick = function() {
             document.body.removeChild(modal);
         };
-    
+
         iframeContainer.appendChild(iframe);
         iframeContainer.appendChild(closeBtn);
         modal.appendChild(iframeContainer);
