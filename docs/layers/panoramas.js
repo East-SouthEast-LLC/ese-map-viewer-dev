@@ -2,21 +2,34 @@
 
 async function addPanoramasLayer() {
     try {
-        // Fetch the correction data which contains the coordinates
+        // fetch the correction data which contains the coordinates
         const response = await fetch('https://east-southeast-llc.github.io/ese-map-viewer/data/correction-data.json');
         const panoData = await response.json();
 
-        // Convert the JSON data into a GeoJSON FeatureCollection of points
+        // define the source and destination coordinate systems for proj4
+        // source: massachusetts state plane, meters (nad83)
+        proj4.defs("EPSG:26986", "+proj=lcc +lat_1=42.68333333333333 +lat_2=41.71666666666667 +lat_0=41 +lon_0=-71.5 +x_0=200000 +y_0=750000 +ellps=GRS80 +datum=NAD83 +units=m +no_defs");
+        
+        // destination: wgs84 longitude/latitude
+        proj4.defs("EPSG:4326", "+proj=longlat +datum=WGS84 +no_defs");
+
+        // convert the json data into a geojson featurecollection of points
         const features = Object.entries(panoData).map(([filename, data]) => {
+            // get the state plane coordinates
+            const sourceCoords = [data.position.x, data.position.y];
+            
+            // convert them to wgs84
+            const destCoords = proj4("EPSG:26986", "EPSG:4326", sourceCoords);
+
             return {
                 type: 'Feature',
                 geometry: {
                     type: 'Point',
-                    // Using the position data from your JSON
-                    coordinates: [data.position.x, data.position.y]
+                    // use the newly converted coordinates for mapbox
+                    coordinates: destCoords 
                 },
                 properties: {
-                    // Store the filename in the feature's properties
+                    // store the filename in the feature's properties
                     filename: filename
                 }
             };
@@ -27,29 +40,29 @@ async function addPanoramasLayer() {
             features: features
         };
 
-        // Add the GeoJSON data as a source to the map
+        // add the geojson data as a source to the map
         map.addSource('panoramas-source', {
             type: 'geojson',
             data: geojsonData
         });
 
-        // Add the layer to display the points
+        // add the layer to display the points
         map.addLayer({
             id: 'panoramas',
             type: 'circle',
             source: 'panoramas-source',
             layout: {
-                'visibility': 'none' // Start with the layer hidden
+                'visibility': 'none' // start with the layer hidden
             },
             paint: {
                 'circle-radius': 6,
-                'circle-color': '#00FFFF', // A bright cyan color
-                'circle-stroke-color': '#FFFFFF',
+                'circle-color': '#00ffff', // a bright cyan color
+                'circle-stroke-color': '#ffffff',
                 'circle-stroke-width': 2
             }
         });
 
-        // Make the points clickable
+        // make the points clickable
         map.on('mouseenter', 'panoramas', () => {
             map.getCanvas().style.cursor = 'pointer';
         });
@@ -58,7 +71,7 @@ async function addPanoramasLayer() {
         });
 
     } catch (error) {
-        console.error("Failed to load and create panoramas layer:", error);
+        console.error("failed to load and create panoramas layer:", error);
     }
 }
 
