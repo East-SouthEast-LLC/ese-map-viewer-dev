@@ -15,6 +15,7 @@
                 <a href="#markers" class="sidebar-link text-gray-500 hover:bg-gray-100 pl-8 pr-3 py-2 rounded-md text-sm font-medium transition-colors">Markers</a>
                 <a href="#measure" class="sidebar-link text-gray-500 hover:bg-gray-100 pl-8 pr-3 py-2 rounded-md text-sm font-medium transition-colors">Measure Tool</a>
                 <a href="#identify" class="sidebar-link text-gray-500 hover:bg-gray-100 pl-8 pr-3 py-2 rounded-md text-sm font-medium transition-colors">Identify Tool</a>
+                <a href="#panoramas" class="sidebar-link text-gray-500 hover:bg-gray-100 pl-8 pr-3 py-2 rounded-md text-sm font-medium transition-colors">Panorama Viewer</a>
                 <a href="#print-area" class="sidebar-link text-gray-500 hover:bg-gray-100 pl-8 pr-3 py-2 rounded-md text-sm font-medium transition-colors">Print Area</a>
                 <a href="#legend" class="sidebar-link text-gray-500 hover:bg-gray-100 pl-8 pr-3 py-2 rounded-md text-sm font-medium transition-colors">Legend</a>
                 <a href="#bookmarks" class="sidebar-link text-gray-500 hover:bg-gray-100 pl-8 pr-3 py-2 rounded-md text-sm font-medium transition-colors">Bookmarks</a>
@@ -64,6 +65,7 @@
                     <p>Each button corresponds to a different set of data:</p>
                     <ul>
                         <li><strong>Satellite:</strong> Toggles a high-resolution satellite image of the area.</li>
+                        <li><strong>Panoramas:</strong> Shows the locations of 360-degree panoramic photos.</li>
                         <li><strong>Parcels:</strong> Shows property boundary lines.</li>
                         <li><strong>LIDAR Contours:</strong> Displays detailed 2-foot elevation lines.</li>
                         <li><strong>AGIS:</strong> Shows the coverage areas of historic aerial photographs.</li>
@@ -113,9 +115,19 @@
                             <li><strong>Result:</strong> A box will appear listing all the features from your visible layers at that exact spot (e.g., Parcel ID, Flood Zone, Soil Type).</li>
                         </ul>
                     </div>
+                    
+                    <div id="panoramas" class="pt-6">
+                        <h3>4. Panorama Viewer</h3>
+                        <p>This tool lets you view immersive, 360-degree photographs from specific locations.</p>
+                        <ul>
+                            <li><strong>Activate:</strong> In the main layer menu on the left, turn on the **Panoramas** layer.</li>
+                            <li><strong>View:</strong> Bright cyan dots will appear on the map. Click on any dot.</li>
+                            <li><strong>Result:</strong> A modal window will open, displaying the 360-degree photo. You can click and drag to look around. Click the 'X' to close the viewer.</li>
+                        </ul>
+                    </div>
 
                     <div id="print-area" class="pt-6">
-                        <h3>4. Print Area Overlay</h3>
+                        <h3>5. Print Area Overlay</h3>
                         <p>This tool helps you visualize the exact area that will be captured in a printout.</p>
                         <ul>
                             <li><strong>Action:</strong> Click the <strong>Print Area</strong> button (square icon).</li>
@@ -124,7 +136,7 @@
                     </div>
 
                     <div id="legend" class="pt-6">
-                        <h3>5. Legend</h3>
+                        <h3>6. Legend</h3>
                         <p>The legend helps you understand the symbols and colors on the map.</p>
                         <ul>
                             <li><strong>Action:</strong> Click the <strong>Legend</strong> button.</li>
@@ -133,7 +145,7 @@
                     </div>
 
                     <div id="bookmarks" class="pt-6">
-                        <h3>6. Bookmarks: Saving and Loading Map Views</h3>
+                        <h3>7. Bookmarks: Saving and Loading Map Views</h3>
                         <p>You can save your current map view—including the center point, zoom level, and active layers—to use later.</p>
                         <ul>
                             <li><strong>Open Menu:</strong> Click the <strong>Bookmark</strong> button (ribbon icon).</li>
@@ -143,7 +155,7 @@
                     </div>
 
                     <div id="scale" class="pt-6">
-                        <h3>7. Scale Tool</h3>
+                        <h3>8. Scale Tool</h3>
                         <p>This tool allows you to view and set a precise engineering scale for your map.</p>
                         <ul>
                             <li><strong>Activate:</strong> Click the <strong>Zoom to Scale</strong> button.</li>
@@ -153,7 +165,7 @@
                     </div>
 
                     <div id="share" class="pt-6">
-                        <h3>8. Share Map</h3>
+                        <h3>9. Share Map</h3>
                         <p>This feature generates a unique URL that you can send to others to share your exact map view.</p>
                         <ul>
                             <li><strong>Action:</strong> Click the <strong>Share Map</strong> button.</li>
@@ -162,7 +174,7 @@
                     </div>
 
                     <div id="standard-print" class="pt-6">
-                        <h3>9. Standard Print</h3>
+                        <h3>10. Standard Print</h3>
                         <p>This creates a quick, single-page printout of your current map view.</p>
                         <ul>
                             <li><strong>Action:</strong> Click the <strong>Print</strong> button (printer icon).</li>
@@ -171,7 +183,7 @@
                     </div>
 
                     <div id="custom-print" class="pt-6">
-                        <h3>10. Custom Print</h3>
+                        <h3>11. Custom Print</h3>
                         <p>This is the most powerful printing tool, designed for creating professional, multi-page reports.</p>
                         <ol>
                             <li><strong>Set Your Map's Center Point:</strong> First, use the <strong>Point</strong> tool to drop a pin on your area of interest. This will be the center for all pages.</li>
