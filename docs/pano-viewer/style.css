@@ -1,0 +1,100 @@
+/* docs/pano-viewer/style.css */
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Prevents scrollbars on the iframe itself */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.main-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background-color: #fff;
+}
+
+#panorama {
+    width: 100%;
+    height: 100%;
+}
+
+#drop-zone {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 50%;
+    border: 3px dashed #ccc;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #aaa;
+    background-color: rgba(255, 255, 255, 0.8);
+    transition: background-color 0.3s, border-color 0.3s;
+    cursor: pointer;
+}
+
+#drop-zone.drag-over {
+    border-color: #3887be;
+    background-color: rgba(230, 245, 255, 0.9);
+}
+
+/* Hide the drop zone when a panorama is loaded */
+#panorama:not(:empty) + #drop-zone {
+    display: none;
+}
+
+.camera-controls {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.camera-controls label {
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.controls-container {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 8px;
+    border-radius: 5px;
+    font-size: 14px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.control-group label {
+    cursor: pointer;
+}
+
+.control-group input[type="number"] {
+    width: 60px;
+}
+
+.control-group button {
+    padding: 2px 8px;
+}

@@ -137,7 +137,7 @@ map.on('load', function () {
                                     'endangered species', 'endangered-species-labels', 'vernal-pools', 'vernal-pools-labels',
                                     'acec', 'floodplain', 'LiMWA', 'floodplain-line', 'floodplain-labels',
                                     'agis', 'historic', 'towns', 'private properties upland',
-                                    'contours', 'lidar contours', 'lidar-contour-labels', 'parcel highlight'
+                                    'contours', 'lidar contours', 'lidar-contour-labels', 'parcel highlight', 'panoramas'
                                 ];
 
                                 drawOrder.forEach(layerId => {
@@ -157,6 +157,55 @@ map.on('load', function () {
             .catch(error => console.error('Error fetching town config data:', error));
     });
 
+    // ** NEW ** Pano viewer modal logic
+    map.on('click', 'panoramas', function(e) {
+        if (e.features.length > 0) {
+            const filename = e.features[0].properties.filename;
+            openPanoModal(filename);
+        }
+    });
+
+    function openPanoModal(filename) {
+        const panoViewerUrl = `https://www.ese-llc.com/pano-viewer?pano=${filename}`;
+
+        // create the modal overlay
+        const modal = document.createElement('div');
+        modal.id = 'pano-modal';
+        modal.style.cssText = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background-color: rgba(0,0,0,0.7); z-index: 2000; display: flex; 
+            justify-content: center; align-items: center;
+        `;
+        
+        // create the iframe container
+        const iframeContainer = document.createElement('div');
+        iframeContainer.style.cssText = 'position: relative; width: 90%; height: 90%; background: #000;';
+
+        // create the iframe
+        const iframe = document.createElement('iframe');
+        iframe.src = panoViewerUrl;
+        iframe.style.cssText = 'width: 100%; height: 100%; border: none;';
+
+        // create the close button
+        const closeBtn = document.createElement('button');
+        closeBtn.innerText = 'X';
+        closeBtn.style.cssText = `
+            position: absolute; top: 10px; right: 10px; z-index: 10; 
+            background: white; border: none; font-size: 20px; 
+            width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
+        `;
+        
+        closeBtn.onclick = function() {
+            document.body.removeChild(modal);
+        };
+
+        iframeContainer.appendChild(iframe);
+        iframeContainer.appendChild(closeBtn);
+        modal.appendChild(iframeContainer);
+        document.body.appendChild(modal);
+    }
+
+    // Existing generic click handler
     map.on('click', (e) => {
         if (placingPoint) {
             handleMarkerPlacement(e.lngLat);

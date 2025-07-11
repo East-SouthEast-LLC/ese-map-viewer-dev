@@ -1,12 +1,10 @@
 // docs/decode-url.js
 
 function applyUrlParams(map) {
-    console.log("Decoding URL parameters...");
     const urlParams = new URLSearchParams(window.location.search);
     const hasParams = urlParams.has('zoom') || urlParams.has('lat') || urlParams.has('layers');
 
     if (!hasParams) {
-        console.log("No URL parameters found to apply.");
         return; 
     }
 
@@ -29,7 +27,6 @@ function applyUrlParams(map) {
     }
 
     const layers = urlParams.get('layers')?.split(',') || [];
-    console.log("Layers found in URL:", layers);
     
     function setDependentLayersVisibility(layerId, visibility) {
         const dependentLayers = {
@@ -43,12 +40,10 @@ function applyUrlParams(map) {
         };
 
         if (dependentLayers[layerId]) {
-            console.log(`Setting dependent layers for "${layerId}" to ${visibility}`);
             dependentLayers[layerId].forEach(depId => {
                 if (map.getLayer(depId)) {
                     map.setLayoutProperty(depId, 'visibility', visibility);
                 } else {
-                    console.warn(`Dependent layer "${depId}" not found.`);
                 }
             });
         }
@@ -59,7 +54,6 @@ function applyUrlParams(map) {
         
         // special case for usgs quad layer
         if (decodedLayerId === 'usgs quad') {
-            console.log("Initializing USGS tile manager from URL.");
             if (typeof initializeUsgsTileManager === 'function') {
                 initializeUsgsTileManager();
                 // also activate the button
@@ -74,13 +68,11 @@ function applyUrlParams(map) {
         }
 
         if (map.getLayer(decodedLayerId)) {
-            console.log(`Setting layer "${decodedLayerId}" to visible.`);
             map.setLayoutProperty(decodedLayerId, 'visibility', 'visible');
             setDependentLayersVisibility(decodedLayerId, 'visible');
             document.querySelectorAll('#menu a').forEach(button => {
                 if (button.dataset.layerId === decodedLayerId) {
                     button.classList.add('active');
-                    console.log(`Set button for "${decodedLayerId}" to active.`);
                 }
             });
         } else {
