@@ -1,10 +1,10 @@
 <style>
-    /* hide the standard squarespace header, footer, and announcement bar */
+    /* hide the standard squarespace header and footer */
     #header, #footer-sections, .sqs-announcement-bar {
         display: none !important;
     }
 
-    /* force the page body and our panorama container to fill the screen */
+    /* force the page body and panorama to fill the screen */
     html, body {
         margin: 0 !important;
         padding: 0 !important;
@@ -19,7 +19,7 @@
         left: 0 !important;
         width: 100%;
         height: 100%;
-        background-color: #333; /* debug: shows if the div is visible */
+        z-index: 9999 !important; /* bring the panorama to the very front */
     }
 </style>
 
@@ -30,10 +30,8 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", async function() {
-        console.log("--- Pano Viewer Debug Start ---");
         const urlParams = new URLSearchParams(window.location.search);
         const panoFile = urlParams.get('pano');
-        console.log("1. Filename from URL:", panoFile);
 
         if (!panoFile) {
             document.getElementById('panorama').innerText = 'Error: No panorama file specified.';
@@ -43,26 +41,19 @@
         const correctionDataUrl = "https://east-southeast-llc.github.io/ese-map-viewer/data/correction-data.json";
         
         try {
-            console.log("2. Attempting to fetch correction data from:", correctionDataUrl);
             const response = await fetch(correctionDataUrl);
             if (!response.ok) throw new Error(`HTTP Error! Status: ${response.status}`);
             const panoData = await response.json();
-            console.log("3. Correction data fetched and parsed successfully.");
-
             const pose = panoData[panoFile];
-            console.log("4. Pose data for this file:", pose);
-            
-            const imageUrl = `https://www.ese-llc.com/s/${panoFile}`;
+
             const viewerConfig = {
                 "type": "equirectangular",
-                "panorama": imageUrl,
+                "panorama": `https://www.ese-llc.com/s/${panoFile}`,
                 "autoLoad": true,
                 "showControls": false
             };
-            console.log("5. Base viewer config created for image:", imageUrl);
 
             if (pose && pose.orientation) {
-                console.log("6. Orientation data found. Calculating pitch and roll.");
                 const q = pose.orientation;
                 const sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
                 const cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
@@ -71,15 +62,12 @@
                 const sinp = 2 * (q.w * q.y - q.z * q.x);
                 let pitch = Math.abs(sinp) >= 1 ? (Math.sign(sinp) * Math.PI / 2) * (180 / Math.PI) : Math.asin(sinp) * (180 / Math.PI);
                 viewerConfig.horizonPitch = -pitch;
-                console.log(`7. Calculated Pitch: ${viewerConfig.horizonPitch}, Roll: ${viewerConfig.horizonRoll}`);
             }
             
-            console.log("8. Initializing Pannellum with final config:", viewerConfig);
             pannellum.viewer('panorama', viewerConfig);
-            console.log("9. Pannellum initialized successfully.");
 
         } catch (error) {
-            console.error("--- Pano Viewer Critical Error ---", error);
+            console.error("Error loading panorama:", error);
             document.getElementById('panorama').innerText = `A critical error occurred: ${error.message}`;
         }
     });
