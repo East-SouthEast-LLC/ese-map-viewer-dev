@@ -80,7 +80,7 @@ function highlightViewedPano(panoId) {
         map.setFeatureState({ source: 'panoramas-source', id: panoId }, { viewed: true });
         setTimeout(() => {
             map.setFeatureState({ source: 'panoramas-source', id: panoId }, { viewed: false });
-        }, 3000); // 3 seconds
+        }, 12000); // 12 seconds
     }
 }
 
