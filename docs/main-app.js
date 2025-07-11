@@ -181,7 +181,7 @@ map.on('load', function () {
                     { source: 'panoramas-source', id: panoId },
                     { viewed: false }
                 );
-            }, 3000); // 3000 milliseconds = 3 seconds
+            }, 12000); // 12000 milliseconds = 12 seconds
         }
     }
     
