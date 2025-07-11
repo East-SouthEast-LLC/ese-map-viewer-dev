@@ -1,5 +1,8 @@
 // docs/layers/panoramas.js
 
+// make panoramaOrder a global variable
+window.panoramaOrder = [];
+
 async function addPanoramasLayer() {
     try {
         const response = await fetch('https://east-southeast-llc.github.io/ese-map-viewer/data/correction-data.json');
@@ -23,6 +26,9 @@ async function addPanoramasLayer() {
             };
         });
 
+        // create the ordered list of panorama filenames
+        window.panoramaOrder = features.map(feature => feature.properties.filename);
+
         const geojsonData = {
             type: 'FeatureCollection',
             features: features
@@ -31,7 +37,7 @@ async function addPanoramasLayer() {
         map.addSource('panoramas-source', {
             type: 'geojson',
             data: geojsonData,
-            promoteId: 'filename' // promote the filename property to be the feature id
+            promoteId: 'filename'
         });
 
         map.addLayer({
@@ -42,23 +48,21 @@ async function addPanoramasLayer() {
                 'visibility': 'none'
             },
             paint: {
-                // change the circle radius based on the "viewed" state
                 'circle-radius': [
                     'case',
                     ['boolean', ['feature-state', 'viewed'], false],
-                    10, // radius when viewed
-                    6   // default radius
+                    10,
+                    6
                 ],
-                // change the circle color based on the "viewed" state
                 'circle-color': [
                     'case',
                     ['boolean', ['feature-state', 'viewed'], false],
-                    '#FFFF00', // yellow when viewed
-                    '#00ffff'  // cyan by default
+                    '#FFFF00',
+                    '#00ffff'
                 ],
                 'circle-stroke-color': '#ffffff',
                 'circle-stroke-width': 2,
-                'circle-opacity': [ // add a fade-in effect
+                'circle-opacity': [
                     'case',
                     ['boolean', ['feature-state', 'viewed'], false],
                     0.9,
