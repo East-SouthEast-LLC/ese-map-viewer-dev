@@ -40,21 +40,12 @@ function setupLayoutAdjustments() {
 /**
  * navigates to a new panorama by closing the current modal and opening a new one.
  * @param {number} newIndex - the index of the new panorama in the global panoramaorder array.
- * @param {boolean} fromHistory - indicates if the navigation is from the history stack.
  */
-function navigateToPano(newIndex, fromHistory = false) {
+function navigateToPano(newIndex) {
     const existingModal = document.getElementById('pano-modal');
     if (existingModal) {
         document.body.removeChild(existingModal);
     }
-    
-    if (!fromHistory) {
-        panoHistory.push(newIndex);
-        if (panoHistory.length > 20) { // keep the history from getting too long
-            panoHistory.shift();
-        }
-    }
-
     openPanoModal(newIndex);
 }
 
@@ -72,6 +63,7 @@ function preloadPanoImages(currentIndex) {
     const nextPanoFile = window.panoramaOrder[nextIndex];
     const prevPanoFile = window.panoramaOrder[prevIndex];
 
+    // create image objects to trigger browser caching
     const nextImage = new Image();
     nextImage.src = `https://www.ese-llc.com/s/${nextPanoFile}`;
     
@@ -88,7 +80,7 @@ function highlightViewedPano(panoId) {
         map.setFeatureState({ source: 'panoramas-source', id: panoId }, { viewed: true });
         setTimeout(() => {
             map.setFeatureState({ source: 'panoramas-source', id: panoId }, { viewed: false });
-        }, 3000);
+        }, 12000); // 12 seconds
     }
 }
 
@@ -147,23 +139,6 @@ function openPanoModal(currentIndex) {
     iframeContainer.appendChild(iframe);
     iframeContainer.appendChild(prevBtn);
     iframeContainer.appendChild(nextBtn);
-    
-    // add a back button if there is history
-    if (panoHistory.length > 1) {
-        const backBtn = document.createElement('button');
-        backBtn.innerHTML = '&#8617;'; // unicode for a back arrow
-        backBtn.title = 'go to previous view';
-        backBtn.style.cssText = `position: absolute; top: 10px; right: 50px; z-index: 10; background: white; border: none; font-size: 20px; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;`;
-        backBtn.onclick = function() {
-            panoHistory.pop(); // remove current view
-            const lastIndex = panoHistory.pop(); // get previous view
-            if (lastIndex !== undefined) {
-                navigateToPano(lastIndex, true); // navigate without adding to history
-            }
-        };
-        iframeContainer.appendChild(backBtn);
-    }
-    
     iframeContainer.appendChild(closeBtn);
     modal.appendChild(iframeContainer);
     document.body.appendChild(modal);
@@ -171,12 +146,12 @@ function openPanoModal(currentIndex) {
     preloadPanoImages(currentIndex);
 }
 
+
 // --- main application state ---
 setupLayoutAdjustments();
 let marker = null;
 const markerCoordinates = { lat: null, lng: null };
 let lastViewedPanoId = null; 
-let panoHistory = []; // array to store the sequence of viewed panoramas
 
 // --- mapbox initialization ---
 mapboxgl.accessToken = 'pk.eyJ1IjoiZXNlLXRvaCIsImEiOiJja2Vhb24xNTEwMDgxMzFrYjVlaTVjOXkxIn0.IsPo5lOndNUc3lDLuBa1ZA';
@@ -281,9 +256,7 @@ map.on('load', function () {
             const feature = e.features[0];
             const currentIndex = window.panoramaOrder.indexOf(feature.id);
             if (currentIndex !== -1) {
-                // when a user clicks a new dot, clear the history
-                panoHistory = [];
-                navigateToPano(currentIndex);
+                openPanoModal(currentIndex);
             }
         }
     });
@@ -373,8 +346,7 @@ map.on('load', function () {
 
 function handleMarkerPlacement(lngLat) {
     const { lat, lng } = lngLat;
-    // this function does not exist in the user's provided 'control-button.js' file
-    // setPinPosition(lat, lng); 
+    setPinPosition(lat, lng);
     if (marker) marker.remove();
     marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
     placingPoint = false;
