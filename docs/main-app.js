@@ -192,9 +192,11 @@ map.on('load', function () {
             .catch(error => console.error('Error fetching town config data:', error));
     });
 
+    // Pano viewer click listener
     map.on('click', 'panoramas', function(e) {
         if (e.features.length > 0) {
             const feature = e.features[0];
+            // find the index of the clicked panorama in our ordered list
             const currentIndex = window.panoramaOrder.indexOf(feature.id);
             if (currentIndex !== -1) {
                 openPanoModal(currentIndex);
@@ -202,27 +204,31 @@ map.on('load', function () {
         }
     });
 
+    // **UPDATED** function to apply a temporary highlight to the viewed panorama dot
     function highlightViewedPano(panoId) {
         if (panoId) {
+            // set the 'viewed' state to true to change its appearance
             map.setFeatureState(
                 { source: 'panoramas-source', id: panoId },
                 { viewed: true }
             );
 
+            // remove the highlight after 3 seconds
             setTimeout(() => {
                 map.setFeatureState(
                     { source: 'panoramas-source', id: panoId },
                     { viewed: false }
                 );
-            }, 12000);
+            }, 3000); // 3000 milliseconds = 3 seconds
         }
     }
     
+    // **UPDATED** function to create and open the panorama modal
     function openPanoModal(currentIndex) {
         if (currentIndex < 0 || currentIndex >= window.panoramaOrder.length) return;
 
         const filename = window.panoramaOrder[currentIndex];
-        lastViewedPanoId = filename;
+        lastViewedPanoId = filename; // Keep track of the filename for highlighting
         const panoViewerUrl = `https://www.ese-llc.com/pano-viewer?pano=${filename}`;
 
         const modal = document.createElement('div');
@@ -241,7 +247,9 @@ map.on('load', function () {
         const prevBtn = document.createElement('button');
         prevBtn.innerHTML = '&lt;';
         prevBtn.style.cssText = arrowBtnStyle + 'left: 10px;';
-        prevBtn.onclick = function() {
+        prevBtn.onclick = function(event) {
+            event.preventDefault(); // prevent any default browser action
+            event.stopPropagation(); // stop the click from bubbling up
             const newIndex = (currentIndex - 1 + window.panoramaOrder.length) % window.panoramaOrder.length;
             navigateToPano(newIndex);
         };
@@ -249,7 +257,9 @@ map.on('load', function () {
         const nextBtn = document.createElement('button');
         nextBtn.innerHTML = '&gt;';
         nextBtn.style.cssText = arrowBtnStyle + 'right: 10px;';
-        nextBtn.onclick = function() {
+        nextBtn.onclick = function(event) {
+            event.preventDefault(); // prevent any default browser action
+            event.stopPropagation(); // stop the click from bubbling up
             const newIndex = (currentIndex + 1) % window.panoramaOrder.length;
             navigateToPano(newIndex);
         };
@@ -269,7 +279,7 @@ map.on('load', function () {
         modal.appendChild(iframeContainer);
         document.body.appendChild(modal);
 
-        // pre-load the adjacent images
+        // pre-load the adjacent images for a smoother experience
         preloadPanoImages(currentIndex);
     }
 
