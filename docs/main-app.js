@@ -214,7 +214,7 @@ map.on('load', function () {
                     { source: 'panoramas-source', id: panoId },
                     { viewed: false }
                 );
-            }, 3000);
+            }, 12000);
         }
     }
     
