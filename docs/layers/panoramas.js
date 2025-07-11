@@ -53,7 +53,7 @@ async function addPanoramasLayer() {
                 'circle-color': [
                     'case',
                     ['boolean', ['feature-state', 'viewed'], false],
-                    '#ff0000', // red when viewed
+                    '#FFFF00', // yellow when viewed
                     '#00ffff'  // cyan by default
                 ],
                 'circle-stroke-color': '#ffffff',
