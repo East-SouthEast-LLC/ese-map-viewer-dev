@@ -26,11 +26,12 @@ import os
 # The exact name of your input CSV file.
 # Example: "GOHEEN_20250601.csv"
 
-input_csv_file = input("Enter the name of your input CSV file: ").strip()
+input_csv_file = input("Enter the name of your input CSV file: ")
 
 # The prefix for the JSON keys. Make sure to include the trailing underscore.
 # Example: "GOHEEN_20250601_"
-output_prefix = input("Enter the desired prefix for the output JSON keys: ").strip()
+output_prefix = input("Enter the desired prefix for the output JSON keys: ")
+oputput_prefix = output_prefix.strip(' ')
 
 # ------------------------------------------------------------------------------
 # ==============================================================================
