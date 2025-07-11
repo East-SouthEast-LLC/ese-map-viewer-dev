@@ -48,6 +48,9 @@ setupLayoutAdjustments();
 let marker = null;
 const markerCoordinates = { lat: null, lng: null };
 
+// track the last viewed panorama
+let lastViewedPanoId = null; 
+
 mapboxgl.accessToken = 'pk.eyJ1IjoiZXNlLXRvaCIsImEiOiJja2Vhb24xNTEwMDgxMzFrYjVlaTVjOXkxIn0.IsPo5lOndNUc3lDLuBa1ZA';
 
 var map = new mapboxgl.Map({
@@ -146,7 +149,6 @@ map.on('load', function () {
                                     }
                                 });
                                 
-                                // apply url params after everything else is loaded and set up
                                 applyUrlParams(map);
                             };
                             document.body.appendChild(menuScript);
@@ -157,18 +159,35 @@ map.on('load', function () {
             .catch(error => console.error('Error fetching town config data:', error));
     });
 
-    // ** NEW ** Pano viewer modal logic
+    // Pano viewer modal logic
     map.on('click', 'panoramas', function(e) {
         if (e.features.length > 0) {
-            const filename = e.features[0].properties.filename;
-            openPanoModal(filename);
+            const feature = e.features[0];
+            lastViewedPanoId = feature.id; // use the promoted id
+            openPanoModal(feature.properties.filename, lastViewedPanoId);
         }
     });
 
-    function openPanoModal(filename) {
+    function highlightViewedPano(panoId) {
+        if (panoId) {
+            map.setFeatureState(
+                { source: 'panoramas-source', id: panoId },
+                { viewed: true }
+            );
+
+            // remove the highlight after 3 seconds
+            setTimeout(() => {
+                map.setFeatureState(
+                    { source: 'panoramas-source', id: panoId },
+                    { viewed: false }
+                );
+            }, 3000); // 3000 milliseconds = 3 seconds
+        }
+    }
+    
+    function openPanoModal(filename, panoId) {
         const panoViewerUrl = `https://www.ese-llc.com/pano-viewer?pano=${filename}`;
 
-        // create the modal overlay
         const modal = document.createElement('div');
         modal.id = 'pano-modal';
         modal.style.cssText = `
@@ -177,16 +196,13 @@ map.on('load', function () {
             justify-content: center; align-items: center;
         `;
         
-        // create the iframe container
         const iframeContainer = document.createElement('div');
         iframeContainer.style.cssText = 'position: relative; width: 90%; height: 90%; background: #000;';
 
-        // create the iframe
         const iframe = document.createElement('iframe');
         iframe.src = panoViewerUrl;
         iframe.style.cssText = 'width: 100%; height: 100%; border: none;';
 
-        // create the close button
         const closeBtn = document.createElement('button');
         closeBtn.innerText = 'X';
         closeBtn.style.cssText = `
@@ -197,6 +213,7 @@ map.on('load', function () {
         
         closeBtn.onclick = function() {
             document.body.removeChild(modal);
+            highlightViewedPano(panoId); // highlight the pano after closing
         };
 
         iframeContainer.appendChild(iframe);
@@ -220,7 +237,6 @@ map.on('load', function () {
         const topFeature = features[0];
         let popupHTML = '';
 
-        // handle popup content based on the top feature's layer
         switch (topFeature.layer.id) {
             case 'parcels':
                 popupHTML = `Address: <strong>${topFeature.properties.ADDRESS}</strong><br>Webpage: <a href="${topFeature.properties.URL}" target="_blank"><b><u>Link to Page</u></b></a>`;
