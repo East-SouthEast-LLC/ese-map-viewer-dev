@@ -25,85 +25,15 @@ function adjustLayout() {
   }
 }
 
-// sets up event listeners to run the layout adjustment
+/**
+ * sets up event listeners to run the layout adjustment
+ */
 function setupLayoutAdjustments() {
-    // run on initial load
     adjustLayout();
-    
-    // re-run on window resize, with a debounce to prevent excessive calls
     let resizeTimer;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-            adjustLayout();
-        }, 100); // 100ms delay
-    });
-}
-
-// run the setup
-setupLayoutAdjustments();
-
-
-// the single source of truth for the marker and its coordinates
-let marker = null;
-const markerCoordinates = { lat: null, lng: null };
-
-// track the last viewed panorama
-let lastViewedPanoId = null; 
-
-mapboxgl.accessToken = 'pk.eyJ1IjoiZXNlLXRvaCIsImEiOiJja2Vhb24xNTEwMDgxMzFrYjVlaTVjOXkxIn0.IsPo5lOndNUc3lDLuBa1ZA';
-
-var map = new mapboxgl.Map({
-    container: 'map',
-    style: 'mapbox://styles/ese-toh/ckh2ss32s06i119paer9mt67h',
-});
-
-// restore the resize observer to handle dynamic resizing
-const mapContainer = map.getContainer();
-const resizeObserver = new ResizeObserver(() => {
-  map.resize();
-});
-resizeObserver.observe(mapContainer);
-
-
-const geocoder = new MapboxGeocoder({
-    accessToken: mapboxgl.accessToken,
-    mapboxgl: mapboxgl
-});
-document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
-
-function loadLayerScript(layerName) {
-    return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        let scriptName = layerName.replace(/ /g, '-');
-            if (layerName === "DEP wetland") {
-                scriptName = "depwetland";
-            } else if (layerName === "zone II") {
-                scriptName = "zoneii";
-            } else if (layerName === "conservancy districts") {
-                scriptName = "conservancydistricts";
-            } else if (layerName === "endangered species") {
-                scriptName = "endangered-species";
-            } else if (layerName === "parcel highlight") {
-                scriptName = "parcel-highlight";
-            } else if (layerName === "lidar contours") {
-                scriptName = "lidar-contours";
-            } else if (layerName === "sewer plans") {
-                scriptName = "sewer-plans";
-            } else if (layerName === "private properties upland") {
-                scriptName = "private-properties-upland";
-            } else if (layerName === "usgs quad") {
-                scriptName = "usgs-tile-manager";
-            }
-        
-        script.src = `https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/${scriptName}.js?v=2`;
-        
-        script.onload = () => {
-            resolve();
-        };
-
-        script.onerror = () => reject(new Error(`Script load error for ${layerName}`));
-        document.head.appendChild(script);
+        resizeTimer = setTimeout(adjustLayout, 100);
     });
 }
 
@@ -141,6 +71,140 @@ function preloadPanoImages(currentIndex) {
     prevImage.src = `https://www.ese-llc.com/s/${prevPanoFile}`;
 }
 
+/**
+ * applies a temporary highlight to the viewed panorama dot
+ * @param {string} panoId - the filename id of the panorama feature
+ */
+function highlightViewedPano(panoId) {
+    if (panoId && map.getSource('panoramas-source')) {
+        map.setFeatureState({ source: 'panoramas-source', id: panoId }, { viewed: true });
+        setTimeout(() => {
+            map.setFeatureState({ source: 'panoramas-source', id: panoId }, { viewed: false });
+        }, 3000); // 3 seconds
+    }
+}
+
+/**
+ * creates and displays the panorama viewer modal
+ * @param {number} currentIndex - the index of the panorama to display
+ */
+function openPanoModal(currentIndex) {
+    if (currentIndex < 0 || currentIndex >= window.panoramaOrder.length) return;
+
+    const filename = window.panoramaOrder[currentIndex];
+    lastViewedPanoId = filename; 
+    const panoViewerUrl = `https://www.ese-llc.com/pano-viewer?pano=${filename}`;
+
+    const modal = document.createElement('div');
+    modal.id = 'pano-modal';
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 2000; display: flex; justify-content: center; align-items: center;';
+    
+    const iframeContainer = document.createElement('div');
+    iframeContainer.style.cssText = 'position: relative; width: 90%; height: 90%; background: #000;';
+
+    const iframe = document.createElement('iframe');
+    iframe.src = panoViewerUrl;
+    iframe.style.cssText = 'width: 100%; height: 100%; border: none;';
+
+    const arrowBtnStyle = `position: absolute; top: 50%; transform: translateY(-50%); background-color: rgba(0,0,0,0.5); color: white; border: none; font-size: 30px; cursor: pointer; padding: 10px; z-index: 10;`;
+    
+    const prevBtn = document.createElement('button');
+    prevBtn.innerHTML = '&lt;';
+    prevBtn.style.cssText = arrowBtnStyle + 'left: 10px;';
+    prevBtn.onclick = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const newIndex = (currentIndex - 1 + window.panoramaOrder.length) % window.panoramaOrder.length;
+        navigateToPano(newIndex);
+    };
+
+    const nextBtn = document.createElement('button');
+    nextBtn.innerHTML = '&gt;';
+    nextBtn.style.cssText = arrowBtnStyle + 'right: 10px;';
+    nextBtn.onclick = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const newIndex = (currentIndex + 1) % window.panoramaOrder.length;
+        navigateToPano(newIndex);
+    };
+
+    const closeBtn = document.createElement('button');
+    closeBtn.innerText = 'X';
+    closeBtn.style.cssText = `position: absolute; top: 10px; right: 10px; z-index: 10; background: white; border: none; font-size: 20px; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;`;
+    closeBtn.onclick = function() {
+        document.body.removeChild(modal);
+        highlightViewedPano(lastViewedPanoId);
+    };
+
+    iframeContainer.appendChild(iframe);
+    iframeContainer.appendChild(prevBtn);
+    iframeContainer.appendChild(nextBtn);
+    iframeContainer.appendChild(closeBtn);
+    modal.appendChild(iframeContainer);
+    document.body.appendChild(modal);
+
+    preloadPanoImages(currentIndex);
+}
+
+
+// --- main application state ---
+setupLayoutAdjustments();
+let marker = null;
+const markerCoordinates = { lat: null, lng: null };
+let lastViewedPanoId = null; 
+
+// --- mapbox initialization ---
+mapboxgl.accessToken = 'pk.eyJ1IjoiZXNlLXRvaCIsImEiOiJja2Vhb24xNTEwMDgxMzFrYjVlaTVjOXkxIn0.IsPo5lOndNUc3lDLuBa1ZA';
+var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/ese-toh/ckh2ss32s06i119paer9mt67h',
+});
+
+// --- mapbox observers and controls ---
+const mapContainer = map.getContainer();
+const resizeObserver = new ResizeObserver(() => map.resize());
+resizeObserver.observe(mapContainer);
+
+const geocoder = new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    mapboxgl: mapboxgl
+});
+document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+
+// --- dynamic script loading ---
+function loadLayerScript(layerName) {
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        let scriptName = layerName.replace(/ /g, '-');
+            if (layerName === "DEP wetland") {
+                scriptName = "depwetland";
+            } else if (layerName === "zone II") {
+                scriptName = "zoneii";
+            } else if (layerName === "conservancy districts") {
+                scriptName = "conservancydistricts";
+            } else if (layerName === "endangered species") {
+                scriptName = "endangered-species";
+            } else if (layerName === "parcel highlight") {
+                scriptName = "parcel-highlight";
+            } else if (layerName === "lidar contours") {
+                scriptName = "lidar-contours";
+            } else if (layerName === "sewer plans") {
+                scriptName = "sewer-plans";
+            } else if (layerName === "private properties upland") {
+                scriptName = "private-properties-upland";
+            } else if (layerName === "usgs quad") {
+                scriptName = "usgs-tile-manager";
+            }
+        
+        script.src = `https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/${scriptName}.js?v=2`;
+        
+        script.onload = resolve;
+        script.onerror = () => reject(new Error(`Script load error for ${layerName}`));
+        document.head.appendChild(script);
+    });
+}
+
+// --- map on load logic ---
 map.on('load', function () {
     loadLayerScript('towns').then(() => {
         fetch('https://east-southeast-llc.github.io/ese-map-viewer/docs/town-config.json')
@@ -163,7 +227,6 @@ map.on('load', function () {
                             menuScript.src = 'https://east-southeast-llc.github.io/ese-map-viewer/docs/toggleable-menu.js?v=2';
                             menuScript.onload = function () {
                                 setupToggleableMenu();
-
                                 const drawOrder = [
                                     'satellite', 'parcels', 'zoning', 'conservancy districts',
                                     'conservation', 'sewer', 'sewer plans', 'sewer-plans-outline',
@@ -175,13 +238,9 @@ map.on('load', function () {
                                     'agis', 'historic', 'towns', 'private properties upland',
                                     'contours', 'lidar contours', 'lidar-contour-labels', 'parcel highlight', 'panoramas'
                                 ];
-
                                 drawOrder.forEach(layerId => {
-                                    if (map.getLayer(layerId)) {
-                                        map.moveLayer(layerId);
-                                    }
+                                    if (map.getLayer(layerId)) map.moveLayer(layerId);
                                 });
-                                
                                 applyUrlParams(map);
                             };
                             document.body.appendChild(menuScript);
@@ -192,96 +251,15 @@ map.on('load', function () {
             .catch(error => console.error('Error fetching town config data:', error));
     });
 
-    // Pano viewer click listener
     map.on('click', 'panoramas', function(e) {
         if (e.features.length > 0) {
             const feature = e.features[0];
-            // find the index of the clicked panorama in our ordered list
             const currentIndex = window.panoramaOrder.indexOf(feature.id);
             if (currentIndex !== -1) {
                 openPanoModal(currentIndex);
             }
         }
     });
-
-    // **UPDATED** function to apply a temporary highlight to the viewed panorama dot
-    function highlightViewedPano(panoId) {
-        if (panoId) {
-            // set the 'viewed' state to true to change its appearance
-            map.setFeatureState(
-                { source: 'panoramas-source', id: panoId },
-                { viewed: true }
-            );
-
-            // remove the highlight after 3 seconds
-            setTimeout(() => {
-                map.setFeatureState(
-                    { source: 'panoramas-source', id: panoId },
-                    { viewed: false }
-                );
-            }, 3000); // 3000 milliseconds = 3 seconds
-        }
-    }
-    
-    // **UPDATED** function to create and open the panorama modal
-    function openPanoModal(currentIndex) {
-        if (currentIndex < 0 || currentIndex >= window.panoramaOrder.length) return;
-
-        const filename = window.panoramaOrder[currentIndex];
-        lastViewedPanoId = filename; // Keep track of the filename for highlighting
-        const panoViewerUrl = `https://www.ese-llc.com/pano-viewer?pano=${filename}`;
-
-        const modal = document.createElement('div');
-        modal.id = 'pano-modal';
-        modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 2000; display: flex; justify-content: center; align-items: center;';
-        
-        const iframeContainer = document.createElement('div');
-        iframeContainer.style.cssText = 'position: relative; width: 90%; height: 90%; background: #000;';
-
-        const iframe = document.createElement('iframe');
-        iframe.src = panoViewerUrl;
-        iframe.style.cssText = 'width: 100%; height: 100%; border: none;';
-
-        const arrowBtnStyle = `position: absolute; top: 50%; transform: translateY(-50%); background-color: rgba(0,0,0,0.5); color: white; border: none; font-size: 30px; cursor: pointer; padding: 10px; z-index: 10;`;
-        
-        const prevBtn = document.createElement('button');
-        prevBtn.innerHTML = '&lt;';
-        prevBtn.style.cssText = arrowBtnStyle + 'left: 10px;';
-        prevBtn.onclick = function(event) {
-            event.preventDefault(); // prevent any default browser action
-            event.stopPropagation(); // stop the click from bubbling up
-            const newIndex = (currentIndex - 1 + window.panoramaOrder.length) % window.panoramaOrder.length;
-            navigateToPano(newIndex);
-        };
-
-        const nextBtn = document.createElement('button');
-        nextBtn.innerHTML = '&gt;';
-        nextBtn.style.cssText = arrowBtnStyle + 'right: 10px;';
-        nextBtn.onclick = function(event) {
-            event.preventDefault(); // prevent any default browser action
-            event.stopPropagation(); // stop the click from bubbling up
-            const newIndex = (currentIndex + 1) % window.panoramaOrder.length;
-            navigateToPano(newIndex);
-        };
-
-        const closeBtn = document.createElement('button');
-        closeBtn.innerText = 'X';
-        closeBtn.style.cssText = `position: absolute; top: 10px; right: 10px; z-index: 10; background: white; border: none; font-size: 20px; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;`;
-        closeBtn.onclick = function() {
-            document.body.removeChild(modal);
-            highlightViewedPano(lastViewedPanoId);
-        };
-
-        iframeContainer.appendChild(iframe);
-        iframeContainer.appendChild(prevBtn);
-        iframeContainer.appendChild(nextBtn);
-        iframeContainer.appendChild(closeBtn);
-        modal.appendChild(iframeContainer);
-        document.body.appendChild(modal);
-
-        // pre-load the adjacent images for a smoother experience
-        preloadPanoImages(currentIndex);
-    }
 
     map.on('click', (e) => {
         if (placingPoint) {
@@ -296,7 +274,6 @@ map.on('load', function () {
         
         const topFeature = features[0];
         let popupHTML = '';
-
         switch (topFeature.layer.id) {
             case 'parcels':
                 popupHTML = `Address: <strong>${topFeature.properties.ADDRESS}</strong><br>Webpage: <a href="${topFeature.properties.URL}" target="_blank"><b><u>Link to Page</u></b></a>`;
@@ -361,7 +338,6 @@ map.on('load', function () {
                 popupHTML = `Numeric State Legend: <strong>${topFeature.properties.MUSYM}</strong><br>Published Map Unit: <strong>${topFeature.properties.MUS_TXT}</strong><br><strong>${topFeature.properties.MUS_DESC}</strong>`;
                 break;
         }
-
         if (popupHTML) {
             new mapboxgl.Popup().setLngLat(e.lngLat).setHTML(popupHTML).addTo(map);
         }
