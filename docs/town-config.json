@@ -51,7 +51,8 @@
       "zone II",
       "soils",
       "zoning",
-      "usgs quad"
+      "usgs quad",
+      "panoramas"
     ]
   },
   {
@@ -68,12 +69,14 @@
       "parcel highlight",
       "lidar contours",
       "floodplain",
+      "acec",
       "DEP wetland",
       "endangered species",
       "zone II",
       "soils",
       "zoning",
-      "usgs quad"
+      "usgs quad",
+      "panoramas"
     ]
   },
   {
@@ -233,7 +236,8 @@
       "zone II",
       "soils",
       "zoning",
-      "usgs quad"
+      "usgs quad",
+      "panoramas"
     ]
   }
 ]
