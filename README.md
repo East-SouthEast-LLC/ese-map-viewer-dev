@@ -15,10 +15,12 @@ Its primary goal is to centralize crucial property and environmental data, offer
 * **Mapping Library:** Mapbox GL JS
 * **Hosting:**
     * **Frontend Page:** Squarespace (via embedded code blocks).
-    * **Asset Hosting:** GitHub Pages for scripts and configuration; Squarespace for large file assets (e.g., JPG map tiles).
+    * **Asset Hosting:** GitHub Pages for scripts and configuration; Squarespace for large file assets (e.g., panoramas, map tiles).
 * **Core Languages:** HTML, CSS, JavaScript
 * **Key Libraries:**
-    * **Turf.js:** Used for geospatial calculations, such as determining the map scale for printing.
+    * **Pannellum:** Used for rendering and displaying 360-degree panoramas.
+    * **proj4js:** For on-the-fly coordinate system conversions.
+    * **Turf.js:** Used for geospatial calculations.
     * **Mapbox GL Geocoder:** Powers the address search functionality.
 
 ---
@@ -40,27 +42,27 @@ The project's architecture is designed for scalability and ease of maintenance, 
 ### 3.2. File Structure Breakdown
 
 * **`/pages/town.html`**: The universal HTML template. This is the only file that needs to be manually placed into Squarespace. Its primary responsibility is to load the core application scripts.
-
-* **`/docs/main-app.js`**: The central controller of the application. It orchestrates the entire map initialization process, including fetching configurations and loading all other necessary scripts.
-
+* **`/pages/pano-viewer.html`**: A dedicated HTML page, embedded in a Squarespace Code Block, that serves as the 360-degree panorama viewer.
+* **`/docs/main-app.js`**: The central controller of the application. It orchestrates the entire map initialization process, including fetching configurations, loading all other necessary scripts, and opening the panorama viewer modal.
 * **`/docs/town-config.json`**: This file is the "brain" of the application, defining which layers and map settings are used for each town.
-
 * **`/docs/layers/`**: This directory contains individual JavaScript files for each map layer. This modular approach allows for easy addition or modification of layers without affecting the rest of the application.
-    * **`usgs-tile-manager.js`**: A specialized script that manages the dynamic loading of hundreds of USGS map tiles. It only loads the images that are currently within the user's viewport to ensure high performance.
-
-* **`/docs/control-*.js`**: Each file in this directory contains the logic for a specific UI component in the map's toolkit, such as:
-    * `control-legend.js`: Manages the on-screen and print legends.
-    * `control-custom-print.js`: Handles the multi-page PDF printing feature.
-    * `control-measure.js`: Powers the distance measurement tool.
-    * `control-bookmarks.js`: Manages saving and loading map views.
-
-* **`/docs/legend-data.json`**: A central JSON file that defines the symbology, colors, and labels for every layer. This separates the legend's content from its rendering logic.
-
+    * **`panoramas.js`**: Fetches panorama location data, converts coordinates, and adds the points to the map.
+    * **`usgs-tile-manager.js`**: A specialized script that manages the dynamic loading of hundreds of USGS map tiles.
+* **`/docs/control-*.js`**: Each file in this directory contains the logic for a specific UI component in the map's toolkit.
+* **`/data/correction-data.json`**: This file contains the georeferencing data (position and orientation) for each panorama image.
 * **`/css/globals.css`**: The single, comprehensive stylesheet for the entire application, including print-specific styles for generating professional reports.
 
 ---
 
 ## 4. Special Features
+
+### Panorama Viewer
+
+The application supports viewing 360-degree panoramic images directly on the map.
+* **Dynamic Layer**: The `panoramas.js` script fetches location data from `correction-data.json`, converts the MA State Plane coordinates to WGS 84 using `proj4js`, and plots them on the map as clickable points.
+* **Modal Viewer**: When a user clicks a panorama point, `main-app.js` opens a modal window containing an `iframe`.
+* **Cross-Domain Solution**: To avoid CORS issues, the `iframe` loads a dedicated page on the Squarespace site (`/pano-viewer`), which contains the Pannellum viewer. This ensures both the viewer page and the images (hosted in Squarespace assets) are on the same domain.
+* **Orientation Correction**: The viewer page script fetches the `correction-data.json` file to read the camera's orientation data and applies pitch and roll corrections, ensuring the panoramas are displayed correctly without tilting.
 
 ### Dynamic USGS Tile Loader
 
@@ -74,7 +76,7 @@ The "USGS Quad" layer is not a single data source but a collection of 225 indivi
 
 The "Custom Print" feature allows users to generate professional, multi-page PDF reports based on pre-defined layer combinations.
 * **Presets**: The `control-custom-print.js` file contains a `printPresets` object where different report types (e.g., "Conservation", "Test Hole") are defined with specific layer groupings for each page.
-* **Dynamic Legend**: The legend on each printed page is generated by `getLegendForPrint` to only show items that are actually visible within that specific map's print area. It contains special logic to correctly handle raster layers like Satellite and the dynamic USGS tiles.
+* **Dynamic Legend**: The legend on each printed page is generated by `getLegendForPrint` to only show items that are actually visible within that specific map's print area.
 * **State Management**: The print function carefully de-initializes and re-initializes the USGS tile manager to ensure its background processes do not interfere with the print job.
 
 ---
@@ -92,23 +94,5 @@ The "Custom Print" feature allows users to generate professional, multi-page PDF
 1.  **Prepare Data**: Upload your new geospatial data to Mapbox and create a new vector tileset. Copy the **Tileset ID**.
 2.  **Create Layer File**: In the `/docs/layers/` directory, create a new file (e.g., `new-layer.js`).
 3.  **Add Mapbox Code**: Use the standard function wrapper to add your Mapbox source and layer(s). Ensure the `id` is unique.
-    ```javascript
-    // Example: docs/layers/new-layer.js
-    function addNewLayer() {
-      map.addSource('new-layer-id', {
-        type: 'vector',
-        url: 'mapbox://YOUR_TILESET_ID'
-      });
-      map.addLayer({
-        'id': 'new-layer-id',
-        'type': 'fill',
-        'source': 'new-layer-id',
-        'source-layer': 'YOUR_SOURCE_LAYER_NAME',
-        'layout': { 'visibility': 'none' },
-        'paint': { /* Your styles here */ }
-      });
-    }
-    addNewLayer();
-    ```
 4.  **Update Legend**: If the layer should have a legend, add a new entry for it in `docs/legend-data.json`.
 5.  **Add to Town Config**: Open `docs/town-config.json` and add the new layer's ID to the `layers` array for any towns that should have access to it.
