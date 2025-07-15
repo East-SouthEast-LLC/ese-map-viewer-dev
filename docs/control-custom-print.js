@@ -168,6 +168,12 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
+        // Track the custom print event
+        trackEvent('custom_print_submit', {
+            preset: selectedPresetName,
+            scale: printData.scale
+        });
+
         customPrintBox.style.display = 'none';
         customPrintVisibility = false; 
 
