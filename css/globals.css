@@ -751,19 +751,19 @@ MOBILE & TABLET RESPONSIVE STYLES
 =============================================================== */
 @media (max-width: 768px) {
 
-    /* --- 1. hide desktop-only elements --- */
-    #ad-container-vertical,
-    #geocoder-container {
-        display: none !important; /* use !important to override any inline styles */
+    /* --- 1. hide desktop & squarespace elements --- */
+    /* this creates a full-screen, app-like experience on mobile */
+    #header, #footer-sections, #ad-container-vertical, #geocoder-container {
+        display: none !important;
     }
 
-    /* --- 2. style the new hamburger button --- */
+    /* --- 2. style the hamburger button --- */
     #hamburger-button {
         display: block; /* make it visible on mobile */
         position: absolute;
         top: 10px;
         left: 10px;
-        z-index: 10; /* place it above the menu */
+        z-index: 1002; /* ensure it is on top of everything */
         background-color: #f9f9f9;
         border: 1px solid rgba(0, 0, 0, 0.15);
         border-radius: 5px;
@@ -773,11 +773,11 @@ MOBILE & TABLET RESPONSIVE STYLES
         cursor: pointer;
     }
 
-    /* --- 3. restyle the map to take up full screen --- */
+    /* --- 3. restyle the map to take up the full screen --- */
     #map {
-        width: 100vw !important; /* use 100% of the viewport width */
+        width: 100vw !important;
         height: 100vh !important;
-        margin-left: 0 !important; /* remove the desktop margin */
+        margin-left: 0 !important;
         top: 0;
         left: 0;
     }
@@ -786,17 +786,19 @@ MOBILE & TABLET RESPONSIVE STYLES
     #menu {
         left: 0;
         top: 0;
-        width: 100%;
-        max-height: 100vh; /* allow it to take full height */
+        width: 85%; /* use less than 100% width so user can tap outside to close */
+        max-width: 320px; /* set a max width for larger tablets */
         height: 100%;
+        max-height: 100vh;
         border-radius: 0;
-        transform: translateX(-100%); /* start with the menu hidden off-screen to the left */
-        transition: transform 0.3s ease-in-out; /* smooth slide-in/out animation */
+        z-index: 1001; /* ensure the menu slides over the map */
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
     }
 
-    /* --- 5. create a class to show the menu --- */
+    /* --- 5. class to show the menu --- */
     #menu.open {
-        transform: translateX(0); /* slide it into view */
+        transform: translateX(0);
     }
 }
 
