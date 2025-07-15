@@ -745,3 +745,64 @@ DISCLAIMER POPUP STYLES
 .disclaimer-button-red.disclaimer-btn:hover {
     background-color: #c9302c;
 }
+
+/* ============================================================
+MOBILE & TABLET RESPONSIVE STYLES
+=============================================================== */
+@media (max-width: 768px) {
+
+    /* --- 1. hide desktop-only elements --- */
+    #ad-container-vertical,
+    #geocoder-container {
+        display: none !important; /* use !important to override any inline styles */
+    }
+
+    /* --- 2. style the new hamburger button --- */
+    #hamburger-button {
+        display: block; /* make it visible on mobile */
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 10; /* place it above the menu */
+        background-color: #f9f9f9;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        border-radius: 5px;
+        width: 40px;
+        height: 40px;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    /* --- 3. restyle the map to take up full screen --- */
+    #map {
+        width: 100vw !important; /* use 100% of the viewport width */
+        height: 100vh !important;
+        margin-left: 0 !important; /* remove the desktop margin */
+        top: 0;
+        left: 0;
+    }
+
+    /* --- 4. restyle the layer menu to be a collapsible panel --- */
+    #menu {
+        left: 0;
+        top: 0;
+        width: 100%;
+        max-height: 100vh; /* allow it to take full height */
+        height: 100%;
+        border-radius: 0;
+        transform: translateX(-100%); /* start with the menu hidden off-screen to the left */
+        transition: transform 0.3s ease-in-out; /* smooth slide-in/out animation */
+    }
+
+    /* --- 5. create a class to show the menu --- */
+    #menu.open {
+        transform: translateX(0); /* slide it into view */
+    }
+}
+
+/* --- hide hamburger on desktop --- */
+@media (min-width: 769px) {
+    #hamburger-button {
+        display: none;
+    }
+}
