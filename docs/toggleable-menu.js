@@ -37,6 +37,12 @@ function setupToggleableMenu() {
                 e.preventDefault();
                 e.stopPropagation();
 
+                trackEvent('layer_toggle', {
+                    layer_id: clickedLayer,
+                    // track if the layer is being turned 'on' or 'off'
+                    action: this.classList.contains('active') ? 'off' : 'on'
+                });
+
                 if (clickedLayer === "tools") {
                     if (getComputedStyle(geocoderContainer).display === "none") {
                         openToolkit();

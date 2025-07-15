@@ -118,6 +118,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function enterIdentifyMode() {
+        // Log the identify event to Google Analytics.
+        trackEvent('identify_tool', {
+        });
+
         identifyMode = true;
         map.getCanvas().style.cursor = 'help';
         identifyButton.classList.add('active');

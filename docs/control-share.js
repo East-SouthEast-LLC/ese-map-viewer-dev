@@ -77,7 +77,6 @@ function showSharePopup(shareLink) {
 document.getElementById('shareButton').addEventListener('click', function() {
     // Log the share event to Google Analytics.
     trackEvent('share_map', {
-        control: 'share_map'
     });
 
     if (window.marker) {
