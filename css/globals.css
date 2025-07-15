@@ -751,21 +751,20 @@ MOBILE & TABLET RESPONSIVE STYLES
 =============================================================== */
 @media (max-width: 768px) {
 
-    /* --- 1. hide desktop-only elements --- */
-    #ad-container-vertical,
-    #geocoder-container {
-        display: none !important; /* use !important to override any inline styles */
+    /* --- 1. hide desktop elements --- */
+    #header, #footer-sections, #ad-container-vertical, #geocoder-container {
+        display: none !important;
     }
 
-    /* --- 2. style the new hamburger button --- */
+    /* --- 2. style the new hamburger button (updated position) --- */
     #hamburger-button {
-        display: block; /* make it visible on mobile */
+        display: block;
         position: absolute;
-        top: 10px;
-        left: 10px;
-        z-index: 10; /* place it above the menu */
-        background-color: #f9f9f9;
-        border: 1px solid rgba(0, 0, 0, 0.15);
+        top: 25px;   /* increased from 10px to move it down */
+        left: 25px;  /* increased from 10px to move it right */
+        z-index: 1002;
+        background-color: rgba(249, 249, 249, 0.9); /* added slight transparency */
+        border: 1px solid rgba(0, 0, 0, 0.2);
         border-radius: 5px;
         width: 40px;
         height: 40px;
@@ -773,11 +772,12 @@ MOBILE & TABLET RESPONSIVE STYLES
         cursor: pointer;
     }
 
-    /* --- 3. restyle the map to take up full screen --- */
+    /* --- 3. restyle the map to be smaller and centered --- */
     #map {
-        width: 100vw !important; /* use 100% of the viewport width */
-        height: 100vh !important;
-        margin-left: 0 !important; /* remove the desktop margin */
+        width: calc(100% - 20px) !important; /* full width minus padding */
+        height: 85vh !important;             /* less than full screen height */
+        margin: 15px 10px !important;        /* creates vertical and horizontal whitespace */
+        border-radius: 5px;                  /* added rounded corners to match the menu */
         top: 0;
         left: 0;
     }
@@ -786,17 +786,19 @@ MOBILE & TABLET RESPONSIVE STYLES
     #menu {
         left: 0;
         top: 0;
-        width: 100%;
-        max-height: 100vh; /* allow it to take full height */
+        width: 85%;
+        max-width: 320px;
         height: 100%;
+        max-height: 100vh;
         border-radius: 0;
-        transform: translateX(-100%); /* start with the menu hidden off-screen to the left */
-        transition: transform 0.3s ease-in-out; /* smooth slide-in/out animation */
+        z-index: 1001;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
     }
 
-    /* --- 5. create a class to show the menu --- */
+    /* --- 5. class to show the menu --- */
     #menu.open {
-        transform: translateX(0); /* slide it into view */
+        transform: translateX(0);
     }
 }
 
