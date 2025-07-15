@@ -457,7 +457,10 @@ PRINT STYLES
     left: 10px;
     top: 10px;
     width: 2in;
-    font-size: 14px;
+    /* set a fixed height and hide overflow */
+    height: 1.4in; 
+    overflow: hidden; 
+    font-size: 14px; /* sets the max font size */
     text-align: left;
 }
 .inner-frame {

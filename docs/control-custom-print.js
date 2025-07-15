@@ -1,6 +1,21 @@
 // docs/control-custom-print.js
 
-// CUSTOM PRINT CONTROL BUTTON SCRIPT
+function adjustFontSizeForPrint(element) {
+    if (!element) return;
+
+    let currentFontSize = 14; // max font size
+    const minFontSize = 8;    // minimum readable font size
+    const step = 0.5;         // how much to decrease font size by each step
+
+    // set the initial font size
+    element.style.fontSize = `${currentFontSize}px`;
+
+    // loop to reduce font size until the content fits
+    while (element.scrollHeight > element.clientHeight && currentFontSize > minFontSize) {
+        currentFontSize -= step;
+        element.style.fontSize = `${currentFontSize}px`;
+    }
+}
 
 document.addEventListener("DOMContentLoaded", function () {
     const customPrintButton = document.getElementById("customPrintButton");
@@ -297,6 +312,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 </html>`);
             win.document.close();
             win.onload = () => {
+                win.document.querySelectorAll('.custom-info-frame').forEach(adjustFontSizeForPrint);
                 win.print();
                 win.close();
             };
