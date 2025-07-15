@@ -47,8 +47,8 @@ function getStandardPrintPageHTML(mapImageSrc) {
 
 document.getElementById('printButton').addEventListener('click', () => {
     // Log the print event to Google Analytics.
-    trackEvent('button_click', {
-        control: 'standard_print'
+    trackEvent('print_map', {
+        control: 'print_map'
     });
 
     // Wait for the map to be fully rendered before capturing.
