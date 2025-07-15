@@ -46,6 +46,10 @@ function getStandardPrintPageHTML(mapImageSrc) {
 // ============================================================================
 
 document.getElementById('printButton').addEventListener('click', () => {
+    // Log the print event to Google Analytics.
+    trackEvent('print_map', {
+    });
+
     // Wait for the map to be fully rendered before capturing.
     map.once('render', () => {
         const canvas = map.getCanvas();

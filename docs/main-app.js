@@ -93,6 +93,12 @@ function openPanoModal(currentIndex) {
 
     const filename = window.panoramaOrder[currentIndex];
     lastViewedPanoId = filename; 
+    
+    // Log the panorama view event to Google Analytics.
+    trackEvent('view_panorama', {
+        pano_id: filename
+    });
+
     const panoViewerUrl = `https://www.ese-llc.com/pano-viewer?pano=${filename}`;
 
     const modal = document.createElement('div');
@@ -352,4 +358,8 @@ function handleMarkerPlacement(lngLat) {
     placingPoint = false;
     document.getElementById('pointButton').classList.remove('active');
     map.getCanvas().style.cursor = '';
+
+    // Log the point placement event to Google Analytics.
+    trackEvent('place_marker', {
+    });
 }

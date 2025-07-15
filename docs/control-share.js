@@ -75,6 +75,10 @@ function showSharePopup(shareLink) {
 }
 
 document.getElementById('shareButton').addEventListener('click', function() {
+    // Log the share event to Google Analytics.
+    trackEvent('share_map', {
+    });
+
     if (window.marker) {
         map.flyTo({ center: window.marker.getLngLat(), essential: true });
     }
