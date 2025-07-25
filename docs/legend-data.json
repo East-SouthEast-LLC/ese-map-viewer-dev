@@ -66,6 +66,22 @@
         ]
     },
     {
+      "id": "fema-live",
+      "title": "FEMA Floodplain (Live)",
+      "items": [
+        {
+          "color": "rgb(0, 150, 255, 0.7)",
+          "label": "100-Year Floodplain (1% Annual Chance)",
+          "type": "polygon"
+        },
+        {
+          "color": "rgba(255, 255, 0, 0.7)",
+          "label": "500-Year Floodplain (0.2% Annual Chance)",
+          "type": "polygon"
+        }
+      ]
+    },
+    {
         "displayName": "Zoning Districts",
         "sources": [
             { "id": "zoning", "propertyKey": "TOWNCODE" }
