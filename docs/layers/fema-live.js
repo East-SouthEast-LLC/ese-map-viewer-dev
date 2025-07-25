@@ -1,109 +1,95 @@
 /**
- * @fileoverview a live, dynamic version of the fema floodplain layer.
- * this layer connects directly to fema's nfhl (national flood hazard layer) arcgis rest service.
- * it dynamically fetches vector data for the current map extent.
- *
- * this approach ensures the data is always up-to-date without needing to pre-process pmtiles.
- * note: this layer is dependent on the availability of the fema gis service.
- *
- * service url: https://hazards.fema.gov/gis/nfhl/rest/services/public/NFHL/MapServer
+ * @fileoverview creates and manages the toggleable layer menu.
+ * it reads the layer configuration and dynamically builds the menu ui.
  */
 
 /**
- * this function initializes the fema live layer.
- * it checks if the openlayers library ('ol') is available before running,
- * preventing a race condition where this script runs before its dependency.
+ * initializes the toggleable menu with layer groups and layers.
+ * @param {object} layerConfig - the configuration object for layers.
+ * @param {ol.Map} map - the openlayers map instance.
  */
-function initializeFemaLiveLayer() {
-  // wait until the openlayers library is loaded
-  if (typeof ol === 'undefined') {
-    setTimeout(initializeFemaLiveLayer, 50);
-    return;
-  }
+function initializeToggleableMenu(layerConfig, map) {
+  const menu = document.getElementById('toggleable-menu');
+  const groups = Object.keys(layerConfig);
 
-  // once 'ol' is available, proceed with creating the layer
-
-  // define the esrijson format reader
-  const esriJsonFormat = new ol.format.EsriJSON();
-
-  // define the vector source for the live fema data
-  const femaLiveSource = new ol.source.Vector({
-    // the loader function is called whenever the map view changes.
-    // it constructs a url to query the fema service for features within the current view.
-    loader: function (extent, resolution, projection) {
-      // reproject the map's extent to the coordinate system required by the fema service (wgs84)
-      const projectedExtent = ol.proj.transformExtent(extent, projection, 'EPSG:4326');
-      
-      // the arcgis rest service url for querying flood hazard zones (layer id 28)
-      const url = 'https://hazards.fema.gov/gis/nfhl/rest/services/public/NFHL/MapServer/28/query/?f=json&' +
-          'returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=' +
-          encodeURIComponent(
-            '{"xmin":' + projectedExtent[0] + ',"ymin":' + projectedExtent[1] +
-            ',"xmax":' + projectedExtent[2] + ',"ymax":' + projected[3] +
-            ',"spatialReference":{"wkid":4326}}'
-          ) +
-          '&geometryType=esriGeometryEnvelope&inSR=4326&outFields=FLD_ZONE,ZONE_SUBTY&outSR=102100';
-
-      // use fetch to get the data from the fema server
-      fetch(url).then(response => response.json()).then(data => {
-        // once the data is fetched, parse the features using the esrijson format.
-        // this format reader understands the structure of the json from an arcgis server.
-        const features = esriJsonFormat.readFeatures(data, {
-          featureProjection: projection // ensures the feature geometries are in the map's projection
-        });
-        // if features are returned, add them to the source
-        if (features.length > 0) {
-          femaLiveSource.addFeatures(features);
-        }
-      }).catch(err => {
-        console.error('error fetching fema floodplain data:', err);
-        // remove any previously loaded features if the request fails
-        femaLiveSource.clear();
-      });
-    },
-    // the bbox strategy tells the source to reload data whenever the map's bounding box changes
-    strategy: ol.loadingstrategy.bbox,
-  });
-
-  // define the style for the floodplain layer, similar to your existing floodplain layer
-  const femaLiveStyle = (feature) => {
-    const floodZone = feature.get('FLD_ZONE');
-    let color;
-
-    if (floodZone === 'A' || floodZone === 'AE' || floodZone === 'AH' || floodZone === 'AO' || floodZone === 'VE') {
-      color = 'rgba(0, 150, 255, 0.4)'; // 100-year floodplain (blue)
-    } else if (floodZone === 'X' || floodZone === '0.2 PCT ANNUAL CHANCE FLOOD HAZARD') {
-      const subtype = feature.get('ZONE_SUBTY');
-      if (subtype === 'AREA OF MINIMAL FLOOD HAZARD') {
-        return null; // do not draw areas of minimal hazard
-      }
-      color = 'rgba(255, 255, 0, 0.4)'; // 500-year floodplain (yellow)
-    } else {
-      return null; // do not draw other zones
-    }
-
-    return new ol.style.Style({
-      fill: new ol.style.Fill({
-        color: color,
-      }),
-      stroke: new ol.style.Stroke({
-        color: 'rgba(0, 0, 0, 0.6)',
-        width: 1,
-      }),
-    });
+  // utility to convert layer names (e.g., 'fema-live') to camelcase (e.g., 'femaLive')
+  const camelCase = (str) => {
+    return str.toLowerCase().replace(/[^a-zA-Z0-9]+(.)?/g, (match, chr) => chr ? chr.toUpperCase() : '').replace(/^\w/, c => c.toLowerCase());
   };
 
-  // create the final vector layer and assign it to the window scope
-  // so the main application can find it.
-  window.femaLiveLayer = new ol.layer.Vector({
-    source: femaLiveSource,
-    style: femaLiveStyle,
-    title: 'FEMA Floodplain (Live)',
-    visible: false,
-    // set minzoom to prevent trying to load the entire usa at once
-    minZoom: 12,
+  groups.forEach(groupName => {
+    const groupConfig = layerConfig[groupName];
+    const layers = Array.isArray(groupConfig) ? groupConfig : groupConfig.layers; // handle both formats
+
+    // create group container
+    const groupDiv = document.createElement('div');
+    groupDiv.className = 'layer-group';
+
+    // create group header
+    const groupHeader = document.createElement('h3');
+    groupHeader.textContent = groupName;
+    groupDiv.appendChild(groupHeader);
+    
+    // create layers within the group
+    layers.forEach(layerName => {
+      const camelCaseLayerName = camelCase(layerName);
+      const layerObject = window[camelCaseLayerName + 'Layer'];
+      
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'layer-item';
+      
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = `toggle-${layerName}`;
+      checkbox.checked = layerObject ? layerObject.getVisible() : false;
+      
+      const label = document.createElement('label');
+      label.htmlFor = `toggle-${layerName}`;
+      label.textContent = layerObject ? layerObject.get('title') : layerName;
+
+      // create a link wrapper for the label to handle clicks
+      const link = document.createElement('a');
+      link.href = '#';
+      link.appendChild(label);
+      
+      itemDiv.appendChild(checkbox);
+      itemDiv.appendChild(link);
+      groupDiv.appendChild(itemDiv);
+
+      // handle layer visibility toggle
+      link.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const layerVariableName = camelCaseLayerName + 'Layer';
+        
+        // function to find and toggle the layer. it will retry for a short period.
+        const findAndToggleLayer = (retries = 20) => {
+          const layerObject = window[layerVariableName];
+
+          if (layerObject) {
+            // layer found, toggle its visibility
+            const isVisible = layerObject.getVisible();
+            layerObject.setVisible(!isVisible);
+            checkbox.checked = !isVisible;
+
+            // analytics event
+            const eventAction = isVisible ? 'off' : 'on';
+            trackEvent('layer_toggle', { layer_id: layerName, action: eventAction });
+          } else if (retries > 0) {
+            // layer not found yet, wait 50ms and try again
+            setTimeout(() => findAndToggleLayer(retries - 1), 50);
+          } else {
+            // still not found after all retries, log an error
+            console.error('Layer not found:', layerName);
+          }
+        };
+
+        // start the process
+        findAndToggleLayer();
+      };
+    });
+
+    menu.appendChild(groupDiv);
   });
 }
-
-// start the initialization process
-initializeFemaLiveLayer();
