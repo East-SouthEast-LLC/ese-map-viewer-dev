@@ -202,7 +202,7 @@ function loadLayerScript(layerName) {
                 scriptName = "usgs-tile-manager";
             }
         
-        script.src = `https://east-southeast-llc.github.io/ese-map-viewer/docs/layers/${scriptName}.js?v=2`;
+        script.src = `https://east-southeast-llc.github.io/ese-map-viewer-dev/docs/layers/${scriptName}.js?v=2`;
         
         script.onload = resolve;
         script.onerror = () => reject(new Error(`Script load error for ${layerName}`));
@@ -213,7 +213,7 @@ function loadLayerScript(layerName) {
 // --- map on load logic ---
 map.on('load', function () {
     loadLayerScript('towns').then(() => {
-        fetch('https://east-southeast-llc.github.io/ese-map-viewer/docs/town-config.json')
+        fetch('https://east-southeast-llc.github.io/ese-map-viewer-dev/docs/town-config.json')
             .then(response => response.json())
             .then(townConfig => {
                 const townData = townConfig.find(town => town.townID === townId);
@@ -230,7 +230,7 @@ map.on('load', function () {
                     Promise.all(layerPromises)
                         .then(() => {
                             const menuScript = document.createElement('script');
-                            menuScript.src = 'https://east-southeast-llc.github.io/ese-map-viewer/docs/toggleable-menu.js?v=2';
+                            menuScript.src = 'https://east-southeast-llc.github.io/ese-map-viewer-dev/docs/toggleable-menu.js?v=2';
                             menuScript.onload = function () {
                                 setupToggleableMenu();
                                 const drawOrder = [

@@ -211,7 +211,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <hr style="width:100%; border:.5px solid black; margin:5px 0;">
                     </div>
                     <div class="image-container">
-                        <img src="https://east-southeast-llc.github.io/ese-map-viewer/img/ese-print-logo.png" alt="Company Logo" />
+                        <img src="https://east-southeast-llc.github.io/ese-map-viewer-dev/img/ese-print-logo.png" alt="Company Logo" />
                     </div>
                     <div class="legend-frame">
                         <div class="legend-print-title">Legend & Layers</div>
@@ -301,7 +301,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <html>
                 <head>
                     <title>${documentTitle}</title>
-                    <link rel="stylesheet" href="https://east-southeast-llc.github.io/ese-map-viewer/css/globals.css?v=3" type="text/css" />
+                    <link rel="stylesheet" href="https://east-southeast-llc.github.io/ese-map-viewer-dev/css/globals.css?v=3" type="text/css" />
                     
                     <link rel="preconnect" href="https://fonts.googleapis.com">
                     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
