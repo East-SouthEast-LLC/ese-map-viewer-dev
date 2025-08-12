@@ -124,18 +124,19 @@ function getPrintScaleBarHTML(map) {
 // ============================================================================
 
 document.addEventListener("DOMContentLoaded", function () {
-    const scaleZoomButton = document.getElementById("scaleZoom");
-    const geocoderContainer = document.getElementById("geocoder-container");
-    const scaleBoxDiv = document.getElementById("scale-box");
-    let scaleVisibility = false;
-    let userNumber = null;
+    const scaleZoomButton = document.getElementById("scaleZoom"); // this corresponds to the id set in town.html
+    const geocoderContainer = document.getElementById("geocoder-container"); // this gets the container div for the geocoder and other buttons
+    const scaleBoxDiv = document.getElementById("scale-box"); // this is for the scale box popup which is hidden by default
+    let scaleVisibility = false; // track if scale box is visible
+    let userNumber = null; 
 
+    // ensure required elements exist
     if (!scaleZoomButton || !geocoderContainer) {
         console.error("Required elements not found in the DOM.");
         return;
     }
 
-    scaleBoxDiv.style.display = 'none';
+    scaleBoxDiv.style.display = 'none'; // crucial to start hidden
 
     function attachScaleBoxListeners() {
         const scaleInput = document.getElementById('scale-input');
@@ -178,12 +179,13 @@ document.addEventListener("DOMContentLoaded", function () {
         attachScaleBoxListeners();
     }
 
+    // main button click handler to toggle scale box
     scaleZoomButton.addEventListener('click', () => {
-        scaleVisibility = !scaleVisibility;
-        if (scaleVisibility) {
-            updateScaleBox();
+        scaleVisibility = !scaleVisibility; // toggle visibility state
+        if (scaleVisibility) { // show scale box
+            updateScaleBox(); // call helper function to update scale box content
             scaleZoomButton.classList.add('active');
-        } else {
+        } else { // hide scale box
             scaleBoxDiv.style.display = 'none';
             scaleZoomButton.classList.remove('active');
         }

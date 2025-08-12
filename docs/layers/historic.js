@@ -23,6 +23,7 @@ function addHistoricLayer() {
         }
     });
 
+    // the following hover effects are used if the layer has a corresponding popup when clicked
     map.on('mouseenter', 'historic', function () {
         map.getCanvas().style.cursor = 'pointer';
     });
@@ -32,4 +33,5 @@ function addHistoricLayer() {
     });
 }
 
+// add the layer to the map
 addHistoricLayer();

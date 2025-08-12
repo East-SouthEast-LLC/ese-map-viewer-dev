@@ -89,10 +89,284 @@ The "Custom Print" feature allows users to generate professional, multi-page PDF
 2.  **Create Squarespace Page**: Create a new page on your Squarespace site.
 3.  **Embed Code**: Add a Code Block, paste in the content from `pages/town.html`, and set the `townId` variable to match the new `townID`.
 
-### How to Add a New Vector Layer
+### How to Add a New Vector Layer 
 
 1.  **Prepare Data**: Upload your new geospatial data to Mapbox and create a new vector tileset. Copy the **Tileset ID**.
-2.  **Create Layer File**: In the `/docs/layers/` directory, create a new file (e.g., `new-layer.js`).
-3.  **Add Mapbox Code**: Use the standard function wrapper to add your Mapbox source and layer(s). Ensure the `id` is unique.
-4.  **Update Legend**: If the layer should have a legend, add a new entry for it in `docs/legend-data.json`.
-5.  **Add to Town Config**: Open `docs/town-config.json` and add the new layer's ID to the `layers` array for any towns that should have access to it.
+2.  **Create Layer File**: In the `/docs/layers/` directory, create a new file (e.g., `new-layer.js`). Within this new file, add the necessary code to define your layer. For a layer with no dependencies, it will look something like this.
+    ```javascript
+        function addHistoricLayer() {
+            map.addSource('historic', {
+                type: 'vector',
+                url: 'mapbox://ese-toh.90pe1azb'
+            });
+            map.addLayer({
+                'id': 'historic',
+                'type': 'fill',
+                'source': 'historic',
+                'source-layer': 'TOC_Historic-d4lyva',
+                'layout': {
+                    'visibility': 'none'
+                },
+                'paint': {
+                    'fill-color': [
+                        'match',
+                        ['get', 'Status'],
+                        'Proposed', '#F2BD67',
+                        '1024-0018', '#D75F48',
+                        /* other */ '#5c580f'
+                    ],
+                    'fill-opacity': 0.4
+                }
+            });
+
+            // the following hover effects are used if the layer has a corresponding popup when clicked
+            map.on('mouseenter', 'historic', function () {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+
+            map.on('mouseleave', 'historic', function () {
+                map.getCanvas().style.cursor = '';
+            });
+        }
+
+        // add the layer to the map
+        addHistoricLayer();
+    ```
+3.  **Update Legend**: If the layer should have a legend, add a new entry for it in `docs/legend-data.json`.
+4.  **Add to Town Config**: Open `docs/town-config.json` and add the new layer's ID to the `layers` array for any towns that should have access to it.
+5.  **Update Popup Handling**: 
+6.  **Edit Draw Order**: Make sure to find the `drawOrder` variable in the `docs/main-app.js` file and add your new layer in the draw order. Note that the existing draw order is **listed in reverse**.
+7.  **Add Layer to Legend**: If your layer should have a legend entry, you will need to add it to the `docs/legend-data.json` file. To do this, copy the format of one of the other entries and create a new entry for your layer. Here is an example of a simple layer, you can also find an example with a legend layer with dependencies in the following section.
+    ```json
+        {
+            "displayName": "Building Stories",
+            "sources": [
+                { "id": "stories", "propertyKey": "STORIESS" }
+            ],
+            "items": [
+                { "code": "0", "label": "0 Stories", "color": "#e2ffcc", "opacity": 0.4, "isLine": false },
+                { "code": "1", "label": "1 Story", "color": "#fffbb3", "opacity": 0.4, "isLine": false },
+                { "code": "1.5", "label": "1.5 Stories", "color": "#8cf2ff", "opacity": 0.4, "isLine": false },
+                { "code": "2", "label": "2 Stories", "color": "#5e90f2", "opacity": 0.4, "isLine": false },
+                { "code": "2.5", "label": "2.5 Stories", "color": "#3b64b8", "opacity": 0.4, "isLine": false },
+                { "code": "3", "label": "3 Stories", "color": "#3841e8", "opacity": 0.4, "isLine": false }
+            ]
+        },
+    ```
+    The `displayName` corresponds to the header for the layer in the map legend. You will notice that the sources array contains the ID of the source layer and the `propertyKey` which must exactly match the feature property you call `get` on in your layer's paint or filter expressions. Within the items array, you need to create an item with the same `code` as the value you want to match against in the `get` expression. This allows the legend to correctly display the corresponding label and style for each feature based on its properties. You can then choose the display label that is visible to the user in the legend, the hex color for the color swab, and the opacity for the layer which should be the same as your `fill-opacity` value in the layer definition. The `isLine` field is used to indicate whether the layer is a line layer or not.
+8.  **Handle Layer Popup**: If your layer has a popup associated with it, you will need to add the necessary code to handle the popup display when the layer is clicked. For centralization purposes, all this logic is located a `switch` block in the `docs/main-app.js` file. Search for `switch (topFeature.layer.id)` and you will find a big block of cases for each different popup. Simply go anywhere in that block and add a new case for your layer following the same logic.
+9.  **Handle Layer Name**: It is common to have a file name for a given layer that does not match the layer ID used in the `town-config.json` file. The town config will always use a a version of the name which might include a space for readability, these are the display names that the user sees in the toggleable menu. Because of the way we dynamically load files based on this config data, we need a way to convert the `layerId` to the filename. That is where the `loadLayerScript` function comes into play. There is a block of if statements that maps the layer names to their corresponding script files. You will need to make sure that either your layer name exactly matches your filename, or add an else if block to the `loadLayerScript` function to handle the difference. There are plenty of examples.
+
+<!-- need to add section on adding layers with dependencies to other layers -->
+### How to Add a New Layer with Dependencies
+
+1. **Start by Following Normal Layer Setup**: Follow the procedure for adding a new layer as defined in the previous section. The only difference is how your `new_layer.js` script file will look. With multiple layers dependent on eachother, your script file will look something like this example from the floodplain logic. Note how the `floodplain.js` file is structured with its dependencies. 
+    ```javascript
+        function addFloodplainLayer() {
+            // LiMWA Source + Layer
+            map.addSource('LiMWA', {
+                type: 'vector',
+                url: 'mapbox://ese-toh.7h5nwda9'
+            });
+            
+            map.addLayer({
+                'id': 'LiMWA',
+                'type': 'line',
+                'source': 'LiMWA',
+                'source-layer': 'LiMWA-dtmi75',
+                'layout': { 'visibility': 'none' },
+                'paint': {
+                    'line-color': '#E70B0B',
+                    'line-width': 3.0
+                }
+            });
+
+            map.addSource('floodplain', {
+                type: 'vector',
+                url: 'mapbox://ese-toh.a7lml4y4'
+            });
+
+            map.addLayer({
+                'id': 'floodplain',
+                'type': 'fill',
+                'source': 'floodplain',
+                'source-layer': '25001c-2014-c2ck89',
+                'layout': { 'visibility': 'none' },
+                'paint': {
+                    'fill-opacity': [
+                        'match',
+                        ['get', 'ZONE_SUBTY'],
+                        '0.2 PCT ANNUAL CHANCE FLOOD HAZARD', 0.4,
+                        'AREA OF MINIMAL FLOOD HAZARD', 0.001,
+                        /* other */ 0.4
+                    ],
+                    'fill-color': [
+                        'match',
+                        ['get', 'FLD_ZONE'],
+                        'AE', '#eb8c34',
+                        'VE', '#eb3a34',
+                        'AO', '#F7FE20',
+                        'X', '#2578F9',
+                        'A', '#2e4bf0',
+                        /* fallback */ '#ff0000'
+                    ]
+                }
+            });
+
+            map.addLayer({
+                'id': 'floodplain-line',
+                'type': 'line',
+                'source': 'floodplain',
+                'source-layer': '25001c-2014-c2ck89',
+                'layout': { 'visibility': 'none' },
+                'paint': {
+                    'line-width': 0.5, 
+                    'line-color': '#000000', 
+                    'line-opacity': 0.5 
+                }
+            });
+
+            map.addLayer({
+                'id': 'floodplain-labels',
+                'type': 'symbol',
+                'source': 'floodplain',
+                'source-layer': '25001c-2014-c2ck89',
+                'layout': {
+                    'text-field': [
+                        'case',
+                        ['==', ['get', 'FLD_ZONE'], 'AE'], ['concat', 'AE ', ['get', 'STATIC_BFE']],
+                        ['==', ['get', 'FLD_ZONE'], 'VE'], ['concat', 'VE ', ['get', 'STATIC_BFE']],
+                        ['==', ['get', 'FLD_ZONE'], 'X'], 'X',
+                        ['==', ['get', 'FLD_ZONE'], 'A'], 'A',
+                        ''
+                    ],
+                    'visibility': 'none',
+                    'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+                    'text-size': ['interpolate', ['linear'], ['zoom'], 10, 12, 16, 16],
+                    'symbol-placement': 'point',
+                    'symbol-spacing': 80,
+                    'text-rotation-alignment': 'map',
+                },
+                'paint': {
+                    'text-color': '#202020',
+                    'text-opacity': 0.6,
+                    'text-halo-color': '#ffffff',
+                    'text-halo-width': 1,
+                    'text-halo-blur': 0.4
+                }
+            });
+            
+            map.on('mouseenter', 'floodplain', function () {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+            
+            map.on('mouseleave', 'floodplain', function () {
+                map.getCanvas().style.cursor = '';
+            });
+        }
+
+        addFloodplainLayer();
+    ```
+    Note how multiple layers and sources are added to the map within the same function. This is how you should structure the new layer creation. Make sure to keep track of your layer IDs because you will need these later to set up your dependency toggling.
+2. **Define Layer Dependencies**: Note that for attaching the new layer to the map, you will just need to add the master layer ID of your choice to the `town-config.json` file. There are two places in the codebase where you will need to define the dependencies. First, go to the `docs/decode-url.js` file and find the data structre `dependentLayers` and add your new layer ID there. Second, you will need to open `toggleable-menu.js` and find the section that handles the clicked layer visiblity toggling. You will need to create a new `else if` block to handle the new layer and its dependencies.
+3.  **Add Legend Info**: For entering the legend data for your new layers with dependencies, you can follow nearly the same process as you would for a single layer. Here is an example of the Floodplain layer's legend data. 
+    ```json
+        {
+            "displayName": "FEMA Flood Zones",
+            "sources": [
+                { "id": "floodplain", "propertyKey": "FLD_ZONE" },
+                { "id": "LiMWA" }
+            ],
+            "items": [
+                { "id": "LiMWA", "label": "LiMWA", "color": "#E70B0B", "opacity": 1.0, "isLine": true },
+                { "code": "AE", "label": "Flood Zone AE", "color": "#eb8c34", "opacity": 0.4, "isLine": false },
+                { "code": "VE", "label": "Flood Zone VE", "color": "#eb3a34", "opacity": 0.4, "isLine": false },
+                { "code": "AO", "label": "Flood Zone AO", "color": "#F7FE20", "opacity": 0.4, "isLine": false },
+                { "code": "X", "label": "Flood Zone X", "color": "#2578F9", "opacity": 0.4, "isLine": false },
+                { "code": "A", "label": "Flood Zone A", "color": "#2e4bf0", "opacity": 0.4, "isLine": false }
+            ]
+        }
+    ```
+    Note the only difference is that we have a second source for the LiMWA layer and another item in the legend. The LiMWA is listed as an `id` in the legend items because it is a standalone line without specific features that get matched to different colors.
+
+### How to Add a New Control
+
+1.  **Create Control File**: Create a new file in the `/docs/control-` directory.
+2.  **Connect the On Click Listnener**: Navigate to the town.html file and then find the div with the className `geocoder-container` and replace one of the placeholder buttons with your own.
+    ```html (button markup)
+      <button class="mapboxgl-ctrl-four" id="fourButton" aria-label="four" data-tooltip="Placeholder"></button>
+      ```
+      In this example, you would replace the class with a new className of your choice, corresponding to a new set of css styling to define that button's style. Then you would need to give the button a unique ID which will be used to identify the button within your script file.
+3.  **Setup the Control File**: Setup a simple event listener for the new button so that some action is performed when the DOM is loaded. Below is an example from `docs/control-scale.js` of how the `DOMContentLoaded` event listener should be setup along with handling for a corresponding popup for the specific button. 
+    ```javascript
+    document.addEventListener("DOMContentLoaded", function () {
+        const scaleZoomButton = document.getElementById("scaleZoom"); // this corresponds to the id set in town.html
+        const geocoderContainer = document.getElementById("geocoder-container"); // this gets the container div for the geocoder and other buttons
+        const scaleBoxDiv = document.getElementById("scale-box"); // this is for the scale box popup which is hidden by default
+        let scaleVisibility = false; // track if scale box is visible
+
+        // ensure required elements exist
+        if (!scaleZoomButton || !geocoderContainer) {
+            console.error("Required elements not found in the DOM.");
+            return;
+        }
+
+        scaleBoxDiv.style.display = 'none'; // crucial to make sure popup starts hidden
+
+        // ..... rest of code
+    });
+    ```
+4. **Add Click Event Listener**: The next step is to actually have an event happen when the user clicks the button. This is where a second event listener comes in. Here is the `onClick` event listener for the scale button.   
+    ```javascript
+        // main button click handler to toggle scale box
+        scaleZoomButton.addEventListener('click', () => {
+            scaleVisibility = !scaleVisibility; // toggle visibility state
+            if (scaleVisibility) { // show scale box
+                updateScaleBox(); // call helper function to update scale box content
+                scaleZoomButton.classList.add('active');
+            } else { // hide scale box
+                scaleBoxDiv.style.display = 'none';
+                scaleZoomButton.classList.remove('active');
+            }
+        });
+    ```
+5. **Style the Button**: Once you have the basic functionality in place, you need to make sure there are style rules for the new button. To do this, open up the `/css/globals.css` file and add your custom background image for the button using the unique class name you assigned earlier. Here is how that might look for the scale button example we have been using.
+    ```html
+    <!-- if this was your button definition in the town.html file -->
+    <button class="mapboxgl-ctrl-sZoom" id="scaleZoom" aria-label="Zoom to Scale" data-tooltip="Zoom to Scale"></button>
+    ```
+    ```css
+    /* then your custom button image would look like this */
+    .mapboxgl-ctrl-sZoom { background-image: url('https://www.ese-llc.com/s/scale-zoom.png'); }
+    ```
+6. **Test the Button**: Finally, make sure to test your new button to ensure it works as expected. Check that the button appears with the correct styling and that the click event triggers the desired functionality.
+7. **Note: For Popup Only**: If your button is intended to trigger a popup, ensure that the popup is properly initialized in the town.html document underneath the share button div and that the button's click event is correctly linked to the popup's display logic. For the scale button the HTML looks like this to create the popup container called `scale-box`.
+    ```html
+        <div id="scale-box"></div>
+    ```
+    As for the styling of the popup container, you will need to add another css class for the `scale-box` div in your `/css/globals.css` file. Here is an example of how you might style it.
+    ```css
+        #scale-box {
+        font-size: 12px;
+        color: #333;
+        background: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        margin-top: 5px;
+        text-align: left;
+        max-width: 240px;
+        width: 100%;
+        box-sizing: border-box;
+
+        /* to prevent toolkit popups from squashing eachother in the main container, include the following */
+        flex-shrink: 0;
+        min-height: 50px;
+    }
+    ```
+    Note: You may need to adjust the positioning and other styles based on your specific layout and design requirements.
+
+
+<!-- notes for improvement -->
+<!-- have some sort of config file for layers, dependencies, draw order, display name to file name conversions, popup info, maybe even color info for the legend -->
+<!-- seperate the popupHTML generation from the main app and put it in its own file -->
