@@ -365,7 +365,27 @@ The "Custom Print" feature allows users to generate professional, multi-page PDF
     }
     ```
     Note: You may need to adjust the positioning and other styles based on your specific layout and design requirements.
+8.  **Calling the Script**: In order to actually have your button appear and follow your new functionality, you must import the code you just implemented. Open up the `town.html` file and go all the way to the bottom where you will see a bunch of script tags that look like this:
+    ```html
+      <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/control-scale.js" defer></script>
+    ```
+    Simply add another one of these script tags for your new functionality, calling your new JavaScript file. Note that whenever you make production changes to the `town.html` file, you will need to replace all the Squarespace code blocks in every town with your new file. It is easy enough to do this because you can change the townId constant and copy and paste the code from `town.html` into each town code block.
 
+## 6. Git Development Practices
+### Git Overview
+1. **Version Control**: At its heart, Git is a version control system that allows multiple people to work on a project simultaneously without interfering with each other's changes. It keeps track of changes made to files over time, enabling users to revert to previous versions if needed.
+2. **Branching and Merging**: Git encourages the use of branches to work on new features or bug fixes in isolation. Once the work is complete, branches can be merged back into the main codebase, allowing for a clean and organized development process. Think of Git as a highway system, where each branch is a separate road that can be developed independently before merging back into the main highway. Your main branch is like the main highway, while feature branches are like side roads that eventually merge back in. Your `main` branch should always contain your working code because this is where your production version of the code is deployed from and because it gives you an easy way to revert changes if something goes wrong. 
+
+### ESE Map Viewer Feature Workflow
+1.  **Multiple Repositories**: There are two Git repositories involved in the feature development workflow. We have our `ese-map-viewer` repository, which contains the main application code, and the `ese-map-viewer-dev` repository, which is where we develop new features and test changes before merging them into the main repository. We do this because the main repository directly serves the production application on the webpage and thus, any changes done to the production branch affect user experience. There are a couple primary differences between the two repositories which are crucial to remember. Because the development repo has a different name alltogether, everytime we call scripts from GitHub pages in our development repository, we must make sure we are calling the correct development file. The biggest example is the `town.html` file where you can see the big block of script tags calling the control files. 
+    ```html
+    <!-- here is how it will look in the production repo -->
+    <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/control-scale.js" defer></script>
+
+    <!-- and here is how it looks in the development repo -->
+    <script src="https://east-southeast-llc.github.io/ese-map-viewer-dev/docs/control-scale.js" defer></script>
+    ```
+    The only difference is the repository path. There are several places within the codebase where this distinction is important, wherever the scripts are called. You can always use the search feature on VSCode or GitHub to find all instances of script calls and update them accordingly. This is particuarly important when you bring your development code over to the production repository and vise versa. 
 
 <!-- notes for improvement -->
 <!-- have some sort of config file for layers, dependencies, draw order, display name to file name conversions, popup info, maybe even color info for the legend -->
