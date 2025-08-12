@@ -385,8 +385,57 @@ The "Custom Print" feature allows users to generate professional, multi-page PDF
     <!-- and here is how it looks in the development repo -->
     <script src="https://east-southeast-llc.github.io/ese-map-viewer-dev/docs/control-scale.js" defer></script>
     ```
-    The only difference is the repository path. There are several places within the codebase where this distinction is important, wherever the scripts are called. You can always use the search feature on VSCode or GitHub to find all instances of script calls and update them accordingly. This is particuarly important when you bring your development code over to the production repository and vise versa. 
+    The only difference is the repository path. There are several places within the codebase where this distinction is important, wherever the scripts are called. You can always use the search feature on VSCode or GitHub to find all instances of script calls and update them accordingly. This is particuarly important when you bring your development code over to the production repository and vise versa.
+2.  **Cloning the Repositories**: If you have not done this yet, you need to clone both the `ese-map-viewer` and `ese-map-viewer-dev` repositories to your local machine. This will give you a local copy of the code to work with. You will need to open a new terminal window, navigate to a directory where you want to store the repositories, and run the following commands:
+    ```bash
+    git clone https://github.com/east-southeast-llc/ese-map-viewer.git
+    git clone https://github.com/east-southeast-llc/ese-map-viewer-dev.git
+    ```
+    This will create a local copy of both repositories on your machine, allowing you to work on the code without affecting the live version. Note: you should only need to do this once.
+3.  **Creating a New Feature Branch**: Before you start working on a new feature, you should create a new branch in the `ese-map-viewer-dev` repository. This allows you to work on the feature in isolation without affecting the main codebase. To create a new branch, navigate to the `ese-map-viewer-dev` root directory in your terminal and run the following command:
+    ```bash
+    git checkout -b my-new-feature
+    ```
+    This tells Git to create a new local branch called `my-new-feature` and switch to it. You can replace `my-new-feature` with a descriptive name for your feature.
+4.  **Implementing Your Feature**: Now that you have your feature branch set up, you can start implementing your feature. As you work on your feature, you can use Git to stage and commit your changes. Use the following commands to save your changes to the local repository.
+    ```bash
+    git add .
+    git commit -m "Implement my new feature"
+    ```
+    To push your local changes to the remote repository (https://github.com/east-southeast-llc/ese-map-viewer-dev), run the following command:
+    ```bash
+    git push origin my-new-feature
+    ```
+    This means your changes are now available in the remote repository for others to see and for deployment.
+5.  **Testing Your Changes**: For testing, there is a map served at https://www.ese-llc.com/map-viewer-dev which pulls from the `ese-map-viewer-dev` repository. You can use this map to verify that your changes are working as expected. In order to tell GitHub to share your new code with the ESE webpage, we need to update some of the GitHub pages parameters. Navigate to the ese-map-viewer-dev repository on GitHub and then click on `settings` > `Pages` and look for the section `Build and deployment`. In this section you will se a subsection called branch. Click the dropdown here and select your new branch where you are working on the feature. Click save. You can always check which branch is being deployed by going to https://github.com/East-SouthEast-LLC/ese-map-viewer-dev/actions where you can see the builds and deployments and which branch they were deployed from. Now that you have told GitHub pages that you want to deploy from your new branch, anytime you push your local changes to the origin (github.com), GitHub pages will rebuild your app and deploy the latest changes so that the town.html block on Squarespace can access them.
+6.  **Completing Feature Development**: Once you have tested your changes and are satisfied with them, you can merge your feature branch into the main branch of the `ese-map-viewer-dev` repository. To do this, first switch to the main branch:
+    ```bash
+    git checkout main
+    ```
+    Then merge your feature branch into the main branch:
+    ```bash
+    git merge my-new-feature
+    ```
+    Finally, push the updated main branch to the remote repository:
+    ```bash
+    git push origin main
+    ```
+    Once you have taken these steps, your feature is now part of your main branch in the development repository and will be included in any future features. The next step is to bring the changes you have made to the production branch of the `ese-map-viewer` repository. 
+7.  **Moving Changes to Production**: This step might be a little bit tedious because of the special GitHub pages file paths. What we will need to do first is merge the main branch of `ese-map-viewer-dev` into the main branch of the `ese-map-viewer` repository. Open a terminal and navigate to the **local** directory for your `ese-map-viewer` repository. Once you are there, run the following commands:
+    ```bash
+    git checkout -b East-SouthEast-LLC-main main
+    git pull https://github.com/East-SouthEast-LLC/ese-map-viewer-dev.git main
+    ```
+    This will bring all the changes from the development repository into your local production branch. After that, you can push the changes to the remote repository.
+    **Important Note**: Before pushing, you will need to fix the file paths for any script calls to files in GitHub pages. With VSCode, you can use the "Find and Replace" feature to quickly update these paths.
+    ```bash
+    git checkout main
+    git merge --no-ff East-SouthEast-LLC-main
+    git push origin main
+    ```
+    This command pushes your local `East-SouthEast-LLC-main` branch to the `main` branch of the `ese-map-viewer` repository on GitHub.
 
 <!-- notes for improvement -->
 <!-- have some sort of config file for layers, dependencies, draw order, display name to file name conversions, popup info, maybe even color info for the legend -->
 <!-- seperate the popupHTML generation from the main app and put it in its own file -->
+<!-- create a way to fully dynamically generate town.html -->
