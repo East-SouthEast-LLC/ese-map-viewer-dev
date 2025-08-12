@@ -136,13 +136,31 @@ The "Custom Print" feature allows users to generate professional, multi-page PDF
 4.  **Add to Town Config**: Open `docs/town-config.json` and add the new layer's ID to the `layers` array for any towns that should have access to it.
 5.  **Update Popup Handling**: 
 6.  **Edit Draw Order**: Make sure to find the `drawOrder` variable in the `docs/main-app.js` file and add your new layer in the draw order. Note that the existing draw order is **listed in reverse**.
-7.  **Case: Handle Layer Popup**: If your layer has a popup associated with it, you will need to add the necessary code to handle the popup display when the layer is clicked. For centralization purposes, all this logic is located a `switch` block in the `docs/main-app.js` file. Search for `switch (topFeature.layer.id)` and you will find a big block of cases for each different popup. Simply go anywhere in that block and add a new case for your layer following the same logic.
-8.  **Case: Handle Layer Name**: It is common to have a file name for a given layer that does not match the layer ID used in the `town-config.json` file. The town config will always use a a version of the name which might include a space for readability, these are the display names that the user sees in the toggleable menu. Because of the way we dynamically load files based on this config data, we need a way to convert the `layerId` to the filename. That is where the `loadLayerScript` function comes into play. There is a block of if statements that maps the layer names to their corresponding script files. You will need to make sure that either your layer name exactly matches your filename, or add an else if block to the `loadLayerScript` function to handle the difference. There are plenty of examples.
+7.  **Add Layer to Legend**: If your layer should have a legend entry, you will need to add it to the `docs/legend-data.json` file. To do this, copy the format of one of the other entries and create a new entry for your layer. Here is an example of a simple layer, you can also find an example with a legend layer with dependencies in the following section.
+    ```json
+        {
+            "displayName": "Building Stories",
+            "sources": [
+                { "id": "stories", "propertyKey": "STORIESS" }
+            ],
+            "items": [
+                { "code": "0", "label": "0 Stories", "color": "#e2ffcc", "opacity": 0.4, "isLine": false },
+                { "code": "1", "label": "1 Story", "color": "#fffbb3", "opacity": 0.4, "isLine": false },
+                { "code": "1.5", "label": "1.5 Stories", "color": "#8cf2ff", "opacity": 0.4, "isLine": false },
+                { "code": "2", "label": "2 Stories", "color": "#5e90f2", "opacity": 0.4, "isLine": false },
+                { "code": "2.5", "label": "2.5 Stories", "color": "#3b64b8", "opacity": 0.4, "isLine": false },
+                { "code": "3", "label": "3 Stories", "color": "#3841e8", "opacity": 0.4, "isLine": false }
+            ]
+        },
+    ```
+    The `displayName` corresponds to the header for the layer in the map legend. You will notice that the sources array contains the ID of the source layer and the `propertyKey` which must exactly match the feature property you call `get` on in your layer's paint or filter expressions. Within the items array, you need to create an item with the same `code` as the value you want to match against in the `get` expression. This allows the legend to correctly display the corresponding label and style for each feature based on its properties. You can then choose the display label that is visible to the user in the legend, the hex color for the color swab, and the opacity for the layer which should be the same as your `fill-opacity` value in the layer definition. The `isLine` field is used to indicate whether the layer is a line layer or not.
+8.  **Handle Layer Popup**: If your layer has a popup associated with it, you will need to add the necessary code to handle the popup display when the layer is clicked. For centralization purposes, all this logic is located a `switch` block in the `docs/main-app.js` file. Search for `switch (topFeature.layer.id)` and you will find a big block of cases for each different popup. Simply go anywhere in that block and add a new case for your layer following the same logic.
+9.  **Handle Layer Name**: It is common to have a file name for a given layer that does not match the layer ID used in the `town-config.json` file. The town config will always use a a version of the name which might include a space for readability, these are the display names that the user sees in the toggleable menu. Because of the way we dynamically load files based on this config data, we need a way to convert the `layerId` to the filename. That is where the `loadLayerScript` function comes into play. There is a block of if statements that maps the layer names to their corresponding script files. You will need to make sure that either your layer name exactly matches your filename, or add an else if block to the `loadLayerScript` function to handle the difference. There are plenty of examples.
 
 <!-- need to add section on adding layers with dependencies to other layers -->
 ### How to Add a New Layer with Dependencies
 
-1.  **Start by Following Normal Layer Setup**: Follow the procedure for adding a new layer as defined in the previous section. The only difference is how your `new_layer.js` script file will look. With multiple layers dependent on eachother, your script file will look something like this example from the floodplain logic. Note how the `floodplain.js` file is structured with its dependencies. 
+1. **Start by Following Normal Layer Setup**: Follow the procedure for adding a new layer as defined in the previous section. The only difference is how your `new_layer.js` script file will look. With multiple layers dependent on eachother, your script file will look something like this example from the floodplain logic. Note how the `floodplain.js` file is structured with its dependencies. 
     ```javascript
         function addFloodplainLayer() {
             // LiMWA Source + Layer
@@ -251,6 +269,25 @@ The "Custom Print" feature allows users to generate professional, multi-page PDF
     ```
     Note how multiple layers and sources are added to the map within the same function. This is how you should structure the new layer creation. Make sure to keep track of your layer IDs because you will need these later to set up your dependency toggling.
 2. **Define Layer Dependencies**: Note that for attaching the new layer to the map, you will just need to add the master layer ID of your choice to the `town-config.json` file. There are two places in the codebase where you will need to define the dependencies. First, go to the `docs/decode-url.js` file and find the data structre `dependentLayers` and add your new layer ID there. Second, you will need to open `toggleable-menu.js` and find the section that handles the clicked layer visiblity toggling. You will need to create a new `else if` block to handle the new layer and its dependencies.
+3.  **Add Legend Info**: For entering the legend data for your new layers with dependencies, you can follow nearly the same process as you would for a single layer. Here is an example of the Floodplain layer's legend data. 
+    ```json
+        {
+            "displayName": "FEMA Flood Zones",
+            "sources": [
+                { "id": "floodplain", "propertyKey": "FLD_ZONE" },
+                { "id": "LiMWA" }
+            ],
+            "items": [
+                { "id": "LiMWA", "label": "LiMWA", "color": "#E70B0B", "opacity": 1.0, "isLine": true },
+                { "code": "AE", "label": "Flood Zone AE", "color": "#eb8c34", "opacity": 0.4, "isLine": false },
+                { "code": "VE", "label": "Flood Zone VE", "color": "#eb3a34", "opacity": 0.4, "isLine": false },
+                { "code": "AO", "label": "Flood Zone AO", "color": "#F7FE20", "opacity": 0.4, "isLine": false },
+                { "code": "X", "label": "Flood Zone X", "color": "#2578F9", "opacity": 0.4, "isLine": false },
+                { "code": "A", "label": "Flood Zone A", "color": "#2e4bf0", "opacity": 0.4, "isLine": false }
+            ]
+        }
+    ```
+    Note the only difference is that we have a second source for the LiMWA layer and another item in the legend. The LiMWA is listed as an `id` in the legend items because it is a standalone line without specific features that get matched to different colors.
 
 ### How to Add a New Control
 
