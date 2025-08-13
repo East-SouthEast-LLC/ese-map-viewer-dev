@@ -15,8 +15,12 @@
         }
         window.townId = townId;
 
-        // --- build the <body> content ---
-        document.body.innerHTML = `
+        // --- create a container for our app content ---
+        const appContainer = document.createElement('div');
+        appContainer.id = 'app-container';
+
+        // --- build the body content ---
+        appContainer.innerHTML = `
             <div id="disclaimer-popup" class="disclaimer-popup-container">
                 <h2>Welcome to the ESE Map Viewer</h2>
                 <p class="disclaimer-text">
@@ -70,7 +74,12 @@
             </div>
         `;
 
-        // --- dynamically load all other scripts ---
+        // --- safely add content to the body ---
+        // clear the body and append the new container. this avoids overwriting the running script.
+        document.body.innerHTML = '';
+        document.body.appendChild(appContainer);
+
+        // --- dynamically load application scripts ---
         const scripts = [
             "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/main.js",
             "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/button.js",
