@@ -1,4 +1,4 @@
-// docs/main.js
+// src/js/main.js
 
 /**
  * dynamically adjusts map and menu height to fit the viewport below the site header.
@@ -13,6 +13,7 @@ function adjustLayout() {
 
   const headerHeight = header.offsetHeight;
   const buffer = 70; // a 70px buffer to make the map shorter
+  const topOffset = headerHeight + 15; // get header height and add 15px for padding
 
   // calculate the available height for the map
   const availableHeight = window.innerHeight - headerHeight - buffer;
@@ -20,8 +21,11 @@ function adjustLayout() {
   // apply the new height to the map and menus
   mapContainer.style.height = `${availableHeight}px`;
   menuContainer.style.maxHeight = `${availableHeight}px`;
+  menuContainer.style.top = `${topOffset}px`; // set top position for layer menu
+
   if (geocoderContainer) {
     geocoderContainer.style.maxHeight = `${availableHeight}px`;
+    geocoderContainer.style.top = `${topOffset}px`; // set top position for toolkit
   }
 }
 
