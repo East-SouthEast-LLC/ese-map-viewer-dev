@@ -392,15 +392,17 @@ The "Custom Print" feature allows users to generate professional, multi-page PDF
     git clone https://github.com/east-southeast-llc/ese-map-viewer-dev.git
     ```
     This will create a local copy of both repositories on your machine, allowing you to work on the code without affecting the live version. Note: you should only need to do this once.
-3.  **Creating a New Feature Branch**: Before you start working on a new feature, you should create a new branch in the `ese-map-viewer-dev` repository. This allows you to work on the feature in isolation without affecting the main codebase. To create a new branch, navigate to the `ese-map-viewer-dev` root directory in your terminal and run the following command:
+3.  **Creating a New Feature Branch**: Before you start working on a new feature, you should create a new branch in the `ese-map-viewer-dev` repository. This allows you to work on the feature in isolation without affecting the main codebase. To create a new branch, navigate to the `ese-map-viewer-dev` root directory in your terminal and run the following commands. This will make sure you create a new branch based on the most recent changes.
     ```bash
+    git checkout main
+    git pull origin main
     git checkout -b my-new-feature
     ```
     This tells Git to create a new local branch called `my-new-feature` and switch to it. You can replace `my-new-feature` with a descriptive name for your feature.
 4.  **Implementing Your Feature**: Now that you have your feature branch set up, you can start implementing your feature. As you work on your feature, you can use Git to stage and commit your changes. Use the following commands to save your changes to the local repository.
     ```bash
     git add .
-    git commit -m "Implement my new feature"
+    git commit -m "Implement my new feature" 
     ```
     To push your local changes to the remote repository (https://github.com/east-southeast-llc/ese-map-viewer-dev), run the following command:
     ```bash

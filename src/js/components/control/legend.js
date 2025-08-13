@@ -212,7 +212,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    fetch('https://east-southeast-llc.github.io/ese-map-viewer/docs/legend-data.json')
+    fetch('https://east-southeast-llc.github.io/ese-map-viewer-dev/assets/data/legend_config.json')
         .then(response => response.json())
         .then(data => {
             legendData = data;
