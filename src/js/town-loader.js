@@ -280,4 +280,18 @@
             });
         });
     });
-})();
+});
+
+function handleMarkerPlacement(lngLat) {
+    const { lat, lng } = lngLat;
+    setPinPosition(lat, lng);
+    if (marker) marker.remove();
+    marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
+    placingPoint = false;
+    document.getElementById('pointButton').classList.remove('active');
+    map.getCanvas().style.cursor = '';
+
+    // Log the point placement event to Google Analytics.
+    trackEvent('place_marker', {
+    });
+}
