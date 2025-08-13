@@ -216,7 +216,7 @@ map.on('load', function () {
         fetch('https://east-southeast-llc.github.io/ese-map-viewer-dev/assets/data/town_config.json')
             .then(response => response.json())
             .then(townConfig => {
-                const townData = townConfig.find(town => town.townID === townId);
+                const townData = townConfig.find(town => town.townID === window.townId); // Use window.townId
                 if (townData) {
                     const urlParams = new URLSearchParams(window.location.search);
                     if (!urlParams.has('zoom')) {
