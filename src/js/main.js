@@ -1,4 +1,4 @@
-// docs/main-app.js
+// docs/main.js
 
 /**
  * dynamically adjusts map and menu height to fit the viewport below the site header.
