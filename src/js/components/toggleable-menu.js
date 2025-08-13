@@ -1,6 +1,6 @@
 function setupToggleableMenu() {
     const menuRightEdge = 305;
-    const toolkitRightEdge = 575;
+    const toolkitRightEdge = 580;
     const desiredGap = 10;
     const menuOnlyOffset = menuRightEdge + desiredGap;
     const fullToolkitOffset = toolkitRightEdge + desiredGap;
