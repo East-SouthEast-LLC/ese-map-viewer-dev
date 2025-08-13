@@ -77,7 +77,7 @@
         if (!header || !mapContainer || !menuContainer) return;
         const headerHeight = header.offsetHeight;
         const buffer = 70;
-        const topOffset = headerHeight + 45; // using your 45px buffer
+        const topOffset = headerHeight + 40;
         const availableHeight = window.innerHeight - headerHeight - buffer;
         mapContainer.style.height = `${availableHeight}px`;
         menuContainer.style.maxHeight = `${availableHeight}px`;
