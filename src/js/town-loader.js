@@ -280,7 +280,7 @@
             });
         });
     });
-});
+})();
 
 function handleMarkerPlacement(lngLat) {
     const { lat, lng } = lngLat;
