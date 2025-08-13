@@ -2,10 +2,9 @@
 
 (function() {
     /**
-     * dynamically injects the entire html structure and scripts for the map viewer.
+     * dynamically injects the body html structure and application scripts for the map viewer.
      */
     function initializeMapViewer() {
-        // get townid from the script tag's data attribute
         const thisScript = document.querySelector('script[src*="town-loader.js"]');
         const townId = thisScript.getAttribute('data-town-id');
 
@@ -16,60 +15,7 @@
         }
         window.townId = townId;
 
-        // --- 1. build the <head> content dynamically ---
-        // clear the head first
-        document.head.innerHTML = `
-            <meta charset="utf-8" />
-            <title>ESE Map Viewer</title>
-            <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-        `;
-
-        // function to load a stylesheet
-        function loadStylesheet(href) {
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = href;
-            document.head.appendChild(link);
-        }
-
-        // function to load a script in the head
-        function loadHeadScript(src) {
-            const script = document.createElement('script');
-            script.src = src;
-            document.head.appendChild(script);
-        }
-        
-        // load stylesheets
-        loadStylesheet("https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css");
-        loadStylesheet("https://east-southeast-llc.github.io/ese-map-viewer-dev/src/css/globals.css?v=3");
-        loadStylesheet("https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css");
-        
-        // load head scripts
-        loadHeadScript("https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js");
-        loadHeadScript("https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.11.0/proj4.js");
-        loadHeadScript("https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js");
-        loadHeadScript("https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js");
-        loadHeadScript("https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js");
-        loadHeadScript("https://cdn.jsdelivr.net/npm/@turf/turf");
-        loadHeadScript("https://unpkg.com/geotiff@2.0.7/dist-browser/geotiff.js");
-
-        // add google analytics scripts
-        const gtagScript1 = document.createElement('script');
-        gtagScript1.async = true;
-        gtagScript1.src = "https://www.googletagmanager.com/gtag/js?id=G-FYWY78FPHV";
-        document.head.appendChild(gtagScript1);
-
-        const gtagScript2 = document.createElement('script');
-        gtagScript2.innerHTML = `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-FYWY78FPHV');
-        `;
-        document.head.appendChild(gtagScript2);
-
-
-        // --- 2. build the <body> content ---
+        // --- build the <body> content ---
         document.body.innerHTML = `
             <div id="disclaimer-popup" class="disclaimer-popup-container">
                 <h2>Welcome to the ESE Map Viewer</h2>
@@ -124,7 +70,7 @@
             </div>
         `;
 
-        // --- 3. dynamically load all other scripts ---
+        // --- dynamically load all other scripts ---
         const scripts = [
             "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/main.js",
             "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/button.js",
@@ -151,11 +97,7 @@
         });
     }
 
-    // run the initialization function once the DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initializeMapViewer);
-    } else {
-        initializeMapViewer();
-    }
+    // since the loader script itself is deferred, the dom is ready when it runs.
+    initializeMapViewer();
 
 })();
