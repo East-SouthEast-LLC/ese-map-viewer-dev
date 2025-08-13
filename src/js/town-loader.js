@@ -1,15 +1,35 @@
 // src/js/town-loader.js
 
 (function() {
-    // a function to dynamically create a script tag
+    // get the townid from the script tag's data attribute
+    const thisScript = document.querySelector('script[src*="town-loader.js"]');
+    const townId = thisScript.getAttribute('data-town-id');
+    
+    if (!townId) {
+        console.error("town id is not defined in the script tag's data-town-id attribute.");
+        return;
+    }
+    window.townId = townId;
+
+    /**
+     * dynamically creates and appends a script tag to the body.
+     * returns a promise that resolves when the script is loaded.
+     * @param {string} src - the source url of the script to load.
+     * @returns {promise}
+     */
     function loadScript(src) {
-        const script = document.createElement('script');
-        script.src = src;
-        script.defer = true;
-        document.body.appendChild(script);
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = resolve;
+            script.onerror = () => reject(new Error(`script load error for ${src}`));
+            document.body.appendChild(script);
+        });
     }
 
-    // dynamically build the toolkit html
+    /**
+     * dynamically builds the html for the toolkit and appends it to the body.
+     */
     function buildToolkit() {
         const geocoderContainer = document.createElement('div');
         geocoderContainer.id = 'geocoder-container';
@@ -47,42 +67,217 @@
         document.body.appendChild(geocoderContainer);
     }
 
-    // get the townid from the script tag's data attribute
-    const thisScript = document.querySelector('script[src*="town-loader.js"]');
-    const townId = thisScript.getAttribute('data-town-id');
+    // --- functions from main.js ---
 
-    if (!townId) {
-        console.error("Town ID is not defined. Please set it in the script tag's data-town-id attribute.");
-        return;
+    function adjustLayout() {
+        const header = document.querySelector('#header');
+        const mapContainer = document.getElementById('map');
+        const menuContainer = document.getElementById('menu');
+        const geocoderContainer = document.getElementById('geocoder-container');
+        if (!header || !mapContainer || !menuContainer) return;
+        const headerHeight = header.offsetHeight;
+        const buffer = 70;
+        const topOffset = headerHeight + 45; // using your 45px buffer
+        const availableHeight = window.innerHeight - headerHeight - buffer;
+        mapContainer.style.height = `${availableHeight}px`;
+        menuContainer.style.maxHeight = `${availableHeight}px`;
+        if (geocoderContainer) {
+            geocoderContainer.style.maxHeight = `${availableHeight}px`;
+            geocoderContainer.style.top = `${topOffset}px`;
+        }
     }
 
-    // set the townId on the window object so main.js can access it
-    window.townId = townId;
+    function setupLayoutAdjustments() {
+        adjustLayout();
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(adjustLayout, 100);
+        });
+    }
 
-    // now that the townId is set, build the rest of the page
+    // --- main execution logic ---
     document.addEventListener('DOMContentLoaded', () => {
+        // 1. build ui and setup layout
         buildToolkit();
+        setupLayoutAdjustments();
 
-        // define the scripts to load
-        const scripts = [
-            "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/main.js",
-            "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/button.js",
-            "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/print.js",
-            "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/custom-print.js",
-            "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/print-area.js",
-            "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/share.js",
-            "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/scale.js",
-            "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/measure.js",
-            "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/legend.js",
-            "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/bookmarks.js",
-            "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/identify.js",
-            "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/disclaimer-popup.js",
-            "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/utils/analytics.js",
-            "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/mobile-menu.js",
-            "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/utils/decode-url.js"
-        ];
+        // 2. initialize the map and make it global
+        mapboxgl.accessToken = 'pk.eyJ1IjoiZXNlLXRvaCIsImEiOiJja2Vhb24xNTEwMDgxMzFrYjVlaTVjOXkxIn0.IsPo5lOndNUc3lDLuBa1ZA';
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/ese-toh/ckh2ss32s06i119paer9mt67h',
+        });
+        window.map = map; // expose map globally for other scripts
 
-        // load all the scripts
-        scripts.forEach(loadScript);
+        // 3. add geocoder to the ui
+        const geocoder = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl
+        });
+        document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+
+        // 4. wait for the map to be fully loaded before doing anything else
+        map.on('load', function () {
+            console.log("map 'load' event fired. loading scripts...");
+            
+            function loadLayerScript(layerName) {
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    let scriptName = layerName.replace(/ /g, '-');
+                    if (layerName === "DEP wetland") scriptName = "depwetland";
+                    else if (layerName === "zone II") scriptName = "zoneii";
+                    else if (layerName === "conservancy districts") scriptName = "conservancydistricts";
+                    else if (layerName === "endangered species") scriptName = "endangered-species";
+                    else if (layerName === "parcel highlight") scriptName = "parcel-highlight";
+                    else if (layerName === "lidar contours") scriptName = "lidar-contours";
+                    else if (layerName === "sewer plans") scriptName = "sewer-plans";
+                    else if (layerName === "private properties upland") scriptName = "private-properties-upland";
+                    else if (layerName === "usgs quad") scriptName = "usgs-tile-manager";
+                    
+                    script.src = `https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/layers/${scriptName}.js?v=2`;
+                    script.onload = resolve;
+                    script.onerror = () => reject(new Error(`script load error for ${layerName}`));
+                    document.head.appendChild(script);
+                });
+            }
+
+            // start loading layer and control scripts
+            loadLayerScript('towns').then(() => {
+                fetch('https://east-southeast-llc.github.io/ese-map-viewer-dev/assets/data/town_config.json')
+                    .then(response => response.json())
+                    .then(townConfig => {
+                        const townData = townConfig.find(town => town.townID === window.townId);
+                        if (townData) {
+                            const urlParams = new URLSearchParams(window.location.search);
+                            if (!urlParams.has('zoom')) {
+                                map.setCenter(townData.map.center);
+                                map.setZoom(townData.map.zoom);
+                            }
+                            window.eseMapBaseUrl = townData.baseShareUrl;
+                            window.toggleableLayerIds = townData.layers.filter(l => l !== 'towns');
+                            window.toggleableLayerIds.unshift('tools');
+                            
+                            const layerPromises = townData.layers.filter(l => l !== 'towns').map(layer => loadLayerScript(layer));
+                            
+                            Promise.all(layerPromises).then(() => {
+                                console.log("all layer scripts loaded.");
+                                
+                                // now that layers are ready, load control scripts
+                                const controlScripts = [
+                                    "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/button.js",
+                                    "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/print.js",
+                                    "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/custom-print.js",
+                                    "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/print-area.js",
+                                    "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/share.js",
+                                    "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/scale.js",
+                                    "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/measure.js",
+                                    "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/legend.js",
+                                    "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/bookmarks.js",
+                                    "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/identify.js",
+                                    "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/disclaimer-popup.js",
+                                    "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/utils/analytics.js",
+                                    "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/mobile-menu.js",
+                                    "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/utils/decode-url.js"
+                                ];
+                                
+                                const controlPromises = controlScripts.map(loadScript);
+
+                                Promise.all(controlPromises).then(() => {
+                                    console.log("all control scripts loaded.");
+                                    // finally, load and set up the menu
+                                    loadScript("https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/toggleable-menu.js?v=2")
+                                        .then(() => {
+                                            setupToggleableMenu();
+                                            applyUrlParams(map);
+                                            console.log("application is fully loaded and ready.");
+                                        });
+                                });
+                            });
+                        }
+                    });
+            });
+            map.on('click', (e) => {
+                if (placingPoint) {
+                    handleMarkerPlacement(e.lngLat);
+                    return;
+                }
+                const visibleLayers = (window.toggleableLayerIds || []).filter(id => 
+                    id !== 'tools' && map.getLayer(id) && map.getLayoutProperty(id, 'visibility') === 'visible'
+                );
+                const features = map.queryRenderedFeatures(e.point, { layers: visibleLayers });
+                if (!features.length) return;
+                
+                const topFeature = features[0];
+                let popupHTML = '';
+                switch (topFeature.layer.id) {
+                    case 'parcels':
+                        popupHTML = `Address: <strong>${topFeature.properties.ADDRESS}</strong><br>Webpage: <a href="${topFeature.properties.URL}" target="_blank"><b><u>Link to Page</u></b></a>`;
+                        break;
+                    case 'floodplain':
+                        popupHTML = `Flood Zone: <strong>${topFeature.properties.FLD_ZONE}</strong><br>Elevation: <strong>${topFeature.properties.STATIC_BFE}</strong>`;
+                        break;
+                    case 'DEP wetland':
+                        popupHTML = `Wetland Identifier: <strong>${topFeature.properties.IT_VALDESC}</strong><br>Wetland Code: <strong>${topFeature.properties.IT_VALC}</strong>`;
+                        break;
+                    case 'zoning':
+                        popupHTML = `Zoning District: <strong>${topFeature.properties.TOWNCODE}</strong><br><br>Check with the Town Clerk or Planning Department.<br><strong>This layer is from 2004</strong>`;
+                        break;
+                    case 'sewer':
+                        popupHTML = `Approximate year constructed: ${topFeature.properties.CONTRACT}<br>Address: <strong>${topFeature.properties.ADDRESS}</strong><br>Webpage: <a href="${topFeature.properties.URL}" target="_blank"><b><u>Link to Page</u></b></a>`;
+                        break;
+                    case 'sewer plans':
+                        const props = topFeature.properties;
+                        if (props.CONSERV === 'Y') {
+                            popupHTML = "Conservation Property<br>Disclaimer: Information may be inaccurate.";
+                        } else {
+                            popupHTML = `Year of plan: <strong>${props.DATE || 'N/A'}</strong><br>Plan ID: <strong>${props.SHEET || 'N/A'}</strong><br>`;
+                            if (props.ADDED === 'Y') {
+                                popupHTML += `Website: ${props.URL ? `<a href="${props.URL}" target="_blank"><b><u>Link to page</u></b></a>` : 'N/A'}<br>On sewer but not included in original plans<br>`;
+                            } else {
+                                popupHTML += `Link to plan: ${props.URL ? `<a href="${props.URL}" target="_blank"><b><u>Link to plan</u></b></a>` : 'N/A'}<br>`;
+                            }
+                            popupHTML += "Disclaimer: Information may be inaccurate.";
+                        }
+                        break;
+                    case 'acec':
+                        popupHTML = `Area of Critical Environmental Concern: <strong>${topFeature.properties.NAME}</strong><br>DEP ACEC Designation: <a href="${topFeature.properties.LINK}" target="_blank"><b><u>Link to Document</u></b></a>`;
+                        break;
+                    case 'agis':
+                        popupHTML = `Address <strong>${topFeature.properties.ADDRESS}</strong><br>Date of photography: <strong>${topFeature.properties.DATE}</strong><br>Link to Page: <a href="${topFeature.properties.URL}" target="_blank"><b><u>Link to Page</u></b></a>`;
+                        break;
+                    case 'conservancy districts':
+                        popupHTML = `Conservancy District: <strong>${topFeature.properties.CONS_DIST}</strong><br><br>${topFeature.properties.CONS_DIST} Elevation: <strong>${topFeature.properties.CONS_ELEV} ${topFeature.properties.CONS_DATUM}</strong><br>${topFeature.properties.CONS_DIST} Water Elevation: <strong>${topFeature.properties.WATER_ELEV} ${topFeature.properties.CONS_DATUM}</strong><br><br>Conservancy District Contour: <strong>${topFeature.properties.CONT_NAVD} ${topFeature.properties.CONV_DATUM}</strong><br><br>Description: ${topFeature.properties.CONS_DESC}`;
+                        break;
+                    case 'conservation':
+                        popupHTML = `CCF Parcel: <strong>${topFeature.properties.CCF_ID}</strong><br><br>The light green parcels are approximate, the dark green parcels are more accurate.`;
+                        break;
+                    case 'endangered species':
+                        popupHTML = `Estimated Habitat ID: <strong>${topFeature.properties.ESTHAB_ID}</strong><br>Priority Habitat ID: <strong>${topFeature.properties.PRIHAB_ID}</strong>`;
+                        break;
+                    case 'vernal pools': 
+                        popupHTML = `Vernal Pool ID: <strong>${topFeature.properties.cvp_num}</strong><br>Certified: <strong>${topFeature.properties.certified}</strong><br>Criteria: <strong>${topFeature.properties.criteria}</strong>`;
+                        break;
+                    case 'historic':
+                        popupHTML = `Historic District: ${topFeature.properties.District}<br>Status / Reference: <strong>${topFeature.properties.Status}</strong><br>Documentation: <a href="${topFeature.properties.URL}" target="_blank"><b><u>Link to Document</u></b></a>`;
+                        break;
+                    case 'intersection':
+                        popupHTML = `Intersection: <strong>${topFeature.properties.Int_Name}</strong><br>Webpage: <a href="${topFeature.properties.Link}" target="_blank"><b><u>Link to Page</u></b></a>`;
+                        break;
+                    case 'stories':
+                        popupHTML = `Number of Stories: <strong>${topFeature.properties.STORIES}</strong><br>Building Description: <strong>${topFeature.properties.BLD_DESC}</strong><br>Zoning: <strong>${topFeature.properties.ZONING}</strong>`;
+                        break;
+                    case 'zone II':
+                        popupHTML = `Zone II number: <strong>${topFeature.properties.ZII_NUM}</strong><br>Water Supplier: <strong>${topFeature.properties.SUPPLIER}</strong><br>Town: <strong>${topFeature.properties.TOWN}</strong>`;
+                        break;
+                    case 'soils':
+                        popupHTML = `Numeric State Legend: <strong>${topFeature.properties.MUSYM}</strong><br>Published Map Unit: <strong>${topFeature.properties.MUS_TXT}</strong><br><strong>${topFeature.properties.MUS_DESC}</strong>`;
+                        break;
+                }
+                if (popupHTML) {
+                    new mapboxgl.Popup().setLngLat(e.lngLat).setHTML(popupHTML).addTo(map);
+                }
+            });
+        });
     });
 })();
