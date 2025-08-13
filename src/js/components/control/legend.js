@@ -201,16 +201,14 @@ function getLegendForPrint(expectedLayerIds = []) {
     return `<div class="legend-grid">${finalItemsHTML}</div>`;
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    const legendButton = document.getElementById("legendButton");
-    const legendBox = document.getElementById("legend-box");
-    let legendVisibility = false;
-    legendBox.style.display = 'none';
+const legendButton = document.getElementById("legendButton");
+const legendBox = document.getElementById("legend-box");
+let legendVisibility = false;
+legendBox.style.display = 'none';
 
-    if (!legendButton || !legendBox) {
-        console.error("Required elements not found in the DOM.");
-        return;
-    }
+if (!legendButton || !legendBox) {
+    console.error("Required elements not found in the DOM.");
+} else {
 
     fetch('https://east-southeast-llc.github.io/ese-map-viewer-dev/assets/data/legend_config.json')
         .then(response => response.json())
@@ -358,4 +356,4 @@ document.addEventListener("DOMContentLoaded", function () {
 
     map.on('moveend', updateLegend);
     map.on('zoom', updateLegend);
-});
+};
