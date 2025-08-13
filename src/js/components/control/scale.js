@@ -122,16 +122,18 @@ function getPrintScaleBarHTML(map) {
 // ============================================================================
 // main scale function (event listener)
 // ============================================================================
+map.on('load', function() {
+    const scaleZoomButton = document.getElementById("scaleZoom");
+    const geocoderContainer = document.getElementById("geocoder-container");
+    const scaleBoxDiv = document.getElementById("scale-box");
+    let scaleVisibility = false;
+    let userNumber = null; 
 
-const scaleZoomButton = document.getElementById("scaleZoom");
-const geocoderContainer = document.getElementById("geocoder-container");
-const scaleBoxDiv = document.getElementById("scale-box");
-let scaleVisibility = false;
-let userNumber = null;
+    if (!scaleZoomButton || !geocoderContainer) {
+        console.error("Required elements for scale tool not found in the DOM.");
+        return;
+    }
 
-if (!scaleZoomButton || !geocoderContainer) {
-    console.error("Required elements not found in the DOM.");
-} else {
     scaleBoxDiv.style.display = 'none';
 
     function attachScaleBoxListeners() {
@@ -139,33 +141,39 @@ if (!scaleZoomButton || !geocoderContainer) {
         const scaleSubmit = document.getElementById('scale-submit');
         const scaleDropdown = document.getElementById('scale-dropdown');
 
-        scaleSubmit.addEventListener('click', () => {
-            userNumber = scaleInput.value;
-            if (!userNumber || isNaN(userNumber) || Number(userNumber) <= 0) {
-                alert('Please enter a valid feet-per-inch value or select a preset.');
-                return;
-            }
-            setMapToScale(userNumber);
-        });
-
-        scaleInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
+        if (scaleSubmit) {
+            scaleSubmit.addEventListener('click', () => {
                 userNumber = scaleInput.value;
                 if (!userNumber || isNaN(userNumber) || Number(userNumber) <= 0) {
                     alert('Please enter a valid feet-per-inch value or select a preset.');
                     return;
                 }
                 setMapToScale(userNumber);
-            }
-        });
+            });
+        }
 
-        scaleDropdown.addEventListener('change', () => {
-            if (scaleDropdown.value) {
-                userNumber = scaleDropdown.value;
-                scaleInput.value = userNumber;
-                setMapToScale(userNumber);
-            }
-        });
+        if (scaleInput) {
+            scaleInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    userNumber = scaleInput.value;
+                    if (!userNumber || isNaN(userNumber) || Number(userNumber) <= 0) {
+                        alert('Please enter a valid feet-per-inch value or select a preset.');
+                        return;
+                    }
+                    setMapToScale(userNumber);
+                }
+            });
+        }
+
+        if (scaleDropdown) {
+            scaleDropdown.addEventListener('change', () => {
+                if (scaleDropdown.value) {
+                    userNumber = scaleDropdown.value;
+                    scaleInput.value = userNumber;
+                    setMapToScale(userNumber);
+                }
+            });
+        }
     }
 
     function updateScaleBox() {
@@ -193,4 +201,4 @@ if (!scaleZoomButton || !geocoderContainer) {
     map.on('zoom', () => {
         if (scaleVisibility) updateScaleBox();
     });
-}
+});
