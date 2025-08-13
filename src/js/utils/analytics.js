@@ -8,7 +8,6 @@
 function trackEvent(eventName, eventParams) {
   if (typeof gtag === 'function') {
     gtag('event', eventName, eventParams);
-    console.log(`analytics event tracked: ${eventName}`, eventParams);
   } else {
     console.warn('google analytics (gtag.js) is not available.');
   }

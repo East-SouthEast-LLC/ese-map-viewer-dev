@@ -1,7 +1,7 @@
-// control-scale.js
+// src/js/components/control/scale.js
 
 // ============================================================================
-// HELPER FUNCTIONS FOR SCALE FUNCTIONALITY
+// helper functions for scale functionality
 // ============================================================================
 
 function getFeetPerInch() {
@@ -10,7 +10,7 @@ function getFeetPerInch() {
     const northLat = bounds.getNorth();
     const centerLat = center.lat;
 
-    // Distance from center to top in meters
+    // distance from center to top in meters
     const halfHeightMeters = turf.distance(
         [center.lng, center.lat],
         [center.lng, northLat],
@@ -38,7 +38,7 @@ function setMapToScale(targetFeetPerInch, tolerance = .1) {
     let finalZoom = bestZoom;
 
     for (let i = 0; i < 20; i++) {
-        map.jumpTo({ zoom: bestZoom }); // Use jumpTo for instant update
+        map.jumpTo({ zoom: bestZoom }); // use jumpTo for instant update
         let scale = getFeetPerInch();
         let diff = scale - targetFeetPerInch;
         if (Math.abs(diff) < tolerance) break;
@@ -47,7 +47,7 @@ function setMapToScale(targetFeetPerInch, tolerance = .1) {
         bestZoom = (minZoom + maxZoom) / 2;
         finalZoom = bestZoom;
     }
-    map.jumpTo({ zoom: finalZoom }); // Set zoom only once at the end
+    map.jumpTo({ zoom: finalZoom }); // set zoom only once at the end
 }
 
 function getScaleBoxHTML(feetPerInch, userNumber) {
@@ -71,7 +71,7 @@ function getScaleBoxHTML(feetPerInch, userNumber) {
 
 
 // ============================================================================
-// HELPER FUNCTION TO CREATE SCALE BAR ON PRINT
+// helper function to create scale bar on print
 // ============================================================================
 
 function getPrintScaleBarHTML(map) {
@@ -120,23 +120,19 @@ function getPrintScaleBarHTML(map) {
 
 
 // ============================================================================
-// MAIN SCALE FUNCTION (event listener)
+// main scale function (event listener)
 // ============================================================================
 
-document.addEventListener("DOMContentLoaded", function () {
-    const scaleZoomButton = document.getElementById("scaleZoom"); // this corresponds to the id set in town.html
-    const geocoderContainer = document.getElementById("geocoder-container"); // this gets the container div for the geocoder and other buttons
-    const scaleBoxDiv = document.getElementById("scale-box"); // this is for the scale box popup which is hidden by default
-    let scaleVisibility = false; // track if scale box is visible
-    let userNumber = null; 
+const scaleZoomButton = document.getElementById("scaleZoom");
+const geocoderContainer = document.getElementById("geocoder-container");
+const scaleBoxDiv = document.getElementById("scale-box");
+let scaleVisibility = false;
+let userNumber = null;
 
-    // ensure required elements exist
-    if (!scaleZoomButton || !geocoderContainer) {
-        console.error("Required elements not found in the DOM.");
-        return;
-    }
-
-    scaleBoxDiv.style.display = 'none'; // crucial to start hidden
+if (!scaleZoomButton || !geocoderContainer) {
+    console.error("Required elements not found in the DOM.");
+} else {
+    scaleBoxDiv.style.display = 'none';
 
     function attachScaleBoxListeners() {
         const scaleInput = document.getElementById('scale-input');
@@ -179,13 +175,12 @@ document.addEventListener("DOMContentLoaded", function () {
         attachScaleBoxListeners();
     }
 
-    // main button click handler to toggle scale box
     scaleZoomButton.addEventListener('click', () => {
-        scaleVisibility = !scaleVisibility; // toggle visibility state
-        if (scaleVisibility) { // show scale box
-            updateScaleBox(); // call helper function to update scale box content
+        scaleVisibility = !scaleVisibility;
+        if (scaleVisibility) {
+            updateScaleBox();
             scaleZoomButton.classList.add('active');
-        } else { // hide scale box
+        } else {
             scaleBoxDiv.style.display = 'none';
             scaleZoomButton.classList.remove('active');
         }
@@ -198,4 +193,4 @@ document.addEventListener("DOMContentLoaded", function () {
     map.on('zoom', () => {
         if (scaleVisibility) updateScaleBox();
     });
-});
+}
