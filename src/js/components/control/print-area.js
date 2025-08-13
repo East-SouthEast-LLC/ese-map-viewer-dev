@@ -91,16 +91,14 @@ function removeBoundingBox() {
 // MAIN PRINT AREA FUNCTION (event listener)
 // ============================================================================
 
-document.addEventListener("DOMContentLoaded", function () {
-    const pareaButton = document.getElementById('pareaButton');
-    const scaleBoxDiv = document.getElementById('scale-box');
-    let boundingBoxVisible = false; // Track visibility
+const pareaButton = document.getElementById('pareaButton');
+const scaleBoxDiv = document.getElementById('scale-box');
+let boundingBoxVisible = false; // Track visibility
 
-    if (!pareaButton || !scaleBoxDiv) {
-        console.error("Required elements not found in the DOM");
-        return;
-    }
-
+if (!pareaButton || !scaleBoxDiv) {
+    console.error("Required elements not found in the DOM");
+    return;
+} else {
     // Hide scale-box on page load
     scaleBoxDiv.style.display = 'none';
 
@@ -128,4 +126,4 @@ document.addEventListener("DOMContentLoaded", function () {
             updateBoundingBox();
         }
     });
-});
+};

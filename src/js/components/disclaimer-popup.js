@@ -1,14 +1,12 @@
 // In docs/control-disclaimer.js
 
-document.addEventListener('DOMContentLoaded', () => {
-    const disclaimerPopup = document.getElementById('disclaimer-popup');
-    // Update the script to find the new button by its ID
-    const acknowledgeButton = document.getElementById('acknowledge-disclaimer-btn');
+const disclaimerPopup = document.getElementById('disclaimer-popup');
+// Update the script to find the new button by its ID
+const acknowledgeButton = document.getElementById('acknowledge-disclaimer-btn');
 
-    if (!disclaimerPopup || !acknowledgeButton) {
-        return;
-    }
-
+if (!disclaimerPopup || !acknowledgeButton) {
+    return;
+} else {
     /**
      * Hides the disclaimer popup by removing the 'show' class
      * and sets a flag in sessionStorage.
@@ -33,4 +31,4 @@ document.addEventListener('DOMContentLoaded', () => {
             disclaimerPopup.classList.add('show');
         }, 500); // 0.5-second delay before showing
     }
-});
+};

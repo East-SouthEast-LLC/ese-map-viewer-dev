@@ -1,8 +1,9 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const identifyButton = document.getElementById('identifyButton');
-    const identifyBox = document.getElementById('identify-box');
-    if (!identifyButton || !identifyBox) return;
+const identifyButton = document.getElementById('identifyButton');
+const identifyBox = document.getElementById('identify-box');
 
+if (!identifyButton || !identifyBox) {
+    return;
+} else {
     let identifyMode = false;
 
     function handleIdentifyClick(e) {
@@ -37,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     let info = '';
                     const props = feature.properties;
                     
-                    // --- COMPLETED SWITCH STATEMENT ---
                     switch(feature.layer.id) {
                         case 'parcels':
                             info = `<strong>Parcel Address:</strong> ${props.ADDRESS}`;
@@ -143,4 +143,4 @@ document.addEventListener('DOMContentLoaded', () => {
             enterIdentifyMode();
         }
     });
-});
+};

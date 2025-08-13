@@ -17,17 +17,15 @@ function adjustFontSizeForPrint(element) {
     }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    const customPrintButton = document.getElementById("customPrintButton");
-    const customPrintBox = document.getElementById("custom-print-box");
-    let customPrintVisibility = false;
-    customPrintBox.style.display = 'none';
+const customPrintButton = document.getElementById("customPrintButton");
+const customPrintBox = document.getElementById("custom-print-box");
+let customPrintVisibility = false;
+customPrintBox.style.display = 'none';
 
-    if (!customPrintButton || !customPrintBox) {
-        console.error("Required custom print elements not found in the DOM.");
-        return;
-    }
-
+if (!customPrintButton || !customPrintBox) {
+    console.error("Required custom print elements not found in the DOM.");
+    return;
+} else {
     const printPresets = {
         'Conservation': [
             { page: 1, layers: ['parcel highlight', 'lidar contours', 'floodplain'] },
@@ -391,4 +389,4 @@ document.addEventListener("DOMContentLoaded", function () {
             customPrintBox.style.display = 'none';
         }
     });    
-});
+};

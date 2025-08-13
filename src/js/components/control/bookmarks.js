@@ -1,11 +1,10 @@
-// docs/control-bookmarks.js
 
-document.addEventListener('DOMContentLoaded', () => {
-    const bookmarkButton = document.getElementById('bookmarkButton');
-    const bookmarkBox = document.getElementById('bookmark-box');
+const bookmarkButton = document.getElementById('bookmarkButton');
+const bookmarkBox = document.getElementById('bookmark-box');
 
-    if (!bookmarkButton || !bookmarkBox) return;
-
+if (!bookmarkButton || !bookmarkBox) {
+    return;
+} else {
     function getBookmarks() {
         return JSON.parse(localStorage.getItem('eseMapBookmarks')) || [];
     }
@@ -88,6 +87,4 @@ li.appendChild(deleteBtn);
             document.getElementById('saveBookmarkButton').addEventListener('click', saveCurrentView);
         }
     });
-});
-
-// The duplicate generateShareLink function has been REMOVED from the end of this file.
+};
