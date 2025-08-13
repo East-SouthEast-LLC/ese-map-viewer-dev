@@ -92,7 +92,7 @@ GEOCODER CONTAINER (for control buttons and search bar)
   display: none;
   position: absolute;
   top: 0;
-  left: 330px; /* Adjusted for ad container and new menu position */
+  left: 335px; /* Adjusted for ad container and new menu position */
   z-index: 1;
   flex-direction: column;
   gap: 5px;
