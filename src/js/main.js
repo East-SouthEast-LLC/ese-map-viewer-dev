@@ -13,19 +13,19 @@ function adjustLayout() {
 
   const headerHeight = header.offsetHeight;
   const buffer = 70; // a 70px buffer to make the map shorter
-  const topOffset = headerHeight + 15; // get header height and add 15px for padding
+  const topOffset = headerHeight + 15; // a 15px buffer below the header
 
   // calculate the available height for the map
   const availableHeight = window.innerHeight - headerHeight - buffer;
 
-  // apply the new height to the map and menus
+  // apply the new height to the map and menu
   mapContainer.style.height = `${availableHeight}px`;
   menuContainer.style.maxHeight = `${availableHeight}px`;
-  menuContainer.style.top = `${topOffset}px`; // set top position for layer menu
 
+  // only apply the top offset to the geocoder container
   if (geocoderContainer) {
     geocoderContainer.style.maxHeight = `${availableHeight}px`;
-    geocoderContainer.style.top = `${topOffset}px`; // set top position for toolkit
+    geocoderContainer.style.top = `${topOffset}px`;
   }
 }
 
