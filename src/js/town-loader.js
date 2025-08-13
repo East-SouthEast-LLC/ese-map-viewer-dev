@@ -19,71 +19,82 @@
         // --- 1. build the <head> content ---
         document.head.innerHTML = `
             <meta charset="utf-8" />
-            <title>ESE Map Viewer</title>
+            <title>Show and hide layers</title>
             <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+            <script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
             <link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet" />
-            <link rel="stylesheet" href="https://east-southeast-llc.github.io/ese-map-viewer-dev/src/css/globals.css?v=3" type="text/css" />
+            
+            <link rel="stylesheet" href="https://east-southeast-llc.github.io/ese-map-viewer/css/globals.css?v=3" type="text/css" />
             <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css" type="text/css" />
-            <script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"><\/script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.11.0/proj4.js"><\/script>
-            <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"><\/script>
-            <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"><\/script>
-            <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"><\/script>
-            <script src="https://cdn.jsdelivr.net/npm/@turf/turf"><\/script>
-            <script src="https://unpkg.com/geotiff@2.0.7/dist-browser/geotiff.js"><\/script>
-            <script async src="https://www.googletagmanager.com/gtag/js?id=G-FYWY78FPHV"><\/script>
-            <script>
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-FYWY78FPHV');
-            <\/script>
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.11.0/proj4.js"></script>
+            <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/@turf/turf"></script>
+            <script src="https://unpkg.com/geotiff@2.0.7/dist-browser/geotiff.js"></script>
+
+            <script async src="https://www.googletagmanager.com/gtag/js?id=G-FYWY78FPHV"></script>
+                <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+
+                gtag('config', 'G-FYWY78FPHV');
+            </script>
         `;
 
         // --- 2. build the <body> content ---
         document.body.innerHTML = `
             <div id="disclaimer-popup" class="disclaimer-popup-container">
                 <h2>Welcome to the ESE Map Viewer</h2>
+                
                 <p class="disclaimer-text">
-                    this map is for illustrative purposes only and is not adequate for legal boundary determination, regulatory interpretation, or property conveyance. for official information, please consult the appropriate municipal and state agencies. for any questions regarding property lines, a licensed land surveyor should be consulted.
+                    This map is for illustrative purposes only and is not adequate for legal boundary determination, regulatory interpretation, or property conveyance. For official information, please consult the appropriate municipal and state agencies. For any questions regarding property lines, a licensed land surveyor should be consulted.
                 </p>
+                
                 <div class="disclaimer-actions">
-                  <a href="https://www.ese-llc.com/map-viewer-instructions" target="_blank" class="disclaimer-link disclaimer-btn">View Full Instructions</a>
-                  <button id="acknowledge-disclaimer-btn" class="disclaimer-button-red disclaimer-btn">Acknowledge</button>
+                <a href="https://www.ese-llc.com/map-viewer-instructions" target="_blank" class="disclaimer-link disclaimer-btn">View Full Instructions</a>
+                <button id="acknowledge-disclaimer-btn" class="disclaimer-button-red disclaimer-btn">Acknowledge</button>
                 </div>
             </div>
             <div id="ad-container-vertical">
-                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"><\/script>
-                <ins class="adsbygoogle" style="display:inline-block;width:120px;height:728px" data-ad-client="ca-pub-5235492504361528" data-ad-slot="4276954452"></ins>
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                <ins class="adsbygoogle"
+                    style="display:inline-block;width:120px;height:728px"
+                    data-ad-client="ca-pub-5235492504361528"
+                    data-ad-slot="4276954452"></ins>
                 <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({});
-                <\/script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
             </div>
+
             <nav id="menu"></nav>
             <button id="hamburger-button" aria-label="Toggle Menu"> &#9776; </button>
             <div id="map"></div>
+
             <div id="geocoder-container">
                 <div id="geocoder" data-tooltip="Search for a location"></div>
                 <div> 
-                  <button class="mapboxgl-ctrl-point" id="pointButton" aria-label="Point" data-tooltip="Drop a point on the map"></button>
-                  <button class="mapboxgl-ctrl-print" id="printButton" aria-label="Print" data-tooltip="Print map"></button>
-                  <button class="mapboxgl-ctrl-measure" id="distanceButton" aria-label="Measure" data-tooltip="Measure distances (on/off)"></button>
-                  <button class="mapboxgl-ctrl-legend" id="legendButton" aria-label="Legend" data-tooltip="Show/Hide Legend"></button>
-                  <button class="mapboxgl-ctrl-bookmark" id="bookmarkButton" aria-label="Bookmarks" data-tooltip="Save or load map views"></button>
+                <button class="mapboxgl-ctrl-point" id="pointButton" aria-label="Point" data-tooltip="Drop a point on the map"></button>
+                <button class="mapboxgl-ctrl-print" id="printButton" aria-label="Print" data-tooltip="Print map"></button>
+                <button class="mapboxgl-ctrl-measure" id="distanceButton" aria-label="Measure" data-tooltip="Measure distances (on/off)"></button>
+                <button class="mapboxgl-ctrl-legend" id="legendButton" aria-label="Legend" data-tooltip="Show/Hide Legend"></button>
+                <button class="mapboxgl-ctrl-bookmark" id="bookmarkButton" aria-label="Bookmarks" data-tooltip="Save or load map views"></button>
                 </div>
                 <div> 
-                  <button class="mapboxgl-ctrl-point-center" id="pointCButton" aria-label="Point Center" data-tooltip="Center the point or centerpoint"></button>
-                  <button class="mapboxgl-ctrl-parea" id="pareaButton" aria-label="Print Area" data-tooltip="Print Area"></button>
-                  <button class="mapboxgl-ctrl-identify" id="identifyButton" aria-label="Identify" data-tooltip="Identify all features at a point"></button>
-                  <button class="mapboxgl-ctrl-four" id="fourButton" aria-label="four" data-tooltip="Placeholder"></button>
-                  <button class="mapboxgl-ctrl-sZoom" id="scaleZoom" aria-label="Zoom to Scale" data-tooltip="Zoom to Scale"></button>
+                <button class="mapboxgl-ctrl-point-center" id="pointCButton" aria-label="Point Center" data-tooltip="Center the point or centerpoint"></button>
+                <button class="mapboxgl-ctrl-parea" id="pareaButton" aria-label="Print Area" data-tooltip="Print Area"></button>
+                <button class="mapboxgl-ctrl-identify" id="identifyButton" aria-label="Identify" data-tooltip="Identify all features at a point"></button>
+                <button class="mapboxgl-ctrl-four" id="fourButton" aria-label="four" data-tooltip="Placeholder"></button>
+                <button class="mapboxgl-ctrl-sZoom" id="scaleZoom" aria-label="Zoom to Scale" data-tooltip="Zoom to Scale"></button>
                 </div>
                 <div> 
-                  <button class="mapboxgl-ctrl-point-off" id="pointOffButton" aria-label="Point Off" data-tooltip="Remove the point from the map"></button>
-                  <button class="mapboxgl-ctrl-custom-print" id="customPrintButton" aria-label="Custom Print" data-tooltip="Create a custom multi-page printout"></button>
-                  <button class="mapboxgl-ctrl-clear" id="clearButton" aria-label="eight" data-tooltip="Clear measurements"></button>
-                  <button class="mapboxgl-ctrl-nine" id="nineButton" aria-label="nine" data-tooltip="Placeholder"></button>
-                  <button class="mapboxgl-ctrl-ten" id="tenButton" aria-label="ten" data-tooltip="Placeholder"></button>
+                <button class="mapboxgl-ctrl-point-off" id="pointOffButton" aria-label="Point Off" data-tooltip="Remove the point from the map"></button>
+                <button class="mapboxgl-ctrl-custom-print" id="customPrintButton" aria-label="Custom Print" data-tooltip="Create a custom multi-page printout"></button>
+                <button class="mapboxgl-ctrl-clear" id="clearButton" aria-label="eight" data-tooltip="Clear measurements"></button>
+                <button class="mapboxgl-ctrl-nine" id="nineButton" aria-label="nine" data-tooltip="Placeholder"></button>
+                <button class="mapboxgl-ctrl-ten" id="tenButton" aria-label="ten" data-tooltip="Placeholder"></button>
                 </div>
                 <button class="mapboxgl-ctrl-share" id="shareButton" data-tooltip="Share the map with a URL">Share Map</button>
                 <div id="distance-display"></div>
@@ -92,6 +103,7 @@
                 <div id="custom-print-box"></div>
                 <div id="bookmark-box"></div>
                 <div id="identify-box"></div>
+            </div>
             </div>
         `;
 
