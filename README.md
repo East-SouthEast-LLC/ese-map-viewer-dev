@@ -439,3 +439,4 @@ The "Custom Print" feature allows users to generate professional, multi-page PDF
 <!-- have some sort of config file for layers, dependencies, draw order, display name to file name conversions, popup info, maybe even color info for the legend -->
 <!-- seperate the popupHTML generation from the main app and put it in its own file -->
 <!-- create a way to fully dynamically generate town.html -->
+<!-- Type anything you want -->
