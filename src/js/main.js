@@ -13,7 +13,7 @@ function adjustLayout() {
 
   const headerHeight = header.offsetHeight;
   const buffer = 70; // a 70px buffer to make the map shorter
-  const topOffset = headerHeight + 45; // a 45px buffer below the header
+  const topOffset = headerHeight + 40; // a 40px buffer below the header
 
   // calculate the available height for the map
   const availableHeight = window.innerHeight - headerHeight - buffer;
