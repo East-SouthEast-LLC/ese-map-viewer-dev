@@ -3,7 +3,7 @@ const bookmarkButton = document.getElementById('bookmarkButton');
 const bookmarkBox = document.getElementById('bookmark-box');
 
 if (!bookmarkButton || !bookmarkBox) {
-    return;
+    console.error("Required elements not found in the DOM");
 } else {
     function getBookmarks() {
         return JSON.parse(localStorage.getItem('eseMapBookmarks')) || [];

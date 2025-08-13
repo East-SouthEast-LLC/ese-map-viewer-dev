@@ -5,7 +5,7 @@ const menu = document.getElementById('menu');
 const mapContainer = document.getElementById('map');
 
 if (!hamburgerButton || !menu) {
-    return;
+    console.error("Required elements not found in the DOM");
 } else {
     hamburgerButton.addEventListener('click', () => {
         // toggle the 'open' class on the menu

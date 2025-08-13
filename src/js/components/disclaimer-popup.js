@@ -5,7 +5,7 @@ const disclaimerPopup = document.getElementById('disclaimer-popup');
 const acknowledgeButton = document.getElementById('acknowledge-disclaimer-btn');
 
 if (!disclaimerPopup || !acknowledgeButton) {
-    return;
+    console.error("Required elements not found in the DOM");
 } else {
     /**
      * Hides the disclaimer popup by removing the 'show' class

@@ -2,7 +2,7 @@ const identifyButton = document.getElementById('identifyButton');
 const identifyBox = document.getElementById('identify-box');
 
 if (!identifyButton || !identifyBox) {
-    return;
+    console.error("Required elements not found in the DOM");
 } else {
     let identifyMode = false;
 

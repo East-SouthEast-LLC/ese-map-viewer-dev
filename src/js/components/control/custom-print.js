@@ -24,7 +24,6 @@ customPrintBox.style.display = 'none';
 
 if (!customPrintButton || !customPrintBox) {
     console.error("Required custom print elements not found in the DOM.");
-    return;
 } else {
     const printPresets = {
         'Conservation': [
