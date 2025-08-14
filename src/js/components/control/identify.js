@@ -19,10 +19,19 @@ if (!identifyButton || !identifyBox) {
             markerCoordinates.lng = clickCoords.lng;
         }
 
-        // get all queryable layers from the config that are currently visible
+        // get the list of layers available for the current town.
+        const townLayerIds = window.toggleableLayerIds;
+
+        // from the town's layers, find which ones are identifiable based on the master config.
         const queryableLayers = window.layerConfig
-            .filter(l => l.identifyConfig && map.getLayer(l.id) && map.getLayoutProperty(l.id, 'visibility') === 'visible')
+            .filter(l => townLayerIds.includes(l.id) && l.identifyConfig)
             .map(l => l.id);
+
+        const originalVisibilities = {};
+        queryableLayers.forEach(layerId => {
+            originalVisibilities[layerId] = map.getLayoutProperty(layerId, 'visibility') || 'none';
+            map.setLayoutProperty(layerId, 'visibility', 'visible');
+        });
 
         map.once('idle', () => {
             const features = map.queryRenderedFeatures(e.point, { layers: queryableLayers });
@@ -55,6 +64,11 @@ if (!identifyButton || !identifyBox) {
             
             identifyBox.innerHTML = html;
             identifyBox.style.display = 'block';
+
+            // restore original layer visibilities
+            queryableLayers.forEach(layerId => {
+                map.setLayoutProperty(layerId, 'visibility', originalVisibilities[layerId]);
+            });
 
             exitIdentifyMode();
         });
