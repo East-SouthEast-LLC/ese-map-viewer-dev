@@ -7,6 +7,9 @@
     "popupConfig": null,
     "identifyConfig": null,
     "legendConfig": {
+      "sources": [
+        { "id": "satellite" }
+      ],
       "items": [
         {
           "label": "Satellite View",
