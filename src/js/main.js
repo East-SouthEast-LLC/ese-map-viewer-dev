@@ -101,15 +101,8 @@
 
     function setupLayoutAdjustments() {
         adjustLayout();
-        let resizeTimer;
         window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(() => {
-                adjustLayout();
-                if (window.map) {
-                    window.map.resize(); // tells the map to resize to its container
-                }
-            }, 100);
+            setTimeout(() => map.resize(), 400);
         });
     }
 
