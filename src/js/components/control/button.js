@@ -1,52 +1,50 @@
-// control-button.js
+// /src/js/components/control/button.js
 
-let placingPoint = false; 
+// 'placingPoint', 'marker', and 'markerCoordinates' are now managed in town-loader.js
 
 function setPinPosition(lat, lng) {
-    markerCoordinates.lat = lat;
-    markerCoordinates.lng = lng;
-    console.log("Pin position updated:", markerCoordinates);
+    // check if the global markercoordinates object exists before setting
+    if (window.markerCoordinates) {
+        window.markerCoordinates.lat = lat;
+        window.markerCoordinates.lng = lng;
+        console.log("pin position updated:", window.markerCoordinates);
+    }
 }
 
 function dropPinAtCenter() {
-    if (marker) {
-        let { lng, lat } = marker.getLngLat();
-        markerCoordinates.lng = lng;
-        markerCoordinates.lat = lat;
-        map.flyTo({ center: markerCoordinates, essential: true });
+    // uses the global 'marker' and 'map' variables from town-loader.js
+    if (window.marker) {
+        let { lng, lat } = window.marker.getLngLat();
+        window.markerCoordinates.lng = lng;
+        window.markerCoordinates.lat = lat;
+        window.map.flyTo({ center: window.markerCoordinates, essential: true });
     } else {
-        marker = new mapboxgl.Marker().setLngLat(map.getCenter()).addTo(map);
-        markerCoordinates.lng = map.getCenter().lng;
-        markerCoordinates.lat = map.getCenter().lat;
+        window.marker = new mapboxgl.Marker().setLngLat(window.map.getCenter()).addTo(window.map);
+        window.markerCoordinates.lng = window.map.getCenter().lng;
+        window.markerCoordinates.lat = window.map.getCenter().lat;
     }
-    return markerCoordinates;
+    return window.markerCoordinates;
 }
 
 document.getElementById('pointButton').addEventListener('click', function () {
-    placingPoint = true;
+    window.placingPoint = true; // sets the global variable
     this.classList.add('active');
-    map.getCanvas().style.cursor = 'crosshair';
+    window.map.getCanvas().style.cursor = 'crosshair';
 });
-
-// The old map.on('click') handler has been removed from this file.
 
 document.getElementById('pointCButton').addEventListener('click', () => dropPinAtCenter());
 
 document.getElementById('pointOffButton').addEventListener('click', () => {
-    if (marker) {
-        marker.remove();
-        marker = null;
+    if (window.marker) {
+        window.marker.remove();
+        window.marker = null;
     }
     document.getElementById('pointButton').classList.remove('active');
-    markerCoordinates.lat = null;
-    markerCoordinates.lng = null;
+    window.markerCoordinates.lat = null;
+    window.markerCoordinates.lng = null;
 });
 
 function listVisibleLayers(map, layerIds) {
     if (!Array.isArray(layerIds)) return [];
     return layerIds.filter(id => map.getLayer(id) && map.getLayoutProperty(id, 'visibility') === 'visible');
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    // ... (tooltip code is unchanged)
-});

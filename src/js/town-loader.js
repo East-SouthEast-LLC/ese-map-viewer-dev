@@ -11,6 +11,18 @@
     }
     window.townId = townId;
 
+    // central state variables
+    let marker = null;
+    const markerCoordinates = { lat: null, lng: null };
+    let placingPoint = false;
+    let lastViewedPanoId = null; 
+
+    // expose variables globally so all control scripts can use them
+    window.marker = marker;
+    window.markerCoordinates = markerCoordinates;
+    window.placingPoint = placingPoint;
+    window.lastViewedPanoId = lastViewedPanoId;
+    
     /**
      * dynamically creates and appends a script tag to the body.
      * returns a promise that resolves when the script is loaded.
@@ -77,7 +89,7 @@
         if (!header || !mapContainer || !menuContainer) return;
         const headerHeight = header.offsetHeight;
         const buffer = 70;
-        const topOffset = headerHeight + 40;
+        const topOffset = headerHeight + 40; // using your 40px buffer
         const availableHeight = window.innerHeight - headerHeight - buffer;
         mapContainer.style.height = `${availableHeight}px`;
         menuContainer.style.maxHeight = `${availableHeight}px`;
@@ -94,6 +106,18 @@
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(adjustLayout, 100);
         });
+    }
+
+    // --- new: added missing marker placement function ---
+    function handleMarkerPlacement(lngLat) {
+        const { lat, lng } = lngLat;
+        setPinPosition(lat, lng); 
+        if (window.marker) window.marker.remove();
+        window.marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
+        window.placingPoint = false; 
+        document.getElementById('pointButton').classList.remove('active');
+        map.getCanvas().style.cursor = '';
+        trackEvent('place_marker', {});
     }
 
     // --- main execution logic ---
@@ -185,7 +209,6 @@
 
                                 Promise.all(controlPromises).then(() => {
                                     console.log("all control scripts loaded.");
-                                    // finally, load and set up the menu
                                     loadScript("https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/toggleable-menu.js?v=2")
                                         .then(() => {
                                             setupToggleableMenu();
@@ -198,7 +221,7 @@
                     });
             });
             map.on('click', (e) => {
-                if (placingPoint) {
+                if (window.placingPoint) {
                     handleMarkerPlacement(e.lngLat);
                     return;
                 }
