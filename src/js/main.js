@@ -307,21 +307,20 @@
                     return;
                 }
                 
-                // check if any tool that uses map clicks is active. if so, do nothing.
                 const identifyButton = document.getElementById('identifyButton');
                 const distanceButton = document.getElementById('distanceButton');
                 if (identifyButton?.classList.contains('active') || distanceButton?.classList.contains('active')) {
                     return;
                 }
 
-                // check if the click was on a panorama to avoid double events
                 const panoFeatures = map.queryRenderedFeatures(e.point, { layers: ['panoramas'] });
                 if (panoFeatures.length > 0) {
                     return; 
                 }
 
+                const townLayerIds = window.toggleableLayerIds;
                 const queryableLayers = window.layerConfig
-                    .filter(l => l.popupConfig)
+                    .filter(l => townLayerIds.includes(l.id) && l.popupConfig)
                     .map(l => l.id);
 
                 const features = map.queryRenderedFeatures(e.point, { layers: queryableLayers });
