@@ -112,8 +112,7 @@
             }, 400);
         });
     }
-
-    // --- new: added missing marker placement function ---
+    
     function handleMarkerPlacement(lngLat) {
         const { lat, lng } = lngLat;
         setPinPosition(lat, lng); 
@@ -123,6 +122,48 @@
         document.getElementById('pointButton').classList.remove('active');
         map.getCanvas().style.cursor = '';
         trackEvent('place_marker', {});
+    }
+
+    function openPanoramaViewer(panoFile) {
+        const panoId = panoFile;
+
+        // update feature state to change color of viewed points
+        if (window.lastViewedPanoId) {
+            map.setFeatureState({ source: 'panoramas-source', id: window.lastViewedPanoId }, { viewed: false });
+        }
+        map.setFeatureState({ source: 'panoramas-source', id: panoId }, { viewed: true });
+        window.lastViewedPanoId = panoId;
+
+        // create and show the modal
+        const modal = document.createElement('div');
+        modal.id = 'panorama-modal';
+        modal.style.position = 'fixed';
+        modal.style.left = '0';
+        modal.style.top = '0';
+        modal.style.width = '100%';
+        modal.style.height = '100%';
+        modal.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+        modal.style.zIndex = '10000';
+        modal.style.display = 'flex';
+        modal.style.justifyContent = 'center';
+        modal.style.alignItems = 'center';
+
+        const iframe = document.createElement('iframe');
+        iframe.src = `/pano-viewer?pano=${panoFile}`;
+        iframe.style.width = '90%';
+        iframe.style.height = '90%';
+        iframe.style.border = 'none';
+
+        modal.appendChild(iframe);
+        document.body.appendChild(modal);
+
+        modal.addEventListener('click', () => {
+            document.body.removeChild(modal);
+            if (window.lastViewedPanoId) {
+                map.setFeatureState({ source: 'panoramas-source', id: window.lastViewedPanoId }, { viewed: false });
+                window.lastViewedPanoId = null;
+            }
+        });
     }
 
     // --- main execution logic ---
@@ -231,8 +272,15 @@
                     return;
                 }
 
-                // ** an error was occurring here because we were querying all layers, including usgs quad **
-                // ** fix: only query layers that have a popupconfig defined **
+                // ** new: check for panoramas first **
+                const panoFeatures = map.queryRenderedFeatures(e.point, { layers: ['panoramas'] });
+                if (panoFeatures.length > 0) {
+                    const panoFile = panoFeatures[0].properties.filename;
+                    openPanoramaViewer(panoFile);
+                    return; // exit the function to avoid showing a regular popup
+                }
+
+                // if no panorama was clicked, proceed with the normal popup logic
                 const queryableLayers = window.layerConfig
                     .filter(l => l.popupConfig)
                     .map(l => l.id);
