@@ -7,17 +7,18 @@
     "popupConfig": null,
     "identifyConfig": null,
     "legendConfig": {
-      "sources": [
-        { "id": "satellite" }
-      ],
-      "items": [
-        {
-          "label": "Satellite View",
-          "color": "#808080",
-          "opacity": 1.0,
-          "isLine": false
-        }
-      ]
+        "displayName": "Satellite Imagery",
+        "sources": [
+            { "id": "satellite" }
+        ],
+        "items": [
+            {
+                "label": "Satellite View",
+                "color": "#808080",
+                "opacity": 1.0,
+                "isLine": false
+            }
+        ]
     }
   },
   {
