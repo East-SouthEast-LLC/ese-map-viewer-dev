@@ -1,5 +1,8 @@
 // src/js/components/control/legend.js
 
+// define the legendData globally
+let legendData = [];
+
 function getPrintBoundingBox() {
     if (!map) return;
     const center = map.getCenter();
@@ -31,9 +34,8 @@ function getLegendForPrint(expectedLayerIds = []) {
     const allItemsToRender = []; 
     const renderedLegendSections = new Set();
     
-    const allQueryableLayers = (window.layerConfig || [])
-        .flatMap(l => l.legendConfig?.sources?.map(s => s.id) || [])
-        .filter(id => map.getLayer(id) && map.getLayoutProperty(id, 'visibility') === 'visible');
+    const allQueryableLayers = legendData.flatMap(l => l.sources ? l.sources.map(s => s.id) : [])
+                                         .filter(id => map.getLayer(id) && map.getLayoutProperty(id, 'visibility') === 'visible');
                                          
     const allVisibleFeatures = allQueryableLayers.length > 0 ? map.queryRenderedFeatures(printPixelBoundingBox, { layers: allQueryableLayers }) : [];
 
@@ -44,52 +46,59 @@ function getLegendForPrint(expectedLayerIds = []) {
         return acc;
     }, {});
 
-    (window.layerConfig || []).forEach(layerInfo => {
-        if (!layerInfo.legendConfig) return;
 
-        const { displayName, legendConfig } = layerInfo;
-        const { sources, items } = legendConfig;
-
-        if (layerInfo.id === 'usgs-quad-legend') {
-            if (window.usgsTilesInitialized && map.getZoom() >= 12) {
-                allItemsToRender.push(`<div class="legend-section">${displayName}</div>`);
-                const item = items[0];
+    legendData.forEach(layerInfo => {
+        if (layerInfo.displayName === "Satellite Imagery") {
+            if (map.getLayer('satellite') && map.getLayoutProperty('satellite', 'visibility') === 'visible') {
+                allItemsToRender.push(`<div class="legend-section">${layerInfo.displayName}</div>`);
+                const item = layerInfo.items[0];
                 const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
+                const swatchClass = 'color-box';
                 allItemsToRender.push(
-                    `<div class="legend-item"><span class="color-box" style="${style}"></span><span>${item.label}</span></div>`
+                    `<div class="legend-item">
+                        <span class="${swatchClass}" style="${style}"></span>
+                        <span>${item.label}</span>
+                    </div>`
                 );
-                renderedLegendSections.add(displayName);
+                renderedLegendSections.add(layerInfo.displayName);
             }
             return;
         }
 
-        // handle simple, non-source-based legend items
-        if (!sources) {
-            if (map.getLayer(layerInfo.id) && map.getLayoutProperty(layerInfo.id, 'visibility') === 'visible') {
-                allItemsToRender.push(`<div class="legend-section">${displayName}</div>`);
-                items.forEach(item => {
-                    const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
-                    const swatchClass = item.isLine ? 'color-line' : 'color-box';
-                    allItemsToRender.push(
-                        `<div class="legend-item"><span class="${swatchClass}" style="${style}"></span><span>${item.label}</span></div>`
-                    );
-                });
-                renderedLegendSections.add(displayName);
+        if (layerInfo.id === 'usgs-quad-legend') {
+            if (window.usgsTilesInitialized && map.getZoom() >= 12) {
+                allItemsToRender.push(`<div class="legend-section">${layerInfo.displayName}</div>`);
+                const item = layerInfo.items[0];
+                const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
+                const swatchClass = 'color-box';
+                allItemsToRender.push(
+                    `<div class="legend-item">
+                        <span class="${swatchClass}" style="${style}"></span>
+                        <span>${item.label}</span>
+                    </div>`
+                );
+                renderedLegendSections.add(layerInfo.displayName);
             }
             return;
         }
         
-        const sourceLayerIds = sources.map(s => s.id);
+        if (!layerInfo.sources) {
+            return;
+        }
+
+        const sourceLayerIds = layerInfo.sources.map(s => s.id);
         const visibleFeaturesForLayer = sourceLayerIds.flatMap(id => featuresByLayer[id] || []);
 
-        if (visibleFeaturesForLayer.length === 0) return;
+        if (visibleFeaturesForLayer.length === 0) {
+            return;
+        }
 
         const itemsToShow = new Set();
         const matchedFeatureIds = new Set();
 
-        items.forEach(item => {
+        layerInfo.items.forEach(item => {
             if (!item.code && !item.match) {
-                const itemLayerId = item.id || (sources.length === 1 ? sources[0].id : null);
+                const itemLayerId = item.id || (layerInfo.sources.length === 1 ? layerInfo.sources[0].id : null);
                 if (itemLayerId && featuresByLayer[itemLayerId] && featuresByLayer[itemLayerId].length > 0) {
                     itemsToShow.add(item.label);
                 }
@@ -97,159 +106,224 @@ function getLegendForPrint(expectedLayerIds = []) {
             }
 
             for (const feature of visibleFeaturesForLayer) {
-                if (matchedFeatureIds.has(feature.id) && item.code !== "__default__") continue;
+                if (matchedFeatureIds.has(feature.id) && item.code !== "__default__") {
+                    continue;
+                }
                 
                 const props = feature.properties;
 
                 if (item.match) { 
                     const rule = item.match;
-                    if (props[rule.property] === rule.value) itemsToShow.add(item.label); 
-                    else if (rule.property === "DATE" && (Number(props.DATE) >= rule.min && Number(props.DATE) <= rule.max)) itemsToShow.add(item.label); 
-                    else if (rule.property === "_LOT_SIZE" && (Number(props._LOT_SIZE) >= rule.min && Number(props._LOT_SIZE) <= rule.max)) itemsToShow.add(item.label);
+                    if (props[rule.property] === rule.value) { itemsToShow.add(item.label); } 
+                    else if (rule.property === "DATE" && (Number(props.DATE) >= rule.min && Number(props.DATE) <= rule.max)) { itemsToShow.add(item.label); } 
+                    else if (rule.property === "_LOT_SIZE" && (Number(props._LOT_SIZE) >= rule.min && Number(props._LOT_SIZE) <= rule.max)) { itemsToShow.add(item.label); }
                 } else if (item.code && item.code !== "__default__") {
-                    const source = sources.find(s => s.id === feature.layer.id);
+                    const source = layerInfo.sources.find(s => s.id === feature.layer.id);
                     if (source && String(props[source.propertyKey]) === String(item.code)) {
                         itemsToShow.add(item.label);
                         matchedFeatureIds.add(feature.id);
                     }
-                } else if (item.code === "__default__") {
+                } else if (item.code && item.code === "__default__") {
                     itemsToShow.add(item.label);
                 }
             }
         });
         
-        const hasSpecificItem = items.some(item => item.code !== "__default__" && itemsToShow.has(item.label));
-        const defaultItem = items.find(item => item.code === "__default__");
+        const hasSpecificItem = layerInfo.items.some(item => item.code !== "__default__" && itemsToShow.has(item.label));
+        const defaultItem = layerInfo.items.find(item => item.code === "__default__");
         if (hasSpecificItem && defaultItem && itemsToShow.has(defaultItem.label)) {
             itemsToShow.delete(defaultItem.label);
         }
 
         if (itemsToShow.size > 0) {
-            allItemsToRender.push(`<div class="legend-section">${displayName}</div>`);
-            renderedLegendSections.add(displayName);
-            const visibleItems = items.filter(item => itemsToShow.has(item.label));
+            allItemsToRender.push(`<div class="legend-section">${layerInfo.displayName}</div>`);
+            renderedLegendSections.add(layerInfo.displayName);
+            const visibleItems = layerInfo.items.filter(item => itemsToShow.has(item.label));
             visibleItems.forEach(item => {
                 const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
                 const swatchClass = item.isLine ? 'color-line' : 'color-box';
                 allItemsToRender.push(
-                    `<div class="legend-item"><span class="${swatchClass}" style="${style}"></span><span>${item.label}</span></div>`
+                    `<div class="legend-item">
+                        <span class="${swatchClass}" style="${style}"></span>
+                        <span>${item.label}</span>
+                    </div>`
                 );
             });
         }
     });
     
+    if (expectedLayerIds && expectedLayerIds.length > 0) {
+        const expectedButNotRendered = [];
+        const expectedDisplayNames = new Set();
+        expectedLayerIds.forEach(expectedId => {
+            const layerInfo = legendData.find(info => 
+                (info.sources && info.sources.some(s => s.id === expectedId)) || (info.items && info.items.some(i => i.id === expectedId))
+            );
+            if (layerInfo) {
+                expectedDisplayNames.add(layerInfo.displayName);
+            }
+        });
+        
+        expectedDisplayNames.forEach(displayName => {
+            if (!renderedLegendSections.has(displayName)) {
+                expectedButNotRendered.push(
+                    `<div class="legend-item-not-present">${displayName}: Not Present in Print Area</div>`
+                );
+            }
+        });
+
+        if (expectedButNotRendered.length > 0) {
+            allItemsToRender.push(...expectedButNotRendered);
+        }
+    }
+
     if (allItemsToRender.length === 0) {
         return '<div class="legend-grid"></div>';
     }
 
-    return `<div class="legend-grid">${allItemsToRender.join('')}</div>`;
-}
-
-function updateLegend() {
-    const legendBox = document.getElementById("legend-box");
-    if (legendBox.style.display === 'none') return;
-
-    let legendHTML = '';
-
-    (window.layerConfig || []).forEach(layerInfo => {
-        if (!layerInfo.legendConfig) return;
-
-        const { id, displayName, legendConfig } = layerInfo;
-        const { sources, items } = legendConfig;
-
-        if (id === 'usgs-quad-legend') {
-            if (window.usgsTilesInitialized && map.getZoom() >= 12) {
-                legendHTML += `<div class="legend-title">${displayName}</div>`;
-                const item = items[0];
-                const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
-                legendHTML += `<div class="legend-item-row"><span class="color-box" style="${style}"></span><span>${item.label}</span></div>`;
-            }
-            return;
-        }
-
-        // handle simple layers without sources (like satellite, parcel highlight)
-        if (!sources) {
-            if (map.getLayer(id) && map.getLayoutProperty(id, 'visibility') === 'visible') {
-                legendHTML += `<div class="legend-title">${displayName}</div>`;
-                items.forEach(item => {
-                    const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
-                    const swatchClass = item.isLine ? 'color-line' : 'color-box';
-                    legendHTML += `<div class="legend-item-row"><span class="${swatchClass}" style="${style}"></span><span>${item.label}</span></div>`;
-                });
-            }
-            return;
-        }
-
-        const sourceIds = sources.map(s => s.id).filter(id => map.getLayer(id));
-        if (sourceIds.length === 0) return;
-        
-        const allVisibleFeatures = map.queryRenderedFeatures({ layers: sourceIds });
-        if (allVisibleFeatures.length === 0) return;
-
-        const itemsToShow = new Set();
-        const matchedFeatureIds = new Set();
-
-        items.forEach(item => {
-            if (!item.code && !item.match) {
-                if (map.queryRenderedFeatures({ layers: [item.id] }).length > 0) {
-                    itemsToShow.add(item.label);
-                }
-                return; 
-            }
-
-            for (const feature of allVisibleFeatures) {
-                if (matchedFeatureIds.has(feature.id)) continue;
-                
-                const props = feature.properties;
-                
-                if (item.match) {
-                    const rule = item.match;
-                    if (props[rule.property] === rule.value) itemsToShow.add(item.label); 
-                    else if (rule.property === "DATE" && (Number(props.DATE) >= rule.min && Number(props.DATE) <= rule.max)) itemsToShow.add(item.label); 
-                    else if (rule.property === "_LOT_SIZE" && (Number(props._LOT_SIZE) >= rule.min && Number(props._LOT_SIZE) <= rule.max)) itemsToShow.add(item.label); 
-                } else if (item.code && item.code !== "__default__") {
-                    const source = sources.find(s => s.id === feature.layer.id);
-                    if (source && String(props[source.propertyKey]) === String(item.code)) {
-                        itemsToShow.add(item.label);
-                        matchedFeatureIds.add(feature.id);
-                    }
-                } else if (item.code === "__default__") {
-                    itemsToShow.add(item.label);
-                }
-            }
-        });
-        
-        const hasSpecificItem = items.some(item => item.code !== "__default__" && itemsToShow.has(item.label));
-        const defaultItem = items.find(item => item.code === "__default__");
-        if (hasSpecificItem && defaultItem && itemsToShow.has(defaultItem.label)) {
-             itemsToShow.delete(defaultItem.label);
-        }
-
-        if (itemsToShow.size > 0) {
-            legendHTML += `<div class="legend-title">${displayName}</div>`;
-            const visibleItems = items.filter(item => itemsToShow.has(item.label));
-            visibleItems.forEach(item => {
-                const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
-                const swatchClass = item.isLine ? 'color-line' : 'color-box';
-                legendHTML += `<div class="legend-item-row"><span class="${swatchClass}" style="${style}"></span><span>${item.label}</span></div>`;
-            });
-        }
-    });
-
-    if (legendHTML === '') {
-        legendHTML = '<div>No layers with a legend are currently visible.</div>';
+    const maxPrintableItems = 13;
+    let finalItemsHTML = '';
+    if (allItemsToRender.length > maxPrintableItems) {
+        const truncatedItems = allItemsToRender.slice(0, maxPrintableItems - 1);
+        truncatedItems.push('<div class="legend-item">... and more</div>');
+        finalItemsHTML = truncatedItems.join('');
+    } else {
+        finalItemsHTML = allItemsToRender.join('');
     }
-    
-    legendBox.innerHTML = legendHTML;
+    return `<div class="legend-grid">${finalItemsHTML}</div>`;
 }
 
 const legendButton = document.getElementById("legendButton");
 const legendBox = document.getElementById("legend-box");
 let legendVisibility = false;
 legendBox.style.display = 'none';
-window.updateLegend = updateLegend;
 
-if (legendButton && legendBox) {
+if (!legendButton || !legendBox) {
+    console.error("Required elements not found in the DOM.");
+} else {
+    // use the globally available window.layerconfig
+    legendData = window.layerConfig.map(config => ({
+        ...config.legendConfig,
+        id: config.id, // ensure id is present for usgs handling
+        displayName: config.displayName,
+        sources: config.legendConfig ? config.legendConfig.sources : undefined
+    })).filter(Boolean);
+
+
+    function updateLegend() {
+        if (legendBox.style.display === 'none') return;
+        let legendHTML = '';
+
+        legendData.forEach(layerInfo => {
+            if (layerInfo.id === 'usgs-quad-legend') {
+                if (window.usgsTilesInitialized && map.getZoom() >= 12) {
+                    legendHTML += `<div class="legend-title">${layerInfo.displayName}</div>`;
+                    const item = layerInfo.items[0];
+                    const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
+                    const swatchClass = 'color-box';
+                    legendHTML += `
+                        <div class="legend-item-row">
+                            <span class="${swatchClass}" style="${style}"></span>
+                            <span>${item.label}</span>
+                        </div>
+                    `;
+                }
+                return; 
+            }
+
+            const sourceIds = (layerInfo.sources || []).map(s => s.id).filter(id => map.getLayer(id));
+            if (sourceIds.length === 0) {
+                if (layerInfo.displayName === "Satellite Imagery" && map.getLayer('satellite') && map.getLayoutProperty('satellite', 'visibility') === 'visible') {
+                    legendHTML += `<div class="legend-title">${layerInfo.displayName}</div>`;
+                    const item = layerInfo.items[0];
+                    const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
+                    const swatchClass = item.isLine ? 'color-line' : 'color-box';
+                    legendHTML += `
+                        <div class="legend-item-row">
+                            <span class="${swatchClass}" style="${style}"></span>
+                            <span>${item.label}</span>
+                        </div>
+                    `;
+                }
+                return;
+            }
+            
+            const allVisibleFeatures = map.queryRenderedFeatures({ layers: sourceIds });
+
+            if (allVisibleFeatures.length === 0) return;
+
+            const featuresByLayer = allVisibleFeatures.reduce((acc, feature) => {
+                const layerId = feature.layer.id;
+                if (!acc[layerId]) { acc[layerId] = []; }
+                acc[layerId].push(feature);
+                return acc;
+            }, {});
+
+            const itemsToShow = new Set();
+            const matchedFeatureIds = new Set();
+
+            layerInfo.items.forEach(item => {
+                if (!item.code && !item.match) {
+                    const itemLayerId = item.id || (layerInfo.sources.length === 1 ? layerInfo.sources[0].id : null);
+                    if (itemLayerId && featuresByLayer[itemLayerId] && featuresByLayer[itemLayerId].length > 0) {
+                        itemsToShow.add(item.label);
+                    }
+                    return; 
+                }
+
+                for (const feature of allVisibleFeatures) {
+                    if (matchedFeatureIds.has(feature.id)) { continue; }
+                    
+                    const props = feature.properties;
+                    
+                    if (item.match) {
+                        const rule = item.match;
+                        if (props[rule.property] === rule.value) { itemsToShow.add(item.label); } 
+                        else if (rule.property === "DATE" && (Number(props.DATE) >= rule.min && Number(props.DATE) <= rule.max)) { itemsToShow.add(item.label); } 
+                        else if (rule.property === "_LOT_SIZE" && (Number(props._LOT_SIZE) >= rule.min && Number(props._LOT_SIZE) <= rule.max)) { itemsToShow.add(item.label); } 
+                    } else if (item.code && item.code !== "__default__") {
+                        const source = layerInfo.sources.find(s => s.id === feature.layer.id);
+                        if (source && String(props[source.propertyKey]) === String(item.code)) {
+                            itemsToShow.add(item.label);
+                            matchedFeatureIds.add(feature.id);
+                        }
+                    } else if (item.code && item.code === "__default__") {
+                        itemsToShow.add(item.label);
+                    }
+                }
+            });
+            
+            const hasSpecificItem = layerInfo.items.some(item => item.code !== "__default__" && itemsToShow.has(item.label));
+            const defaultItem = layerInfo.items.find(item => item.code === "__default__");
+            if (hasSpecificItem && defaultItem && itemsToShow.has(defaultItem.label)) {
+                 itemsToShow.delete(defaultItem.label);
+            }
+
+            if (itemsToShow.size > 0) {
+                legendHTML += `<div class="legend-title">${layerInfo.displayName}</div>`;
+                const visibleItems = layerInfo.items.filter(item => itemsToShow.has(item.label));
+                visibleItems.forEach(item => {
+                    const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
+                    const swatchClass = item.isLine ? 'color-line' : 'color-box';
+                    legendHTML += `
+                        <div class="legend-item-row">
+                            <span class="${swatchClass}" style="${style}"></span>
+                            <span>${item.label}</span>
+                        </div>
+                    `;
+                });
+            }
+        });
+
+        if (legendHTML === '') {
+            legendHTML = '<div>No layers with a legend are currently visible.</div>';
+        }
+        
+        legendBox.innerHTML = legendHTML;
+    }
+
+    window.updateLegend = updateLegend;
+
     legendButton.addEventListener('click', () => {
         legendVisibility = !legendVisibility;
         if (legendVisibility) {
