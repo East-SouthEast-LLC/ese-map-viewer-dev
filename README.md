@@ -336,32 +336,43 @@ All of the HTML for the toolkit is generated inside the `buildToolkit()` functio
 Open `src/js/main.js` and find the `geocoderContainer.innerHTML` section. You'll see several placeholder buttons. Replace one of them with the HTML for your new button. Make sure the `id` matches the one you used in your new JavaScript file.
 
 **Before:**
-```javascript
+```HTML
 // ... inside buildToolkit() in main.js
 <div> 
-    // ... other buttons ...
+    <!-- ... other buttons ... -->
     <button class="mapboxgl-ctrl-four" id="fourButton" aria-label="four" data-tooltip="Placeholder"></button>
-    // ... other buttons ...
+    <!-- ... other buttons ... -->
 </div>
 ```
 
 **After:**
-```javascript
-// ... inside buildToolkit() in main.js
+```HTML
+<!-- ... inside buildToolkit() in main.js -->
 <div> 
-    // ... other buttons ...
+    <!-- ... other buttons ... -->
     <button class="mapboxgl-ctrl-new-tool" id="newToolButton" aria-label="New Tool" data-tooltip="This is my new tool"></button>
-    // ... other buttons ...
+    <!-- ... other buttons ... -->
+</div>
+```
+
+**After:**
+```HTML
+<!-- ... inside buildToolkit() in main.js -->
+<div> 
+    <!-- ... other buttons ... -->
+    <button class="mapboxgl-ctrl-new-tool" id="newToolButton" aria-label="New Tool" data-tooltip="This is my new tool"></button>
+    <!-- ... other buttons ... -->
 </div>
 ```
 If your tool needs a popup panel, add its `div` container at the bottom of the `innerHTML` string, giving it the `id` you used in your script.
 
-```javascript
-// ... at the end of the innerHTML string in main.js
+```HTML
+<!-- ... at the end of the innerHTML string in main.js -->
 <div id="custom-print-box"></div>
 <div id="bookmark-box"></div>
 <div id="identify-box"></div>
-<div id="new-tool-box"></div> ```
+<div id="new-tool-box"></div> 
+```
 
 #### Step 3: Style the New Button and Panel
 
@@ -401,11 +412,11 @@ The final step is to tell the application to load your new script. Open `src/js/
 ```javascript
 // ... inside main.js
 const controlScripts = [
-    https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/button.js",
+    "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/button.js",
     // ... other scripts ...
-    https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/bookmarks.js,
-    https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/identify.js,
-    https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/new-control.js // <-- add your new script's path here
+    "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/bookmarks.js",
+    "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/identify.js",
+    "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/new-control.js" // <-- add your new script's path here
 ];
 ```
 
