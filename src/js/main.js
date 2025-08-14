@@ -178,9 +178,14 @@
                         .filter(layer => townData.layers.includes(layer.id))
                         .sort((a, b) => a.drawOrder - b.drawOrder);
 
+                    // define a function to load a single layer script
+                    const loadLayerScript = (scriptName) => {
+                        return loadScript(`https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/layers/${scriptName}`);
+                    };
+
                     // load layer scripts sequentially based on draw order
                     for (const layer of townLayers) {
-                        await loadScript(`https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/layers/${layer.scriptName}`);
+                        await loadLayerScript(layer.scriptName);
                     }
                     
                     console.log("all layer scripts loaded.");
@@ -226,10 +231,14 @@
                     return;
                 }
 
-                // use the new global layerConfig to get all possible layer IDs
-                const allConfiguredLayers = window.layerConfig.map(l => l.id);
-                
-                const features = map.queryRenderedFeatures(e.point, { layers: allConfiguredLayers });
+                // ** an error was occurring here because we were querying all layers, including usgs quad **
+                // ** fix: only query layers that have a popupconfig defined **
+                const queryableLayers = window.layerConfig
+                    .filter(l => l.popupConfig)
+                    .map(l => l.id);
+
+                const features = map.queryRenderedFeatures(e.point, { layers: queryableLayers });
+
                 if (!features.length) return;
                 
                 const topFeature = features[0];
