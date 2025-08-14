@@ -154,7 +154,7 @@
                 // fetch town and layer configurations
                 const [townConfigResponse, layerConfigResponse] = await Promise.all([
                     fetch('https://east-southeast-llc.github.io/ese-map-viewer-dev/assets/data/town_config.json'),
-                    fetch('https://east-southeast-llc.github.io/ese-map-viewer-dev/src/config/layer_config.json')
+                    fetch('https://east-southeast-llc.github.io/ese-map-viewer-dev/assets/data/layer_config.json')
                 ]);
 
                 const townConfig = await townConfigResponse.json();
