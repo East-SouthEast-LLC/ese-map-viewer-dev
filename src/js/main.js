@@ -101,8 +101,10 @@
 
     function setupLayoutAdjustments() {
         adjustLayout();
+        let resizeTimer;
         window.addEventListener('resize', () => {
-            setTimeout(() => map.resize(), 400);
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(adjustLayout, 100);
         });
     }
 
