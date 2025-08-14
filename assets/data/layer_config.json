@@ -42,14 +42,18 @@
     "popupConfig": null,
     "identifyConfig": null,
     "legendConfig": {
-      "items": [
-        {
-          "label": "MassGIS Parcels",
-          "color": "#a0fa39",
-          "opacity": 1.0,
-          "isLine": true
-        }
-      ]
+        "displayName": "Parcel Highlight",
+        "sources": [
+            { "id": "parcel highlight" }
+        ],
+        "items": [
+            {
+                "label": "MassGIS Parcels",
+                "color": "#a0fa39",
+                "opacity": 1.0,
+                "isLine": true
+            }
+        ]
     }
   },
   {
@@ -61,14 +65,17 @@
     "popupConfig": null,
     "identifyConfig": null,
     "legendConfig": {
-        "sources": [{"id": "lidar contours", "propertyKey": "Elevation"}],
+        "displayName": "LIDAR Contours",
+        "sources": [
+            { "id": "lidar contours", "propertyKey": "Elevation" }
+        ],
         "items": [
             {
-                "code": "__default__",
-                "label": "2' Contour Line",
-                "color": "#07C327",
-                "opacity": 1.0,
-                "isLine": true
+            "code": "__default__",
+            "label": "2' Contour Line",
+            "color": "#07C327",
+            "opacity": 1.0,
+            "isLine": true
             }
         ]
     }
@@ -85,7 +92,10 @@
         "template": "<strong>Historic Aerial:</strong> Photo from {DATE}"
     },
     "legendConfig": {
-        "sources": [{"id": "agis"}],
+        "displayName": "Aerial Photo Coverage",
+        "sources": [
+            { "id": "agis" }
+        ],
         "items": [
             { "label": "Historic Aerial Photo", "color": "#3CD935", "opacity": 0.4, "isLine": false }
         ]
@@ -103,7 +113,10 @@
         "template": "<strong>Historic District:</strong> {District}"
     },
     "legendConfig": {
-        "sources": [{"id": "historic", "propertyKey": "Status"}],
+        "displayName": "Historic Districts",
+        "sources": [
+            { "id": "historic", "propertyKey": "Status" }
+        ],
         "items": [
             { "code": "Proposed", "label": "Proposed", "color": "#F2BD67", "opacity": 0.4, "isLine": false },
             { "code": "1024-0018", "label": "Old Kings Highway", "color": "#D75F48", "opacity": 0.4, "isLine": false }
@@ -260,7 +273,10 @@
         "template": "<strong>Zone II:</strong> Wellhead Protection Area"
     },
     "legendConfig": {
-        "sources": [{"id": "zone II"}],
+        "displayName": "Zone II",
+        "sources": [
+            { "id": "zone II" }
+        ],
         "items": [
             { "label": "Zone II Area", "color": "#2758d6", "opacity": 0.4, "isLine": false }
         ]
@@ -508,7 +524,27 @@
     "identifyConfig": {
         "template": "<strong>Sewer Service:</strong> Year ~{CONTRACT}"
     },
-    "legendConfig": null
+    "legendConfig": {
+                "displayName": "Sewer Service Area",
+        "sources": [
+            { "id": "sewer", "propertyKey": "CONTRACT" }
+        ],
+        "items": [
+            { "code": "2010", "label": "2010", "color": "#473b02", "opacity": 0.4, "isLine": false },
+            { "code": "2011", "label": "2011", "color": "#756410", "opacity": 0.4, "isLine": false },
+            { "code": "2012", "label": "2012", "color": "#5e4f1e", "opacity": 0.4, "isLine": false },
+            { "code": "2013", "label": "2013", "color": "#86873d", "opacity": 0.4, "isLine": false },
+            { "code": "2014", "label": "2014", "color": "#8c872a", "opacity": 0.4, "isLine": false },
+            { "code": "2015", "label": "2015", "color": "#ced12e", "opacity": 0.4, "isLine": false },
+            { "code": "2016", "label": "2016", "color": "#87713d", "opacity": 0.4, "isLine": false },
+            { "code": "2017", "label": "2017", "color": "#634d19", "opacity": 0.4, "isLine": false },
+            { "code": "2018", "label": "2018", "color": "#4a3503", "opacity": 0.4, "isLine": false },
+            { "code": "2019", "label": "2019", "color": "#8a8506", "opacity": 0.4, "isLine": false },
+            { "code": "2020", "label": "2020", "color": "#e7fa16", "opacity": 0.4, "isLine": false },
+            { "code": "2021", "label": "2021", "color": "#3d3610", "opacity": 0.4, "isLine": false },
+            { "code": "2022", "label": "2022", "color": "#78672c", "opacity": 0.4, "isLine": false }
+        ]
+    }
   },
   {
     "id": "sewer plans",
@@ -549,11 +585,17 @@
         "template": "<strong>Building:</strong> {STORIES} Stories"
     },
     "legendConfig": {
-        "sources": [{"id": "stories", "propertyKey": "STORIESS"}],
+        "displayName": "Building Stories",
+        "sources": [
+            { "id": "stories", "propertyKey": "STORIESS" }
+        ],
         "items": [
+            { "code": "0", "label": "0 Stories", "color": "#e2ffcc", "opacity": 0.4, "isLine": false },
             { "code": "1", "label": "1 Story", "color": "#fffbb3", "opacity": 0.4, "isLine": false },
             { "code": "1.5", "label": "1.5 Stories", "color": "#8cf2ff", "opacity": 0.4, "isLine": false },
-            { "code": "2", "label": "2 Stories", "color": "#5e90f2", "opacity": 0.4, "isLine": false }
+            { "code": "2", "label": "2 Stories", "color": "#5e90f2", "opacity": 0.4, "isLine": false },
+            { "code": "2.5", "label": "2.5 Stories", "color": "#3b64b8", "opacity": 0.4, "isLine": false },
+            { "code": "3", "label": "3 Stories", "color": "#3841e8", "opacity": 0.4, "isLine": false }
         ]
     }
   },
@@ -569,7 +611,10 @@
         "template": "<strong>Intersection Project:</strong> {Int_Name}"
     },
     "legendConfig": {
-        "sources": [{"id": "intersection"}],
+        "displayName": "Intersections",
+        "sources": [
+            { "id": "intersection" }
+        ],
         "items": [
             { "label": "Intersection Improvement Area", "color": "#14B9F7", "opacity": 0.5, "isLine": false }
         ]
@@ -583,10 +628,18 @@
     "popupConfig": null,
     "identifyConfig": null,
     "legendConfig": {
-      "sources": [{"id": "contours"}],
-      "items": [
-        {"label": "Contour Line", "color": "#26b24f", "opacity": 1.0, "isLine": true}
-      ]
+        "displayName": "Contours",
+        "sources": [
+            { "id": "contours" }
+        ],
+        "items": [
+            {
+                "label": "Contour Line",
+                "color": "#26b24f",
+                "opacity": 1.0,
+                "isLine": true
+            }
+        ]
     }
   },
   {
@@ -601,11 +654,74 @@
         "template": "<strong>Upland Parcel:</strong> Lot Size {_LOT_SIZE} SF"
     },
     "legendConfig": {
-        "sources": [{"id": "private properties upland"}],
+        "displayName": "Private Properties (Upland)",
+        "sources": [
+            { "id": "private properties upland" }
+        ],
         "items": [
-            {"label": "80k - 150k SF", "color": "#4fc3f7", "opacity": 0.5, "isLine": false, "match": {"property": "_LOT_SIZE", "min": 80000, "max": 149999}},
-            {"label": "150k - 250k SF", "color": "#03a9f4", "opacity": 0.5, "isLine": false, "match": {"property": "_LOT_SIZE", "min": 150000, "max": 249999}},
-            {"label": "> 250k SF", "color": "#0277bd", "opacity": 0.5, "isLine": false, "match": {"property": "_LOT_SIZE", "min": 250000, "max": 99999999}}
+            {
+                "label": "80k - 100k SF",
+                "color": "#81d4fa",
+                "opacity": 0.5,
+                "isLine": false,
+                "match": { "property": "_LOT_SIZE", "min": 80000, "max": 99999 }
+            },
+            {
+                "label": "100k - 150k SF",
+                "color": "#4fc3f7",
+                "opacity": 0.5,
+                "isLine": false,
+                "match": { "property": "_LOT_SIZE", "min": 100000, "max": 149999 }
+            },
+            {
+                "label": "150k - 200k SF",
+                "color": "#29b6f6",
+                "opacity": 0.5,
+                "isLine": false,
+                "match": { "property": "_LOT_SIZE", "min": 150000, "max": 199999 }
+            },
+            {
+                "label": "200k - 250k SF",
+                "color": "#03a9f4",
+                "opacity": 0.5,
+                "isLine": false,
+                "match": { "property": "_LOT_SIZE", "min": 200000, "max": 249999 }
+            },
+            {
+                "label": "250k - 300k SF",
+                "color": "#039be5",
+                "opacity": 0.5,
+                "isLine": false,
+                "match": { "property": "_LOT_SIZE", "min": 250000, "max": 299999 }
+            },
+            {
+                "label": "300k - 350k SF",
+                "color": "#0288d1",
+                "opacity": 0.5,
+                "isLine": false,
+                "match": { "property": "_LOT_SIZE", "min": 300000, "max": 349999 }
+            },
+            {
+                "label": "350k - 400k SF",
+                "color": "#0277bd",
+                "opacity": 0.5,
+                "isLine": false,
+                "match": { "property": "_LOT_SIZE", "min": 350000, "max": 399999 }
+            },
+            {
+                "label": "400k - 500k SF",
+                "color": "#01579b",
+                "opacity": 0.5,
+                "isLine": false,
+                "match": { "property": "_LOT_SIZE", "min": 400000, "max": 499999 }
+            },
+            {
+                "label": "> 500k SF",
+                "color": "#003f7f",
+                "opacity": 0.5,
+                "isLine": false,
+                "match": { "property": "_LOT_SIZE", "min": 500000, "max": 99999999 }
+            }
         ]
     }
   }
