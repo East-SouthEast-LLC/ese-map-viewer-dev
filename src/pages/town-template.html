@@ -55,7 +55,13 @@
   <button id="hamburger-button" aria-label="Toggle Menu"> &#9776; </button>
   <div id="map"></div>
 
-  <script src="https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/town-loader.js" data-town-id="chatham" defer></script>
+  <!-- DEFINE THE townId -->
+  <script>
+    const townId = "chatham";
+  </script>
+
+  <!-- main entry point for the application -->
+  <script src="https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/main.js" data-town-id=townId defer></script>
 
 </body>
 </html>
