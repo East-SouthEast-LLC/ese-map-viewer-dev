@@ -1,0 +1,278 @@
+[
+  {
+    "id": "satellite",
+    "displayName": "Satellite",
+    "scriptName": "satellite.js",
+    "drawOrder": 1,
+    "popupConfig": null,
+    "legendConfig": {
+      "items": [
+        {
+          "label": "Satellite View",
+          "color": "#808080",
+          "opacity": 1.0,
+          "isLine": false
+        }
+      ]
+    }
+  },
+  {
+    "id": "parcels",
+    "displayName": "Parcels",
+    "scriptName": "parcels.js",
+    "drawOrder": 90,
+    "popupConfig": {
+      "template": "Address: <strong>{ADDRESS}</strong><br>Webpage: <a href=\"{URL}\" target=\"_blank\"><b><u>Link to Page</u></b></a>"
+    },
+    "legendConfig": null
+  },
+  {
+    "id": "parcel highlight",
+    "displayName": "Parcel Highlight",
+    "scriptName": "parcel-highlight.js",
+    "drawOrder": 95,
+    "popupConfig": null,
+    "legendConfig": {
+      "items": [
+        {
+          "label": "MassGIS Parcels",
+          "color": "#a0fa39",
+          "opacity": 1.0,
+          "isLine": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "lidar contours",
+    "displayName": "LIDAR Contours",
+    "scriptName": "lidar-contours.js",
+    "drawOrder": 80,
+    "dependencies": ["lidar-contour-labels"],
+    "popupConfig": null,
+    "legendConfig": {
+        "sources": [{"id": "lidar contours", "propertyKey": "Elevation"}],
+        "items": [
+            {
+                "code": "__default__",
+                "label": "2' Contour Line",
+                "color": "#07C327",
+                "opacity": 1.0,
+                "isLine": true
+            }
+        ]
+    }
+  },
+  {
+    "id": "agis",
+    "displayName": "AGIS",
+    "scriptName": "agis.js",
+    "drawOrder": 40,
+    "popupConfig": {
+      "template": "Address <strong>{ADDRESS}</strong><br>Date of photography: <strong>{DATE}</strong><br>Link to Page: <a href=\"{URL}\" target=\"_blank\"><b><u>Link to Page</u></b></a>"
+    },
+    "legendConfig": {
+        "sources": [{"id": "agis"}],
+        "items": [
+            { "label": "Historic Aerial Photo", "color": "#3CD935", "opacity": 0.4, "isLine": false }
+        ]
+    }
+  },
+  {
+    "id": "historic",
+    "displayName": "Historic",
+    "scriptName": "historic.js",
+    "drawOrder": 60,
+    "popupConfig": {
+      "template": "Historic District: {District}<br>Status / Reference: <strong>{Status}</strong><br>Documentation: <a href=\"{URL}\" target=\"_blank\"><b><u>Link to Document</u></b></a>"
+    },
+    "legendConfig": {
+        "sources": [{"id": "historic", "propertyKey": "Status"}],
+        "items": [
+            { "code": "Proposed", "label": "Proposed", "color": "#F2BD67", "opacity": 0.4, "isLine": false },
+            { "code": "1024-0018", "label": "Old Kings Highway", "color": "#D75F48", "opacity": 0.4, "isLine": false }
+        ]
+    }
+  },
+  {
+    "id": "floodplain",
+    "displayName": "Floodplain",
+    "scriptName": "floodplain.js",
+    "drawOrder": 50,
+    "dependencies": [
+      "LiMWA",
+      "floodplain-line",
+      "floodplain-labels"
+    ],
+    "popupConfig": {
+      "template": "Flood Zone: <strong>{FLD_ZONE}</strong><br>Elevation: <strong>{STATIC_BFE}</strong>"
+    },
+    "legendConfig": {
+        "sources": [
+            { "id": "floodplain", "propertyKey": "FLD_ZONE" },
+            { "id": "LiMWA" }
+        ],
+        "items": [
+            { "id": "LiMWA", "label": "LiMWA", "color": "#E70B0B", "opacity": 1.0, "isLine": true },
+            { "code": "AE", "label": "Flood Zone AE", "color": "#eb8c34", "opacity": 0.4, "isLine": false },
+            { "code": "VE", "label": "Flood Zone VE", "color": "#eb3a34", "opacity": 0.4, "isLine": false },
+            { "code": "AO", "label": "Flood Zone AO", "color": "#F7FE20", "opacity": 0.4, "isLine": false },
+            { "code": "X", "label": "Flood Zone X", "color": "#2578F9", "opacity": 0.4, "isLine": false },
+            { "code": "A", "label": "Flood Zone A", "color": "#2e4bf0", "opacity": 0.4, "isLine": false }
+        ]
+    }
+  },
+  {
+    "id": "acec",
+    "displayName": "ACEC",
+    "scriptName": "acec.js",
+    "drawOrder": 65,
+    "popupConfig": {
+      "template": "Area of Critical Environmental Concern: <strong>{NAME}</strong><br>DEP ACEC Designation: <a href=\"{LINK}\" target=\"_blank\"><b><u>Link to Document</u></b></a>"
+    },
+    "legendConfig": {
+        "sources": [{"id": "acec"}],
+        "items": [
+            {
+            "label": "Area of Critical Environmental Concern",
+            "color": "#CD06D8",
+            "opacity": 0.4,
+            "isLine": false
+            }
+        ]
+    }
+  },
+  {
+    "id": "DEP wetland",
+    "displayName": "DEP Wetland",
+    "scriptName": "depwetland.js",
+    "drawOrder": 55,
+    "dependencies": ["dep-wetland-line", "dep-wetland-labels"],
+    "popupConfig": {
+      "template": "Wetland Identifier: <strong>{IT_VALDESC}</strong><br>Wetland Code: <strong>{IT_VALC}</strong>"
+    },
+    "legendConfig": {
+        "sources": [
+            { "id": "DEP wetland", "propertyKey": "IT_VALC" },
+            { "id": "dep-wetland-line", "propertyKey": "ARC_CODE" }
+        ],
+        "items": [
+            { "code": "BA", "label": "Coastal Bank Bluff or Sea Cliff (BA)", "color": "#F7F124", "opacity": 0.5, "isLine": false },
+            { "code": "BB", "label": "Barrier Beach System (BB)", "color": "#DCD609", "opacity": 0.4, "isLine": false },
+            { "code": "BE", "label": "Coastal Beach (BE)", "color": "#D7E00F", "opacity": 0.4, "isLine": false },
+            { "code": "CB", "label": "Cranberry Bog (CB)", "color": "#BB0418", "opacity": 0.5, "isLine": false },
+            { "code": "D", "label": "Coastal Dune (CD)", "color": "#99F108", "opacity": 0.4, "isLine": false },
+            { "code": "DM", "label": "Deep Marsh (DM)", "color": "#056A56", "opacity": 0.5, "isLine": false },
+            { "code": "M", "label": "Shallow Marsh Meadow or Fen (M)", "color": "#26A04E", "opacity": 0.4, "isLine": false },
+            { "code": "OW", "label": "Open Water (OW)", "color": "#2B8ACB", "opacity": 0.4, "isLine": false },
+            { "code": "SM", "label": "Salt Marsh (SM)", "color": "#389C3F", "opacity": 0.4, "isLine": false },
+            { "code": "SS", "label": "Shrub Swamp (SS)", "color": "#24CF31", "opacity": 0.4, "isLine": false },
+            { "code": "TF", "label": "Tidal Flat (TF)", "color": "#F3F4CC", "opacity": 0.5, "isLine": false },
+            { "code": "WS1", "label": "Wooded Swamp Deciduous (WS1)", "color": "#1F9A35", "opacity": 0.5, "isLine": false },
+            { "code": "0", "label": "Edge of Ocean", "color": "#08ADEF", "opacity": 1.0, "isLine": true },
+            { "code": "1", "label": "Shoreline", "color": "#EBF90A", "opacity": 1.0, "isLine": true }
+        ]
+    }
+  },
+  {
+    "id": "endangered species",
+    "displayName": "Endangered Species",
+    "scriptName": "endangered-species.js",
+    "drawOrder": 70,
+    "dependencies": ["endangered-species-labels", "vernal-pools", "vernal-pools-labels"],
+    "popupConfig": {
+        "template": "Estimated Habitat ID: <strong>{ESTHAB_ID}</strong><br>Priority Habitat ID: <strong>{PRIHAB_ID}</strong>"
+    },
+    "legendConfig": {
+        "sources": [
+            { "id": "endangered species", "propertyKey": "EST_PRI" },
+            { "id": "vernal-pools" }
+        ],
+        "items": [
+            { "code": "ESTandPRI", "label": "Priority & Estimated Habitat", "color": "#e7ee1f", "opacity": 0.4, "isLine": false },
+            { "code": "PRI_ONLY", "label": "Priority Habitat Only", "color": "#1DB708", "opacity": 0.4, "isLine": false },
+            { "code": "EST_ONLY", "label": "Estimated Habitat Only", "color": "#A28F06", "opacity": 0.4, "isLine": false },
+            { "id": "vernal-pools", "label": "Vernal Pools", "color": "#0D71F9", "opacity": 0.8, "isLine": false }
+        ]
+    }
+  },
+    {
+    "id": "zone II",
+    "displayName": "Zone II",
+    "scriptName": "zoneii.js",
+    "drawOrder": 75,
+    "dependencies": ["zone-ii-outline", "zone-ii-labels"],
+    "popupConfig": {
+        "template": "Zone II number: <strong>{ZII_NUM}</strong><br>Water Supplier: <strong>{SUPPLIER}</strong><br>Town: <strong>{TOWN}</strong>"
+    },
+    "legendConfig": {
+        "sources": [{"id": "zone II"}],
+        "items": [
+            { "label": "Zone II Area", "color": "#2758d6", "opacity": 0.4, "isLine": false }
+        ]
+    }
+  },
+  {
+    "id": "soils",
+    "displayName": "Soils",
+    "scriptName": "soils.js",
+    "drawOrder": 45,
+    "dependencies": ["soils-labels", "soils-outline"],
+    "popupConfig": {
+        "template": "Numeric State Legend: <strong>{MUSYM}</strong><br>Published Map Unit: <strong>{MUS_TXT}</strong><br><strong>{MUS_DESC}</strong>"
+    },
+    "legendConfig": {
+        "sources": [{"id": "soils", "propertyKey": "MUSYM"}],
+        "items": [
+            { "code": "258A", "label": "258A", "color": "#C88F0D", "opacity": 0.5, "isLine": false },
+            { "code": "430B", "label": "430B", "color": "#EAE23B", "opacity": 0.5, "isLine": false },
+            { "code": "611", "label": "611", "color": "#fdff99", "opacity": 0.5, "isLine": false }
+        ]
+    }
+  },
+  {
+    "id": "zoning",
+    "displayName": "Zoning",
+    "scriptName": "zoning.js",
+    "drawOrder": 35,
+    "popupConfig": {
+      "template": "Zoning District: <strong>{TOWNCODE}</strong><br><br>Check with the Town Clerk or Planning Department.<br><strong>This layer is from 2004</strong>"
+    },
+    "legendConfig": {
+        "sources": [{"id": "zoning", "propertyKey": "TOWNCODE"}],
+        "items": [
+            { "code": "RC3", "label": "RC3", "color": "#f1f748", "opacity": 0.4, "isLine": false },
+            { "code": "M", "label": "M", "color": "#60cccc", "opacity": 0.4, "isLine": false },
+            { "code": "R20", "label": "R20", "color": "#72a5ed", "opacity": 0.4, "isLine": false },
+            { "code": "I", "label": "I", "color": "#5f6069", "opacity": 0.4, "isLine": false },
+            { "code": "GB1", "label": "GB1", "color": "#ab5c46", "opacity": 0.4, "isLine": false }
+        ]
+    }
+  },
+  {
+    "id": "usgs quad",
+    "displayName": "USGS Quad",
+    "scriptName": "usgs-tile-manager.js",
+    "type": "managed",
+    "drawOrder": 5,
+    "popupConfig": null,
+    "legendConfig": {
+        "id": "usgs-quad-legend",
+        "items": [
+        {
+            "label": "USGS Maps",
+            "color": "#e3e1cc",
+            "opacity": 0.85
+        }
+        ]
+    }
+    },
+    {
+    "id": "panoramas",
+    "displayName": "Panoramas",
+    "scriptName": "panoramas.js",
+    "drawOrder": 100,
+    "popupConfig": null,
+    "legendConfig": null
+  }
+]
