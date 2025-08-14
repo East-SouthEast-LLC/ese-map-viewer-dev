@@ -109,7 +109,7 @@
                 if (window.map) {
                     window.map.resize(); // tells the map to resize to its container
                 }
-            }, 100);
+            }, 400);
         });
     }
 
