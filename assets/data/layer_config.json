@@ -126,6 +126,7 @@
         "template": "<strong>Flood Zone:</strong> {FLD_ZONE}"
     },
     "legendConfig": {
+        "displayName": "FEMA Flood Zones",
         "sources": [
             { "id": "floodplain", "propertyKey": "FLD_ZONE" },
             { "id": "LiMWA" }
