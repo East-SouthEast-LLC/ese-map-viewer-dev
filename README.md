@@ -423,7 +423,7 @@ The "Custom Print" feature allows users to generate professional, multi-page PDF
     Once you have taken these steps, your feature is now part of your main branch in the development repository and will be included in any future features. The next step is to bring the changes you have made to the production branch of the `ese-map-viewer` repository. 
 7.  **Moving Changes to Production**: This step might be a little bit tedious because of the special GitHub pages file paths. What we will need to do first is merge the main branch of `ese-map-viewer-dev` into the main branch of the `ese-map-viewer` repository. Open a terminal and navigate to the **local** directory for your `ese-map-viewer` repository. Once you are there, run the following commands:
     ```bash
-    git checkout -b East-SouthEast-LLC-main main
+    git checkout East-SouthEast-LLC-main
     git pull https://github.com/East-SouthEast-LLC/ese-map-viewer-dev.git main
     ```
     This will bring all the changes from the development repository into your local production branch. After that, you can push the changes to the remote repository.
@@ -434,6 +434,7 @@ The "Custom Print" feature allows users to generate professional, multi-page PDF
     git push origin main
     ```
     This command pushes your local `East-SouthEast-LLC-main` branch to the `main` branch of the `ese-map-viewer` repository on GitHub.
+8.  **Congratulations**: You have successfully added your new feature! If you go to https://github.com/East-SouthEast-LLC/ese-map-viewer/actions you will be able to see the workflow run for your changes.
 
 <!-- notes for improvement -->
 <!-- have some sort of config file for layers, dependencies, draw order, display name to file name conversions, popup info, maybe even color info for the legend -->
