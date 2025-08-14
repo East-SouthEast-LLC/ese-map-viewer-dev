@@ -217,7 +217,7 @@ The "Custom Print" feature allows users to generate professional, multi-page PDF
 6.  **Complete Development**: Once testing is complete, merge your feature branch back into the `main` branch of the `ese-map-viewer-dev` repository.
     ```bash
     git checkout main
-    git merge your-feature-name
+    git merge your-feature-name -m "merge feature branch"
     git push origin main
     ```
 7.  **Move to Production**:
@@ -225,15 +225,22 @@ The "Custom Print" feature allows users to generate professional, multi-page PDF
     * Pull the changes from the development repository's `main` branch into a local branch.
         ```bash
         # create a temporary branch to hold dev changes
-        git checkout -b dev-updates
+        git checkout main
+        git pull origin main
+        git checkout -b your-feature-name main
         git pull [https://github.com/East-SouthEast-LLC/ese-map-viewer-dev.git](https://github.com/East-SouthEast-LLC/ese-map-viewer-dev.git) main
         ```
-    * **Crucially**, perform a find-and-replace across all files to change all instances of the repository path from `ese-map-viewer-dev` to `ese-map-viewer`.
+    * **Crucially**, perform a find-and-replace across all files (except for this README.md) to change all instances of the repository path from `ese-map-viewer-dev` to `ese-map-viewer`.
     * Commit these path changes.
+        ```bash
+        git add .
+        git commit -m "update paths for production"
+        git push origin your-feature-name
+        ```
     * Merge the updated branch into your production `main` branch and push.
         ```bash
         git checkout main
-        git merge --no-ff dev-updates
+        git merge --no-ff your-feature-name -m "merge feature branch"
         git push origin main
         ```
     * Finally, update the code blocks on the live Squarespace pages with the new content from `src/pages/town-template.html` if it was changed.
