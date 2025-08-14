@@ -423,8 +423,8 @@ With all these pieces in place, your new control is fully integrated. When you l
 1.  **Multiple Repositories**: There are two repositories: `ese-map-viewer` for production and `ese-map-viewer-dev` for development. The primary difference is the base URL used for loading scripts, which must be updated when moving code from development to production.
 2.  **Cloning Repositories**: Clone both repositories to your local machine:
     ```bash
-    git clone [https://github.com/east-southeast-llc/ese-map-viewer.git](https://github.com/east-southeast-llc/ese-map-viewer.git)
-    git clone [https://github.com/east-southeast-llc/ese-map-viewer-dev.git](https://github.com/east-southeast-llc/ese-map-viewer-dev.git)
+    git clone https://github.com/east-southeast-llc/ese-map-viewer.git
+    git clone https://github.com/east-southeast-llc/ese-map-viewer-dev.git
     ```
 3.  **Create a Feature Branch**: In the `ese-map-viewer-dev` repository, create a new branch from the `main` branch to work on your feature:
     ```bash
