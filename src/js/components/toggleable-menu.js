@@ -1,3 +1,5 @@
+// src/js/components/toggleable-menu.js
+
 function setupToggleableMenu() {
     const menuRightEdge = 305;
     const toolkitRightEdge = 580;
@@ -26,11 +28,15 @@ function setupToggleableMenu() {
     }
 
     if (window.toggleableLayerIds && window.toggleableLayerIds.length > 0) {
-        for (const id of window.toggleableLayerIds) {
+        // use the master layerConfig to get display names and order
+        const menuLayers = window.layerConfig.filter(l => window.toggleableLayerIds.includes(l.id));
+
+        for (const layerInfo of menuLayers) {
+            const id = layerInfo.id;
             const link = document.createElement('a');
             link.href = '#';
-            link.textContent = id;
-            link.dataset.layerId = id;
+            link.textContent = layerInfo.displayName; // use display name for the label
+            link.dataset.layerId = id; // use the id for logic
 
             link.onclick = function(e) {
                 const clickedLayer = this.dataset.layerId;
@@ -39,7 +45,6 @@ function setupToggleableMenu() {
 
                 trackEvent('layer_toggle', {
                     layer_id: clickedLayer,
-                    // track if the layer is being turned 'on' or 'off'
                     action: this.classList.contains('active') ? 'off' : 'on'
                 });
 
@@ -57,21 +62,20 @@ function setupToggleableMenu() {
                     }
                     return;
                 }
+                
+                const layerConfig = window.layerConfig.find(l => l.id === clickedLayer);
 
-                // First, handle the special case for our tile manager
-                if (clickedLayer === 'usgs quad') {
+                // handle special "managed" layers like usgs quad
+                if (layerConfig && layerConfig.type === 'managed') {
                     const isActive = this.classList.toggle('active');
                     if (isActive) {
-                        // This handles fetching data, adding listeners, and showing initial tiles.
-                        initializeUsgsTileManager(); 
+                        if (window.initializeUsgsTileManager) initializeUsgsTileManager();
                     } else {
-                        // This removes tiles AND removes the event listeners.
-                        deinitializeUsgsTileManager(); 
+                        if (window.deinitializeUsgsTileManager) deinitializeUsgsTileManager();
                     }
-                    return; // Stop here for the USGS button
+                    return;
                 }
 
-                // If it's not the USGS button, proceed with the standard logic
                 if (!map.getLayer(clickedLayer)) {
                     return console.warn("Layer not found:", clickedLayer);
                 }
@@ -81,35 +85,24 @@ function setupToggleableMenu() {
                 map.setLayoutProperty(clickedLayer, 'visibility', newVisibility);
                 this.className = newVisibility === 'visible' ? 'active' : '';
 
-                // Handle dependent layers
+                // ** new dynamic dependency handling **
+                if (layerConfig && layerConfig.dependencies) {
+                    layerConfig.dependencies.forEach(depId => {
+                        if (map.getLayer(depId)) {
+                            map.setLayoutProperty(depId, 'visibility', newVisibility);
+                        }
+                    });
+                }
+                
+                // handle special cases with unique functions
                 if (clickedLayer === 'private properties upland') {
-                    window.toggleUplandControls(newVisibility === 'visible');
-                    if (newVisibility === 'visible') openToolkit();
-                } else if (clickedLayer === 'floodplain') {
-                    map.setLayoutProperty('LiMWA', 'visibility', newVisibility);
-                    map.setLayoutProperty('floodplain-line', 'visibility', newVisibility);
-                    map.setLayoutProperty('floodplain-labels', 'visibility', newVisibility);
-                } else if (clickedLayer === 'DEP wetland') {
-                    map.setLayoutProperty('dep-wetland-line', 'visibility', newVisibility);
-                    map.setLayoutProperty('dep-wetland-labels', 'visibility', newVisibility);
-                } else if (clickedLayer === 'soils') {
-                    map.setLayoutProperty('soils-labels', 'visibility', newVisibility);
-                    map.setLayoutProperty('soils-outline', 'visibility', newVisibility);
-                } else if (clickedLayer === 'zone II') {
-                    map.setLayoutProperty('zone-ii-outline', 'visibility', newVisibility);
-                    map.setLayoutProperty('zone-ii-labels', 'visibility', newVisibility);
-                } else if (clickedLayer === 'endangered species') {
-                    map.setLayoutProperty('endangered-species-labels', 'visibility', newVisibility);
-                    map.setLayoutProperty('vernal-pools', 'visibility', newVisibility);
-                    map.setLayoutProperty('vernal-pools-labels', 'visibility', newVisibility);
-                } else if (clickedLayer === 'sewer plans') {
-                    map.setLayoutProperty('sewer-plans-outline', 'visibility', newVisibility);
-                } else if (clickedLayer === 'lidar contours') {
-                    if (map.getLayer('lidar-contour-labels')) {
-                        map.setLayoutProperty('lidar-contour-labels', 'visibility', newVisibility);
+                    if (typeof window.toggleUplandControls === 'function') {
+                        window.toggleUplandControls(newVisibility === 'visible');
+                        if (newVisibility === 'visible') openToolkit();
                     }
                 }
                 
+                // update legend after toggling
                 if (typeof window.updateLegend === 'function') {
                     if (!map._legendUpdateListenerAdded) {
                         map._legendUpdateListenerAdded = true;
