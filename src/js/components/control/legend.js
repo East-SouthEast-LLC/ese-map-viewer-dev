@@ -1,6 +1,6 @@
 // src/js/components/control/legend.js
 
-let legendData = []; // This will be populated from the global layerConfig
+let legendData = []; // This will be populated from window.layerConfig
 
 function getPrintBoundingBox() {
     if (!map) return;
@@ -19,6 +19,8 @@ function getPrintBoundingBox() {
 }
 
 function getLegendForPrint(expectedLayerIds = []) {
+    // This function's logic is restored from your original file and should work correctly.
+    // It will use the 'legendData' variable which we populate from the main config.
     const geoJsonBounds = getPrintBoundingBox();
     if (!geoJsonBounds) {
         return '<div class="legend-item">Error calculating print area.</div>';
@@ -47,7 +49,6 @@ function getLegendForPrint(expectedLayerIds = []) {
 
 
     legendData.forEach(layerInfo => {
-        // --- this is the restored logic from your original file ---
         if (layerInfo.displayName === "Satellite Imagery") {
             if (map.getLayer('satellite') && map.getLayoutProperty('satellite', 'visibility') === 'visible') {
                 allItemsToRender.push(`<div class="legend-section">${layerInfo.displayName}</div>`);
@@ -152,36 +153,73 @@ function getLegendForPrint(expectedLayerIds = []) {
         }
     });
     
+    if (expectedLayerIds && expectedLayerIds.length > 0) {
+        const expectedButNotRendered = [];
+        const expectedDisplayNames = new Set();
+        expectedLayerIds.forEach(expectedId => {
+            const layerInfo = legendData.find(info => 
+                (info.sources && info.sources.some(s => s.id === expectedId)) || (info.items && info.items.some(i => i.id === expectedId))
+            );
+            if (layerInfo) {
+                expectedDisplayNames.add(layerInfo.displayName);
+            }
+        });
+        
+        expectedDisplayNames.forEach(displayName => {
+            if (!renderedLegendSections.has(displayName)) {
+                expectedButNotRendered.push(
+                    `<div class="legend-item-not-present">${displayName}: Not Present in Print Area</div>`
+                );
+            }
+        });
+
+        if (expectedButNotRendered.length > 0) {
+            allItemsToRender.push(...expectedButNotRendered);
+        }
+    }
+
     if (allItemsToRender.length === 0) {
         return '<div class="legend-grid"></div>';
     }
 
-    return `<div class="legend-grid">${allItemsToRender.join('')}</div>`;
+    const maxPrintableItems = 13;
+    let finalItemsHTML = '';
+    if (allItemsToRender.length > maxPrintableItems) {
+        const truncatedItems = allItemsToRender.slice(0, maxPrintableItems - 1);
+        truncatedItems.push('<div class="legend-item">... and more</div>');
+        finalItemsHTML = truncatedItems.join('');
+    } else {
+        finalItemsHTML = allItemsToRender.join('');
+    }
+    return `<div class="legend-grid">${finalItemsHTML}</div>`;
 }
 
-const legendButton = document.getElementById("legendButton");
-const legendBox = document.getElementById("legend-box");
-let legendVisibility = false;
-legendBox.style.display = 'none';
+document.addEventListener("DOMContentLoaded", function () {
+    const legendButton = document.getElementById("legendButton");
+    const legendBox = document.getElementById("legend-box");
+    let legendVisibility = false;
+    legendBox.style.display = 'none';
 
-if (!legendButton || !legendBox) {
-    console.error("Required elements not found in the DOM.");
-} else {
-    // using the global layerconfig now, formatted to match the old structure
-    legendData = window.layerConfig.map(config => {
-        if (config.legendConfig) {
-            return {
-                id: config.id,
-                displayName: config.displayName,
-                ...config.legendConfig
-            };
-        }
-        return null;
-    }).filter(Boolean);
+    if (!legendButton || !legendBox) {
+        console.error("Required elements not found in the DOM.");
+        return;
+    }
+
+    // use the globally available window.layerconfig to populate legendData
+    if (window.layerConfig) {
+        legendData = window.layerConfig.map(config => ({
+            ...config.legendConfig,
+            id: config.id,
+            displayName: config.displayName,
+            sources: config.legendConfig ? config.legendConfig.sources : undefined
+        })).filter(Boolean);
+    } else {
+        console.error("Layer configuration not found. Legend cannot be initialized.");
+        return;
+    }
 
     function updateLegend() {
         if (legendBox.style.display === 'none') return;
-
         let legendHTML = '';
 
         legendData.forEach(layerInfo => {
@@ -200,11 +238,11 @@ if (!legendButton || !legendBox) {
                 }
                 return; 
             }
+
+            const availableSourceIds = (layerInfo.sources || []).map(s => s.id).filter(id => map.getLayer(id));
             
-            const sourceIds = (layerInfo.sources || []).map(s => s.id).filter(id => map.getLayer(id));
-            
-            if (sourceIds.length === 0) {
-                 if (layerInfo.displayName === "Satellite Imagery" && map.getLayer('satellite') && map.getLayoutProperty('satellite', 'visibility') === 'visible') {
+            if (availableSourceIds.length === 0) {
+                if (layerInfo.displayName === "Satellite Imagery" && map.getLayer('satellite') && map.getLayoutProperty('satellite', 'visibility') === 'visible') {
                     legendHTML += `<div class="legend-title">${layerInfo.displayName}</div>`;
                     const item = layerInfo.items[0];
                     const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
@@ -219,7 +257,7 @@ if (!legendButton || !legendBox) {
                 return;
             }
             
-            const allVisibleFeatures = map.queryRenderedFeatures({ layers: sourceIds });
+            const allVisibleFeatures = map.queryRenderedFeatures({ layers: availableSourceIds });
 
             if (allVisibleFeatures.length === 0) return;
 
@@ -309,4 +347,4 @@ if (!legendButton || !legendBox) {
 
     map.on('moveend', updateLegend);
     map.on('zoom', updateLegend);
-}
+});
