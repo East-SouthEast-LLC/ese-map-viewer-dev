@@ -219,10 +219,14 @@
         });
         document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 
-        map.on('load', async function () {
+map.on('load', async function () {
             console.log("map 'load' event fired. loading scripts...");
             
+            // first, always load the base towns layer
+            await loadScript(`https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/layers/towns.js`);
+
             try {
+                // then, fetch town and layer configurations
                 const [townConfigResponse, layerConfigResponse] = await Promise.all([
                     fetch('https://east-southeast-llc.github.io/ese-map-viewer-dev/assets/data/town_config.json'),
                     fetch('https://east-southeast-llc.github.io/ese-map-viewer-dev/assets/data/layer_config.json')
@@ -241,7 +245,7 @@
                         map.setZoom(townData.map.zoom);
                     }
                     window.eseMapBaseUrl = townData.baseShareUrl;
-                    window.toggleableLayerIds = townData.layers;
+                    window.toggleableLayerIds = townData.layers; // this list from config does not include 'towns'
                     window.toggleableLayerIds.unshift('tools');
 
                     const townLayers = layerConfig

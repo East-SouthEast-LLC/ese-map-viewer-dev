@@ -9,6 +9,7 @@ function setupToggleableMenu() {
     
     const mapContainer = document.getElementById('map');
     const geocoderContainer = document.getElementById("geocoder-container");
+    const menu = document.getElementById('menu');
 
     function openToolkit() {
         if (getComputedStyle(geocoderContainer).display === "none") {
@@ -27,16 +28,43 @@ function setupToggleableMenu() {
         }
     }
 
-    if (window.toggleableLayerIds && window.toggleableLayerIds.length > 0) {
-        // use the master layerConfig to get display names and order
+    // first, manually create the 'tools' button as it's a special ui element
+    const toolsLink = document.createElement('a');
+    toolsLink.href = '#';
+    toolsLink.textContent = 'Tools';
+    toolsLink.dataset.layerId = 'tools';
+    toolsLink.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        trackEvent('layer_toggle', {
+            layer_id: 'tools',
+            action: this.classList.contains('active') ? 'off' : 'on'
+        });
+        if (getComputedStyle(geocoderContainer).display === "none") {
+            openToolkit();
+        } else {
+            geocoderContainer.style.display = "none";
+            this.classList.remove('active');
+            document.getElementById('bookmark-box').style.display = 'none';
+            document.getElementById('bookmarkButton').classList.remove('active');
+            mapContainer.style.width = `calc(95vw - ${menuOnlyOffset}px)`;
+            mapContainer.style.marginLeft = `${menuOnlyOffset}px`;
+            setTimeout(() => map.resize(), 400);
+        }
+    };
+    menu.appendChild(toolsLink);
+
+
+    // now, create the rest of the layer buttons dynamically
+    if (window.toggleableLayerIds && window.layerConfig) {
         const menuLayers = window.layerConfig.filter(l => window.toggleableLayerIds.includes(l.id));
 
         for (const layerInfo of menuLayers) {
             const id = layerInfo.id;
             const link = document.createElement('a');
             link.href = '#';
-            link.textContent = layerInfo.displayName; // use display name for the label
-            link.dataset.layerId = id; // use the id for logic
+            link.textContent = layerInfo.displayName;
+            link.dataset.layerId = id;
 
             link.onclick = function(e) {
                 const clickedLayer = this.dataset.layerId;
@@ -47,26 +75,11 @@ function setupToggleableMenu() {
                     layer_id: clickedLayer,
                     action: this.classList.contains('active') ? 'off' : 'on'
                 });
-
-                if (clickedLayer === "tools") {
-                    if (getComputedStyle(geocoderContainer).display === "none") {
-                        openToolkit();
-                    } else {
-                        geocoderContainer.style.display = "none";
-                        this.classList.remove('active');
-                        document.getElementById('bookmark-box').style.display = 'none';
-                        document.getElementById('bookmarkButton').classList.remove('active');
-                        mapContainer.style.width = `calc(95vw - ${menuOnlyOffset}px)`;
-                        mapContainer.style.marginLeft = `${menuOnlyOffset}px`;
-                        setTimeout(() => map.resize(), 400);
-                    }
-                    return;
-                }
                 
                 const layerConfig = window.layerConfig.find(l => l.id === clickedLayer);
+                if (!layerConfig) return;
 
-                // handle special "managed" layers like usgs quad
-                if (layerConfig && layerConfig.type === 'managed') {
+                if (layerConfig.type === 'managed') {
                     const isActive = this.classList.toggle('active');
                     if (isActive) {
                         if (window.initializeUsgsTileManager) initializeUsgsTileManager();
@@ -85,8 +98,7 @@ function setupToggleableMenu() {
                 map.setLayoutProperty(clickedLayer, 'visibility', newVisibility);
                 this.className = newVisibility === 'visible' ? 'active' : '';
 
-                // ** new dynamic dependency handling **
-                if (layerConfig && layerConfig.dependencies) {
+                if (layerConfig.dependencies) {
                     layerConfig.dependencies.forEach(depId => {
                         if (map.getLayer(depId)) {
                             map.setLayoutProperty(depId, 'visibility', newVisibility);
@@ -94,7 +106,6 @@ function setupToggleableMenu() {
                     });
                 }
                 
-                // handle special cases with unique functions
                 if (clickedLayer === 'private properties upland') {
                     if (typeof window.toggleUplandControls === 'function') {
                         window.toggleUplandControls(newVisibility === 'visible');
@@ -102,7 +113,6 @@ function setupToggleableMenu() {
                     }
                 }
                 
-                // update legend after toggling
                 if (typeof window.updateLegend === 'function') {
                     if (!map._legendUpdateListenerAdded) {
                         map._legendUpdateListenerAdded = true;
@@ -114,7 +124,7 @@ function setupToggleableMenu() {
                 }
             };
     
-            document.getElementById('menu').appendChild(link);
+            menu.appendChild(link);
         }
     }
     
