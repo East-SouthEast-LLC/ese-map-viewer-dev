@@ -9,20 +9,10 @@ if (!identifyButton || !identifyBox) {
     let identifyMode = false;
 
     function handleIdentifyClick(e) {
-        const clickCoords = e.lngLat;
-        if (marker) {
-            marker.remove();
-        }
-        marker = new mapboxgl.Marker().setLngLat(clickCoords).addTo(map);
-        if(markerCoordinates) {
-            markerCoordinates.lat = clickCoords.lat;
-            markerCoordinates.lng = clickCoords.lng;
-        }
-
-        // get the list of layers available for the current town.
+        // this function no longer creates a marker. it only identifies features.
+        
         const townLayerIds = window.toggleableLayerIds;
 
-        // from the town's layers, find which ones are identifiable based on the master config.
         const queryableLayers = window.layerConfig
             .filter(l => townLayerIds.includes(l.id) && l.identifyConfig)
             .map(l => l.id);
@@ -44,7 +34,6 @@ if (!identifyButton || !identifyBox) {
                     if (config && config.identifyConfig) {
                         let info = config.identifyConfig.template;
                         
-                        // replace placeholders with feature properties
                         for (const key in feature.properties) {
                             const regex = new RegExp(`{${key}}`, 'g');
                             info = info.replace(regex, feature.properties[key]);
@@ -65,7 +54,6 @@ if (!identifyButton || !identifyBox) {
             identifyBox.innerHTML = html;
             identifyBox.style.display = 'block';
 
-            // restore original layer visibilities
             queryableLayers.forEach(layerId => {
                 map.setLayoutProperty(layerId, 'visibility', originalVisibilities[layerId]);
             });
@@ -77,14 +65,16 @@ if (!identifyButton || !identifyBox) {
     function enterIdentifyMode() {
         trackEvent('identify_tool', {});
         identifyMode = true;
-        map.getCanvas().style.cursor = 'help';
+        // add a class to the map container to force the cursor style
+        map.getCanvasContainer().classList.add('identify-mode-active');
         identifyButton.classList.add('active');
         map.once('click', handleIdentifyClick);
     }
 
     function exitIdentifyMode() {
         identifyMode = false;
-        map.getCanvas().style.cursor = '';
+        // remove the class to return to the default cursor behavior
+        map.getCanvasContainer().classList.remove('identify-mode-active');
         identifyButton.classList.remove('active');
         map.off('click', handleIdentifyClick);
     }
