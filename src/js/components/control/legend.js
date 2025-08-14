@@ -210,7 +210,7 @@ if (!legendButton || !legendBox) {
     console.error("Required elements not found in the DOM.");
 } else {
 
-    fetch('https://east-southeast-llc.github.io/ese-map-viewer/assets/data/legend_config.json')
+    fetch('https://east-southeast-llc.github.io/ese-map-viewer-dev/assets/data/legend_config.json')
         .then(response => response.json())
         .then(data => {
             legendData = data;
