@@ -401,11 +401,11 @@ The final step is to tell the application to load your new script. Open `src/js/
 ```javascript
 // ... inside main.js
 const controlScripts = [
-    "[https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/button.js](https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/button.js)",
+    https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/button.js",
     // ... other scripts ...
-    "[https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/bookmarks.js](https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/bookmarks.js)",
-    "[https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/identify.js](https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/identify.js)",
-    "[https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/new-control.js](https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/new-control.js)" // <-- add your new script's path here
+    https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/bookmarks.js,
+    https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/identify.js,
+    https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/new-control.js // <-- add your new script's path here
 ];
 ```
 
@@ -453,7 +453,7 @@ With all these pieces in place, your new control is fully integrated. When you l
         git checkout main
         git pull origin main
         git checkout -b your-feature-name main
-        git pull [https://github.com/East-SouthEast-LLC/ese-map-viewer-dev.git](https://github.com/East-SouthEast-LLC/ese-map-viewer-dev.git) main
+        git pull https://github.com/East-SouthEast-LLC/ese-map-viewer-dev.git main
         ```
     * **Crucially**, perform a find-and-replace across all files (except for this README.md) to change all instances of the repository path from `ese-map-viewer-dev` to `ese-map-viewer`.
     * Commit these path changes.
