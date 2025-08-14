@@ -5,6 +5,7 @@
     "scriptName": "satellite.js",
     "drawOrder": 1,
     "popupConfig": null,
+    "identifyConfig": null,
     "legendConfig": {
       "items": [
         {
@@ -24,6 +25,9 @@
     "popupConfig": {
       "template": "Address: <strong>{ADDRESS}</strong><br>Webpage: <a href=\"{URL}\" target=\"_blank\"><b><u>Link to Page</u></b></a>"
     },
+    "identifyConfig": {
+        "template": "<strong>Parcel Address:</strong> {ADDRESS}"
+    },
     "legendConfig": null
   },
   {
@@ -32,6 +36,7 @@
     "scriptName": "parcel-highlight.js",
     "drawOrder": 95,
     "popupConfig": null,
+    "identifyConfig": null,
     "legendConfig": {
       "items": [
         {
@@ -50,6 +55,7 @@
     "drawOrder": 80,
     "dependencies": ["lidar-contour-labels"],
     "popupConfig": null,
+    "identifyConfig": null,
     "legendConfig": {
         "sources": [{"id": "lidar contours", "propertyKey": "Elevation"}],
         "items": [
@@ -71,6 +77,9 @@
     "popupConfig": {
       "template": "Address <strong>{ADDRESS}</strong><br>Date of photography: <strong>{DATE}</strong><br>Link to Page: <a href=\"{URL}\" target=\"_blank\"><b><u>Link to Page</u></b></a>"
     },
+    "identifyConfig": {
+        "template": "<strong>Historic Aerial:</strong> Photo from {DATE}"
+    },
     "legendConfig": {
         "sources": [{"id": "agis"}],
         "items": [
@@ -85,6 +94,9 @@
     "drawOrder": 60,
     "popupConfig": {
       "template": "Historic District: {District}<br>Status / Reference: <strong>{Status}</strong><br>Documentation: <a href=\"{URL}\" target=\"_blank\"><b><u>Link to Document</u></b></a>"
+    },
+     "identifyConfig": {
+        "template": "<strong>Historic District:</strong> {District}"
     },
     "legendConfig": {
         "sources": [{"id": "historic", "propertyKey": "Status"}],
@@ -106,6 +118,9 @@
     ],
     "popupConfig": {
       "template": "Flood Zone: <strong>{FLD_ZONE}</strong><br>Elevation: <strong>{STATIC_BFE}</strong>"
+    },
+    "identifyConfig": {
+        "template": "<strong>Flood Zone:</strong> {FLD_ZONE}"
     },
     "legendConfig": {
         "sources": [
@@ -130,6 +145,9 @@
     "popupConfig": {
       "template": "Area of Critical Environmental Concern: <strong>{NAME}</strong><br>DEP ACEC Designation: <a href=\"{LINK}\" target=\"_blank\"><b><u>Link to Document</u></b></a>"
     },
+    "identifyConfig": {
+        "template": "<strong>ACEC:</strong> {NAME}"
+    },
     "legendConfig": {
         "sources": [{"id": "acec"}],
         "items": [
@@ -150,6 +168,9 @@
     "dependencies": ["dep-wetland-line", "dep-wetland-labels"],
     "popupConfig": {
       "template": "Wetland Identifier: <strong>{IT_VALDESC}</strong><br>Wetland Code: <strong>{IT_VALC}</strong>"
+    },
+    "identifyConfig": {
+        "template": "<strong>DEP Wetland:</strong> {IT_VALDESC}"
     },
     "legendConfig": {
         "sources": [
@@ -183,6 +204,9 @@
     "popupConfig": {
         "template": "Estimated Habitat ID: <strong>{ESTHAB_ID}</strong><br>Priority Habitat ID: <strong>{PRIHAB_ID}</strong>"
     },
+    "identifyConfig": {
+        "template": "<strong>NHESP Habitat:</strong> Priority & Estimated"
+    },
     "legendConfig": {
         "sources": [
             { "id": "endangered species", "propertyKey": "EST_PRI" },
@@ -205,6 +229,9 @@
     "popupConfig": {
         "template": "Zone II number: <strong>{ZII_NUM}</strong><br>Water Supplier: <strong>{SUPPLIER}</strong><br>Town: <strong>{TOWN}</strong>"
     },
+    "identifyConfig": {
+        "template": "<strong>Zone II:</strong> Wellhead Protection Area"
+    },
     "legendConfig": {
         "sources": [{"id": "zone II"}],
         "items": [
@@ -220,6 +247,9 @@
     "dependencies": ["soils-labels", "soils-outline"],
     "popupConfig": {
         "template": "Numeric State Legend: <strong>{MUSYM}</strong><br>Published Map Unit: <strong>{MUS_TXT}</strong><br><strong>{MUS_DESC}</strong>"
+    },
+    "identifyConfig": {
+        "template": "<strong>Soil Unit:</strong> {MUSYM}"
     },
     "legendConfig": {
         "sources": [{"id": "soils", "propertyKey": "MUSYM"}],
@@ -237,6 +267,9 @@
     "drawOrder": 35,
     "popupConfig": {
       "template": "Zoning District: <strong>{TOWNCODE}</strong><br><br>Check with the Town Clerk or Planning Department.<br><strong>This layer is from 2004</strong>"
+    },
+    "identifyConfig": {
+        "template": "<strong>Zoning:</strong> {TOWNCODE}"
     },
     "legendConfig": {
         "sources": [{"id": "zoning", "propertyKey": "TOWNCODE"}],
@@ -256,23 +289,171 @@
     "type": "managed",
     "drawOrder": 5,
     "popupConfig": null,
+    "identifyConfig": null,
     "legendConfig": {
         "id": "usgs-quad-legend",
         "items": [
-        {
-            "label": "USGS Maps",
-            "color": "#e3e1cc",
-            "opacity": 0.85
-        }
+            {
+                "label": "USGS Maps",
+                "color": "#e3e1cc",
+                "opacity": 0.85
+            }
         ]
     }
-    },
-    {
+  },
+  {
     "id": "panoramas",
     "displayName": "Panoramas",
     "scriptName": "panoramas.js",
     "drawOrder": 100,
     "popupConfig": null,
+    "identifyConfig": null,
     "legendConfig": null
+  },
+  {
+    "id": "conservancy districts",
+    "displayName": "Conservancy Districts",
+    "scriptName": "conservancydistricts.js",
+    "drawOrder": 62,
+    "popupConfig": {
+      "template": "Conservancy District: <strong>{CONS_DIST}</strong><br><br>{CONS_DIST} Elevation: <strong>{CONS_ELEV} {CONS_DATUM}</strong><br>{CONS_DIST} Water Elevation: <strong>{WATER_ELEV} {CONS_DATUM}</strong><br><br>Conservancy District Contour: <strong>{CONT_NAVD} {CONV_DATUM}</strong><br><br>Description: {CONS_DESC}"
+    },
+    "identifyConfig": {
+        "template": "<strong>Conservancy:</strong> {CONS_DIST}"
+    },
+    "legendConfig": {
+      "sources": [{ "id": "conservancy districts", "propertyKey": "CONS_TYPE" }],
+      "items": [
+        { "code": "BOG", "label": "Bog", "color": "#239607", "opacity": 0.4, "isLine": false },
+        { "code": "DITCH", "label": "Ditch", "color": "#072483", "opacity": 0.4, "isLine": false },
+        { "code": "MARSH", "label": "Marsh", "color": "#4FD33F", "opacity": 0.4, "isLine": false },
+        { "code": "SWAMP", "label": "Swamp", "color": "#21A546", "opacity": 0.4, "isLine": false },
+        { "code": "WATER", "label": "Water", "color": "#18A7AA", "opacity": 0.4, "isLine": false }
+      ]
+    }
+  },
+  {
+    "id": "conservation",
+    "displayName": "Conservation",
+    "scriptName": "conservation.js",
+    "drawOrder": 30,
+    "popupConfig": {
+        "template": "CCF Parcel: <strong>{CCF_ID}</strong><br><br>The light green parcels are approximate, the dark green parcels are more accurate."
+    },
+    "identifyConfig": {
+        "template": "<strong>Conservation:</strong> CCF Parcel"
+    },
+    "legendConfig": {
+        "sources": [{ "id": "conservation", "propertyKey": "Last_Updat" }],
+        "items": [
+            { "code": "CCF_Owned_Parcels_JBedits", "label": "Approximate", "color": "#abe356", "opacity": 0.4, "isLine": false },
+            { "code": "other", "label": "Accurate", "color": "#22c410", "opacity": 0.4, "isLine": false }
+        ]
+    }
+  },
+  {
+    "id": "sewer",
+    "displayName": "Sewer",
+    "scriptName": "sewer.js",
+    "drawOrder": 25,
+    "popupConfig": {
+        "template": "Approximate year constructed: {CONTRACT}<br>Address: <strong>{ADDRESS}</strong><br>Webpage: <a href=\"{URL}\" target=\"_blank\"><b><u>Link to Page</u></b></a>"
+    },
+    "identifyConfig": {
+        "template": "<strong>Sewer Service:</strong> Year ~{CONTRACT}"
+    },
+    "legendConfig": null
+  },
+  {
+    "id": "sewer plans",
+    "displayName": "Sewer Plans",
+    "scriptName": "sewer-plans.js",
+    "drawOrder": 26,
+    "dependencies": ["sewer-plans-outline"],
+    "popupConfig": {
+      "template": "Year of plan: <strong>{DATE}</strong><br>Plan ID: <strong>{SHEET}</strong><br>Link to plan: <a href=\"{URL}\" target=\"_blank\"><b><u>Link to plan</u></b></a><br>Disclaimer: Information may be inaccurate."
+    },
+    "identifyConfig": {
+        "template": "<strong>Sewer Plan:</strong> ID {SHEET}"
+    },
+    "legendConfig": {
+        "sources": [{"id": "sewer plans"}],
+        "items": [
+            { "label": "Plan Year: 2014-2019", "color": "#d32f2f", "opacity": 0.4, "isLine": false, "match": { "property": "DATE", "min": 2014, "max": 2019 } },
+            { "label": "Plan Year: 1983-1999", "color": "#7f1010", "opacity": 0.4, "isLine": false, "match": { "property": "DATE", "min": 1983, "max": 1999 } }
+        ]
+    }
+  },
+  {
+    "id": "stories",
+    "displayName": "Stories",
+    "scriptName": "stories.js",
+    "drawOrder": 20,
+    "popupConfig": {
+        "template": "Number of Stories: <strong>{STORIES}</strong><br>Building Description: <strong>{BLD_DESC}</strong><br>Zoning: <strong>{ZONING}</strong>"
+    },
+    "identifyConfig": {
+        "template": "<strong>Building:</strong> {STORIES} Stories"
+    },
+    "legendConfig": {
+        "sources": [{"id": "stories", "propertyKey": "STORIESS"}],
+        "items": [
+            { "code": "1", "label": "1 Story", "color": "#fffbb3", "opacity": 0.4, "isLine": false },
+            { "code": "1.5", "label": "1.5 Stories", "color": "#8cf2ff", "opacity": 0.4, "isLine": false },
+            { "code": "2", "label": "2 Stories", "color": "#5e90f2", "opacity": 0.4, "isLine": false }
+        ]
+    }
+  },
+  {
+    "id": "intersection",
+    "displayName": "Intersection",
+    "scriptName": "intersection.js",
+    "drawOrder": 15,
+    "popupConfig": {
+        "template": "Intersection: <strong>{Int_Name}</strong><br>Webpage: <a href=\"{Link}\" target=\"_blank\"><b><u>Link to Page</u></b></a>"
+    },
+    "identifyConfig": {
+        "template": "<strong>Intersection Project:</strong> {Int_Name}"
+    },
+    "legendConfig": {
+        "sources": [{"id": "intersection"}],
+        "items": [
+            { "label": "Intersection Improvement Area", "color": "#14B9F7", "opacity": 0.5, "isLine": false }
+        ]
+    }
+  },
+  {
+    "id": "contours",
+    "displayName": "Contours",
+    "scriptName": "contours.js",
+    "drawOrder": 85,
+    "popupConfig": null,
+    "identifyConfig": null,
+    "legendConfig": {
+      "sources": [{"id": "contours"}],
+      "items": [
+        {"label": "Contour Line", "color": "#26b24f", "opacity": 1.0, "isLine": true}
+      ]
+    }
+  },
+  {
+    "id": "private properties upland",
+    "displayName": "Private Properties Upland",
+    "scriptName": "private-properties-upland.js",
+    "drawOrder": 32,
+    "popupConfig": {
+        "template": "Lot Size: <strong>{_LOT_SIZE} S.F. </strong><br>Owner (2024): <strong>{_OWNER1}</strong>"
+    },
+    "identifyConfig": {
+        "template": "<strong>Upland Parcel:</strong> Lot Size {_LOT_SIZE} SF"
+    },
+    "legendConfig": {
+        "sources": [{"id": "private properties upland"}],
+        "items": [
+            {"label": "80k - 150k SF", "color": "#4fc3f7", "opacity": 0.5, "isLine": false, "match": {"property": "_LOT_SIZE", "min": 80000, "max": 149999}},
+            {"label": "150k - 250k SF", "color": "#03a9f4", "opacity": 0.5, "isLine": false, "match": {"property": "_LOT_SIZE", "min": 150000, "max": 249999}},
+            {"label": "> 250k SF", "color": "#0277bd", "opacity": 0.5, "isLine": false, "match": {"property": "_LOT_SIZE", "min": 250000, "max": 99999999}}
+        ]
+    }
   }
 ]
