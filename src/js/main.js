@@ -79,8 +79,6 @@
         document.body.appendChild(geocoderContainer);
     }
 
-    // --- functions from main.js ---
-
     function adjustLayout() {
         const header = document.querySelector('#header');
         const mapContainer = document.getElementById('map');
@@ -89,7 +87,7 @@
         if (!header || !mapContainer || !menuContainer) return;
         const headerHeight = header.offsetHeight;
         const buffer = 70;
-        const topOffset = headerHeight + 40; // using your 40px buffer
+        const topOffset = headerHeight + 40;
         const availableHeight = window.innerHeight - headerHeight - buffer;
         mapContainer.style.height = `${availableHeight}px`;
         menuContainer.style.maxHeight = `${availableHeight}px`;
@@ -107,7 +105,7 @@
             resizeTimer = setTimeout(() => {
                 adjustLayout();
                 if (window.map) {
-                    window.map.resize(); // tells the map to resize to its container
+                    window.map.resize();
                 }
             }, 400);
         });
@@ -124,75 +122,125 @@
         trackEvent('place_marker', {});
     }
 
-    function openPanoramaViewer(panoFile) {
-        const panoId = panoFile;
-
-        // update feature state to change color of viewed points
-        if (window.lastViewedPanoId) {
-            map.setFeatureState({ source: 'panoramas-source', id: window.lastViewedPanoId }, { viewed: false });
+    // --- start of restored panorama functions ---
+    function navigateToPano(newIndex) {
+        const existingModal = document.getElementById('pano-modal');
+        if (existingModal) {
+            document.body.removeChild(existingModal);
         }
-        map.setFeatureState({ source: 'panoramas-source', id: panoId }, { viewed: true });
-        window.lastViewedPanoId = panoId;
+        openPanoModal(newIndex);
+    }
 
-        // create and show the modal
+    function preloadPanoImages(currentIndex) {
+        if (!window.panoramaOrder || window.panoramaOrder.length === 0) return;
+
+        const totalPanos = window.panoramaOrder.length;
+        const nextIndex = (currentIndex + 1) % totalPanos;
+        const prevIndex = (currentIndex - 1 + totalPanos) % totalPanos;
+
+        const nextPanoFile = window.panoramaOrder[nextIndex];
+        const prevPanoFile = window.panoramaOrder[prevIndex];
+
+        const nextImage = new Image();
+        nextImage.src = `https://www.ese-llc.com/s/${nextPanoFile}`;
+        
+        const prevImage = new Image();
+        prevImage.src = `https://www.ese-llc.com/s/${prevPanoFile}`;
+    }
+
+    function highlightViewedPano(panoId) {
+        if (panoId && map.getSource('panoramas-source')) {
+            map.setFeatureState({ source: 'panoramas-source', id: panoId }, { viewed: true });
+            setTimeout(() => {
+                map.setFeatureState({ source: 'panoramas-source', id: panoId }, { viewed: false });
+            }, 12000); // 12 seconds
+        }
+    }
+
+    function openPanoModal(currentIndex) {
+        if (currentIndex < 0 || currentIndex >= window.panoramaOrder.length) return;
+
+        const filename = window.panoramaOrder[currentIndex];
+        window.lastViewedPanoId = filename; 
+        
+        trackEvent('view_panorama', { pano_id: filename });
+
+        const panoViewerUrl = `https://www.ese-llc.com/pano-viewer?pano=${filename}`;
+
         const modal = document.createElement('div');
-        modal.id = 'panorama-modal';
-        modal.style.position = 'fixed';
-        modal.style.left = '0';
-        modal.style.top = '0';
-        modal.style.width = '100%';
-        modal.style.height = '100%';
-        modal.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-        modal.style.zIndex = '10000';
-        modal.style.display = 'flex';
-        modal.style.justifyContent = 'center';
-        modal.style.alignItems = 'center';
+        modal.id = 'pano-modal';
+        modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 2000; display: flex; justify-content: center; align-items: center;';
+        
+        const iframeContainer = document.createElement('div');
+        iframeContainer.style.cssText = 'position: relative; width: 90%; height: 90%; background: #000;';
 
         const iframe = document.createElement('iframe');
-        iframe.src = `/pano-viewer?pano=${panoFile}`;
-        iframe.style.width = '90%';
-        iframe.style.height = '90%';
-        iframe.style.border = 'none';
+        iframe.src = panoViewerUrl;
+        iframe.style.cssText = 'width: 100%; height: 100%; border: none;';
 
-        modal.appendChild(iframe);
+        const arrowBtnStyle = `position: absolute; top: 50%; transform: translateY(-50%); background-color: rgba(0,0,0,0.5); color: white; border: none; font-size: 30px; cursor: pointer; padding: 10px; z-index: 10;`;
+        
+        const prevBtn = document.createElement('button');
+        prevBtn.innerHTML = '&lt;';
+        prevBtn.style.cssText = arrowBtnStyle + 'left: 10px;';
+        prevBtn.onclick = function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const newIndex = (currentIndex - 1 + window.panoramaOrder.length) % window.panoramaOrder.length;
+            navigateToPano(newIndex);
+        };
+
+        const nextBtn = document.createElement('button');
+        nextBtn.innerHTML = '&gt;';
+        nextBtn.style.cssText = arrowBtnStyle + 'right: 10px;';
+        nextBtn.onclick = function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const newIndex = (currentIndex + 1) % window.panoramaOrder.length;
+            navigateToPano(newIndex);
+        };
+
+        const closeBtn = document.createElement('button');
+        closeBtn.innerText = 'X';
+        closeBtn.style.cssText = `position: absolute; top: 10px; right: 10px; z-index: 10; background: white; border: none; font-size: 20px; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;`;
+        closeBtn.onclick = function() {
+            document.body.removeChild(modal);
+            highlightViewedPano(window.lastViewedPanoId);
+        };
+
+        iframeContainer.appendChild(iframe);
+        iframeContainer.appendChild(prevBtn);
+        iframeContainer.appendChild(nextBtn);
+        iframeContainer.appendChild(closeBtn);
+        modal.appendChild(iframeContainer);
         document.body.appendChild(modal);
 
-        modal.addEventListener('click', () => {
-            document.body.removeChild(modal);
-            if (window.lastViewedPanoId) {
-                map.setFeatureState({ source: 'panoramas-source', id: window.lastViewedPanoId }, { viewed: false });
-                window.lastViewedPanoId = null;
-            }
-        });
+        preloadPanoImages(currentIndex);
     }
+    // --- end of restored panorama functions ---
 
     // --- main execution logic ---
     document.addEventListener('DOMContentLoaded', () => {
-        // 1. build ui and setup layout
         buildToolkit();
         setupLayoutAdjustments();
 
-        // 2. initialize the map and make it global
         mapboxgl.accessToken = 'pk.eyJ1IjoiZXNlLXRvaCIsImEiOiJja2Vhb24xNTEwMDgxMzFrYjVlaTVjOXkxIn0.IsPo5lOndNUc3lDLuBa1ZA';
         const map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/ese-toh/ckh2ss32s06i119paer9mt67h',
         });
-        window.map = map; // expose map globally for other scripts
+        window.map = map;
 
-        // 3. add geocoder to the ui
         const geocoder = new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
             mapboxgl: mapboxgl
         });
         document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 
-        // 4. wait for the map to be fully loaded before doing anything else
         map.on('load', async function () {
             console.log("map 'load' event fired. loading scripts...");
             
             try {
-                // fetch town and layer configurations
                 const [townConfigResponse, layerConfigResponse] = await Promise.all([
                     fetch('https://east-southeast-llc.github.io/ese-map-viewer-dev/assets/data/town_config.json'),
                     fetch('https://east-southeast-llc.github.io/ese-map-viewer-dev/assets/data/layer_config.json')
@@ -200,7 +248,7 @@
 
                 const townConfig = await townConfigResponse.json();
                 const layerConfig = await layerConfigResponse.json();
-                window.layerConfig = layerConfig; // make layer config global
+                window.layerConfig = layerConfig;
 
                 const townData = townConfig.find(town => town.townID === window.townId);
 
@@ -214,24 +262,20 @@
                     window.toggleableLayerIds = townData.layers;
                     window.toggleableLayerIds.unshift('tools');
 
-                    // filter and sort layers based on town config and draw order
                     const townLayers = layerConfig
                         .filter(layer => townData.layers.includes(layer.id))
                         .sort((a, b) => a.drawOrder - b.drawOrder);
 
-                    // define a function to load a single layer script
                     const loadLayerScript = (scriptName) => {
                         return loadScript(`https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/layers/${scriptName}`);
                     };
 
-                    // load layer scripts sequentially based on draw order
                     for (const layer of townLayers) {
                         await loadLayerScript(layer.scriptName);
                     }
                     
                     console.log("all layer scripts loaded.");
 
-                    // now load all control scripts in parallel
                     const controlScripts = [
                         "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/button.js",
                         "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/print.js",
@@ -251,7 +295,6 @@
                     ];
                     
                     await Promise.all(controlScripts.map(loadScript));
-                    
                     console.log("all control scripts loaded.");
 
                     await loadScript("https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/toggleable-menu.js?v=2");
@@ -265,22 +308,32 @@
             } catch (error) {
                 console.error("failed to load initial configurations:", error);
             }
+            
+            // ** restored dedicated panorama click listener **
+            map.on('click', 'panoramas', function(e) {
+                if (e.features.length > 0) {
+                    const feature = e.features[0];
+                    // 'promoteId' in the source uses 'filename', so feature.id is the filename
+                    const currentIndex = window.panoramaOrder.indexOf(feature.id);
+                    if (currentIndex !== -1) {
+                        openPanoModal(currentIndex);
+                    }
+                }
+            });
 
+            // ** generic click listener for all other popups **
             map.on('click', (e) => {
                 if (window.placingPoint) {
                     handleMarkerPlacement(e.lngLat);
                     return;
                 }
 
-                // ** new: check for panoramas first **
+                // check if the click was on a panorama to avoid double events
                 const panoFeatures = map.queryRenderedFeatures(e.point, { layers: ['panoramas'] });
                 if (panoFeatures.length > 0) {
-                    const panoFile = panoFeatures[0].properties.filename;
-                    openPanoramaViewer(panoFile);
-                    return; // exit the function to avoid showing a regular popup
+                    return; 
                 }
 
-                // if no panorama was clicked, proceed with the normal popup logic
                 const queryableLayers = window.layerConfig
                     .filter(l => l.popupConfig)
                     .map(l => l.id);
