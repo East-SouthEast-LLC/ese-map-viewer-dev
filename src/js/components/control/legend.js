@@ -50,9 +50,6 @@ function getLegendForPrint(expectedLayerIds = []) {
         const { displayName, legendConfig } = layerInfo;
         const { sources, items } = legendConfig;
 
-        if (!sources && layerInfo.id !== 'usgs-quad-legend') return;
-
-        // handle usgs quad separately
         if (layerInfo.id === 'usgs-quad-legend') {
             if (window.usgsTilesInitialized && map.getZoom() >= 12) {
                 allItemsToRender.push(`<div class="legend-section">${displayName}</div>`);
@@ -61,6 +58,22 @@ function getLegendForPrint(expectedLayerIds = []) {
                 allItemsToRender.push(
                     `<div class="legend-item"><span class="color-box" style="${style}"></span><span>${item.label}</span></div>`
                 );
+                renderedLegendSections.add(displayName);
+            }
+            return;
+        }
+
+        // handle simple, non-source-based legend items
+        if (!sources) {
+            if (map.getLayer(layerInfo.id) && map.getLayoutProperty(layerInfo.id, 'visibility') === 'visible') {
+                allItemsToRender.push(`<div class="legend-section">${displayName}</div>`);
+                items.forEach(item => {
+                    const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
+                    const swatchClass = item.isLine ? 'color-line' : 'color-box';
+                    allItemsToRender.push(
+                        `<div class="legend-item"><span class="${swatchClass}" style="${style}"></span><span>${item.label}</span></div>`
+                    );
+                });
                 renderedLegendSections.add(displayName);
             }
             return;
@@ -132,7 +145,6 @@ function getLegendForPrint(expectedLayerIds = []) {
     return `<div class="legend-grid">${allItemsToRender.join('')}</div>`;
 }
 
-
 function updateLegend() {
     const legendBox = document.getElementById("legend-box");
     if (legendBox.style.display === 'none') return;
@@ -142,22 +154,35 @@ function updateLegend() {
     (window.layerConfig || []).forEach(layerInfo => {
         if (!layerInfo.legendConfig) return;
 
-        const { displayName, legendConfig } = layerInfo;
+        const { id, displayName, legendConfig } = layerInfo;
         const { sources, items } = legendConfig;
 
-        if (layerInfo.id === 'usgs-quad-legend') {
+        if (id === 'usgs-quad-legend') {
             if (window.usgsTilesInitialized && map.getZoom() >= 12) {
                 legendHTML += `<div class="legend-title">${displayName}</div>`;
                 const item = items[0];
                 const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
                 legendHTML += `<div class="legend-item-row"><span class="color-box" style="${style}"></span><span>${item.label}</span></div>`;
             }
-            return; 
+            return;
         }
 
-        const sourceIds = (sources || []).map(s => s.id).filter(id => map.getLayer(id));
-        if (sourceIds.length === 0) return;
+        // handle simple layers without sources (like satellite, parcel highlight)
+        if (!sources) {
+            if (map.getLayer(id) && map.getLayoutProperty(id, 'visibility') === 'visible') {
+                legendHTML += `<div class="legend-title">${displayName}</div>`;
+                items.forEach(item => {
+                    const style = `background-color: ${item.color}; opacity: ${item.opacity};`;
+                    const swatchClass = item.isLine ? 'color-line' : 'color-box';
+                    legendHTML += `<div class="legend-item-row"><span class="${swatchClass}" style="${style}"></span><span>${item.label}</span></div>`;
+                });
+            }
+            return;
+        }
 
+        const sourceIds = sources.map(s => s.id).filter(id => map.getLayer(id));
+        if (sourceIds.length === 0) return;
+        
         const allVisibleFeatures = map.queryRenderedFeatures({ layers: sourceIds });
         if (allVisibleFeatures.length === 0) return;
 
@@ -218,7 +243,6 @@ function updateLegend() {
     legendBox.innerHTML = legendHTML;
 }
 
-// event listeners for the legend button
 const legendButton = document.getElementById("legendButton");
 const legendBox = document.getElementById("legend-box");
 let legendVisibility = false;
