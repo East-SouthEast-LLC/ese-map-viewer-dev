@@ -1,55 +1,49 @@
-// control-print-area.js
-
-// ============================================================================
-// HELPER FUNCTIONS FOR PRINT AREA FUNCTIONALITY
-// ============================================================================
-
 function updateBoundingBox() {
-    if (!map) return; // Ensure map is ready
+    if (!map) return; // ensure map is ready
 
-    const center = map.getCenter(); // Get the map's center point (lng, lat)
-    const bounds = map.getBounds(); // Get the map's bounds
+    const center = map.getCenter(); // get the map's center point (lng, lat)
+    const bounds = map.getBounds(); // get the map's bounds
 
-    const northLat = bounds.getNorth(); // North bound of map
-    const centerLat = center.lat; // Latitude of the map center
+    const northLat = bounds.getNorth(); // north bound of map
+    const centerLat = center.lat; // latitude of the map center
 
-    // Calculate the distance from center to the top of the visible map in meters
+    // calculate the distance from center to the top of the visible map in meters
     const halfHeightMeters = turf.distance(
-        [center.lng, center.lat], // Center point
-        [center.lng, northLat], // North point
+        [center.lng, center.lat], // center point
+        [center.lng, northLat], // north point
         { units: 'meters' }
     );
 
-    // Calculate the half-width to be equal to the half-height for an 8x8 aspect ratio
+    // calculate the half-width to be equal to the half-height for an 8x8 aspect ratio
     const halfWidthMeters = halfHeightMeters;
 
-    // Convert distances back into lat/lng
-    const north = centerLat + (halfHeightMeters / 111320); // Convert meters to lat
-    const south = centerLat - (halfHeightMeters / 111320); // Convert meters to lat
+    // convert distances back into lat/lng
+    const north = centerLat + (halfHeightMeters / 111320); // convert meters to lat
+    const south = centerLat - (halfHeightMeters / 111320); // convert meters to lat
 
-    // Convert width (meters) to longitude difference
+    // convert width (meters) to longitude difference
     const lngDiff = halfWidthMeters / (111320 * Math.cos(centerLat * (Math.PI / 180)));
 
     const east = center.lng + lngDiff;
     const west = center.lng - lngDiff;
 
-    // Compute diagonal distance for scale calculation
+    // compute diagonal distance for scale calculation
     const diagonalMeters = turf.distance(
         [west, north], [east, south], { units: 'meters' }
     );
-    const diagonalFeet = diagonalMeters * 3.28084; // Convert meters to feet
+    const diagonalFeet = diagonalMeters * 3.28084; // convert meters to feet
 
-    // Compute scale for an 8x8 inch area
+    // compute scale for an 8x8 inch area
     const mapDiagonalInches = Math.sqrt(8.0 ** 2 + 8.0 ** 2);
     const scaleFeetPerInch = Math.round(diagonalFeet / mapDiagonalInches);
 
-    // Update scale-box text
+    // update scale-box text
     document.getElementById('scale-box').innerText = `1" = ${scaleFeetPerInch} feet`;
 
-    // Remove any existing bounding box before adding a new one
+    // remove any existing bounding box before adding a new one
     removeBoundingBox();
 
-    // Create a new bounding box using the calculated lat/lng values
+    // create a new bounding box using the calculated lat/lng values
     map.addSource('boundingBox', {
         type: 'geojson',
         data: {
@@ -59,7 +53,7 @@ function updateBoundingBox() {
                 coordinates: [[
                     [west, north], [east, north], 
                     [east, south], [west, south], 
-                    [west, north]  // Close the box
+                    [west, north]  // close the box
                 ]]
             }
         }
@@ -92,25 +86,26 @@ function removeBoundingBox() {
 // ============================================================================
 
 const pareaButton = document.getElementById('pareaButton');
-const scaleBoxDiv = document.getElementById('scale-box');
-let boundingBoxVisible = false; // Track visibility
+// renamed the variable to avoid conflict with scale.js
+const printArea_scaleBox = document.getElementById('scale-box');
+let boundingBoxVisible = false; // track visibility
 
-if (!pareaButton || !scaleBoxDiv) {
-    console.error("Required elements not found in the DOM");
+if (!pareaButton || !printArea_scaleBox) {
+    console.error("required elements for print area not found in the dom");
 } else {
-    // Hide scale-box on page load
-    scaleBoxDiv.style.display = 'none';
+    // hide scale-box on page load
+    printArea_scaleBox.style.display = 'none';
 
     pareaButton.addEventListener('click', () => {
-        boundingBoxVisible = !boundingBoxVisible; // Toggle state
+        boundingBoxVisible = !boundingBoxVisible; // toggle state
         if (boundingBoxVisible) {
             updateBoundingBox();
-            scaleBoxDiv.style.display = 'block'; // Show scale box
-            pareaButton.classList.add('active'); // Add active class
+            printArea_scaleBox.style.display = 'block'; // show scale box
+            pareaButton.classList.add('active'); // add active class
         } else {
             removeBoundingBox();
-            scaleBoxDiv.style.display = 'none'; // Hide scale box
-            pareaButton.classList.remove('active'); // Remove active class
+            printArea_scaleBox.style.display = 'none'; // hide scale box
+            pareaButton.classList.remove('active'); // remove active class
         }
     });
 
@@ -125,4 +120,4 @@ if (!pareaButton || !scaleBoxDiv) {
             updateBoundingBox();
         }
     });
-};
+}
