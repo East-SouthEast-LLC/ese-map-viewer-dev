@@ -336,7 +336,7 @@ All of the HTML for the toolkit is generated inside the `buildToolkit()` functio
 Open `src/js/main.js` and find the `geocoderContainer.innerHTML` section. You'll see several placeholder buttons. Replace one of them with the HTML for your new button. Make sure the `id` matches the one you used in your new JavaScript file.
 
 **Before:**
-```HTML
+```html
 // ... inside buildToolkit() in main.js
 <div> 
     <!-- ... other buttons ... -->
@@ -346,7 +346,7 @@ Open `src/js/main.js` and find the `geocoderContainer.innerHTML` section. You'll
 ```
 
 **After:**
-```HTML
+```html
 <!-- ... inside buildToolkit() in main.js -->
 <div> 
     <!-- ... other buttons ... -->
@@ -356,7 +356,7 @@ Open `src/js/main.js` and find the `geocoderContainer.innerHTML` section. You'll
 ```
 
 **After:**
-```HTML
+```html
 <!-- ... inside buildToolkit() in main.js -->
 <div> 
     <!-- ... other buttons ... -->
@@ -366,7 +366,7 @@ Open `src/js/main.js` and find the `geocoderContainer.innerHTML` section. You'll
 ```
 If your tool needs a popup panel, add its `div` container at the bottom of the `innerHTML` string, giving it the `id` you used in your script.
 
-```HTML
+```html
 <!-- ... at the end of the innerHTML string in main.js -->
 <div id="custom-print-box"></div>
 <div id="bookmark-box"></div>
