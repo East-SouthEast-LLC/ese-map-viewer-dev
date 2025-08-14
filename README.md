@@ -90,103 +90,328 @@ The "Custom Print" feature allows users to generate professional, multi-page PDF
 2.  **Create Squarespace Page**: Create a new page on the Squarespace site.
 3.  **Embed Code**: Add a Code Block, paste in the content from `src/pages/town-template.html`, and set the `data-town-id` attribute in the script tag to match the new `townID`.
 
-### How to Add a New Vector Layer 
+### How to Add a New Layer
 
-1.  **Prepare Data**: Upload your new geospatial data to Mapbox and create a new vector tileset. Copy the **Tileset ID**.
-2.  **Create Layer Script**: In the `src/js/layers/` directory, create a new file (e.g., `new-layer.js`). This file should contain a single function that adds the layer(s) and source(s) to the map.
-3.  **Update Configuration**: Open `assets/data/layer_config.json` and add a new JSON object for your layer. This is where you'll define all its properties:
-    * `"id"`: The unique Mapbox layer ID (e.g., `"my-new-layer"`).
-    * `"displayName"`: The user-friendly name that appears in the menu (e.g., `"My New Layer"`).
-    * `"scriptName"`: The exact filename of the script you created (e.g., `"new-layer.js"`).
-    * `"drawOrder"`: A number to control the layer stacking order (higher numbers are on top).
-    * `"dependencies"`: An array of other layer IDs that should be toggled on/off with this one (e.g., `["my-new-layer-labels", "my-new-layer-outline"]`).
-    * `"popupConfig"`: An object with a `template` string for the on-click popup. Use `{property_name}` placeholders.
-    * `"identifyConfig"`: An object with a `template` string for the Identify tool's output.
-    * `"legendConfig"`: An object defining how the layer should appear in the legend.
-4.  **Add to Town**: Open `assets/data/town_config.json` and add the new layer's `id` to the `layers` array for any towns that should use it.
+The application is designed to be highly modular, with all layer configurations managed centrally in the `assets/data/layer_config.json` file. Adding a new layer involves creating a simple script to draw it on the map and then defining all of its properties and behaviors in the central configuration file.
 
+#### Example A: Adding a Simple Layer (e.g., "Parks")
 
-### How to Add a New Control
+This example shows how to add a single, simple layer that shows park areas as green polygons.
 
-1.  **Create Control File**: Create a new file in the `/docs/control-` directory.
-2.  **Connect the On Click Listnener**: Navigate to the town.html file and then find the div with the className `geocoder-container` and replace one of the placeholder buttons with your own.
-    ```html (button markup)
-      <button class="mapboxgl-ctrl-four" id="fourButton" aria-label="four" data-tooltip="Placeholder"></button>
-      ```
-      In this example, you would replace the class with a new className of your choice, corresponding to a new set of css styling to define that button's style. Then you would need to give the button a unique ID which will be used to identify the button within your script file.
-3.  **Setup the Control File**: Setup a simple event listener for the new button so that some action is performed when the DOM is loaded. Below is an example from `docs/control-scale.js` of how the `DOMContentLoaded` event listener should be setup along with handling for a corresponding popup for the specific button. 
-    ```javascript
-    document.addEventListener("DOMContentLoaded", function () {
-        const scaleZoomButton = document.getElementById("scaleZoom"); // this corresponds to the id set in town.html
-        const geocoderContainer = document.getElementById("geocoder-container"); // this gets the container div for the geocoder and other buttons
-        const scaleBoxDiv = document.getElementById("scale-box"); // this is for the scale box popup which is hidden by default
-        let scaleVisibility = false; // track if scale box is visible
+**Step 1: Prepare Your Geospatial Data**
 
-        // ensure required elements exist
-        if (!scaleZoomButton || !geocoderContainer) {
-            console.error("Required elements not found in the DOM.");
-            return;
-        }
+First, your geographic data needs to be hosted on Mapbox.
 
-        scaleBoxDiv.style.display = 'none'; // crucial to make sure popup starts hidden
+1.  Upload your data (e.g., GeoJSON, Shapefile) to your Mapbox account.
+2.  Create a new **Tileset** from your uploaded data.
+3.  Once the tileset is created, click on it and copy the **Tileset ID** (e.g., `your-account.random-string`) and the **Source Layer Name** (e.g., `parks-data-layer`).
 
-        // ..... rest of code
+**Step 2: Create the Layer's JavaScript File**
+
+In the `/src/js/layers/` directory, create a new file named `parks.js`. This file will contain the basic logic to add the layer to the map.
+
+**`src/js/layers/parks.js`:**
+```javascript
+// src/js/layers/parks.js
+
+function addParksLayer() {
+    // add the mapbox source using your unique tileset id
+    map.addSource('parks', {
+        type: 'vector',
+        url: 'mapbox://your-account.random-string' // <-- paste your tileset id here
     });
-    ```
-4. **Add Click Event Listener**: The next step is to actually have an event happen when the user clicks the button. This is where a second event listener comes in. Here is the `onClick` event listener for the scale button.   
-    ```javascript
-        // main button click handler to toggle scale box
-        scaleZoomButton.addEventListener('click', () => {
-            scaleVisibility = !scaleVisibility; // toggle visibility state
-            if (scaleVisibility) { // show scale box
-                updateScaleBox(); // call helper function to update scale box content
-                scaleZoomButton.classList.add('active');
-            } else { // hide scale box
-                scaleBoxDiv.style.display = 'none';
-                scaleZoomButton.classList.remove('active');
-            }
-        });
-    ```
-5. **Style the Button**: Once you have the basic functionality in place, you need to make sure there are style rules for the new button. To do this, open up the `/css/globals.css` file and add your custom background image for the button using the unique class name you assigned earlier. Here is how that might look for the scale button example we have been using.
-    ```html
-    <!-- if this was your button definition in the town.html file -->
-    <button class="mapboxgl-ctrl-sZoom" id="scaleZoom" aria-label="Zoom to Scale" data-tooltip="Zoom to Scale"></button>
-    ```
-    ```css
-    /* then your custom button image would look like this */
-    .mapboxgl-ctrl-sZoom { background-image: url('https://www.ese-llc.com/s/scale-zoom.png'); }
-    ```
-6. **Test the Button**: Finally, make sure to test your new button to ensure it works as expected. Check that the button appears with the correct styling and that the click event triggers the desired functionality.
-7. **Note: For Popup Only**: If your button is intended to trigger a popup, ensure that the popup is properly initialized in the town.html document underneath the share button div and that the button's click event is correctly linked to the popup's display logic. For the scale button the HTML looks like this to create the popup container called `scale-box`.
-    ```html
-        <div id="scale-box"></div>
-    ```
-    As for the styling of the popup container, you will need to add another css class for the `scale-box` div in your `/css/globals.css` file. Here is an example of how you might style it.
-    ```css
-        #scale-box {
-        font-size: 12px;
-        color: #333;
-        background: white;
-        padding: 5px 10px;
-        border-radius: 5px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-        margin-top: 5px;
-        text-align: left;
-        max-width: 240px;
-        width: 100%;
-        box-sizing: border-box;
 
-        /* to prevent toolkit popups from squashing eachother in the main container, include the following */
-        flex-shrink: 0;
-        min-height: 50px;
+    // add the layer, linking it to the source
+    map.addLayer({
+        'id': 'parks', // this must match the 'id' in layer_config.json
+        'type': 'fill',
+        'source': 'parks',
+        'source-layer': 'parks-data-layer', // <-- use the source layer name from mapbox
+        'layout': {
+            'visibility': 'none' // layers should always be hidden by default
+        },
+        'paint': {
+            'fill-color': '#90ee90', // light green
+            'fill-opacity': 0.5
+        }
+    });
+
+    // these listeners change the mouse to a pointer on hover if the layer has a popup
+    map.on('mouseenter', 'parks', function () {
+        map.getCanvas().style.cursor = 'pointer';
+    });
+
+    map.on('mouseleave', 'parks', function () {
+        map.getCanvas().style.cursor = '';
+    });
+}
+
+// call the function to add the layer
+addParksLayer();
+```
+
+**Step 3: Configure the Layer in `layer_config.json`**
+
+Open `/assets/data/layer_config.json` and add a new JSON object for your "Parks" layer.
+
+```json
+  {
+    "id": "parks",
+    "displayName": "Parks & Rec",
+    "scriptName": "parks.js",
+    "drawOrder": 38,
+    "dependencies": [],
+    "popupConfig": {
+      "template": "<strong>Park Name:</strong> {PARK_NAME}"
+    },
+     "identifyConfig": {
+        "template": "<strong>Park:</strong> {PARK_NAME}"
+    },
+    "legendConfig": {
+        "displayName": "Parks & Recreation",
+        "sources": [{ "id": "parks" }],
+        "items": [
+            { "label": "Park Area", "color": "#90ee90", "opacity": 0.5, "isLine": false }
+        ]
     }
-    ```
-    Note: You may need to adjust the positioning and other styles based on your specific layout and design requirements.
-8.  **Calling the Script**: In order to actually have your button appear and follow your new functionality, you must import the code you just implemented. Open up the `town.html` file and go all the way to the bottom where you will see a bunch of script tags that look like this:
-    ```html
-      <script src="https://east-southeast-llc.github.io/ese-map-viewer/docs/control-scale.js" defer></script>
-    ```
-    Simply add another one of these script tags for your new functionality, calling your new JavaScript file. Note that whenever you make production changes to the `town.html` file, you will need to replace all the Squarespace code blocks in every town with your new file. It is easy enough to do this because you can change the townId constant and copy and paste the code from `town.html` into each town code block.
+  }
+```
+
+**Step 4: Add the Layer to a Town**
+
+Finally, open `/assets/data/town_config.json` and add the new layer's `id` ("parks") to the `layers` array for any towns that should have it.
+
+---
+
+#### Example B: Adding a Layer with Dependencies (e.g., "Waterways")
+
+This example shows how to add a layer that has multiple parts: a blue line for the waterways and text labels that appear on top. The labels are a "dependency" that will be toggled on and off with the main layer.
+
+**Step 1: Prepare Your Data**
+
+This process is the same as the simple layer. Upload your waterway data to Mapbox and get the **Tileset ID** and **Source Layer Name**.
+
+**Step 2: Create the Layer's JavaScript File**
+
+In `/src/js/layers/`, create a new file named `waterways.js`. This file will add **both** the line layer and the symbol (label) layer.
+
+**`src/js/layers/waterways.js`:**
+```javascript
+// src/js/layers/waterways.js
+
+function addWaterwaysLayer() {
+    // first, add the source, which will be shared by both layers
+    map.addSource('waterways', {
+        type: 'vector',
+        url: 'mapbox://your-account.waterway-tileset' // <-- your tileset id
+    });
+
+    // next, add the main line layer for the waterways
+    map.addLayer({
+        'id': 'waterways', // the id for the main line layer
+        'type': 'line',
+        'source': 'waterways',
+        'source-layer': 'waterways-data-layer', // your source layer name
+        'layout': { 'visibility': 'none' },
+        'paint': {
+            'line-color': '#0077be', // a nice blue color
+            'line-width': 2
+        }
+    });
+
+    // now, add the dependent layer for the labels
+    map.addLayer({
+        'id': 'waterways-labels', // a unique id for the labels layer
+        'type': 'symbol',
+        'source': 'waterways', // uses the same source
+        'source-layer': 'waterways-data-layer',
+        'layout': {
+            'visibility': 'none', // also hidden by default
+            'symbol-placement': 'line',
+            'text-field': ['get', 'STREAM_NAME'], // the property from your data to use as a label
+            'text-size': 12
+        },
+        'paint': {
+            'text-color': '#00558e',
+            'text-halo-color': '#ffffff',
+            'text-halo-width': 1
+        }
+    });
+
+    // the mouseenter/mouseleave events should only apply to the main clickable layer
+    map.on('mouseenter', 'waterways', function () {
+        map.getCanvas().style.cursor = 'pointer';
+    });
+
+    map.on('mouseleave', 'waterways', function () {
+        map.getCanvas().style.cursor = '';
+    });
+}
+
+addWaterwaysLayer();
+```
+
+**Step 3: Configure the Layer in `layer_config.json`**
+
+Open `/assets/data/layer_config.json` and add the configuration for your waterways. The key difference is the `dependencies` array, which now includes the ID of your labels layer.
+
+```json
+  {
+    "id": "waterways",
+    "displayName": "Waterways",
+    "scriptName": "waterways.js",
+    "drawOrder": 58,
+    "dependencies": ["waterways-labels"],
+    "popupConfig": {
+      "template": "<strong>Waterway:</strong> {STREAM_NAME}"
+    },
+     "identifyConfig": {
+        "template": "<strong>Waterway:</strong> {STREAM_NAME}"
+    },
+    "legendConfig": {
+        "displayName": "Waterways",
+        "sources": [{ "id": "waterways" }],
+        "items": [
+            { "label": "River / Stream", "color": "#0077be", "opacity": 1.0, "isLine": true }
+        ]
+    }
+  }
+```
+
+**Step 4: Add the Layer to a Town**
+
+This is the same as before. Open `/assets/data/town_config.json` and add the main layer's `id` ("waterways") to the `layers` array for the desired towns. The application will automatically handle toggling the `waterways-labels` layer whenever the main "Waterways" layer is turned on or off, because you defined it as a dependency.
+
+### How to Add a New Control Component
+
+Adding a new button or interactive tool to the map's toolkit is a straightforward process. The application is designed to be modular, so all the necessary HTML for the toolkit is built dynamically in `main.js`, and each control's logic is kept in its own file.
+
+#### Step 1: Create the JavaScript File for Your Control
+
+First, create a new file for your tool's logic inside the `/src/js/components/control/` directory. For this example, we'll call it `new-control.js`.
+
+Since your script will be loaded dynamically *after* the main HTML is on the page, you can immediately start looking for your button's ID without waiting for a `DOMContentLoaded` event.
+
+Here is a basic template for your new control file. You can copy and paste this to get started:
+
+```javascript
+// src/js/components/control/new-control.js
+
+// find the button and its associated panel by their unique ids
+const newToolButton = document.getElementById('newToolButton');
+const newToolBox = document.getElementById('new-tool-box');
+
+// check to make sure the required elements were found
+if (!newToolButton || !newToolBox) {
+    console.error("required elements not found for the new tool.");
+} else {
+    // hide the panel by default
+    newToolBox.style.display = 'none';
+    let isToolActive = false;
+
+    // add the main click event listener for the button
+    newToolButton.addEventListener('click', () => {
+        isToolActive = !isToolActive; // toggle the active state
+
+        if (isToolActive) {
+            // code to run when the tool is activated
+            newToolBox.style.display = 'block';
+            newToolBox.innerHTML = `<strong>My New Tool Is Active!</strong>`;
+            newToolButton.classList.add('active');
+            console.log("new tool activated!");
+        } else {
+            // code to run when the tool is deactivated
+            newToolBox.style.display = 'none';
+            newToolButton.classList.remove('active');
+            console.log("new tool deactivated.");
+        }
+    });
+}
+```
+
+#### Step 2: Add the Control's HTML Markup
+
+All of the HTML for the toolkit is generated inside the `buildToolkit()` function in `/src/js/main.js`. This keeps the main `town-template.html` clean and simple.
+
+Open `src/js/main.js` and find the `geocoderContainer.innerHTML` section. You'll see several placeholder buttons. Replace one of them with the HTML for your new button. Make sure the `id` matches the one you used in your new JavaScript file.
+
+**Before:**
+```javascript
+// ... inside buildToolkit() in main.js
+<div> 
+    // ... other buttons ...
+    <button class="mapboxgl-ctrl-four" id="fourButton" aria-label="four" data-tooltip="Placeholder"></button>
+    // ... other buttons ...
+</div>
+```
+
+**After:**
+```javascript
+// ... inside buildToolkit() in main.js
+<div> 
+    // ... other buttons ...
+    <button class="mapboxgl-ctrl-new-tool" id="newToolButton" aria-label="New Tool" data-tooltip="This is my new tool"></button>
+    // ... other buttons ...
+</div>
+```
+If your tool needs a popup panel, add its `div` container at the bottom of the `innerHTML` string, giving it the `id` you used in your script.
+
+```javascript
+// ... at the end of the innerHTML string in main.js
+<div id="custom-print-box"></div>
+<div id="bookmark-box"></div>
+<div id="identify-box"></div>
+<div id="new-tool-box"></div> ```
+
+#### Step 3: Style the New Button and Panel
+
+Open `/src/css/globals.css` to add the necessary styling.
+
+First, add a rule for your button's new class to set its icon. The icon should be a 60% sized image centered on the button.
+
+```css
+/* add this to the control button styles section */
+.mapboxgl-ctrl-new-tool { 
+    background-image: url('path/to/your/new-icon.png'); 
+}
+```
+
+Next, if you added a panel for your tool, add a style rule for it. You can copy the style of an existing panel like `#scale-box` to ensure it looks consistent.
+
+```css
+/* add this to the info display panels section */
+#new-tool-box {
+  display: none; /* panels should be hidden by default */
+  background: white;
+  color: #333;
+  padding: 10px 15px;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  margin-top: 5px;
+  max-width: 240px;
+  width: 100%;
+  box-sizing: border-box;
+}
+```
+
+#### Step 4: Load Your New Script
+
+The final step is to tell the application to load your new script. Open `src/js/main.js` and find the `controlScripts` array. Add the full URL path to your new JavaScript file to this list.
+
+```javascript
+// ... inside main.js
+const controlScripts = [
+    "[https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/button.js](https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/button.js)",
+    // ... other scripts ...
+    "[https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/bookmarks.js](https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/bookmarks.js)",
+    "[https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/identify.js](https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/identify.js)",
+    "[https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/new-control.js](https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/new-control.js)" // <-- add your new script's path here
+];
+```
+
+#### Step 5: Test Your New Control
+
+With all these pieces in place, your new control is fully integrated. When you load the map, `main.js` will create the button, load your script, and your new tool should be ready to use.
 
 ## 6. Git Development Practices
 
