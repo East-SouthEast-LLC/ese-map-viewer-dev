@@ -856,7 +856,7 @@ MOBILE & TABLET RESPONSIVE STYLES
 }
 
 .skeleton-col {
-    background-color: #eeeeee;
+    background-color: #ffffff;
     border-radius: 5px;
     padding: 10px;
 }
@@ -876,7 +876,7 @@ MOBILE & TABLET RESPONSIVE STYLES
 }
 
 .skeleton-bone {
-    background-color: #ffffff;
+    background-color: #ece9e9;
     border-radius: 4px;
     position: relative;
     overflow: hidden;
