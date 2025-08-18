@@ -88,6 +88,7 @@
         const headerHeight = header.offsetHeight;
         const buffer = 70;
         const topOffset = headerHeight + 40;
+        console.log('topOffset:', topOffset);
         const availableHeight = window.innerHeight - headerHeight - buffer;
         mapContainer.style.height = `${availableHeight}px`;
         menuContainer.style.maxHeight = `${availableHeight}px`;
