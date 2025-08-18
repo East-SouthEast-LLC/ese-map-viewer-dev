@@ -275,6 +275,7 @@
                         "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/bookmarks.js",
                         "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/identify.js",
                         "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/toggle-off.js",
+                        "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/tooltip.js",
                         "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/disclaimer-popup.js",
                         "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/utils/analytics.js",
                         "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/mobile-menu.js",
