@@ -169,7 +169,7 @@ CONTROL BUTTON STYLES
 
 .mapboxgl-ctrl-point-off     { background-image: url('https://www.ese-llc.com/s/marker-blue-off.svg'); }
 .mapboxgl-ctrl-clear         { background-image: url('https://www.ese-llc.com/s/marker-blue-measure-cancel.svg'); }
-.mapboxgl-ctrl-ten           { background-image: none; }
+.mapboxgl-ctrl-toggle-off    { background-image: url('https://img.icons8.com/ios-glyphs/30/invisible.png'); }
 
 /* ============================================================
 SHARE BUTTON 
