@@ -287,16 +287,28 @@
                     setupToggleableMenu();
                     applyUrlParams(map);
                     console.log("application is fully loaded and ready.");
+                    
+                    // wait for the map to finish its first complete render cycle.
+                    map.once('idle', () => {
+                        console.log("map is idle, hiding skeleton.");
+                        if (typeof hideSkeleton === 'function') {
+                            hideSkeleton();
+                        }
+                    });
 
                 } else {
                     console.error("town data not found for id:", window.townId);
+                    // if town data fails, hide skeleton immediately
+                    if (typeof hideSkeleton === 'function') {
+                        hideSkeleton();
+                    }
                 }
             } catch (error) {
                 console.error("failed to load initial configurations:", error);
-            } finally {
-                // this block will always run, ensuring the skeleton is hidden
-                // whether the try block succeeded or failed.
-                // hideSkeleton(); 
+                // if any other error occurs, hide skeleton immediately
+                if (typeof hideSkeleton === 'function') {
+                    hideSkeleton();
+                }
             }
             
             map.on('click', 'panoramas', function(e) {
