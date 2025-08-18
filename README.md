@@ -480,3 +480,6 @@ With all these pieces in place, your new control is fully integrated. When you l
         git push origin main
         ```
     * Finally, update the code blocks on the live Squarespace pages with the new content from `src/pages/town-template.html` if it was changed.
+
+<!-- add note about always doing new updates in the development repo and then you will never have to update the dev repo from the main repo. this will allow you to keep all the console logs you want in the dev server, etc -->
+<!-- add note about deleting console.logs from prod code -->
