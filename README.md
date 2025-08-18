@@ -478,7 +478,7 @@ With all these pieces in place, your new control is fully integrated. When you l
         git checkout -b your-feature-name main
         
         # step a: fetch the latest code from the dev repository
-        git fetch https://github.com/East-South-East-LLC/ese-map-viewer-dev.git main
+        git fetch https://github.com/East-SouthEast-LLC/ese-map-viewer-dev.git main
 
         # step b: merge the fetched code, favoring dev changes for any conflicts
         git merge FETCH_HEAD -X theirs --no-ff -m "merge main from dev repository"
