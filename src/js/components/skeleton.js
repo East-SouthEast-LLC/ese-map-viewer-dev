@@ -4,10 +4,20 @@
     'use strict';
 
     /**
-     * immediately adds the 'is-loading' class to the body to ensure the skeleton screen is visible
-     * and the main content is hidden right from the start. this runs as soon as the script is loaded.
+     * finds the site header, positions the skeleton loader beneath it,
+     * and applies the 'is-loading' class to the body.
      */
     function showSkeleton() {
+        const skeleton = document.getElementById('skeleton-loader');
+        const header = document.querySelector('#header'); // squarespace header
+        
+        // dynamically position the skeleton below the header, if the header exists
+        if (skeleton && header) {
+            const headerHeight = header.offsetHeight;
+            skeleton.style.top = `${headerHeight}px`;
+            skeleton.style.height = `calc(100vh - ${headerHeight}px)`;
+        }
+
         document.body.classList.add('is-loading');
     }
 
@@ -38,7 +48,7 @@
     // run the show function immediately on script load
     showSkeleton();
 
-    // attach the hide function to the window object to make it globally accessible from main.js
+    // attach the hide function to the window object to make it globally accessible
     window.hideSkeleton = hideSkeleton;
 
 })();
