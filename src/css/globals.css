@@ -830,13 +830,13 @@ MOBILE & TABLET RESPONSIVE STYLES
 }
 
 #skeleton-loader {
-    position: fixed; /* covers the viewport area below the header */
-    top: 0; /* will be dynamically adjusted by javascript */
+    position: fixed;
+    top: 165px; /* hardcoded offset for the squarespace header */
+    height: calc(100vh - 165px); /* fill the rest of the viewport height */
     left: 0;
     width: 100vw;
-    height: 100vh; /* will also be adjusted by javascript */
     z-index: 9999;
-    background-color: #f9f9f9; /* lighter background to match app */
+    background-color: #f9f9f9;
     display: none;
     opacity: 1;
     transition: opacity 0.5s ease-in-out;
