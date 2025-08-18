@@ -57,6 +57,18 @@ The project's architecture is designed for scalability and ease of maintenance, 
 
 ## 4. Special Features
 
+### Skeleton Loading Screen
+To improve the user's perception of performance, the application displays a skeleton screen while the main map and data are initializing.
+
+* **Purpose**: This provides an immediate visual feedback that the page is loading, showing a simplified, animated placeholder of the final application layout.
+* **How It Works**:
+    1.  A script in the `<head>` (`skeleton.js`) immediately adds an `is-loading` class to the `<body>`.
+    2.  CSS rules in `globals.css` use this class to hide the real application elements and show a pre-defined skeleton layout.
+    3.  The skeleton's CSS is designed to sit below the main Squarespace header and mimics the layout of the ad container, layer menu, and map. A shimmer animation indicates activity.
+    4.  Once `main.js` has fully initialized the map and all its components, it waits for Mapbox's `idle` event (signaling the first complete render).
+    5.  It then calls the global `hideSkeleton()` function, which fades out the skeleton and removes the `is-loading` class, revealing the fully interactive map.
+* **Key Files**: `src/js/components/skeleton.js`, `src/pages/town-template.html` (for the skeleton HTML and initial body class), `src/css/globals.css` (for all styling), and `src/js/main.js` (to trigger the hide function).
+
 ### Panorama Viewer
 
 The application supports viewing 360-degree panoramic images directly on the map.
