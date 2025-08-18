@@ -219,7 +219,7 @@
         });
         document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 
-map.on('load', async function () {
+        map.on('load', async function () {
             console.log("map 'load' event fired. loading scripts...");
             
             // first, always load the base towns layer
@@ -293,6 +293,10 @@ map.on('load', async function () {
                 }
             } catch (error) {
                 console.error("failed to load initial configurations:", error);
+            } finally {
+                // this block will always run, ensuring the skeleton is hidden
+                // whether the try block succeeded or failed.
+                hideSkeleton();
             }
             
             map.on('click', 'panoramas', function(e) {

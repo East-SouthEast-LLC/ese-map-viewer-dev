@@ -813,3 +813,98 @@ MOBILE & TABLET RESPONSIVE STYLES
 .identify-mode-active .mapboxgl-canvas {
     cursor: help !important;
 }
+
+/* skeleton loader styles */
+.is-loading #skeleton-loader {
+    display: flex;
+    opacity: 1;
+}
+
+/* hide main content when loading */
+.is-loading #map,
+.is-loading #menu,
+.is-loading #ad-container-vertical,
+.is-loading #geocoder-container,
+.is-loading #disclaimer-popup {
+    visibility: hidden;
+}
+
+#skeleton-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    background-color: #f0f2f5;
+    display: none; /* hidden by default, shown by .is-loading */
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out; /* fade-out transition */
+    padding: 10px;
+    box-sizing: border-box;
+    gap: 10px;
+}
+
+#skeleton-loader.fade-out {
+    opacity: 0;
+}
+
+.skeleton-col {
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.skeleton-menu {
+    width: 180px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.skeleton-main {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.skeleton-toolkit {
+    width: 260px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.skeleton-bone {
+    background-color: #ccc;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* shimmer animation */
+.skeleton-bone::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    100% {
+        left: 100%;
+    }
+}
+
+/* specific bone styles */
+.skeleton-menu .skeleton-bone { height: 20px; }
+.skeleton-toolkit .skeleton-bone-search { height: 40px; margin-bottom: 10px; }
+.skeleton-toolkit .skeleton-bone-row { display: flex; gap: 10px; margin-bottom: 5px; }
+.skeleton-toolkit .skeleton-bone-button { height: 40px; flex: 1; }
+.skeleton-toolkit .skeleton-bone-share { height: 40px; margin-top: 5px; }
