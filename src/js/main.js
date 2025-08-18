@@ -296,7 +296,7 @@
             } finally {
                 // this block will always run, ensuring the skeleton is hidden
                 // whether the try block succeeded or failed.
-                hideSkeleton();
+                // hideSkeleton();
             }
             
             map.on('click', 'panoramas', function(e) {
