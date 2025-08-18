@@ -842,11 +842,11 @@ MOBILE & TABLET RESPONSIVE STYLES
     transition: opacity 0.5s ease-in-out;
     box-sizing: border-box;
     /* use padding to create the space on the left and right */
-    padding-left: 2.5vw;
+    padding-left: 0;
     padding-right: 2.5vw;
-    padding-top: 10px; /* match the original gap */
+    padding-top: 0;
     padding-bottom: 10px;
-    display: flex; /* keep flex behavior */
+    display: flex;
     gap: 10px;
 }
 
