@@ -251,11 +251,14 @@ if (!customPrintButton || !customPrintBox) {
             if (isUsgsPage) {
                 if (typeof initializeUsgsTileManager === 'function') {
                     initializeUsgsTileManager();
+                    console.log("custom print: usgs page detected. waiting for tiles to load...");
                     // poll until tiles are loaded
                     await new Promise(resolve => {
                         const interval = setInterval(() => {
+                            console.log('custom print: polling for usgs tiles... flag is:', window.usgsTilesLoading);
                             if (!window.usgsTilesLoading) {
                                 clearInterval(interval);
+                                console.log("custom print: usgs tiles loaded. proceeding with capture.");
                                 resolve();
                             }
                         }, 100); // check every 100ms

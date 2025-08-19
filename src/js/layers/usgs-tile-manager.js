@@ -21,6 +21,7 @@ function getTileBounds(tile) {
 function updateVisibleUsgsTiles() {
     if (!window.usgsTilesInitialized) return;
 
+    console.log("usgs tile manager: starting update, setting loading to true.");
     window.usgsTilesLoading = true; // set loading to true
     const currentZoom = map.getZoom();
 
@@ -29,6 +30,7 @@ function updateVisibleUsgsTiles() {
             removeTileFromMap(`usgs-tile-source-${tileName}`);
         });
         loadedUsgsTiles.clear();
+        console.log("usgs tile manager: zoom < 12, clearing tiles and setting loading to false.");
         window.usgsTilesLoading = false; // set loading to false
         return;
     }
@@ -61,9 +63,11 @@ function updateVisibleUsgsTiles() {
     });
 
     if (tilesToLoad === 0) {
+        console.log("usgs tile manager: no new tiles to load, setting loading to false.");
         window.usgsTilesLoading = false; // no new tiles to load
     } else {
         map.once('idle', () => {
+            console.log("usgs tile manager: map idle, all tiles loaded. setting loading to false.");
             window.usgsTilesLoading = false; // all tiles rendered
         });
     }
