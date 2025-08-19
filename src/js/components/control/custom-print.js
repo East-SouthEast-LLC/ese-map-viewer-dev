@@ -258,8 +258,11 @@ if (!customPrintButton || !customPrintBox) {
                             console.log('custom print: polling for usgs tiles... flag is:', window.usgsTilesLoading);
                             if (!window.usgsTilesLoading) {
                                 clearInterval(interval);
-                                console.log("custom print: usgs tiles loaded. proceeding with capture.");
-                                resolve();
+                                (async () => {
+                                    await new Promise(r => setTimeout(r, 200)); // wait an additional 200ms
+                                    console.log("custom print: usgs tiles loaded. proceeding with capture.");
+                                    resolve();
+                                })();
                             }
                         }, 100); // check every 100ms
                     });
