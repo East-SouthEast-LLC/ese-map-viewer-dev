@@ -250,21 +250,9 @@ if (!customPrintButton || !customPrintBox) {
     
             if (isUsgsPage) {
                 if (typeof initializeUsgsTileManager === 'function') {
-                    initializeUsgsTileManager();
-                    console.log("custom print: usgs page detected. waiting for tiles to load...");
-                    await new Promise((resolve, reject) => {
-                        const interval = setInterval(() => {
-                            console.log('custom print: polling for usgs tiles... flag is:', window.usgsTilesLoading);
-                            if (!window.usgsTilesLoading) {
-                                clearInterval(interval);
-                                // wait an additional 200ms for rendering after loading
-                                setTimeout(() => {
-                                    console.log("custom print: usgs tiles loaded. proceeding with capture.");
-                                    resolve();
-                                }, 200);
-                            }
-                        }, 100); // check every 100ms
-                    });
+                    console.log("custom print: usgs page detected. awaiting tile rendering...");
+                    await initializeUsgsTileManager(); // this now returns a promise that resolves when tiles are rendered
+                    console.log("custom print: usgs tiles rendered. proceeding with capture.");
                 }
             } else {
                 config.layers.forEach(layerId => setLayerVisibility(layerId, 'visible'));

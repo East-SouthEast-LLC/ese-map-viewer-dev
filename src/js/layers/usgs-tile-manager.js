@@ -4,7 +4,6 @@
 let allUsgsTiles = [];
 const loadedUsgsTiles = new Set();
 window.usgsTilesInitialized = false;
-window.usgsTilesLoading = false; // new global variable
 
 function getTileBounds(tile) {
     const [pixelWidth, , , pixelHeight, originLng, originLat] = tile.jgw;
@@ -18,11 +17,10 @@ function getTileBounds(tile) {
     return { west: minLng, south: minLat, east: maxLng, north: maxLat };
 }
 
-function updateVisibleUsgsTiles() {
+// converted to an async function to return a promise
+async function updateVisibleUsgsTiles() {
     if (!window.usgsTilesInitialized) return;
 
-    console.log("usgs tile manager: starting update, setting loading to true.");
-    window.usgsTilesLoading = true; // set loading to true
     const currentZoom = map.getZoom();
 
     if (currentZoom < 12) {
@@ -30,9 +28,7 @@ function updateVisibleUsgsTiles() {
             removeTileFromMap(`usgs-tile-source-${tileName}`);
         });
         loadedUsgsTiles.clear();
-        console.log("usgs tile manager: zoom < 12, clearing tiles and setting loading to false.");
-        window.usgsTilesLoading = false; // set loading to false
-        return;
+        return; // return a resolved promise implicitly
     }
 
     const mapBounds = map.getBounds();
@@ -62,14 +58,18 @@ function updateVisibleUsgsTiles() {
         }
     });
 
-    if (tilesToLoad === 0) {
-        console.log("usgs tile manager: no new tiles to load, setting loading to false.");
-        window.usgsTilesLoading = false; // no new tiles to load
-    } else {
-        map.once('idle', () => {
-            console.log("usgs tile manager: map idle, all tiles loaded. setting loading to false.");
-            window.usgsTilesLoading = false; // all tiles rendered
+    // this is the core change. it now returns a promise that resolves after rendering.
+    if (tilesToLoad > 0) {
+        console.log("usgs tile manager: waiting for new tiles to render...");
+        await new Promise(resolve => {
+            map.once('idle', () => {
+                // now that it's idle, wait for the next render to ensure it's painted
+                map.once('render', resolve);
+                // trigger a repaint just in case, to be certain a render event will fire
+                map.triggerRepaint();
+            });
         });
+        console.log("usgs tile manager: tiles rendered.");
     }
 }
 
@@ -106,36 +106,37 @@ function removeTileFromMap(sourceId) {
     }
 }
 
-function initializeUsgsTileManager() {
+// converted to an async function
+async function initializeUsgsTileManager() {
     if (window.usgsTilesInitialized) {
-        updateVisibleUsgsTiles();
+        await updateVisibleUsgsTiles();
         return;
     }
 
     const indexUrl = 'https://east-southeast-llc.github.io/ese-map-viewer-dev/assets/data/usgs_tiles.json';
 
-    fetch(indexUrl)
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.json();
-        })
-        .then(data => {
-            allUsgsTiles = data;
-            allUsgsTiles.forEach(tile => {
-                tile.bounds = getTileBounds(tile);
-            });
+    try {
+        const response = await fetch(indexUrl);
+        if (!response.ok) throw new Error('Network response was not ok');
+        const data = await response.json();
 
-            window.usgsTilesInitialized = true;
-            console.log("USGS Tile Manager Initialized.");
-            
-            updateVisibleUsgsTiles();
-
-            map.on('moveend', updateVisibleUsgsTiles);
-            map.on('zoomend', updateVisibleUsgsTiles);
-        })
-        .catch(error => {
-            console.error("Failed to load USGS tile index:", error);
+        allUsgsTiles = data;
+        allUsgsTiles.forEach(tile => {
+            tile.bounds = getTileBounds(tile);
         });
+
+        window.usgsTilesInitialized = true;
+        console.log("USGS Tile Manager Initialized.");
+        
+        await updateVisibleUsgsTiles();
+
+        map.off('moveend', updateVisibleUsgsTiles);
+        map.off('zoomend', updateVisibleUsgsTiles);
+        map.on('moveend', updateVisibleUsgsTiles);
+        map.on('zoomend', updateVisibleUsgsTiles);
+    } catch (error) {
+        console.error("Failed to load USGS tile index:", error);
+    }
 }
 
 function deinitializeUsgsTileManager() {
