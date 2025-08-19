@@ -4,6 +4,7 @@
 let allUsgsTiles = [];
 const loadedUsgsTiles = new Set();
 window.usgsTilesInitialized = false;
+window.usgsTilesLoading = false; // new global variable
 
 function getTileBounds(tile) {
     const [pixelWidth, , , pixelHeight, originLng, originLat] = tile.jgw;
@@ -20,6 +21,7 @@ function getTileBounds(tile) {
 function updateVisibleUsgsTiles() {
     if (!window.usgsTilesInitialized) return;
 
+    window.usgsTilesLoading = true; // set loading to true
     const currentZoom = map.getZoom();
 
     if (currentZoom < 12) {
@@ -27,10 +29,12 @@ function updateVisibleUsgsTiles() {
             removeTileFromMap(`usgs-tile-source-${tileName}`);
         });
         loadedUsgsTiles.clear();
+        window.usgsTilesLoading = false; // set loading to false
         return;
     }
 
     const mapBounds = map.getBounds();
+    let tilesToLoad = 0;
 
     allUsgsTiles.forEach(tile => {
         const tileBounds = tile.bounds;
@@ -44,6 +48,7 @@ function updateVisibleUsgsTiles() {
 
         if (isVisible) {
             if (!loadedUsgsTiles.has(tile.name)) {
+                tilesToLoad++;
                 addTileToMap(tile, sourceId);
                 loadedUsgsTiles.add(tile.name);
             }
@@ -54,6 +59,14 @@ function updateVisibleUsgsTiles() {
             }
         }
     });
+
+    if (tilesToLoad === 0) {
+        window.usgsTilesLoading = false; // no new tiles to load
+    } else {
+        map.once('idle', () => {
+            window.usgsTilesLoading = false; // all tiles rendered
+        });
+    }
 }
 
 function addTileToMap(tile, sourceId) {

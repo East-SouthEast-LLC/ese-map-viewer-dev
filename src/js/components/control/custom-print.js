@@ -247,21 +247,30 @@ if (!customPrintButton || !customPrintBox) {
 
         for (const config of pageConfigs) {
             const isUsgsPage = config.layers.includes('usgs quad');
-
+    
             if (isUsgsPage) {
                 if (typeof initializeUsgsTileManager === 'function') {
                     initializeUsgsTileManager();
+                    // poll until tiles are loaded
+                    await new Promise(resolve => {
+                        const interval = setInterval(() => {
+                            if (!window.usgsTilesLoading) {
+                                clearInterval(interval);
+                                resolve();
+                            }
+                        }, 100); // check every 100ms
+                    });
                 }
             } else {
                 config.layers.forEach(layerId => setLayerVisibility(layerId, 'visible'));
             }
-
+    
             await new Promise(resolve => map.once('idle', resolve));
             
             const mapCanvas = map.getCanvas();
             const mapImageSrc = mapCanvas.toDataURL();
             fullHtml += getPageHTML(printData, mapImageSrc, config.page, config.layers, currentDate);
-
+    
             if (isUsgsPage) {
                 if (typeof deinitializeUsgsTileManager === 'function') {
                     deinitializeUsgsTileManager();
