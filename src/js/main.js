@@ -185,7 +185,8 @@
                     console.log("all layer scripts loaded.");
 
                     const controlScripts = [
-                        "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/button.js",
+                        "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/utils/map-helpers.js",
+                        "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/marker.js",
                         "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/print.js",
                         "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/custom-print.js",
                         "https://east-southeast-llc.github.io/ese-map-viewer-dev/src/js/components/control/print-area.js",
