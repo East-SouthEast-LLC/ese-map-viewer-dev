@@ -266,9 +266,8 @@ if (!customPrintButton || !customPrintBox) {
                 }
             } else {
                 config.layers.forEach(layerId => setLayerVisibility(layerId, 'visible'));
+                await new Promise(resolve => map.once('idle', resolve));
             }
-    
-            await new Promise(resolve => map.once('idle', resolve));
             
             const mapCanvas = map.getCanvas();
             const mapImageSrc = mapCanvas.toDataURL();
