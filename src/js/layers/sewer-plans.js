@@ -19,8 +19,8 @@ function addSewerPlansLayer() {
                 ['==', ['get', 'ADDED'], 'Y'],'#ffcccc',
                 [
                     'case',
-                    ['all', ['>=', ['to-number', ['get', 'DATE']], 2022], ['<=', ['to-number', ['get', 'DATE']], 2022]], '#e02c2cff',
-                    ['all', ['>=', ['to-number', ['get', 'DATE']], 2016], ['<=', ['to-number', ['get', 'DATE']], 2019]], '#d32f2f',
+                    ['all', ['>=', ['to-number', ['get', 'DATE']], 2019], ['<=', ['to-number', ['get', 'DATE']], 2022]], '#e02c2cff',
+                    ['all', ['>=', ['to-number', ['get', 'DATE']], 2016], ['<=', ['to-number', ['get', 'DATE']], 2018]], '#d32f2f',
                     ['all', ['>=', ['to-number', ['get', 'DATE']], 2014], ['<', ['to-number', ['get', 'DATE']], 2016]], '#d32f2f',
                     ['all', ['>=', ['to-number', ['get', 'DATE']], 2011], ['<', ['to-number', ['get', 'DATE']], 2014]], '#b71c1c',
                     ['all', ['>=', ['to-number', ['get', 'DATE']], 2008], ['<', ['to-number', ['get', 'DATE']], 2011]], '#b71c1c',
