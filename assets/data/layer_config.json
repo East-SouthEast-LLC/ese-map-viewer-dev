@@ -730,15 +730,30 @@
     "displayName": "DEM Contours",
     "scriptName": "dem-contours.js",
     "drawOrder": 80,
-    "dependencies": ["dem-contour-labels"],
-    "popupConfig": null,
-    "identifyConfig": null,
+    "dependencies": [
+      "dem-contour-labels"
+    ],
+    "popupConfig": {
+      "template": "<strong>Elevation:</strong> {elev} ft"
+    },
+    "identifyConfig": {
+      "template": "<strong>DEM Contour:</strong> {elev} ft"
+    },
     "legendConfig": {
-        "displayName": "DEM Contours",
-        "sources": [
-        ],
-        "items": [
-        ]
+      "displayName": "DEM Contours",
+      "sources": [
+        {
+          "id": "dem contours"
+        }
+      ],
+      "items": [
+        {
+          "label": "DEM Contour Line",
+          "color": "#800080",
+          "opacity": 1,
+          "isLine": true
+        }
+      ]
     }
   }
 ]
