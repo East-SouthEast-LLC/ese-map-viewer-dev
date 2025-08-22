@@ -724,5 +724,21 @@
             }
         ]
     }
+  },
+  {
+    "id": "dem contours",
+    "displayName": "DEM Contours",
+    "scriptName": "dem-contours.js",
+    "drawOrder": 80,
+    "dependencies": ["dem-contour-labels"],
+    "popupConfig": null,
+    "identifyConfig": null,
+    "legendConfig": {
+        "displayName": "DEM Contours",
+        "sources": [
+        ],
+        "items": [
+        ]
+    }
   }
 ]

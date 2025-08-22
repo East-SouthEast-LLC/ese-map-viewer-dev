@@ -1,5 +1,38 @@
 [
   {
+    "townID": "development",
+    "townName": "Development",
+    "baseShareUrl": "https://ese-llc.com/map-viewer-dev",
+    "map": {
+      "center": [-69.991, 41.687],
+      "zoom": 12
+    },
+    "layers": [ 
+      "satellite",
+      "parcels",
+      "parcel highlight",
+      "lidar contours",
+      "agis",
+      "historic",
+      "floodplain",
+      "acec",
+      "DEP wetland",
+      "endangered species",
+      "zone II",
+      "soils",
+      "conservancy districts",
+      "zoning",
+      "conservation",
+      "sewer",
+      "sewer plans",
+      "stories",
+      "intersection",
+      "usgs quad",
+      "panoramas",
+      "dem contours"
+    ]
+  },
+  {
     "townID": "chatham",
     "townName": "Chatham",
     "baseShareUrl": "https://ese-llc.com/toc",
