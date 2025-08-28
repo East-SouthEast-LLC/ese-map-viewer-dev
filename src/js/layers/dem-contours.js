@@ -4,7 +4,7 @@ function addDemContoursLayer() {
     // add the mapbox source using the unique tileset id
     map.addSource('dem contours', {
         type: 'vector',
-        url: 'mapbox://ese-toh.7c9kgzsi' // tileset id for dem contours
+        url: 'mapbox://ese-toh.cr6ksiqx' // tileset id for dem contours
     });
 
     // add the line layer for the contours
@@ -12,7 +12,7 @@ function addDemContoursLayer() {
         'id': 'dem contours',
         'type': 'line',
         'source': 'dem contours',
-        'source-layer': 'mass_contours_2ft_simplified', // source layer name from mapbox
+        'source-layer': 'mass_contours_feet_test_simplified_0', // source layer name from mapbox
         'layout': {
             'visibility': 'none', // hidden by default
             'line-join': 'round',
@@ -29,7 +29,7 @@ function addDemContoursLayer() {
         'id': 'dem-contour-labels',
         'type': 'symbol',
         'source': 'dem contours',
-        'source-layer': 'mass_contours_2ft_simplified',
+        'source-layer': 'mass_contours_feet_test_simplified_0',
         'layout': {
             'visibility': 'none', // also hidden by default
             'symbol-placement': 'line',
