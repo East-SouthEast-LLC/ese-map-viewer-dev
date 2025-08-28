@@ -734,10 +734,10 @@
       "dem-contour-labels"
     ],
     "popupConfig": {
-      "template": "<strong>Elevation:</strong> {elev} ft"
+      "template": "<strong>Elevation:</strong> {ELEVATION} ft"
     },
     "identifyConfig": {
-      "template": "<strong>DEM Contour:</strong> {elev} ft"
+      "template": "<strong>DEM Contour:</strong> {ELEVATION} ft"
     },
     "legendConfig": {
       "displayName": "DEM Contours",
