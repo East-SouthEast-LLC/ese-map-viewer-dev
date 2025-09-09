@@ -4,7 +4,7 @@ function addDemContoursLayer() {
     // add the mapbox source using the unique tileset id
     map.addSource('dem contours', {
         type: 'vector',
-        url: 'mapbox://ese-toh.8olrn607'
+        url: 'mapbox://ese-toh.09qzdqvt'
     });
 
     // add the line layer for the contours
